@@ -1,0 +1,4 @@
+interface:
+  display_name: "Ubergoal"
+  short_description: "Lean plans, Codex goals, and acceptance proof"
+  default_prompt: "Use $ubergoal to plan this coding task. Recommend whether it should launch as a Codex goal, but do not call `create_goal` unless I explicitly say to launch. Build only the planning review board lanes that are worth the cost/complexity and produce an acceptance rubric. For agent or multi-agent failures, run the Agent Advocate lane with human counterfactual before proposing fixes."
