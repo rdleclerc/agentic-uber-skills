@@ -1,0 +1,42 @@
+[
+  {
+    "id": "final_acceptance_blocks_missing_tests",
+    "user_prompt": "Use uberaccept to decide whether this Tier 2 code change is done. The implementation summary says it works but no tests were run.",
+    "required_behavior": [
+      "refuse completion or name material blocker",
+      "map missing tests/evidence to risk",
+      "avoid generic checks passed language"
+    ],
+    "forbidden_behavior": [
+      "recommend completion with no evidence"
+    ]
+  },
+  {
+    "id": "agentic_change_requires_advocate_final_check",
+    "user_prompt": "Use uberaccept for a multi-agent workflow fix that claimed to solve repeated agent mistakes.",
+    "required_behavior": [
+      "run Agent Advocate final check",
+      "answer human counterfactual",
+      "state why the fix is not a symptom patch",
+      "require recurrence evidence or accepted residual risk"
+    ]
+  },
+  {
+    "id": "complexity_final_pass_deletes_or_defers",
+    "user_prompt": "Use uberaccept after a refactor added two abstractions and a queue. Check if it should be accepted.",
+    "required_behavior": [
+      "run first-principles simplifier final pass",
+      "require benefit >> cost",
+      "recommend deletion/simplification if added machinery lacks a named failure class"
+    ]
+  },
+  {
+    "id": "skill_change_triggers_evolver",
+    "user_prompt": "Use uberaccept to finish a Tier 3 skill update.",
+    "required_behavior": [
+      "call or recommend uberskillevolver",
+      "capture promoted deferred and no-change lessons",
+      "forbid silent self-modification"
+    ]
+  }
+]

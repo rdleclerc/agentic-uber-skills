@@ -1,30 +1,28 @@
 #!/usr/bin/env python3
-"""Lint the thin ubergoal wrapper package."""
+"""Lint the uberaccept skill package."""
 from __future__ import annotations
 
 import argparse
-import json
+import re
 import sys
 from pathlib import Path
 
-SKILL_NAME = "ubergoal"
+SKILL_NAME = "uberaccept"
 REQUIRED_FILES = [
     "SKILL.md",
     "agents/openai.yaml",
-    "templates/goal-ledger.md",
-    "references/codex-goal-objective.md",
-    "scripts/validate_goal_objective.py",
-    "evals/golden_skill_invocations.json",
-]
-FORBIDDEN_MONOLITH_FILES = [
-    "templates/plan-contract.md",
     "templates/final-acceptance.md",
-    "scripts/validate_plan_contract.py",
+    "templates/architecture-steward-report.md",
+    "templates/first-principles-simplifier-report.md",
+    "templates/agent-failure-rca.md",
+    "references/agentic-architecture-checklist.md",
     "scripts/validate_acceptance_report.py",
+    "scripts/validate_architecture_steward_report.py",
+    "evals/golden_skill_invocations.json",
 ]
 FORBIDDEN_SUFFIXES = {".pyc", ".pyo"}
 FORBIDDEN_DIRS = {"__pycache__", ".pytest_cache", ".mypy_cache"}
-REQUIRED_PHRASES = ["thin lifecycle wrapper", "$uberplan", "$uberaccept", "$uberskillevolver", "benefit is **clearly much greater than**"]
+REQUIRED_PHRASES = ["adversarial acceptance", "Agent Advocate", "benefit >> cost", "Architecture Steward", "uberskillevolver"]
 
 
 def main() -> int:
@@ -36,27 +34,20 @@ def main() -> int:
     for rel in REQUIRED_FILES:
         if not (root / rel).exists():
             errors.append(f"missing required file: {rel}")
-    for rel in FORBIDDEN_MONOLITH_FILES:
-        if (root / rel).exists():
-            errors.append(f"monolith resource should live in subskills, not ubergoal: {rel}")
     skill = (root / "SKILL.md").read_text() if (root / "SKILL.md").exists() else ""
     if f"name: {SKILL_NAME}" not in skill:
         errors.append(f"SKILL.md missing expected name: {SKILL_NAME}")
     for phrase in REQUIRED_PHRASES:
         if phrase not in skill:
             errors.append(f"SKILL.md missing phrase: {phrase}")
-    if len(skill.splitlines()) > 150:
-        errors.append("SKILL.md should stay thin (<150 lines)")
+    if len(skill.splitlines()) > 180:
+        errors.append("SKILL.md should stay concise (<180 lines)")
+    for match in re.findall(r"`((?:templates|references|scripts)/[^`]+)`", skill):
+        if not (root / match).exists():
+            errors.append(f"SKILL.md references missing resource: {match}")
     meta = (root / "agents" / "openai.yaml").read_text() if (root / "agents" / "openai.yaml").exists() else ""
-    for phrase in ["$ubergoal", "$uberplan", "$uberaccept", "$uberskillevolver", "do not call create_goal"]:
-        if phrase not in meta:
-            errors.append(f"agents/openai.yaml missing phrase: {phrase}")
-    evals = root / "evals" / "golden_skill_invocations.json"
-    if evals.exists():
-        try:
-            json.loads(evals.read_text())
-        except Exception as exc:
-            errors.append(f"invalid eval json: {exc}")
+    if "$uberaccept" not in meta or "benefit >> cost" not in meta:
+        errors.append("agents/openai.yaml default prompt must mention $uberaccept and benefit >> cost")
     for path in root.rglob("*"):
         if any(part in FORBIDDEN_DIRS for part in path.parts):
             errors.append(f"forbidden cache path present: {path.relative_to(root)}")

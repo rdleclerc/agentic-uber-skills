@@ -7,7 +7,10 @@ A collection of portable `SKILL.md` skills for Claude Code and Codex — behavio
 | Skill | What it does |
 |-------|-------------|
 | [deep-rca](deep-rca/) | Forces class-level root cause analysis before patches — prevents agents from stopping at proximate causes |
-| [ubergoal](ubergoal/) | Turns substantial coding work into a lean plan, Codex goal objective, evidence rubric, and final acceptance proof without unnecessary process |
+| [ubergoal](ubergoal/) | Thin lifecycle wrapper for substantial coding workflows: classify, route, launch goals, accept, learn |
+| [uberplan](uberplan/) | Rigorous lean planning with review lanes, exploration trails, confidence gates, and benefit >> cost pressure |
+| [uberaccept](uberaccept/) | Adversarial final acceptance with evidence audits, architecture drift checks, and completion proof |
+| [uberskillevolver](uberskillevolver/) | Captures post-run skill lessons and promotes only evidence-backed evals, validators, templates, or deletions |
 
 ## Install
 
@@ -28,11 +31,14 @@ The skill is then available as `/deep-rca` in Claude Code.
 Copy or symlink a skill directory into `~/.codex/skills/`:
 
 ```bash
-# Install ubergoal for Codex
+# Install the Uber skill family for Codex
 ln -s "$(pwd)/ubergoal" ~/.codex/skills/ubergoal
+ln -s "$(pwd)/uberplan" ~/.codex/skills/uberplan
+ln -s "$(pwd)/uberaccept" ~/.codex/skills/uberaccept
+ln -s "$(pwd)/uberskillevolver" ~/.codex/skills/uberskillevolver
 ```
 
-Then invoke it in Codex with `$ubergoal`.
+Then invoke the wrapper with `$ubergoal`, or call phase skills directly with `$uberplan`, `$uberaccept`, and `$uberskillevolver`.
 
 ## What is a SKILL.md skill?
 

@@ -1,0 +1,30 @@
+[
+  {
+    "id": "post_ubergoal_skill_run_learning_record",
+    "prompt": "Use uberskillevolver after this Tier 2 ubergoal skill update to capture what worked, what failed, and what should become evals or no change.",
+    "expected_behavior": [
+      "creates or outlines a post-run learning record",
+      "separates observations from lesson candidates",
+      "requires evidence links and promotion decisions",
+      "does not silently modify the skill"
+    ]
+  },
+  {
+    "id": "agent_failure_human_counterfactual",
+    "prompt": "A coding agent repeatedly patched symptoms in our skill workflow. Use uberskillevolver to decide what we should learn.",
+    "expected_behavior": [
+      "runs the Agent Advocate human-counterfactual lens",
+      "looks for missing context, tool feedback, or source authority",
+      "promotes upstream invariant fixes over symptom-patch instructions"
+    ]
+  },
+  {
+    "id": "reject_bureaucratic_skill_bloat",
+    "prompt": "One run was mildly annoying. Add a new permanent checklist, new subagent, and new database so it never happens again.",
+    "expected_behavior": [
+      "challenges whether benefit is clearly much greater than cost",
+      "prefers defer/no-change or a lightweight note when evidence is weak",
+      "considers deletion/simplification before new machinery"
+    ]
+  }
+]

@@ -19,6 +19,7 @@ TIER_REQUIREMENTS = {
     "2": CORE_SECTIONS
     + [
         "cost/complexity check",
+        "first-principles simplifier / complexity auditor",
         "planning review board",
         "agent advocate / agent failure rca",
         "architecture steward lane",
@@ -29,6 +30,7 @@ TIER_REQUIREMENTS = {
     "3": CORE_SECTIONS
     + [
         "cost/complexity check",
+        "first-principles simplifier / complexity auditor",
         "planning review board",
         "agent advocate / agent failure rca",
         "architecture steward lane",
@@ -57,6 +59,8 @@ RUBRIC_DIMENSIONS = [
     "scope clarity",
     "planning review",
     "cost/complexity",
+    "first-principles simplification",
+    "codebase exploration",
     "agent rca",
     "architecture",
     "ownership",
@@ -262,8 +266,21 @@ def main() -> int:
 
     if args.tier != "0":
         cost = found.get("cost/complexity check", "")
-        if "failure class" not in normalize(cost) or "smaller alternative" not in normalize(cost):
+        cost_lower = normalize(cost)
+        if "failure class" not in cost_lower or "smaller alternative" not in cost_lower:
             errors.append("cost/complexity check must name the failure class and smaller alternative considered")
+        if "benefit >> cost" not in cost_lower:
+            errors.append("cost/complexity check must include a benefit >> cost argument")
+
+    if args.tier in {"2", "3"}:
+        simp = found.get("first-principles simplifier / complexity auditor", "")
+        simp_lower = normalize(simp)
+        if not simp:
+            errors.append("tier 2/3 requires First-Principles Simplifier / Complexity Auditor section")
+        else:
+            for phrase in ["requirements challenged", "parts/processes/agents/schemas/files removed", "benefit >> cost verdict", "proceed? yes"]:
+                if phrase not in simp_lower:
+                    errors.append(f"First-Principles Simplifier section missing: {phrase}")
 
     if errors:
         print("FAIL: plan contract validation failed", file=sys.stderr)

@@ -16,7 +16,30 @@ In scope: one skill prompt, one agent brief template, validator fixture updates.
 - Failure class this plan prevents: agents editing shared files without ownership and accepting symptom patches.
 - Smaller alternative considered: a one-line prompt warning only.
 - Added machinery and why it is worth it: one Agent Advocate pass and validator fixture because the failure previously recurred.
+- Benefit >> cost argument: the added validator fixture is small and prevents recurring shared-file overwrite failures with low maintenance cost.
+- Hidden downstream costs considered: extra template length, validator upkeep, and more planning overhead.
 - Machinery deferred because cost exceeds current benefit: fresh-agent automated eval harness remains future work.
+
+## Clarifying questions gate
+- Material ambiguities: none; the failure class is already known.
+- Questions asked / answers received: user explicitly wanted better multi-agent safety.
+- Recommendations when user says "use judgment": choose the smallest guardrail that blocks shared-file edits without ownership.
+- Gate verdict: proceed to architecture? yes
+
+## Codebase exploration / pheromone trail
+- Exploration mode: main-agent because scope is one local skill package.
+- Slices explored: skill prompt, templates, validators, tests.
+- Key files returned and read by overseer: SKILL.md, templates/agent-brief.md, scripts/validate_plan_contract.py, tests/test_validators.py.
+- Pheromone trail location: not applicable; findings embedded in this plan.
+- Unknowns/follow-up angles: fresh-agent behavioral replay remains future work.
+
+## Architecture options
+| Option | Summary | Benefits | Costs/risks | Recommendation |
+|---|---|---|---|---|
+| Minimal | add prompt warning only | tiny change | weak enforcement | reject |
+| Clean | full fresh-agent eval harness | strong proof | too much machinery now | defer |
+| Pragmatic | add Agent Advocate fields and validator fixture | blocks known failure cheaply | small validator upkeep | choose |
+| First-principles alternative | remove parallel writes entirely | eliminates class | too restrictive for useful work | not chosen |
 
 ## Affected surfaces
 
@@ -33,6 +56,14 @@ Skill, multi-agent/subagent system, cross-agent coordination layer, guardrail/hu
 - Lanes skipped, and why: OpenClaw Platform Steward skipped because no OpenClaw runtime or Type0 files are touched.
 - Findings reconciled into this plan: added disjoint write-set rule, Agent Advocate human counterfactual, and validator fixtures.
 - Board verdict: allow confidence gate? yes
+
+## First-Principles Simplifier / Complexity Auditor
+- Simplifier mode: main-agent pass.
+- Requirements challenged or deleted: deleted the idea of a full fresh-agent eval harness for local-use readiness.
+- Parts/processes/agents/schemas/files removed: no extra audit agents, no new CI, no broad schema system.
+- First-principles alternative considered: forbid parallel writes entirely, rejected because disjoint write sets preserve speed safely.
+- Benefit >> cost verdict: yes; one small validator fixture has clear benefit >> maintenance cost.
+- Simplifier verdict: proceed? yes
 
 ## Agent Advocate / Agent Failure RCA
 Required because this changes multi-agent behavior.
@@ -102,6 +133,8 @@ Only used if user explicitly authorizes subagents.
 | Scope clarity | In/out/non-scope and assumptions are explicit | plan contract | 3 |
 | Planning review | Relevant lanes ran or were explicitly skipped | board verdict | 3 |
 | Cost/complexity | Smallest guardrail prevents named failure class | cost/complexity check | 3 |
+| First-principles simplification | Full fresh-agent harness deferred; small validator chosen | simplifier section | 3 |
+| Codebase exploration | Key skill files and validator tests were read by main agent | codebase exploration section | 3 |
 | Agent RCA | Agent behavior fix names why the agent erred and failed invariant | Agent Advocate report | 3 |
 | Architecture | Guide sections applied and harness/policy split respected | Architecture Steward report | 3 |
 | Ownership | Write sets and integrator role are clear | agent brief | 3 |

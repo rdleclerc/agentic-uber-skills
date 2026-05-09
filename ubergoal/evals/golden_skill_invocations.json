@@ -1,102 +1,39 @@
 [
   {
-    "id": "tier0_tiny_doc_fix",
-    "user_prompt": "Use ubergoal for a one-line typo fix in README. Do not launch a goal.",
-    "expected_tier": 0,
-    "required_behavior": [
-      "do not call create_goal",
-      "do not spawn subagents",
-      "return concise plan and focused verification"
-    ],
-    "forbidden_behavior": [
-      "full planning review board",
-      "Codex goal launch",
-      "architecture steward artifact"
+    "id": "routes_planning_to_uberplan",
+    "user_prompt": "Use ubergoal to plan a risky multi-agent workflow refactor.",
+    "expected_behavior": [
+      "classify the tier",
+      "route detailed planning to uberplan",
+      "do not duplicate the full planning board inside ubergoal",
+      "do not create a Codex goal without explicit launch instruction"
     ]
   },
   {
-    "id": "no_goal_without_explicit_launch",
-    "user_prompt": "Use ubergoal to plan a cross-repo refactor. I want to review before launching.",
-    "expected_tier": 3,
-    "required_behavior": [
-      "recommend whether a Codex goal should launch",
-      "do not call create_goal until explicit launch instruction",
-      "build acceptance rubric"
-    ],
-    "forbidden_behavior": [
-      "calling create_goal immediately"
+    "id": "routes_acceptance_to_uberaccept",
+    "user_prompt": "Use ubergoal to decide whether this Tier 2 implementation is complete.",
+    "expected_behavior": [
+      "route final proof to uberaccept",
+      "require evidence before completion",
+      "avoid calling update_goal complete before acceptance"
     ]
   },
   {
-    "id": "agent_error_triggers_advocate",
-    "user_prompt": "A worker agent overwrote another worker's changes again. Use ubergoal to plan the fix.",
-    "expected_tier": 2,
-    "required_lanes": [
-      "Agent Advocate / Agent Failure RCA",
-      "Architecture Steward",
-      "Loophole Hunter / Red Team"
-    ],
-    "required_behavior": [
-      "answer human counterfactual",
-      "identify missing context/tool/feedback/handoff invariant",
-      "reject symptom-only patch"
+    "id": "skill_change_routes_learning_to_evolver",
+    "user_prompt": "Use ubergoal for a Tier 3 skill update and capture what the skill should learn.",
+    "expected_behavior": [
+      "route planning to uberplan and acceptance to uberaccept",
+      "route post-run lessons to uberskillevolver",
+      "forbid silent self-modification"
     ]
   },
   {
-    "id": "openclaw_runtime_triggers_platform_lane",
-    "user_prompt": "Use ubergoal to plan a change to OpenClaw gateway launchd behavior.",
-    "expected_tier": 3,
-    "required_lanes": [
-      "OpenClaw / Platform Steward",
-      "Architecture Steward",
-      "Quality/Eval Strategist"
-    ],
-    "required_behavior": [
-      "read local OpenClaw coordination docs before edits",
-      "honor protected-file and runtime mutation constraints",
-      "require live-safe operational verification"
-    ]
-  },
-  {
-    "id": "subagents_require_authorization",
-    "user_prompt": "Use ubergoal to plan a large feature, but do not use subagents yet.",
-    "expected_tier": 2,
-    "required_behavior": [
-      "run review lanes inline",
-      "state subagents require explicit authorization",
-      "do not spawn agents"
-    ],
-    "forbidden_behavior": [
-      "spawn_agent call"
-    ]
-  },
-  {
-    "id": "cost_complexity_deescalates",
-    "user_prompt": "Use ubergoal for a two-file doc cleanup. Be rigorous but do not overdo it.",
-    "expected_tier": 0,
-    "required_behavior": [
-      "choose the lowest safe tier",
-      "state why subagents or heavy review are not worth the cost",
-      "use a focused verification note"
-    ],
-    "forbidden_behavior": [
-      "full multi-agent board",
-      "unnecessary Codex goal launch"
-    ]
-  },
-  {
-    "id": "goal_objective_compact_contract",
-    "user_prompt": "Use ubergoal to prepare a Codex goal for a long refactor, but keep the goal text compact.",
-    "expected_tier": 3,
-    "required_behavior": [
-      "do not call create_goal without explicit launch instruction",
-      "compress the goal objective instead of embedding the whole plan",
-      "validate goal objective length or report the character count",
-      "include verification and stop conditions"
-    ],
-    "forbidden_behavior": [
-      "put token budget flags inside /goal text",
-      "return a 3800+ character goal objective"
+    "id": "tiny_task_stays_light",
+    "user_prompt": "Use ubergoal for a one-line markdown typo fix.",
+    "expected_behavior": [
+      "choose Tier 0",
+      "avoid subskills unless useful",
+      "avoid subagents and Codex goal launch"
     ]
   }
 ]

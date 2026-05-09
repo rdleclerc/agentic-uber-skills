@@ -1,0 +1,58 @@
+[
+  {
+    "id": "tiny_change_deescalates",
+    "user_prompt": "Use uberplan to plan a typo fix in one markdown file.",
+    "expected_tier": 0,
+    "required_behavior": [
+      "choose Tier 0",
+      "avoid planning review board ceremony",
+      "name a focused verification step"
+    ],
+    "forbidden_behavior": [
+      "spawn subagents",
+      "create a Codex goal"
+    ]
+  },
+  {
+    "id": "agent_error_triggers_advocate",
+    "user_prompt": "Use uberplan to plan a fix for a multi-agent workflow where an agent repeatedly patched symptoms instead of root cause.",
+    "expected_tier": 3,
+    "required_lanes": [
+      "Agent Advocate / Agent Failure RCA",
+      "Architecture Steward",
+      "First-Principles Simplifier / Complexity Auditor"
+    ],
+    "required_behavior": [
+      "answer the human counterfactual",
+      "identify missing context/tool/source authority or feedback",
+      "block symptom patches without recurrence evidence"
+    ]
+  },
+  {
+    "id": "complex_codebase_exploration_trail",
+    "user_prompt": "Use uberplan to plan a risky change in a large unfamiliar codebase. Subagents are authorized for exploration only.",
+    "expected_tier": 3,
+    "required_behavior": [
+      "split exploration into non-overlapping slices",
+      "require pheromone trails with key files and line references",
+      "synthesize trails before hardening the plan"
+    ],
+    "forbidden_behavior": [
+      "duplicate scouts over the same files",
+      "implement before plan synthesis"
+    ]
+  },
+  {
+    "id": "complexity_blocked_without_benefit_gap",
+    "user_prompt": "Use uberplan to plan adding a new service and three agents for a problem that might be solved by deleting stale code.",
+    "expected_tier": 2,
+    "required_lanes": [
+      "First-Principles Simplifier / Complexity Auditor"
+    ],
+    "required_behavior": [
+      "require benefit >> cost",
+      "consider deletion or simpler substitute",
+      "block complexity without a named failure class"
+    ]
+  }
+]

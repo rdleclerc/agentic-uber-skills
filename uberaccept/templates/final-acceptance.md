@@ -54,6 +54,10 @@ Confirm the implementation still matches the architecture plan, relevant guide s
 
 Try to prove this work is not ready. List every material issue found.
 
+## Post-run learning / Uberskillevolver
+
+For Tier 2/3 skill, prompt, workflow, multi-agent protocol, or agentic-system changes, record whether `uberskillevolver` was used or why it was not needed. Link the post-run learning record and list promoted/deferred/no-change lessons.
+
 ## Confidence verdict
 
 ```text

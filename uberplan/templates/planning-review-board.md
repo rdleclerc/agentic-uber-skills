@@ -25,19 +25,19 @@ Find hidden assumptions, bypasses, unsafe side effects, missing tests, race/idem
 |---|---|---|---|
 | blocker/non-blocker |  |  |  |
 
-## Simplifier / Elegance Reviewer
+## First-Principles Simplifier / Complexity Auditor
 
-Find the smaller, simpler, more elegant path. Remove machinery unless it pays for itself in risk reduction.
+Fight complexity aggressively. Remove machinery unless the benefit is clearly much greater than total cost across implementation, maintenance, debugging, onboarding, context burden, evals, coordination, latency, rollback, and failure surface. Challenge requirements before optimizing them.
 
-| Complexity source | Simpler alternative | Risk tradeoff | Recommendation |
-|---|---|---|---|
-|  |  |  |  |
+| Complexity source | Delete/simplify/substitute alternative | Benefit >> cost? | Hidden downstream cost | Recommendation |
+|---|---|---|---|---|
+|  |  | yes/no |  |  |
 
 ## Codebase Scout / Cartographer
 
-Map existing extension points, tests, conventions, protected files, active claims, and likely integration hazards.
+Map existing extension points, tests, conventions, protected files, active claims, and likely integration hazards. For complex codebases, split exploration into non-overlapping slices and leave a reusable pheromone trail.
 
-| Area | Existing pattern/file/test | Relevance | Constraint |
+| Slice | Key files/lines | Pattern/invariant found | Unknowns / follow-up angle |
 |---|---|---|---|
 |  |  |  |  |
 
@@ -65,6 +65,7 @@ Challenge tier, number of agents, audit rounds, stop conditions, and token/time 
 - Max agents/audit rounds:
 - Stop conditions:
 - What to defer or remove:
+- Benefit >> cost threshold satisfied? yes/no:
 
 ## Reconciled planning changes
 

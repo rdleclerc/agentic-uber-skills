@@ -1,0 +1,6 @@
+interface:
+  display_name: "Uberskillevolver"
+  short_description: "Evolve skills from evidence without drift"
+  default_prompt: "Use $uberskillevolver to capture this skill run's lessons and decide which should become evals, validators, template changes, or no change."
+policy:
+  allow_implicit_invocation: true

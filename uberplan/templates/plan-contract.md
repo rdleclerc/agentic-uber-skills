@@ -30,7 +30,39 @@ State the concrete outcome and why it matters.
 - Failure class this plan prevents:
 - Smaller alternative considered:
 - Added machinery and why it is worth it:
+- Benefit >> cost argument:
+- Hidden downstream costs considered:
 - Machinery deferred because cost exceeds current benefit:
+
+## Clarifying questions gate
+
+Required when requirements, edge cases, integrations, approval boundaries, or success criteria are ambiguous. If not applicable, say why.
+
+- Material ambiguities:
+- Questions asked / answers received:
+- Recommendations when user says "use judgment":
+- Gate verdict: proceed to architecture? yes/no
+
+## Codebase exploration / pheromone trail
+
+Required when the codebase is complex, unfamiliar, or context-heavy enough that missing context is a material risk. Use `exploration-trail.md` when separate scouts are useful and authorized.
+
+- Exploration mode: main-agent / parallel scouts / not applicable because:
+- Slices explored:
+- Key files returned and read by overseer:
+- Pheromone trail location:
+- Unknowns/follow-up angles:
+
+## Architecture options
+
+Required for non-obvious feature architecture. Keep concise; do not force this for small deterministic edits.
+
+| Option | Summary | Benefits | Costs/risks | Recommendation |
+|---|---|---|---|---|
+| Minimal |  |  |  |  |
+| Clean |  |  |  |  |
+| Pragmatic |  |  |  |  |
+| First-principles alternative | delete/substitute/reframe before optimizing |  |  |  |
 
 ## Affected surfaces
 
@@ -50,6 +82,17 @@ Activate only the lanes justified by tier and risk. For Tier 2/3, complete `plan
 - Lanes skipped, and why:
 - Findings reconciled into this plan:
 - Board verdict: allow confidence gate? yes/no
+
+## First-Principles Simplifier / Complexity Auditor
+
+Required for Tier 2/3 and final acceptance. This lane should aggressively fight complexity and require benefit >> cost for additions.
+
+- Simplifier mode: main-agent pass / separate strongest-reasoning subagent / not applicable because:
+- Requirements challenged or deleted:
+- Parts/processes/agents/schemas/files removed:
+- First-principles alternative considered:
+- Benefit >> cost verdict:
+- Simplifier verdict: proceed? yes/no
 
 ## Agent Advocate / Agent Failure RCA
 
@@ -104,6 +147,7 @@ Only fill this if the user explicitly authorized subagents/parallel work.
 | Agent Advocate / Agent Failure RCA | Reconstruct why an agent made or would make the error; prevent symptom patches | read traces/prompts/context/tool outputs/logs; no writes unless separately assigned | `agent-failure-rca.md` with failed invariant and recurrence evidence | root cause understood or plan blocked |
 | Loophole Hunter / Red Team | Try to disprove the plan before implementation | read plan/relevant files | blocker/non-blocker loopholes tied to evidence | no material loopholes |
 | Simplifier / Elegance Reviewer | Find smaller/simpler plan that sidesteps problems | read plan/relevant files | simplification proposal and tradeoffs | adopted or explicitly rejected |
+| First-Principles Simplifier / Complexity Auditor | Aggressively delete, simplify, and require benefit >> cost for every addition | read plan/relevant files; no writes unless assigned | `first-principles-simplifier-report.md` | benefit >> cost or plan blocked |
 | Codebase Scout / Cartographer | Bring codebase-specific patterns, tests, and constraints into plan | read codebase/tests/claims | codebase map and hazards | no material codebase ignorance |
 | OpenClaw / Platform Steward | Bring OpenClaw/Type0/runtime/local-policy constraints when relevant | read local policy/docs only as needed | platform constraints and preflight needs | no policy/protected-file blockers |
 | Quality/Eval Strategist | Ensure risk-to-evidence map and rubric are real | read plan/tests/evals | evidence matrix | no material evidence gaps |
@@ -122,7 +166,9 @@ Score only relevant dimensions. Use 0 = blocker, 1 = weak/unresolved, 2 = accept
 |---|---|---|---|
 | Scope clarity | In/out/non-scope and assumptions are explicit | plan contract |  |
 | Planning review | Relevant agent-advocate/loophole/simplifier/codebase/platform/quality lanes ran or were explicitly skipped | Planning Review Board verdict |  |
-| Cost/complexity | The plan uses the smallest guardrails that address named failure classes | Cost/complexity check |  |
+| Cost/complexity | The plan uses the smallest guardrails that address named failure classes and benefit >> cost | Cost/complexity check |  |
+| First-principles simplification | Requirements and added machinery were challenged; deletion/simplification was considered | Simplifier report |  |
+| Codebase exploration | Key files/patterns/tests were explored when context risk was material | Exploration trail or explicit non-applicability |  |
 | Agent RCA | Agent behavior fixes name why the agent erred and the failed invariant/tool/context/source/eval layer | Agent Advocate report or explicit non-applicability |  |
 | Architecture | Relevant guide sections were applied; deterministic harness/adaptive policy split is respected where relevant | Architecture Steward report or explicit non-applicability |  |
 | Ownership | Write sets and integrator role are clear | claim/briefs |  |
