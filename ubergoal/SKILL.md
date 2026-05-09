@@ -1,6 +1,6 @@
 ---
 name: ubergoal
-description: "Use when Codex needs a thin lifecycle wrapper for substantial coding or agentic-system work: classify risk, route to uberplan for rigorous planning, optionally launch a compact Codex goal only when explicitly instructed, coordinate execution at the right tier, route to uberaccept for final proof, and route to uberskillevolver for post-run learning. Trigger for long plans, Codex goal launch decisions, goal ledgers, multi-agent coding sessions, agentic-system changes, rigorous-multiagent-coding, the former monolithic ubergoal workflow, 100% confident strategy checks, final completion orchestration, or deciding which Uber subskill to use."
+description: "Use when an agent needs a thin lifecycle wrapper for substantial coding or agentic-system work: classify risk, route to uberplan for rigorous planning, optionally launch a compact Codex goal only when explicitly instructed, coordinate execution at the right tier, route to uberaccept for final proof, and route to uberskillevolver for post-run learning. Trigger for long plans, goal launch decisions, goal ledgers, multi-agent coding sessions, agentic-system changes, rigorous-multiagent-coding, the former monolithic ubergoal workflow, 100% confident strategy checks, final completion orchestration, or deciding which Uber subskill to use."
 ---
 
 # Ubergoal
@@ -16,10 +16,10 @@ Use the lightest tier that makes the work safe. Treat process as cost. Add agent
 | Need | Use |
 |---|---|
 | Rigorous planning, review-board lanes, codebase exploration, confidence gate | `$uberplan` |
-| Implementation/execution coordination | main Codex agent, with subagents only when explicitly authorized |
+| Implementation/execution coordination | main coding agent, with subagents only when explicitly authorized |
 | Final acceptance, evidence audit, architecture drift, dead-code/test/eval proof | `$uberaccept` |
 | Post-run learning for skills/prompts/workflows/agentic systems | `$uberskillevolver` |
-| Compact Codex goal objective and goal ledger | `ubergoal` resources |
+| Compact goal objective and goal ledger | `ubergoal` resources |
 
 Deferred until real usage proves benefit >> cost: `ubercode`, `ubergit`, `ubereval`, `uberui`, and standalone specialist-lane skills. Use lanes inside `uberplan`/`uberaccept` first.
 
@@ -27,7 +27,7 @@ Deferred until real usage proves benefit >> cost: `ubercode`, `ubergit`, `uberev
 
 1. **Classify tier.** Use Tier 0/1/2/3 and choose the lowest safe tier.
 2. **Plan.** For Tier 1+, invoke or follow `$uberplan`; for Tier 0, use a concise plan/test note.
-3. **Launch goal only if explicit.** Create a Codex goal only when the user says to launch as a Codex goal.
+3. **Launch goal only if explicit.** Create a platform goal only when the user explicitly says to launch one.
 4. **Execute.** Keep the main agent as overseer. Use subagents only when the current user request explicitly authorizes subagents, delegation, or parallel agents.
 5. **Ledger.** For long work, maintain `templates/goal-ledger.md`.
 6. **Accept.** Invoke or follow `$uberaccept` before claiming completion or calling `update_goal(status="complete")`.
@@ -44,9 +44,9 @@ Deferred until real usage proves benefit >> cost: `ubercode`, `ubergit`, `uberev
 
 If uncertain, choose the lower tier unless a concrete risk requires escalation.
 
-## Codex goal launch
+## Goal launch
 
-Do not create a Codex goal merely because this skill is active. Only call `create_goal` after explicit user instruction such as “Launch this as a Codex goal.”
+Do not create a platform goal merely because this skill is active. Only launch a goal after explicit user instruction such as “Launch this as a goal.” When running in Codex, this means do not call `create_goal` unless explicitly instructed.
 
 When launching, keep the goal objective compact. Include:
 
@@ -81,5 +81,5 @@ For “100% confident” prompts, use the scoped meaning: 100% confident within 
 ## Helpful resources
 
 - `templates/goal-ledger.md` — compact long-running goal state.
-- `references/codex-goal-objective.md` — compact Codex goal objective guidance.
+- `references/goal-objective.md` — compact goal objective guidance.
 - `scripts/validate_goal_objective.py` — objective length validator.

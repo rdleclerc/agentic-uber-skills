@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Validate that a Codex goal objective is compact enough for continuation."""
+"""Validate that a goal objective is compact enough for continuation."""
 from __future__ import annotations
 
 import argparse
@@ -47,7 +47,7 @@ def main() -> int:
     print(f"target_chars={args.target_chars}")
     print(f"max_chars={args.max_chars}")
     if count > args.max_chars:
-        print("error=objective exceeds Codex goal objective limit", file=sys.stderr)
+        print("error=objective exceeds goal objective limit", file=sys.stderr)
         return 1
     if count >= WARN_CHARS:
         print("warning=objective is near the hard limit; compress before use", file=sys.stderr)

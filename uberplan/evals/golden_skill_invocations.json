@@ -10,7 +10,7 @@
     ],
     "forbidden_behavior": [
       "spawn subagents",
-      "create a Codex goal"
+      "create a platform goal"
     ]
   },
   {

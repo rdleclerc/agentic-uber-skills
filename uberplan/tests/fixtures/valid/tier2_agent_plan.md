@@ -98,7 +98,7 @@ Authoritative: skill files and validator outputs. Retrieval-only: prior incident
 ## Side effects, approvals, and rollback
 
 - External writes/destructive actions: none.
-- Required human approvals: required before Codex goal launch, subagent spawning, commit, push, or external writes.
+- Required human approvals: required before goal launch, subagent spawning, commit, push, or external writes.
 - Idempotency/undo strategy: normal file revert.
 - Adoption state before: local draft skill.
 - Adoption state after: local installed skill, not GitHub canonical.
@@ -147,7 +147,7 @@ Only used if user explicitly authorizes subagents.
 ```text
 Confidence verdict:
 - 100% confident within scope? yes
-- Scope: local skill package hardening only; no live runtime, no GitHub save, no Codex goal launch.
+- Scope: local skill package hardening only; no live runtime, no GitHub save, no goal launch.
 - Material blockers: none
 - Non-blocking residual risks: fresh-agent behavioral eval not yet automated; golden cases are seed fixtures.
 - Required revisions: none

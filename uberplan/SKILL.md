@@ -1,6 +1,6 @@
 ---
 name: uberplan
-description: Use when Codex needs rigorous but lean planning for substantial coding, refactoring, UI, prompt/skill/workflow, or agentic-system work before implementation. Trigger for plan contracts, planning review boards, clarifying questions, codebase exploration trails, architecture options, first-principles simplification, loophole hunting, Agent Advocate RCA, architecture stewardship, confidence gates, risk-to-evidence maps, and “are you 100% confident in this plan?” checks. Usually invoked by ubergoal for Tier 1/2/3 planning.
+description: Use when an agent needs rigorous but lean planning for substantial coding, refactoring, UI, prompt/skill/workflow, or agentic-system work before implementation. Trigger for plan contracts, planning review boards, clarifying questions, codebase exploration trails, architecture options, first-principles simplification, loophole hunting, Agent Advocate RCA, architecture stewardship, confidence gates, risk-to-evidence maps, and “are you 100% confident in this plan?” checks. Usually invoked by ubergoal for Tier 1/2/3 planning.
 ---
 
 # Uberplan
@@ -80,7 +80,7 @@ Run the human counterfactual: would a competent human with normal context/tools 
 
 ## Confidence gate
 
-Before implementation or a Codex goal launch, falsify the plan. Do not say “100% confident” if a material blocker remains. Required verdict:
+Before implementation or a goal launch, falsify the plan. Do not say “100% confident” if a material blocker remains. Required verdict:
 
 ```text
 Confidence verdict:

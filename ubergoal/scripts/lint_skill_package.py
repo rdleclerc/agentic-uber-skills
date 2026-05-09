@@ -12,7 +12,7 @@ REQUIRED_FILES = [
     "SKILL.md",
     "agents/openai.yaml",
     "templates/goal-ledger.md",
-    "references/codex-goal-objective.md",
+    "references/goal-objective.md",
     "scripts/validate_goal_objective.py",
     "evals/golden_skill_invocations.json",
 ]

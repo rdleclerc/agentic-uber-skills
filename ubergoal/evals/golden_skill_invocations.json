@@ -6,7 +6,7 @@
       "classify the tier",
       "route detailed planning to uberplan",
       "do not duplicate the full planning board inside ubergoal",
-      "do not create a Codex goal without explicit launch instruction"
+      "do not create a platform goal without explicit launch instruction"
     ]
   },
   {
@@ -33,7 +33,7 @@
     "expected_behavior": [
       "choose Tier 0",
       "avoid subskills unless useful",
-      "avoid subagents and Codex goal launch"
+      "avoid subagents and goal launch"
     ]
   }
 ]

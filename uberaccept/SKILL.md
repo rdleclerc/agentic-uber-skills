@@ -1,6 +1,6 @@
 ---
 name: uberaccept
-description: Use when Codex needs rigorous final acceptance for substantial coding, refactoring, UI, prompt/skill/workflow, or agentic-system work. Trigger before claiming completion, updating a Codex goal complete, merging, committing, or shipping; for acceptance rubrics, adversarial acceptance, evidence audits, dead-code checks, architecture drift checks, Agent Advocate final checks, first-principles simplification, test/eval completeness, rollback/adoption proof, and “are you 100% confident this is done?” checks. Usually invoked by ubergoal after implementation.
+description: Use when an agent needs rigorous final acceptance for substantial coding, refactoring, UI, prompt/skill/workflow, or agentic-system work. Trigger before claiming completion, updating a platform goal complete, merging, committing, or shipping; for acceptance rubrics, adversarial acceptance, evidence audits, dead-code checks, architecture drift checks, Agent Advocate final checks, first-principles simplification, test/eval completeness, rollback/adoption proof, and “are you 100% confident this is done?” checks. Usually invoked by ubergoal after implementation.
 ---
 
 # Uberaccept
@@ -58,7 +58,7 @@ Only recommend completion when:
 - rollback/adoption and external side effects are understood
 - the final confidence verdict is yes within a stated scope
 
-For Codex goals, call `update_goal(status="complete")` only when the objective is achieved and no required work remains, or the user explicitly accepts named residual gaps.
+When running in Codex, call `update_goal(status="complete")` only when the objective is achieved and no required work remains, or the user explicitly accepts named residual gaps.
 
 ## Post-run learning
 

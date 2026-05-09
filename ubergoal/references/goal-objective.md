@@ -1,10 +1,10 @@
-# Codex Goal Objective Guidance
+# Goal Objective Guidance
 
-Use this when converting a hardened plan into a Codex goal objective.
+Use this when converting a hardened plan into a compact goal objective for an agent runtime.
 
 ## Principle
 
-The goal objective is an operating contract, not the whole plan. Keep the detailed plan in an artifact or in the thread, and make the goal compact enough for Codex continuations to preserve.
+The goal objective is an operating contract, not the whole plan. Keep the detailed plan in an artifact or in the thread, and make the goal compact enough for agent continuations to preserve.
 
 ## Compact shape
 
@@ -20,7 +20,7 @@ Use this shape by default:
 
 ## Length and budget
 
-- Hard limit: 3,999 objective characters after stripping a leading `/goal`.
+- Codex adapter hard limit: 3,999 objective characters after stripping a leading `/goal`. For other runtimes, keep objectives similarly compact.
 - Target: 3,400 objective characters or fewer.
 - Treat 3,800+ as a failed draft and compress.
 - Do not put token-budget flags inside slash text; pass budgets only through a supported separate field/tool when the user explicitly gave one.

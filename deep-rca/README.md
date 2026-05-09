@@ -1,10 +1,10 @@
-# deep-rca — Claude Code skill
+# deep-rca — portable agent skill
 
-A Claude Code skill that forces coding agents to find class-level root causes instead of patching proximate symptoms.
+A portable agent skill that forces coding agents to find class-level root causes instead of patching proximate symptoms.
 
 ## The problem it solves
 
-When debugging, agents (and humans) naturally stop at the first explanation that fits — the proximate cause. They identify what happened and propose a fix for that specific instance. The fix works once, then the same failure recurs through a different trigger, because the underlying invariant was never enforced.
+When debugging, agents and humans naturally stop at the first explanation that fits — the proximate cause. They identify what happened and propose a fix for that specific instance. The fix works once, then the same failure recurs through a different trigger, because the underlying invariant was never enforced.
 
 This skill gives the agent three mechanisms to break that pattern:
 
@@ -16,23 +16,31 @@ This skill gives the agent three mechanisms to break that pattern:
 
 ## Install
 
-```bash
-# From the Claude Code skill registry (if published)
-claude skill install deep-rca
+Copy or symlink this directory into your agent runtime's local skills directory. Examples:
 
-# Or manually: copy SKILL.md into your skills directory
-cp SKILL.md ~/.claude/skills/deep-rca/SKILL.md
+```bash
+# Generic
+mkdir -p ~/.agent/skills
+ln -s "$PWD/deep-rca" ~/.agent/skills/deep-rca
+
+# Codex-compatible
+mkdir -p ~/.codex/skills
+ln -s "$PWD/deep-rca" ~/.codex/skills/deep-rca
+
+# Claude Code-compatible
+mkdir -p ~/.claude/skills
+cp -R "$PWD/deep-rca" ~/.claude/skills/deep-rca
 ```
 
 ## Usage
 
-Invoke via the `/deep-rca` slash command in Claude Code, or reference it in your `CLAUDE.md`:
+Invoke the skill using your runtime's skill syntax, or explicitly ask the agent to use `deep-rca` before proposing a patch.
 
 ```markdown
-For any incident investigation or bug report, invoke the `deep-rca` skill before proposing a patch.
+For any incident investigation or bug report, use the `deep-rca` skill before proposing a patch.
 ```
 
-The skill activates automatically when Claude Code detects you're asking about root causes, postmortems, debugging, stuck loops, or production failures — or when you challenge whether a proposed patch addresses the underlying issue.
+The skill should activate when you ask about root causes, postmortems, debugging, stuck loops, production failures, repeated bugs, or whether a proposed patch addresses the underlying issue.
 
 ## What it produces
 
