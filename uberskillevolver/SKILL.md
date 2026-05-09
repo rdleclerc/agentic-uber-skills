@@ -37,11 +37,13 @@ For a learning pass, produce:
 
 Default location for artifacts:
 
-- In a repo/workspace: `.uberlearn/<skill-name>/<YYYYMMDDTHHMMSS>-<run-slug>/`
+- Local/private raw records: `~/.agentic-uber-learnings/<machine-id>/<skill-name>/<YYYYMMDDTHHMMSS>-<run-slug>/`
+- In a repo/workspace: `.uberlearn/<skill-name>/<YYYYMMDDTHHMMSS>-<run-slug>/` when local-only or gitignored.
+- Cross-machine shared packets: `learning/inbox/<machine-id>/<YYYYMMDDTHHMMSS>-<run-slug>/post-run-learning.md` after sanitization.
 - In OpenClaw sessions: `/Users/claw1/.openclaw/runtime/skill-evolution/<skill-name>/<YYYYMMDDTHHMMSS>-<run-slug>/`
 - If the run already has a session archive, store there and link from the session log.
 
-Do not store secrets, credentials, private customer data, full copyrighted source dumps, or unnecessary raw prompts/responses. Prefer links, file paths, hashes, excerpts, and summaries. Redact sensitive traces before persisting.
+Do not store secrets, credentials, private customer data, full copyrighted source dumps, or unnecessary raw prompts/responses. Prefer links, file paths, hashes, excerpts, and summaries. Redact sensitive traces before persisting. For multi-machine use, commit only sanitized learning packets whose `Privacy and redaction` section says `Safe to commit? yes`.
 
 ## Learning loop
 
@@ -75,6 +77,13 @@ Before changing a skill, answer:
 
 If evidence is weak or benefit is not clearly much greater than cost, defer or record `no change`.
 
+
+## Cross-machine learning
+
+When this skill pack is used on multiple machines, combine learnings through Git, not hidden memory. Keep raw records local/private. Share only sanitized packets in `learning/inbox/<machine-id>/...`, then periodically review the inbox and promote repeated/high-value lessons into skill changes, evals, validators, templates, or deletions.
+
+Shared packets are evidence, not authority. They must still pass the promotion gate and human review. See `references/cross-machine-learning.md`.
+
 ## Agent Advocate lens
 
 For agent mistakes, include the human counterfactual:
@@ -101,3 +110,4 @@ For Tier 2/3 skill, prompt, workflow, or agentic-system runs, use `uberskillevol
 - `scripts/validate_learning_record.py` — validate required learning-record sections and evidence.
 - `scripts/validate_promotion_batch.py` — validate promotion-batch review discipline.
 - `scripts/lint_skill_package.py` — check this skill package for required files and policy hooks.
+- `references/cross-machine-learning.md` — combine sanitized learning packets across machines.

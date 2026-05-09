@@ -17,6 +17,7 @@ REQUIRED_FILES = [
     "scripts/validate_learning_record.py",
     "scripts/validate_promotion_batch.py",
     "evals/golden_skill_invocations.json",
+    "references/cross-machine-learning.md",
 ]
 
 REQUIRED_SKILL_PHRASES = [
@@ -25,6 +26,7 @@ REQUIRED_SKILL_PHRASES = [
     "benefit is **clearly much greater than**",
     "Agent Advocate",
     "Relationship to Ubergoal",
+    "Cross-machine learning",
 ]
 
 

@@ -1,0 +1,11 @@
+# Local/private learning records. Share sanitized packets under learning/inbox/ instead.
+.uberlearn/
+.uberlearn-local/
+.agentic-uber-learnings/
+learning/private/
+
+# Python/test caches
+__pycache__/
+*.pyc
+.pytest_cache/
+.mypy_cache/

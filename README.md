@@ -66,6 +66,15 @@ A `SKILL.md` skill is a portable Markdown protocol that gives an agent specializ
 
 The goal is progressive disclosure: load the skill metadata first, then the `SKILL.md` body when needed, and only open bundled templates/scripts/references when the task requires them.
 
+
+## Roadmap and cross-machine learning
+
+- Roadmap: [ROADMAP.md](ROADMAP.md)
+- Shared sanitized learning inbox: [learning/](learning/)
+- Cross-machine learning guide: [uberskillevolver/references/cross-machine-learning.md](uberskillevolver/references/cross-machine-learning.md)
+
+Keep raw learning records local/private. Commit only sanitized learning packets under `learning/inbox/<machine-id>/...` after `uberskillevolver` validation and privacy review.
+
 ## Update
 
 ```bash
