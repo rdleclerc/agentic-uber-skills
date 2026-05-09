@@ -8,6 +8,7 @@ Use this before launch for Tier 2/3, and inline for Tier 1 when useful. A lane c
 - Lanes activated:
 - Lanes intentionally skipped, and why:
 - Separate subagents used? yes/no; if yes, user authorization:
+- Subagent batching/cap: if using Codex subagents, assume at most 4 active spawned agents at once; note any queued lanes or thread-limit retries:
 
 ## Agent Advocate / Agent Failure RCA
 

@@ -66,6 +66,9 @@ Validate objective text with `scripts/validate_goal_objective.py --target-chars 
 When implementation begins:
 
 - keep write sets disjoint if using workers
+- respect the Codex collaboration runtime's active subagent thread cap; assume at most 4 concurrent spawned agents unless the platform explicitly allows more
+- for Tier 3 review boards with more than 4 lanes, batch them: spawn the highest-value lanes first, wait for completions, close completed agents, then spawn queued lanes
+- if a spawn attempt returns a thread-limit error, do not treat that lane as complete; record the cap hit in the ledger and rerun the lane after closing another agent or perform it locally
 - do not delegate the immediate critical-path blocker
 - require evidence-backed outputs, not generic approval
 - serialize overlapping work

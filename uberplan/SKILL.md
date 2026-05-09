@@ -60,6 +60,8 @@ If the repo is complex or unfamiliar and subagents are explicitly authorized, sp
 
 Do not spawn multiple agents over the same context. Parallelism pays when it reduces context overload, not when it creates shallow duplicate summaries.
 
+In Codex, plan review boards must also respect the collaboration runtime's active subagent thread cap. Assume a maximum of 4 concurrent spawned agents unless the platform explicitly allows more. If the review board needs more lanes, batch them in priority order, wait for completions, close completed agents, and then spawn the remaining lanes. If a spawn fails with a thread-limit error, record the cap hit and rerun that lane later or perform it locally; never count a failed spawn as a completed review lane.
+
 ## First-principles simplification
 
 Before hardening the plan, ask:
