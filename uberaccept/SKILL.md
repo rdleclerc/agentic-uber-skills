@@ -1,6 +1,6 @@
 ---
 name: uberaccept
-description: Use when an agent needs rigorous final acceptance for substantial coding, refactoring, UI, prompt/skill/workflow, or agentic-system work. Trigger before claiming completion, updating a platform goal complete, merging, committing, or shipping; for acceptance rubrics, adversarial acceptance, evidence audits, dead-code checks, architecture drift checks, Agent Advocate final checks, first-principles simplification, test/eval completeness, rollback/adoption proof, and “are you 100% confident this is done?” checks. Usually invoked by ubergoal after implementation.
+description: Direct-use only when explicitly named or routed by ubergoal. Use when an agent needs rigorous final acceptance for substantial coding, refactoring, UI, prompt/skill/workflow, or agentic-system work. Trigger before claiming completion, updating a platform goal complete, merging, committing, or shipping; for acceptance rubrics, adversarial acceptance, evidence audits, dead-code checks, architecture drift checks, Agent Advocate final checks, first-principles simplification, test/eval completeness, rollback/adoption proof, and “are you 100% confident this is done?” checks. Usually invoked by ubergoal after implementation.
 ---
 
 # Uberaccept
@@ -17,7 +17,7 @@ Produce a final acceptance report that names every relevant layer explicitly:
 
 1. implementation summary and files changed
 2. rubric scores with evidence and residual gaps
-3. commands/artifacts proving unit, regression, integration, UI/browser, eval, security/privacy, concurrency/idempotency, architecture, dead-code, rollback, and observability layers as applicable
+3. commands/artifacts proving unit, regression, integration, UI/browser, eval, security/privacy, concurrency/idempotency, architecture, repository-topology/dependency boundaries, dead-code, rollback, and observability layers as applicable
 4. planning-board reconciliation
 5. Agent Advocate final check for agentic work or agent failures
 6. Architecture Steward final check
@@ -43,7 +43,7 @@ Do not hide missing evidence behind generic “checks passed.” If a layer is n
 
 - **Adversarial acceptance**: actively look for reasons the work is not ready.
 - **First-Principles Simplifier**: ask what can be deleted or simplified now that the implementation exists; block complexity without benefit >> cost.
-- **Architecture Steward**: check implementation drift from plan, architecture-guide constraints, source authority, harness/policy split, durable execution, adoption/rollback, budgets, and human approvals when relevant.
+- **Architecture Steward**: check implementation drift from plan, architecture-guide constraints, repository topology/package seams, source authority, harness/policy split, durable execution, adoption/rollback, budgets, and human approvals when relevant.
 - **Agent Advocate**: for multi-agent/agent-error work, confirm the upstream reason the agent erred is fixed and answer the human counterfactual.
 - **Quality/Eval audit**: map tests/evals/audits to risks, not to a generic checklist.
 
@@ -53,6 +53,7 @@ Only recommend completion when:
 
 - no material blocker remains
 - required evidence is present or explicitly accepted as a residual gap by the user
+- any repo-local topology/dependency gate relevant to changed code files was run, or its absence is named as a blocker/gap
 - score 0/1 rows are absent
 - score 2 rows have named residual risks or clear not-applicable evidence
 - rollback/adoption and external side effects are understood

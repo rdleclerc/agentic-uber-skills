@@ -21,6 +21,7 @@ Hardened validators, metadata, templates, package lint, and golden eval fixtures
 | Agent Advocate / Agent RCA | 3 | failed invariant fixed, human counterfactual answered, human-parity fix added, and recurrence fixture present | none |
 | Architecture Steward | 3 | architecture steward dimensions in template | none |
 | Architecture | 3 | harness/policy split and source/tool/context checks explicit | none |
+| Repository topology | 3 | package topology/dependency evidence: changed validator scripts stayed inside the existing skill package; package lint and validator tests passed | none |
 | Dead code | 3 | package lint rejects __pycache__ and pyc | none |
 | Unit/regression tests | 3 | tests/test_validators.py covers valid and invalid fixtures | none |
 | Integration tests | 2 | not applicable; local skill package has no runtime integration | not applicable |
@@ -39,6 +40,7 @@ Hardened validators, metadata, templates, package lint, and golden eval fixtures
 | package lint | scripts/lint_skill_package.py . | pass |
 | unit/regression | python3 -m unittest discover -s tests | pass |
 | skill validation | quick_validate.py . | pass |
+| topology/dependency | package-local validator scripts plus scripts/lint_skill_package.py . | pass |
 | eval fixture | evals/golden_skill_invocations.json | pass schema test |
 | dead-code/cache | package lint forbidden cache check | pass |
 | security privacy concurrency idempotency | no external writes; no runtime mutation; local-only files | pass |

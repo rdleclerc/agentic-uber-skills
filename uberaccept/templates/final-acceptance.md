@@ -19,6 +19,7 @@ Use 0 = blocker, 1 = weak/unresolved, 2 = acceptable with named residual risk, 3
 | Agent Advocate / Agent RCA |  | failed invariant, human counterfactual, human-parity fix, and recurrence evidence |  |
 | Architecture Steward |  | planning/final steward report |  |
 | Architecture |  |  |  |
+| Repository topology |  | package/dependency gate evidence for new/moved code files |  |
 | Ownership |  |  |  |
 | Code quality |  |  |  |
 | Dead code |  |  |  |

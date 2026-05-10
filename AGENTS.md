@@ -1,0 +1,79 @@
+# AGENTS.md
+
+Agent-facing contract for `agentic-uber-skills`.
+
+## Canonical sources
+
+Read in this order:
+
+1. This `AGENTS.md` for repo-level routing, edit, sync, and anti-bloat rules.
+2. `README.md` for human install/use docs.
+3. `ROADMAP.md` for deferred modules, maturity gates, and cross-machine learning policy.
+4. The relevant skill's `SKILL.md`.
+5. That skill's local `templates/`, `references/`, `scripts/`, `tests/`, and `evals/` only as needed.
+
+`CLAUDE.md` is an adapter note and must not contradict this file.
+
+## Routing contract
+
+- `$ubergoal` is the only default/implicit Uber lifecycle router.
+- Phase skills are explicit or wrapper-invoked: `$uberplan`, `$uberaccept`, `$uberskillevolver`, `$ubersimplify`, and `$uberassess` should not implicitly trigger merely because a task resembles their domain.
+- `$deep-rca` is a utility skill, not an Uber lifecycle phase. Use it directly for general incidents, debugging, postmortems, repeated bugs, and class-level root-cause analysis.
+- `uberassess` = source-to-recommendation due diligence. It assesses X/GitHub/arXiv/articles/videos/Hermes signals for adoption; it does not implement or mutate without approval, and approved build work routes to `ubergoal`/`uberplan`.
+- If a user names a phase skill directly, use that phase skill. If the user asks which Uber skill to use, route through `$ubergoal`.
+- Use the lightest tier that makes the work safe. Process is cost.
+
+## RCA source authority
+
+- `deep-rca` = general incident/root-cause authority. It supplies the RCA ladder, self-challenge loop, depth floor, and class-level invariant discipline.
+- Agent Advocate = agent-behavior-specific RCA lens inside `uberplan`, `uberaccept`, and `ubersimplify`. It asks what the agent saw, whether a competent human would have made the same error, and which context/tool/source/memory/feedback/affordance gap caused the human-parity failure.
+- If both apply, use the `deep-rca` ladder for depth and the Agent Advocate lens for agent-specific evidence. Neither can waive the other's required evidence when both scopes are active.
+- Never accept “the model made a bad judgment” as root cause until the failed deterministic guard, context/source authority, tool contract, eval, memory, or feedback loop is named.
+
+## Edit rules
+
+- Keep `ubergoal` thin. It routes; it does not absorb planning, acceptance, simplification, or learning machinery.
+- Add durable machinery only when benefit is clearly **much greater than** implementation, maintenance, context, coordination, eval, rollback, latency, and operator-attention cost.
+- Prefer small validators/tests over prose-only policy when a failure class can drift.
+- Do not create another new `uber*` skill until repeated real-project use proves extraction makes the common path smaller, faster, or safer; `uberassess` is admitted because source-to-recommendation assessment is already a repeated cross-project workflow with clear no-implementation safety boundaries.
+- Do not silently self-modify skills from learning records; learning packets are evidence, not authority.
+
+## Test commands
+
+Run the pack contract first after routing/docs changes:
+
+```bash
+python3 scripts/lint_pack_contract.py
+python3 -m unittest discover -s tests -v
+```
+
+For touched skills, run their local lint/tests:
+
+```bash
+python3 <skill>/scripts/lint_skill_package.py "$PWD/<skill>"
+python3 -B -m unittest discover -s <skill>/tests -v
+```
+
+For skill shape changes, also run the Codex skill validator when available:
+
+```bash
+python3 ~/.codex/skills/.system/skill-creator/scripts/quick_validate.py <skill>
+```
+
+## Install and sync policy
+
+- Source repo: `/Users/claw1/agentic-uber-skills`.
+- Local Codex install target: `/Users/claw1/.codex/skills/<skill>`.
+- After changing a skill that local Codex should use, sync that skill directory to `/Users/claw1/.codex/skills/<skill>` and validate the installed copy.
+- Generic/Codex/Claude install docs should list the same pack directories unless a directory is explicitly labelled optional.
+- Do not commit, tag, push, or publish without explicit user authorization.
+
+## Release checklist
+
+Before claiming ready:
+
+- Pack contract lint/tests pass.
+- Each touched skill lint/tests pass.
+- Installed Codex copies are synced and validated when local use is expected.
+- README/ROADMAP/AGENTS agree on routing, source authority, install policy, and maturity state.
+- Residual gaps are named, especially fresh-agent behavioral eval gaps.

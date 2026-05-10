@@ -38,6 +38,9 @@ class PlanValidatorTests(unittest.TestCase):
     def test_agent_behavior_requires_advocate(self) -> None:
         self.assertFails(str(PLAN), str(FIX / "invalid" / "no_agent_advocate_plan.md"), "--tier", "2", "--agent-behavior")
 
+    def test_code_plan_requires_repository_topology(self) -> None:
+        self.assertFails(str(PLAN), str(FIX / "invalid" / "no_repository_topology_plan.md"), "--tier", "2", "--agent-behavior")
+
     def test_templates_need_allow_template_mode(self) -> None:
         self.assertFails(str(PLAN), str(ROOT / "templates" / "plan-contract.md"), "--tier", "2")
         self.assertPasses(str(PLAN), str(ROOT / "templates" / "plan-contract.md"), "--tier", "2", "--allow-template")

@@ -48,6 +48,15 @@ In scope: one skill prompt, one agent brief template, validator fixture updates.
 | skill prompt | SKILL.md and templates/agent-brief.md | medium | overseer |
 | validators | scripts/validate_plan_contract.py | medium | overseer |
 
+## Repository topology / package seam
+
+- Intended package/module destination: existing uberplan skill package; validator code stays in `uberplan/scripts/`, validator tests stay in `uberplan/tests/`, fixtures stay in `uberplan/tests/fixtures/`.
+- Why this does not belong at the root/convenience layer: root-level helper scripts would bypass skill package lint and make the behavior invisible to the packaged skill.
+- Public import/API seam: command-line validator `scripts/validate_plan_contract.py` and the skill/template contracts it validates.
+- Private/internal files: unit fixtures under `tests/fixtures/` and package-local test helpers.
+- Repo-local topology/dependency guard to run or add: `scripts/lint_skill_package.py`, `python3 -m unittest discover -s tests`, and fixture-backed validator commands.
+- If no guard exists, why that is acceptable for this task: not applicable; existing package lint and validator tests are the executable guard.
+
 ## Architecture classification
 Skill, multi-agent/subagent system, cross-agent coordination layer, guardrail/human-review layer, eval/observability layer.
 
@@ -137,6 +146,7 @@ Only used if user explicitly authorizes subagents.
 | Codebase exploration | Key skill files and validator tests were read by main agent | codebase exploration section | 3 |
 | Agent RCA | Agent behavior fix names why the agent erred and failed invariant | Agent Advocate report | 3 |
 | Architecture | Guide sections applied and harness/policy split respected | Architecture Steward report | 3 |
+| Repository topology | New validator/test files stay inside the existing skill package and package lint/validator tests run | package lint and validator commands | 3 |
 | Ownership | Write sets and integrator role are clear | agent brief | 3 |
 | Code quality | Validators are simple and maintainable | tests and review | 3 |
 | Unit/regression tests | Positive and negative validator fixtures pass | unittest output | 3 |

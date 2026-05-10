@@ -29,6 +29,8 @@ class ThinWrapperTests(unittest.TestCase):
         self.assertIn("$uberplan", text)
         self.assertIn("$uberaccept", text)
         self.assertIn("$uberskillevolver", text)
+        self.assertIn("$ubersimplify", text)
+        self.assertIn("$uberassess", text)
         self.assertNotIn("## Planning review board", text)
 
     def test_monolith_files_are_absent(self) -> None:
@@ -46,6 +48,13 @@ class ThinWrapperTests(unittest.TestCase):
         self.assertIn("routes_planning_to_uberplan", ids)
         self.assertIn("routes_acceptance_to_uberaccept", ids)
         self.assertIn("skill_change_routes_learning_to_evolver", ids)
+        self.assertIn("tiny_task_stays_light", ids)
+        self.assertIn("routes_simplification_to_ubersimplify", ids)
+        self.assertIn("routes_source_assessment_to_uberassess", ids)
+        route_case = next(case for case in cases if case["id"] == "routes_simplification_to_ubersimplify")
+        self.assertTrue(any("ubersimplify" in item for item in route_case.get("expected_behavior", [])))
+        assess_case = next(case for case in cases if case["id"] == "routes_source_assessment_to_uberassess")
+        self.assertTrue(any("uberassess" in item for item in assess_case.get("expected_behavior", [])))
         for case in cases:
             self.assertIn("user_prompt", case)
             self.assertTrue(case.get("expected_behavior"))

@@ -24,7 +24,7 @@ FORBIDDEN_MONOLITH_FILES = [
 ]
 FORBIDDEN_SUFFIXES = {".pyc", ".pyo"}
 FORBIDDEN_DIRS = {"__pycache__", ".pytest_cache", ".mypy_cache"}
-REQUIRED_PHRASES = ["thin lifecycle wrapper", "$uberplan", "$uberaccept", "$uberskillevolver", "benefit is **clearly much greater than**"]
+REQUIRED_PHRASES = ["thin lifecycle wrapper", "$uberplan", "$uberaccept", "$uberskillevolver", "$ubersimplify", "$uberassess", "benefit is **clearly much greater than**"]
 
 
 def main() -> int:
@@ -48,7 +48,7 @@ def main() -> int:
     if len(skill.splitlines()) > 150:
         errors.append("SKILL.md should stay thin (<150 lines)")
     meta = (root / "agents" / "openai.yaml").read_text() if (root / "agents" / "openai.yaml").exists() else ""
-    for phrase in ["$ubergoal", "$uberplan", "$uberaccept", "$uberskillevolver", "do not call create_goal"]:
+    for phrase in ["$ubergoal", "$uberplan", "$uberaccept", "$uberskillevolver", "$ubersimplify", "$uberassess", "do not call create_goal"]:
         if phrase not in meta:
             errors.append(f"agents/openai.yaml missing phrase: {phrase}")
     evals = root / "evals" / "golden_skill_invocations.json"

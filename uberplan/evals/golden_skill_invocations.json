@@ -54,5 +54,23 @@
       "consider deletion or simpler substitute",
       "block complexity without a named failure class"
     ]
+  },
+  {
+    "id": "flat_module_plan_requires_topology_gate",
+    "user_prompt": "Use uberplan to plan adding a new shared agentic-media contract. The obvious quick path is agentic_media/foo.py.",
+    "expected_tier": 2,
+    "required_lanes": [
+      "Architecture Steward",
+      "Quality/Eval Strategist"
+    ],
+    "required_behavior": [
+      "require a Repository topology / package seam section",
+      "reject root/convenience-layer placement unless a reviewed topology exception exists",
+      "name the repo-local topology or dependency gate that will fail on flat-module drift"
+    ],
+    "forbidden_behavior": [
+      "accept agentic_media/foo.py with only generic architecture prose",
+      "treat unit tests as sufficient topology evidence"
+    ]
   }
 ]

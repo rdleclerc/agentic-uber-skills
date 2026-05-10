@@ -30,6 +30,8 @@ EVIDENCE_TERMS = [
     "ui/browser",
     "eval",
     "architecture",
+    "topology",
+    "dependency",
     "dead-code",
     "security",
     "privacy",
@@ -120,6 +122,41 @@ def blockers_clear(text: str, errors: list[str], label: str = "Material blockers
         errors.append(f"{label} is not clear: {value}")
 
 
+CODE_FILE_PATTERN = re.compile(
+    r"[\w./-]+\.(?:py|pyi|ts|tsx|js|jsx|mjs|cjs|go|rs|java|kt|swift|rb|php|cs)\b",
+    re.I,
+)
+
+
+def has_changed_code_files(files_section: str, full_text: str) -> bool:
+    if CODE_FILE_PATTERN.search(files_section):
+        return True
+    return any(
+        phrase in normalize(full_text)
+        for phrase in [
+            "new/moved code",
+            "code files",
+            "new module",
+            "moved module",
+            "package seam",
+            "repository topology",
+        ]
+    )
+
+
+def find_rubric_row(rows: list[dict[str, str]], dimension: str) -> dict[str, str] | None:
+    wanted = normalize(dimension)
+    for row in rows:
+        if normalize(row["dimension"]) == wanted:
+            return row
+    return None
+
+
+def evidence_is_not_applicable(text: str) -> bool:
+    low = normalize(text)
+    return "not applicable" in low or "no code files" in low or "no new/moved code" in low
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("path", type=Path, help="Markdown final acceptance report path")
@@ -153,6 +190,10 @@ def main() -> int:
     rows = parse_rubric_rows(found.get("rubric scores", ""))
     if not rows:
         errors.append("rubric scores table has no completed rows")
+    code_files_changed = has_changed_code_files(found.get("files changed", ""), text)
+    topology_row = find_rubric_row(rows, "Repository topology")
+    if topology_row is None:
+        errors.append("rubric scores must include Repository topology row")
     for row in rows:
         score = score_value(row["score"])
         if score is None:
@@ -167,6 +208,17 @@ def main() -> int:
             evidence = row["evidence"].strip().lower()
             if gap in {"", "none", "n/a"} and "not applicable" not in evidence:
                 errors.append(f"score 2 row needs named residual gap or explicit not-applicable evidence: {row['dimension']}")
+    if topology_row is not None:
+        topology_score = score_value(topology_row["score"])
+        topology_evidence = topology_row["evidence"].strip().lower()
+        topology_gap = topology_row["gap"].strip().lower()
+        if code_files_changed:
+            if evidence_is_not_applicable(topology_evidence + " " + topology_gap):
+                errors.append("Repository topology cannot be not applicable when changed files include code")
+            if not any(term in topology_evidence for term in ["topology", "dependency", "gate", "test", "lint", "validator", "validate", "command"]):
+                errors.append("Repository topology row must name topology/dependency gate evidence for changed code files")
+            if topology_score == 2 and not topology_gap:
+                errors.append("Repository topology score 2 needs an explicitly accepted residual gap")
 
     command_lines = [line for line in found.get("commands and artifacts", "").splitlines() if line.strip().startswith("|")]
     meaningful_command_rows = []
@@ -177,6 +229,10 @@ def main() -> int:
                 meaningful_command_rows.append(cells)
     if not meaningful_command_rows:
         errors.append("commands and artifacts table needs at least one completed row")
+    if code_files_changed:
+        command_blob = normalize(found.get("commands and artifacts", ""))
+        if not any(term in command_blob for term in ["topology", "dependency", "lint", "validator", "validate", "package", "gate"]):
+            errors.append("commands and artifacts must include topology/dependency gate evidence when code files changed")
 
     verdict = require_field(text, "100% confident within scope?", errors)
     if verdict and not verdict.lower().startswith("yes"):

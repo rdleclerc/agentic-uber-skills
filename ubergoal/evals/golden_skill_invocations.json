@@ -35,5 +35,25 @@
       "avoid subskills unless useful",
       "avoid subagents and goal launch"
     ]
+  },
+  {
+    "id": "routes_simplification_to_ubersimplify",
+    "user_prompt": "Use ubergoal to run an aggressive simplification and dead-code audit of this codebase.",
+    "expected_behavior": [
+      "classify tier",
+      "route simplification trail and audit/plan/patch modes to ubersimplify",
+      "default to audit mode unless patching is explicitly authorized",
+      "still require uberaccept before accepting patches"
+    ]
+  },
+  {
+    "id": "routes_source_assessment_to_uberassess",
+    "user_prompt": "Use ubergoal to assess this X/GitHub/arXiv link before deciding whether to build it into Type0 or the skill pack.",
+    "expected_behavior": [
+      "route source-to-recommendation due diligence to uberassess",
+      "preserve source authority and retrieval limitations",
+      "do not implement before approval",
+      "only hand approved build work to uberplan/ubergoal"
+    ]
   }
 ]

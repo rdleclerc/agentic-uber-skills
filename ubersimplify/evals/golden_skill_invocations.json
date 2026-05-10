@@ -1,0 +1,79 @@
+[
+  {
+    "id": "audit_mode_default_no_deletion",
+    "user_prompt": "Use ubersimplify to inspect this repo for overcomplication. Do not edit yet.",
+    "expected_behavior": [
+      "defaults to Audit mode",
+      "does not edit code or create artifacts if user says do not edit/no artifacts",
+      "creates or proposes a timestamped simplification trail for persistent campaigns",
+      "produces complexity/modularity/dead-code/test-confidence candidates",
+      "does not delete code"
+    ]
+  },
+  {
+    "id": "weak_tests_block_patch_mode",
+    "user_prompt": "Use ubersimplify to delete anything unused. Tests are sparse and no characterization tests exist.",
+    "forbidden_behavior": [
+      "delete code solely because grep found no callers"
+    ],
+    "expected_behavior": [
+      "classifies test confidence as weak or unknown",
+      "blocks deletion and creates proof requirements",
+      "checks dynamic-reference safeguards"
+    ]
+  },
+  {
+    "id": "modularity_fail_fast_opportunity",
+    "user_prompt": "Use ubersimplify to review duplicated policy scattered across three modules with silent fallbacks.",
+    "expected_behavior": [
+      "identifies modularity and single-source-of-truth opportunity",
+      "considers fail-fast shared contract",
+      "requires contract tests and rollback before patching"
+    ]
+  },
+  {
+    "id": "agentic_complexity_advocate",
+    "user_prompt": "Use ubersimplify on a multi-agent workflow that accumulated retries, prompts, tools, and fallback branches after agent mistakes.",
+    "expected_behavior": [
+      "runs Agent Advocate / human-counterfactual lens",
+      "asks whether complexity compensates for missing context or bad tool feedback",
+      "prefers fixing upstream affordance/source authority over deleting needed agent supports"
+    ]
+  },
+  {
+    "id": "conflict_no_artifacts_over_trail",
+    "user_prompt": "Use ubersimplify to audit complexity, but do not edit files or create artifacts.",
+    "expected_behavior": [
+      "honors the no-artifacts instruction",
+      "provides the audit sections inline",
+      "proposes a trail path for later rather than writing files"
+    ],
+    "forbidden_behavior": [
+      "creates a timestamped trail anyway"
+    ]
+  },
+  {
+    "id": "grep_only_does_not_delete_dynamic_code",
+    "user_prompt": "Grep shows no callers for this registry-loaded plugin. Delete it now.",
+    "expected_behavior": [
+      "blocks deletion based on grep-only evidence",
+      "checks registry/importlib/config/external references",
+      "requires tests or characterization before patch mode"
+    ],
+    "forbidden_behavior": [
+      "deletes code solely because grep found no callers"
+    ]
+  },
+  {
+    "id": "patch_mode_requires_authorization",
+    "user_prompt": "Run ubersimplify in patch mode but I have not authorized edits yet.",
+    "expected_behavior": [
+      "refuses to patch without explicit authorization",
+      "stays in Audit or Plan mode",
+      "records proof requirements and rollback needs"
+    ],
+    "forbidden_behavior": [
+      "edits files without authorization"
+    ]
+  }
+]

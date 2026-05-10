@@ -15,7 +15,14 @@ from pathlib import Path
 CORE_SECTIONS = ["objective", "scope", "tier decision"]
 TIER_REQUIREMENTS = {
     "0": CORE_SECTIONS,
-    "1": CORE_SECTIONS + ["cost/complexity check", "risk-to-evidence map", "acceptance rubric", "pre-launch confidence gate"],
+    "1": CORE_SECTIONS
+    + [
+        "cost/complexity check",
+        "repository topology / package seam",
+        "risk-to-evidence map",
+        "acceptance rubric",
+        "pre-launch confidence gate",
+    ],
     "2": CORE_SECTIONS
     + [
         "cost/complexity check",
@@ -23,6 +30,7 @@ TIER_REQUIREMENTS = {
         "planning review board",
         "agent advocate / agent failure rca",
         "architecture steward lane",
+        "repository topology / package seam",
         "risk-to-evidence map",
         "acceptance rubric",
         "pre-launch confidence gate",
@@ -35,6 +43,7 @@ TIER_REQUIREMENTS = {
         "agent advocate / agent failure rca",
         "architecture steward lane",
         "multi-agent plan",
+        "repository topology / package seam",
         "risk-to-evidence map",
         "acceptance rubric",
         "pre-launch confidence gate",
@@ -63,6 +72,7 @@ RUBRIC_DIMENSIONS = [
     "codebase exploration",
     "agent rca",
     "architecture",
+    "repository topology",
     "ownership",
     "code quality",
     "dead code",
@@ -155,6 +165,65 @@ def blockers_clear(text: str, errors: list[str], label: str = "Material blockers
         errors.append(f"{label} is not clear: {value}")
 
 
+CODE_OR_TOPOLOGY_PATTERNS = [
+    r"\bnew/moved code\b",
+    r"\bnew code\b",
+    r"\bcode files?\b",
+    r"\badd(?:s|ed|ing)? (?:a )?(?:new )?(?:module|package|file|validator|script|class|function)\b",
+    r"\bnew (?:module|package|file|validator|script|class|function)\b",
+    r"\bmove(?:s|d|ing)? (?:code|module|file|package)\b",
+    r"\bpackage move\b",
+    r"\brefactor\b",
+    r"\bmodule\b",
+    r"\bpackage seam\b",
+    r"\brepository topology\b",
+    r"[\w./-]+\.(?:py|pyi|ts|tsx|js|jsx|mjs|cjs|go|rs|java|kt|swift|rb|php|cs)\b",
+]
+
+
+def has_code_or_topology_scope(text: str) -> bool:
+    return any(re.search(pattern, text, re.I) for pattern in CODE_OR_TOPOLOGY_PATTERNS)
+
+
+def validate_repository_topology(found: dict[str, str], lower: str, tier: str, errors: list[str]) -> None:
+    if tier == "0":
+        return
+    section_name = "repository topology / package seam"
+    section = found.get(section_name, "")
+    if not section:
+        return
+    if not section_has_substance(section):
+        errors.append("required section lacks completed substance: repository topology / package seam")
+        return
+
+    code_scope = has_code_or_topology_scope(lower)
+    section_lower = normalize(section)
+    explicitly_na = "not applicable because" in section_lower
+    if explicitly_na:
+        if code_scope:
+            errors.append(
+                "repository topology cannot be marked not applicable when plan text indicates new/moved code, modules, packages, scripts, validators, or refactors"
+            )
+        return
+
+    for label in [
+        "Intended package/module destination",
+        "Why this does not belong at the root/convenience layer",
+        "Public import/API seam",
+        "Private/internal files",
+        "Repo-local topology/dependency guard to run or add",
+        "If no guard exists, why that is acceptable for this task",
+    ]:
+        value = require_field(section, label, errors)
+        low = value.lower()
+        if low in {"none", "no", "no guard", "not needed", "not applicable"}:
+            errors.append(f"repository topology field is not sufficient: {label}={value}")
+
+    guard = require_field(section, "Repo-local topology/dependency guard to run or add", errors).lower()
+    if guard and not any(term in guard for term in ["test", "gate", "dependency", "topology", "lint", "validator", "validate", "command"]):
+        errors.append("repository topology guard must name an executable gate/test/lint/validator command")
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("path", type=Path, help="Markdown plan contract path")
@@ -188,6 +257,8 @@ def main() -> int:
     for section in required:
         if section in found and not section_has_substance(found[section]):
             errors.append(f"required section lacks completed substance: {section}")
+
+    validate_repository_topology(found, lower, args.tier or "1", errors)
 
     # Tier 0 is intentionally light but still needs a concrete test/evidence note.
     if args.tier == "0":
@@ -263,6 +334,8 @@ def main() -> int:
     present_dimensions = [dimension for dimension in RUBRIC_DIMENSIONS if dimension in normalize(rubric)]
     if args.tier != "0" and len(present_dimensions) < 5:
         errors.append("rubric has fewer than five recognized risk-mapped dimensions")
+    if args.tier != "0" and has_code_or_topology_scope(lower) and "repository topology" not in normalize(rubric):
+        errors.append("acceptance rubric must include repository topology when plan indicates new/moved code or package seams")
 
     if args.tier != "0":
         cost = found.get("cost/complexity check", "")

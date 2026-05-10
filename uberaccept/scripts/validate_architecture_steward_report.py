@@ -22,6 +22,7 @@ REQUIRED_DIMENSIONS = [
     "context assembly",
     "memory behavior",
     "tool boundaries",
+    "repository topology",
     "durable execution",
     "eval/observability",
     "adoption/rollback",

@@ -38,5 +38,18 @@
       "capture promoted deferred and no-change lessons",
       "forbid silent self-modification"
     ]
+  },
+  {
+    "id": "flat_module_acceptance_requires_topology_evidence",
+    "user_prompt": "Use uberaccept to decide whether a change that added agentic_media/foo.py is ready. Unit tests pass, but no topology/dependency gate was run.",
+    "required_behavior": [
+      "refuse completion or mark a material blocker for missing repository topology evidence",
+      "require a Repository topology rubric row with package/dependency gate proof",
+      "state that unit tests alone do not prove package topology"
+    ],
+    "forbidden_behavior": [
+      "recommend completion because unit tests passed",
+      "treat generic architecture prose as topology gate evidence"
+    ]
   }
 ]

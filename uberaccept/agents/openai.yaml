@@ -1,6 +1,6 @@
 interface:
   display_name: "Uberaccept"
   short_description: "Adversarial acceptance and proof"
-  default_prompt: "Use $uberaccept to perform final adversarial acceptance, verify risk-mapped evidence, check architecture and Agent Advocate concerns, and require benefit >> cost before recommending completion."
+  default_prompt: "Use $uberaccept only when explicitly invoked or routed by $ubergoal; perform final adversarial acceptance, verify risk-mapped evidence, check architecture and Agent Advocate concerns, and require benefit >> cost before recommending completion."
 policy:
-  allow_implicit_invocation: true
+  allow_implicit_invocation: false

@@ -70,6 +70,17 @@ Required for non-obvious feature architecture. Keep concise; do not force this f
 |---|---|---|---|
 |  |  |  |  |
 
+## Repository topology / package seam
+
+Required for any new or moved code file. Keep this small and executable.
+
+- Intended package/module destination:
+- Why this does not belong at the root/convenience layer:
+- Public import/API seam:
+- Private/internal files:
+- Repo-local topology/dependency guard to run or add:
+- If no guard exists, why that is acceptable for this task:
+
 ## Architecture classification
 
 Classify relevant components: deterministic workflow, augmented LLM call, agent loop, multi-agent/subagent system, tool/tool registry, skill, memory subsystem, source lane, identity layer, context engine, durable execution, guardrail/human review, cross-agent coordination, attention policy, adoption-state change, eval/observability layer.
@@ -171,6 +182,7 @@ Score only relevant dimensions. Use 0 = blocker, 1 = weak/unresolved, 2 = accept
 | Codebase exploration | Key files/patterns/tests were explored when context risk was material | Exploration trail or explicit non-applicability |  |
 | Agent RCA | Agent behavior fixes name why the agent erred and the failed invariant/tool/context/source/eval layer | Agent Advocate report or explicit non-applicability |  |
 | Architecture | Relevant guide sections were applied; deterministic harness/adaptive policy split is respected where relevant | Architecture Steward report or explicit non-applicability |  |
+| Repository topology | New/moved code files land in named packages and repo topology/dependency guard is run or added | topology test/dependency-map command or explicit accepted gap |  |
 | Ownership | Write sets and integrator role are clear | claim/briefs |  |
 | Code quality | Code is simple, maintainable, typed/idiomatic where applicable | review/tests |  |
 | Dead code | References searched and deletions justified | rg/audit output |  |

@@ -32,6 +32,7 @@ Complete each relevant row or explicitly mark it not applicable with a reason.
 | Context assembly | Is needed context available, scoped, fresh, and not overloaded? Are source handles preserved? |  |  |  |
 | Memory behavior | Are memory reads/writes scoped, contradicted/retired safely, and traceable? |  |  |  |
 | Tool boundaries | Are tool names, descriptions, schemas, permissions, outputs, and failure modes model-safe? |  |  |  |
+| Repository topology | Do new/moved code files land in named packages with an executable topology/dependency guard instead of prose-only hierarchy? |  |  |  |
 | Durable execution | Are checkpoints, replay safety, idempotency keys, stop conditions, and trace IDs defined where needed? |  |  |  |
 | Eval/observability | Are real fixtures, negative cases, traces, and acceptance evidence sufficient? |  |  |  |
 | Adoption/rollback | Are adoption state, rollback, and promotion rules explicit? |  |  |  |

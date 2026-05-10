@@ -1,6 +1,6 @@
 ---
 name: uberplan
-description: Use when an agent needs rigorous but lean planning for substantial coding, refactoring, UI, prompt/skill/workflow, or agentic-system work before implementation. Trigger for plan contracts, planning review boards, clarifying questions, codebase exploration trails, architecture options, first-principles simplification, loophole hunting, Agent Advocate RCA, architecture stewardship, confidence gates, risk-to-evidence maps, and “are you 100% confident in this plan?” checks. Usually invoked by ubergoal for Tier 1/2/3 planning.
+description: Direct-use only when explicitly named or routed by ubergoal. Use when an agent needs rigorous but lean planning for substantial coding, refactoring, UI, prompt/skill/workflow, or agentic-system work before implementation. Trigger for plan contracts, planning review boards, clarifying questions, codebase exploration trails, architecture options, first-principles simplification, loophole hunting, Agent Advocate RCA, architecture stewardship, confidence gates, risk-to-evidence maps, and “are you 100% confident in this plan?” checks. Usually invoked by ubergoal for Tier 1/2/3 planning.
 ---
 
 # Uberplan
@@ -23,8 +23,9 @@ Return or create a plan contract with:
 6. activated/skipped review lanes and blocker authority
 7. deterministic harness responsibilities vs adaptive model policy
 8. source authority, side-effect, approval, rollback, and adoption-state policy when relevant
-9. risk-to-evidence map and acceptance rubric
-10. confidence verdict after trying to falsify the plan
+9. repository topology/package-seam plan for any new or moved code files, including the executable gate that will catch drift
+10. risk-to-evidence map and acceptance rubric
+11. confidence verdict after trying to falsify the plan
 
 Use `templates/plan-contract.md` for durable plans and `templates/confidence-gate.md` for the adversarial pre-launch check.
 
@@ -61,6 +62,10 @@ If the repo is complex or unfamiliar and subagents are explicitly authorized, sp
 Do not spawn multiple agents over the same context. Parallelism pays when it reduces context overload, not when it creates shallow duplicate summaries.
 
 In Codex, plan review boards must also respect the collaboration runtime's active subagent thread cap. Assume a maximum of 4 concurrent spawned agents unless the platform explicitly allows more. If the review board needs more lanes, batch them in priority order, wait for completions, close completed agents, and then spawn the remaining lanes. If a spawn fails with a thread-limit error, record the cap hit and rerun that lane later or perform it locally; never count a failed spawn as a completed review lane.
+
+## Repository topology gate
+
+For any task that adds, moves, or meaningfully reorganizes code files, the plan must name the intended package/module destination and the repo-local guard that enforces it (for example `tests/test_package_topology.py`, an import-boundary test, or a dependency-map check). If no such guard exists and the task is non-trivial, add the smallest useful guard before or with the feature/refactor. Do not rely on prose-only hierarchy guidance.
 
 ## First-principles simplification
 

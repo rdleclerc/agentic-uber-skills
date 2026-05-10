@@ -36,6 +36,9 @@ class AcceptanceValidatorTests(unittest.TestCase):
     def test_decorated_zero_score_fails(self) -> None:
         self.assertFails(str(ACCEPT), str(FIX / "invalid" / "decorated_zero_acceptance.md"), "--agent-behavior")
 
+    def test_code_acceptance_requires_repository_topology(self) -> None:
+        self.assertFails(str(ACCEPT), str(FIX / "invalid" / "no_repository_topology_acceptance.md"), "--agent-behavior")
+
     def test_template_needs_allow_template_mode(self) -> None:
         self.assertFails(str(ACCEPT), str(ROOT / "templates" / "final-acceptance.md"))
         self.assertPasses(str(ACCEPT), str(ROOT / "templates" / "final-acceptance.md"), "--allow-template")
@@ -56,6 +59,9 @@ class ArchitectureStewardValidatorTests(unittest.TestCase):
     def test_blank_architecture_steward_report_fails(self) -> None:
         self.assertFails(str(ARCH), str(FIX / "invalid" / "blank_architecture_steward_report.md"))
 
+    def test_architecture_steward_requires_repository_topology_dimension(self) -> None:
+        self.assertFails(str(ARCH), str(FIX / "invalid" / "missing_repository_topology_architecture_report.md"))
+
     def test_architecture_template_needs_allow_template_mode(self) -> None:
         self.assertFails(str(ARCH), str(ROOT / "templates" / "architecture-steward-report.md"))
         self.assertPasses(str(ARCH), str(ROOT / "templates" / "architecture-steward-report.md"), "--allow-template")
@@ -75,6 +81,7 @@ class PackageTests(unittest.TestCase):
         self.assertIn("agentic_change_requires_advocate_final_check", ids)
         self.assertIn("complexity_final_pass_deletes_or_defers", ids)
         self.assertIn("skill_change_triggers_evolver", ids)
+        self.assertIn("flat_module_acceptance_requires_topology_evidence", ids)
         for case in cases:
             self.assertIn("user_prompt", case)
             self.assertTrue(case.get("required_behavior"))

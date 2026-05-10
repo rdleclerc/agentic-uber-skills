@@ -1,6 +1,6 @@
 interface:
   display_name: "Ubergoal"
   short_description: "Thin wrapper for Uber coding workflows"
-  default_prompt: "Use $ubergoal to classify this work, route planning to $uberplan, route final proof to $uberaccept, use $uberskillevolver for Tier 2/3 skill or workflow learning, and do not call create_goal unless I explicitly say to launch."
+  default_prompt: "Use $ubergoal to classify this work, route planning to $uberplan, route final proof to $uberaccept, use $uberassess for external-source adoption assessments, use $ubersimplify for opt-in complexity/dead-code simplification, use $uberskillevolver for Tier 2/3 skill or workflow learning, and do not call create_goal unless I explicitly say to launch."
 policy:
   allow_implicit_invocation: true

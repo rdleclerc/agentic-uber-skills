@@ -1,0 +1,42 @@
+[
+  {
+    "id": "x_post_routes_to_source_packet_not_implementation",
+    "user_prompt": "Use uberassess to review this bookmarked X post and decide if we should build it into Type0 or our skills.",
+    "expected_behavior": [
+      "resolve the X source and linked article/media before strong claims",
+      "produce a source-grounded assessment packet",
+      "state Implementation before approval: no",
+      "choose adopt/watch/archive/reject/needs more research/eval-only before any ubergoal handoff"
+    ]
+  },
+  {
+    "id": "github_repo_requires_benefit_cost_and_prior_art",
+    "user_prompt": "Assess this GitHub repo with many stars for whether we should incorporate it into agentic-uber-skills.",
+    "expected_behavior": [
+      "inspect repo evidence beyond stars",
+      "check existing skill-pack/project context",
+      "run benefit >> cost and simpler-alternative analysis",
+      "avoid recommending new machinery when notes or eval seeds are enough"
+    ]
+  },
+  {
+    "id": "arxiv_agent_system_requires_agent_advocate",
+    "user_prompt": "Assess this arXiv paper about multi-agent failures for whether Gaia/Type0 should change agent behavior.",
+    "expected_behavior": [
+      "distinguish paper claims from implementation inferences",
+      "run Agent Advocate human counterfactual",
+      "identify context/tool/source/memory/feedback affordance gaps before prompt policing",
+      "if implementation is likely, require ubergoal handoff and evidence plan"
+    ]
+  },
+  {
+    "id": "hype_post_can_be_rejected",
+    "user_prompt": "This viral X post says every coding agent must use a huge new MCP stack. Should we adopt it?",
+    "expected_behavior": [
+      "allow Reject or Watch as valid decisions",
+      "do not create MCP/server/tooling by default",
+      "require source authority and project context freshness",
+      "prefer smaller context/tool/eval fixes when adequate"
+    ]
+  }
+]
