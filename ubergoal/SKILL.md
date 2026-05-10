@@ -97,7 +97,7 @@ When implementation begins:
 
 ## Completion rule
 
-Do not call `update_goal(status="complete")` until `$uberaccept` says the objective is achieved and no required work remains, or the user explicitly accepts named residual gaps.
+Do not call `update_goal(status="complete")` until `$uberaccept` says the objective is achieved, no required work remains, and every touched repo is locally committed, reverted, intentionally stashed, or explicitly user-approved as uncommitted. Final handoff must include `git status --short --branch` for each touched repo.
 
 For “100% confident” prompts, use the scoped meaning: 100% confident within the stated scope after trying to disprove the plan/work and finding no material unresolved blocker.
 

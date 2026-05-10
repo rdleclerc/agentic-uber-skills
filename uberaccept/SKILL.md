@@ -64,6 +64,8 @@ Only recommend completion when:
 - score 0/1 rows are absent
 - score 2 rows have named residual risks or clear not-applicable evidence
 - rollback/adoption and external side effects are understood
+- every touched repo is clean, locally committed with only claimed files, reverted, stashed with a descriptive name, or explicitly user-approved as uncommitted
+- the final response/report includes `git status --short --branch` for every touched repo
 - the final confidence verdict is yes within a stated scope
 
 When running in Codex, call `update_goal(status="complete")` only when the objective is achieved and no required work remains, or the user explicitly accepts named residual gaps.
