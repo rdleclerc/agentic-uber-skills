@@ -30,6 +30,9 @@ class PackContractTests(unittest.TestCase):
         for skill, phrase in expected.items():
             text = (ROOT / skill / "agents" / "openai.yaml").read_text()
             self.assertIn(phrase, text, skill)
+            if skill != "ubergoal":
+                body = (ROOT / skill / "SKILL.md").read_text()
+                self.assertIn("Do not auto-trigger from task similarity", body, skill)
 
     def test_root_agent_contract_declares_rca_authority(self) -> None:
         text = (ROOT / "AGENTS.md").read_text()

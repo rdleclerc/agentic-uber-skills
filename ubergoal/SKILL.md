@@ -19,7 +19,7 @@ Use the lightest tier that makes the work safe. Treat process as cost. Add agent
 | Implementation/execution coordination | main coding agent, with subagents only when explicitly authorized |
 | Final acceptance, evidence audit, architecture drift, dead-code/test/eval proof | `$uberaccept` |
 | Complexity/modularity/dead-code simplification campaign with timestamped trail | `$ubersimplify` |
-| Assess external source/research signal before adoption | `$uberassess` |
+| Assess source/research signal/internal artifact before adoption | `$uberassess` |
 | Post-run learning for skills/prompts/workflows/agentic systems | `$uberskillevolver` |
 | Compact goal objective and goal ledger | `ubergoal` resources |
 
@@ -35,14 +35,20 @@ For Tier 1+ coding, prompt, skill, workflow, or agentic-system implementation wo
 
 The work contract is the lightweight task-start artifact for objective, scope, orientation evidence, plan, evidence matrix, stop conditions, and learning trail. It should stay compact; do not create a second bureaucracy around it.
 
+Artifact precedence:
+
+- **Tier 0:** concise inline note only.
+- **Tier 1:** the Coding Agent Work Contract is the plan artifact unless a concrete risk requires a fuller `uberplan` contract.
+- **Tier 2/3:** `uberplan` may extend the Coding Agent Work Contract, but should not create a disconnected second plan with duplicate objective/scope/evidence sections.
+
 ## Lifecycle
 
 1. **Classify tier.** Use Tier 0/1/2/3 and choose the lowest safe tier.
-2. **Plan.** For Tier 1+, invoke or follow `$uberplan`; for Tier 0, use a concise plan/test note. For non-trivial coding work, fill the Coding Agent Work Contract as the compact task-start artifact.
+2. **Plan.** For Tier 1, use the Coding Agent Work Contract as the compact plan unless risk demands more. For Tier 2/3, invoke or follow `$uberplan` and embed/extend the work contract. For Tier 0, use a concise plan/test note.
 3. **Launch goal only if explicit.** Create a platform goal only when the user explicitly says to launch one.
 4. **Execute.** Keep the main agent as overseer. Use subagents only when the current user request explicitly authorizes subagents, delegation, or parallel agents.
 5. **Ledger.** For long work, maintain `templates/goal-ledger.md`.
-6. **Assess sources when needed.** Route source-to-recommendation due diligence to `$uberassess`; do not let assessment become implementation before approval.
+6. **Assess sources/artifacts when needed.** Route source-to-recommendation due diligence to `$uberassess`; do not let assessment become implementation before approval.
 7. **Simplify when needed.** Invoke or follow `$ubersimplify` for opt-in complexity/dead-code/modularity campaigns; default to Audit mode unless patching is explicitly authorized.
 8. **Accept.** Invoke or follow `$uberaccept` before claiming completion or calling `update_goal(status="complete")`.
 9. **Learn.** For Tier 2/3 skill, prompt, workflow, multi-agent protocol, or agentic-system changes, invoke `$uberskillevolver` after acceptance.

@@ -1,6 +1,6 @@
 ---
 name: uberplan
-description: Direct-use only when explicitly named or routed by ubergoal. Use when an agent needs rigorous but lean planning for substantial coding, refactoring, UI, prompt/skill/workflow, or agentic-system work before implementation. Trigger for plan contracts, planning review boards, clarifying questions, codebase exploration trails, architecture options, first-principles simplification, loophole hunting, Agent Advocate RCA, architecture stewardship, confidence gates, risk-to-evidence maps, and “are you 100% confident in this plan?” checks. Usually invoked by ubergoal for Tier 1/2/3 planning.
+description: Do not auto-trigger from task similarity. Use only when explicitly named by the user or routed by ubergoal. Plans substantial coding, refactoring, UI, prompt/skill/workflow, or agentic-system work with the smallest safe planning artifact, review lanes, topology seams, and confidence gates.
 ---
 
 # Uberplan
@@ -10,6 +10,14 @@ description: Direct-use only when explicitly named or routed by ubergoal. Use wh
 Create the smallest plan that makes the work safe. Treat planning itself as a cost: add review lanes, subagents, templates, and evals only when the benefit is **clearly much greater than** total downstream cost.
 
 `uberplan` owns the planning phase of the Uber skill family. It does not execute the patch and does not accept the finished work. Use `uberaccept` for final proof and `uberskillevolver` for post-run learning.
+
+Avoid duplicate planning artifacts. If a Coding Agent Work Contract already captures objective, scope, orientation evidence, plan, evidence targets, stop conditions, and gaps, use it as the Tier 1 plan artifact. For Tier 2/3, extend or embed that contract in the plan contract rather than creating an unrelated second plan.
+
+## Basic Spine First gate
+
+For product/rewrite/agentic-system work, planning must first name the minimum user-visible product spine, the single canonical command or live-safe check that proves it, and the current result: `pass`, `fail`, or `not available`. If the result is `fail` or `not available`, the plan may only fix/create that spine check or explicitly label the work a non-readiness spike. Do not add architecture, abstractions, agents, contracts, routers, monitors, or eval frameworks until the spine is green or the user accepts the spike boundary.
+
+For Type0, default spine: real feed/tip/wire input → normalized signal → admission decision → lane/story assignment → story processing → fact-check/publish/reject guard → traceable result. The First-Principles Simplifier has veto authority here: a core spine gap is a blocker, not an essay-length residual risk.
 
 ## Output contract
 
@@ -24,8 +32,9 @@ Return or create a plan contract with:
 7. deterministic harness responsibilities vs adaptive model policy
 8. source authority, side-effect, approval, rollback, and adoption-state policy when relevant
 9. repository topology/package-seam plan for any new or moved code files, including the executable gate that will catch drift
-10. risk-to-evidence map and acceptance rubric
-11. confidence verdict after trying to falsify the plan
+10. Basic Spine First statement for product/rewrite/agentic-system work, or why not applicable
+11. risk-to-evidence map and acceptance rubric
+12. confidence verdict after trying to falsify the plan
 
 Use `templates/plan-contract.md` for durable plans and `templates/confidence-gate.md` for the adversarial pre-launch check.
 

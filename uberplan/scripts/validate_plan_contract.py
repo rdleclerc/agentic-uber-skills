@@ -167,17 +167,17 @@ def blockers_clear(text: str, errors: list[str], label: str = "Material blockers
 
 CODE_OR_TOPOLOGY_PATTERNS = [
     r"\bnew/moved code\b",
-    r"\bnew code\b",
-    r"\bcode files?\b",
-    r"\badd(?:s|ed|ing)? (?:a )?(?:new )?(?:module|package|file|validator|script|class|function)\b",
-    r"\bnew (?:module|package|file|validator|script|class|function)\b",
+    r"\bnew/moved code files?\b",
+    r"\badd(?:s|ed|ing)? (?:a )?(?:new )?(?:module|package|file|script|validator)\b",
+    r"\bnew (?:module|package|file|script|validator)\b",
+    r"\broot[- ]level (?:module|file)\b",
     r"\bmove(?:s|d|ing)? (?:code|module|file|package)\b",
     r"\bpackage move\b",
     r"\brefactor\b",
-    r"\bmodule\b",
-    r"\bpackage seam\b",
-    r"\brepository topology\b",
-    r"[\w./-]+\.(?:py|pyi|ts|tsx|js|jsx|mjs|cjs|go|rs|java|kt|swift|rb|php|cs)\b",
+    r"\bpackage seam (?:change|changes|changed)\b",
+    r"\bpackage boundary (?:change|changes|changed)\b",
+    r"\bimport boundary\b",
+    r"\bdependency boundary\b",
 ]
 
 
@@ -202,7 +202,7 @@ def validate_repository_topology(found: dict[str, str], lower: str, tier: str, e
     if explicitly_na:
         if code_scope:
             errors.append(
-                "repository topology cannot be marked not applicable when plan text indicates new/moved code, modules, packages, scripts, validators, or refactors"
+                "repository topology cannot be marked not applicable when plan text indicates new/moved code, root-level modules, package moves, refactors, or package/dependency seams"
             )
         return
 

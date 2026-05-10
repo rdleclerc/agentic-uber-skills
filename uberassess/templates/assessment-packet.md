@@ -10,7 +10,7 @@ Known gaps: <none or list>
 
 ## Source packet
 
-Source kind: <x_post/x_thread/article/github_repo/arxiv_paper/pdf/video/mixed/unknown>
+Source kind: <x_post/x_thread/article/github_repo/arxiv_paper/pdf/video/internal_artifact/mixed/unknown>
 Source URL: <url-or-id>
 Source title: <title-or-unknown>
 Source author: <author/repo/publisher-or-unknown>
@@ -56,16 +56,12 @@ Novelty / prior-art check:
 ## Project relevance matrix
 
 Project context checked: <yes/no> — <paths/cards/docs/date or reason missing>
+Project matrix policy: project names are adapter-specific; include only relevant destinations. If a local adapter supplies a standard matrix, use it, but do not force unrelated projects into portable assessments.
 
 | Destination | Relevance | Why | Existing related work / duplicate risk | Risk | Action |
 |---|---:|---|---|---|---|
-| Type0 | <high/med/low/none> | <reason> | <related work/gap> | <risk> | <adopt/watch/eval/no action> |
-| Gaia | <high/med/low/none> | <reason> | <related work/gap> | <risk> | <adopt/watch/eval/no action> |
-| Soho House | <high/med/low/none> | <reason> | <related work/gap> | <risk> | <save/watch/no action> |
-| OpenClaw / agentic-media | <high/med/low/none> | <reason> | <related work/gap> | <risk> | <adopt/watch/eval/no action> |
-| Agentic architecture | <high/med/low/none> | <reason> | <related work/gap> | <risk> | <adopt/watch/eval/no action> |
-| Uber skills | <high/med/low/none> | <reason> | <related work/gap> | <risk> | <adopt/watch/eval/no action> |
-| Hermes | <high/med/low/none> | <reason> | <related work/gap> | <risk> | <watch/eval/no action> |
+| <project/system> | <high/med/low/none> | <reason> | <related work/gap> | <risk> | <adopt/watch/eval/save/no action> |
+| <project/system> | <high/med/low/none> | <reason> | <related work/gap> | <risk> | <adopt/watch/eval/save/no action> |
 
 ## Source authority and uncertainty
 

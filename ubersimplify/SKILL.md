@@ -1,6 +1,6 @@
 ---
 name: ubersimplify
-description: Direct-use only when explicitly named or routed by ubergoal. Use when an agent needs to aggressively but safely reduce codebase complexity, over-abstraction, dead code, duplicated policy, poor modularity, silent fallbacks, brittle hidden behavior, or agentic-system bloat. Trigger for simplification campaigns, complexity audits, modularity audits, dead-code cleanup, first-principles deletion/refactoring, fail-fast boundary design, timestamped simplification trails, audit/plan/patch modes, or requests for Elon-style simplification with strong tests and rollback proof.
+description: Do not auto-trigger from task similarity. Use only when explicitly named by the user or routed by ubergoal. Audits or carefully patches codebase complexity, dead code, duplicated policy, poor modularity, silent fallbacks, brittle hidden behavior, or agentic-system bloat with proof gates.
 ---
 
 # Ubersimplify
@@ -40,6 +40,7 @@ Use `scripts/new_simplify_run.py` to create the trail when artifacts are authori
 
 Before deleting or refactoring, pass these gates:
 
+- **Basic Spine First veto** — for product/rewrite/agentic-system work, if the minimum user-visible product spine is failing or lacks a canonical proof check, veto new architecture/abstractions/agents/contracts/routers/monitors/eval frameworks. The next patch may only fix/create the spine check or explicitly stay a non-readiness spike.
 - **Burden-of-proof gate** — what cost does this complexity impose and what failure does it prevent?
 - **Chesterton gate** — why was it probably added, and is that reason gone or handled elsewhere?
 - **Modularity gate** — would better boundaries, single source of truth, or stronger contracts reduce conceptual complexity?

@@ -82,12 +82,12 @@ def main() -> int:
         skill_text = read(root / skill / "SKILL.md")
         meta = read(root / skill / "agents" / "openai.yaml")
         if skill == "uberassess":
-            if "Direct-use only when explicitly named" not in skill_text or "routed by `ubergoal`" not in skill_text:
+            if "Do not auto-trigger from task similarity" not in skill_text or "routed by `ubergoal`" not in skill_text:
                 errors.append("uberassess SKILL.md must state direct-use/routed-only policy")
             if "only when explicitly invoked" not in meta or "routed by $ubergoal" not in meta:
                 errors.append("uberassess metadata must state explicit-or-routed invocation")
         else:
-            if "Direct-use only when explicitly named or routed by ubergoal" not in skill_text:
+            if "Do not auto-trigger from task similarity" not in skill_text or "Use only when explicitly named" not in skill_text:
                 errors.append(f"{skill} SKILL.md must state direct-use/routed-only policy")
             if "only when explicitly invoked or routed by $ubergoal" not in meta:
                 errors.append(f"{skill} metadata must state explicit-or-routed invocation")

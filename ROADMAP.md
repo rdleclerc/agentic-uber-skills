@@ -15,7 +15,8 @@ This roadmap keeps the skill pack evolving without turning it into bureaucracy. 
 ## Routing and source-authority policy
 
 - `ubergoal` is the only implicit/default Uber lifecycle router.
-- Phase skills are explicit or wrapper-invoked to prevent ceremony creep; `uberassess` is explicit or routed by `ubergoal` for source assessment only.
+- Phase skills are explicit or wrapper-invoked to prevent ceremony creep; metadata says not to auto-trigger from task similarity.
+- `uberassess` is explicit or routed by `ubergoal` for source/artifact assessment only. Its portable validator requires completed project rows but does not hardcode Rob-local project names; local adapter references may provide Type0/Gaia/Soho/Hermes defaults.
 - `deep-rca` is the general incident RCA utility. Agent Advocate is the agent-behavior RCA lens inside planning/acceptance/simplification. If both apply, use the `deep-rca` ladder plus Agent Advocate human-counterfactual evidence.
 - Pack-level drift tests should enforce routing metadata, root agent contracts, install consistency, and RCA authority wording.
 
@@ -40,6 +41,7 @@ This roadmap keeps the skill pack evolving without turning it into bureaucracy. 
 4. **Second-pass architecture review**
    - Re-review boundaries between `ubergoal`, `uberplan`, `uberaccept`, and `uberskillevolver`.
    - Check whether any duplicated wording should move to a shared reference or be deleted.
+   - Keep Work Contract and Uberplan precedence clear: Tier 1 should usually use the work contract as the plan artifact; Tier 2/3 can extend it.
    - Confirm that the Agent Advocate and First-Principles Simplifier lanes are strong enough without becoming ceremony.
 
 5. **Uberassess dogfooding**

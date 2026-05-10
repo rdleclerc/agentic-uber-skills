@@ -4,6 +4,7 @@ import json
 import shutil
 import subprocess
 import sys
+import tempfile
 import unittest
 from pathlib import Path
 
@@ -38,6 +39,21 @@ class AcceptanceValidatorTests(unittest.TestCase):
 
     def test_code_acceptance_requires_repository_topology(self) -> None:
         self.assertFails(str(ACCEPT), str(FIX / "invalid" / "no_repository_topology_acceptance.md"), "--agent-behavior")
+
+    def test_existing_file_acceptance_can_mark_topology_not_applicable(self) -> None:
+        text = (FIX / "valid" / "final_acceptance.md").read_text()
+        text = text.replace(
+            "| Repository topology | 3 | package topology/dependency evidence: changed validator scripts stayed inside the existing skill package; package lint and validator tests passed | none |",
+            "| Repository topology | 2 | not applicable; existing package files changed in place; file layout and package layout unchanged | no topology gate required |",
+        )
+        text = text.replace(
+            "| topology/dependency | package-local validator scripts plus scripts/lint_skill_package.py . | pass |",
+            "| topology/dependency | not applicable; existing package layout unchanged | pass |",
+        )
+        with tempfile.TemporaryDirectory() as tmp:
+            report = Path(tmp) / "existing_file_acceptance.md"
+            report.write_text(text)
+            self.assertPasses(str(ACCEPT), str(report), "--agent-behavior")
 
     def test_template_needs_allow_template_mode(self) -> None:
         self.assertFails(str(ACCEPT), str(ROOT / "templates" / "final-acceptance.md"))

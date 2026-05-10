@@ -1,6 +1,6 @@
 ---
 name: uberskillevolver
-description: Direct-use only when explicitly named or routed by ubergoal. Use when an agent needs a lightweight side audit trail and human-reviewed learning loop for skills, prompts, workflows, multi-agent coding protocols, or agentic-system playbooks. Trigger after substantial Ubergoal Tier 2/3 runs, failed or surprising skill usage, repeated agent mistakes, requests for a self-evolving skill, post-run retrospectives, skill evolution ledgers, lesson promotion into evals/templates/validators, or preventing skill drift and prompt bloat.
+description: Do not auto-trigger from task similarity. Use only when explicitly named by the user or routed by ubergoal. Captures a lightweight, human-reviewed learning loop for skills, prompts, workflows, multi-agent coding protocols, or agentic-system playbooks after substantial or surprising runs.
 ---
 
 # Uberskillevolver

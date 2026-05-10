@@ -122,26 +122,24 @@ def blockers_clear(text: str, errors: list[str], label: str = "Material blockers
         errors.append(f"{label} is not clear: {value}")
 
 
-CODE_FILE_PATTERN = re.compile(
-    r"[\w./-]+\.(?:py|pyi|ts|tsx|js|jsx|mjs|cjs|go|rs|java|kt|swift|rb|php|cs)\b",
-    re.I,
-)
+NEW_MOVED_OR_TOPOLOGY_PATTERNS = [
+    r"\bnew/moved code\b",
+    r"\bnew/moved code files?\b",
+    r"\bnew (?:module|package|file|script|validator)\b",
+    r"\badd(?:s|ed|ing)? (?:a )?(?:new )?(?:module|package|file|script|validator)\b",
+    r"\broot[- ]level (?:module|file)\b",
+    r"\bmove(?:s|d|ing)? (?:code|module|file|package)\b",
+    r"\bpackage move\b",
+    r"\brefactor\b",
+    r"\bpackage seam (?:change|changes|changed)\b",
+    r"\bpackage boundary (?:change|changes|changed)\b",
+    r"\bimport boundary\b",
+    r"\bdependency boundary\b",
+]
 
 
-def has_changed_code_files(files_section: str, full_text: str) -> bool:
-    if CODE_FILE_PATTERN.search(files_section):
-        return True
-    return any(
-        phrase in normalize(full_text)
-        for phrase in [
-            "new/moved code",
-            "code files",
-            "new module",
-            "moved module",
-            "package seam",
-            "repository topology",
-        ]
-    )
+def has_new_moved_or_topology_scope(full_text: str) -> bool:
+    return any(re.search(pattern, full_text, re.I) for pattern in NEW_MOVED_OR_TOPOLOGY_PATTERNS)
 
 
 def find_rubric_row(rows: list[dict[str, str]], dimension: str) -> dict[str, str] | None:
@@ -190,7 +188,7 @@ def main() -> int:
     rows = parse_rubric_rows(found.get("rubric scores", ""))
     if not rows:
         errors.append("rubric scores table has no completed rows")
-    code_files_changed = has_changed_code_files(found.get("files changed", ""), text)
+    code_files_changed = has_new_moved_or_topology_scope(text)
     topology_row = find_rubric_row(rows, "Repository topology")
     if topology_row is None:
         errors.append("rubric scores must include Repository topology row")
@@ -214,7 +212,7 @@ def main() -> int:
         topology_gap = topology_row["gap"].strip().lower()
         if code_files_changed:
             if evidence_is_not_applicable(topology_evidence + " " + topology_gap):
-                errors.append("Repository topology cannot be not applicable when changed files include code")
+                errors.append("Repository topology cannot be not applicable when the report indicates new/moved code, root-level modules, refactors, or package/dependency seams")
             if not any(term in topology_evidence for term in ["topology", "dependency", "gate", "test", "lint", "validator", "validate", "command"]):
                 errors.append("Repository topology row must name topology/dependency gate evidence for changed code files")
             if topology_score == 2 and not topology_gap:
@@ -232,7 +230,7 @@ def main() -> int:
     if code_files_changed:
         command_blob = normalize(found.get("commands and artifacts", ""))
         if not any(term in command_blob for term in ["topology", "dependency", "lint", "validator", "validate", "package", "gate"]):
-            errors.append("commands and artifacts must include topology/dependency gate evidence when code files changed")
+            errors.append("commands and artifacts must include topology/dependency gate evidence when the report indicates new/moved code, refactors, or package/dependency seams")
 
     verdict = require_field(text, "100% confident within scope?", errors)
     if verdict and not verdict.lower().startswith("yes"):

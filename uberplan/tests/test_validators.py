@@ -4,6 +4,7 @@ import json
 import shutil
 import subprocess
 import sys
+import tempfile
 import unittest
 from pathlib import Path
 
@@ -40,6 +41,23 @@ class PlanValidatorTests(unittest.TestCase):
 
     def test_code_plan_requires_repository_topology(self) -> None:
         self.assertFails(str(PLAN), str(FIX / "invalid" / "no_repository_topology_plan.md"), "--tier", "2", "--agent-behavior")
+
+    def test_existing_file_plan_can_mark_topology_not_applicable(self) -> None:
+        text = (FIX / "valid" / "tier2_agent_plan.md").read_text()
+        text = text.replace("the added validator fixture", "the validator fixture")
+        text = text.replace("one small validator fixture", "the small validator fixture")
+        text = text.replace("New validator/test files stay inside the existing skill package", "Existing validator/test files stay inside the existing skill package")
+        start = text.index("## Repository topology / package seam")
+        end = text.index("## Architecture classification")
+        replacement = """## Repository topology / package seam
+
+Not applicable because this plan only edits existing files inside their current owning package and does not add or relocate files, create root-level modules, restructure package boundaries, or change import/dependency seams.
+
+"""
+        with tempfile.TemporaryDirectory() as tmp:
+            plan = Path(tmp) / "existing_file_plan.md"
+            plan.write_text(text[:start] + replacement + text[end:])
+            self.assertPasses(str(PLAN), str(plan), "--tier", "2", "--agent-behavior")
 
     def test_templates_need_allow_template_mode(self) -> None:
         self.assertFails(str(PLAN), str(ROOT / "templates" / "plan-contract.md"), "--tier", "2")

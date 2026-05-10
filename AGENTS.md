@@ -17,11 +17,12 @@ Read in this order:
 ## Routing contract
 
 - `$ubergoal` is the only default/implicit Uber lifecycle router.
-- Phase skills are explicit or wrapper-invoked: `$uberplan`, `$uberaccept`, `$uberskillevolver`, `$ubersimplify`, and `$uberassess` should not implicitly trigger merely because a task resembles their domain.
+- Phase skills are explicit or wrapper-invoked: `$uberplan`, `$uberaccept`, `$uberskillevolver`, `$ubersimplify`, and `$uberassess` should not implicitly trigger merely because a task resembles their domain. Their metadata should say "Do not auto-trigger from task similarity" so runtime skill routers do not confuse examples with permission.
 - `$deep-rca` is a utility skill, not an Uber lifecycle phase. Use it directly for general incidents, debugging, postmortems, repeated bugs, and class-level root-cause analysis.
 - `uberassess` = source-to-recommendation due diligence. It assesses X/GitHub/arXiv/articles/videos/Hermes signals for adoption; it does not implement or mutate without approval, and approved build work routes to `ubergoal`/`uberplan`.
 - If a user names a phase skill directly, use that phase skill. If the user asks which Uber skill to use, route through `$ubergoal`.
 - Use the lightest tier that makes the work safe. Process is cost.
+- Avoid duplicate planning artifacts: Tier 1 coding work can use the Coding Agent Work Contract as the plan; Tier 2/3 `uberplan` should extend that contract rather than create parallel objective/scope/evidence bureaucracy.
 
 ## RCA source authority
 

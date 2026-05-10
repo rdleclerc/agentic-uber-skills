@@ -1,6 +1,6 @@
 ---
 name: uberaccept
-description: Direct-use only when explicitly named or routed by ubergoal. Use when an agent needs rigorous final acceptance for substantial coding, refactoring, UI, prompt/skill/workflow, or agentic-system work. Trigger before claiming completion, updating a platform goal complete, merging, committing, or shipping; for acceptance rubrics, adversarial acceptance, evidence audits, dead-code checks, architecture drift checks, Agent Advocate final checks, first-principles simplification, test/eval completeness, rollback/adoption proof, and “are you 100% confident this is done?” checks. Usually invoked by ubergoal after implementation.
+description: Do not auto-trigger from task similarity. Use only when explicitly named by the user or routed by ubergoal. Performs adversarial final acceptance for substantial coding, refactoring, UI, prompt/skill/workflow, or agentic-system work before completion, merge, commit, push, or ship claims.
 ---
 
 # Uberaccept
@@ -10,6 +10,12 @@ description: Direct-use only when explicitly named or routed by ubergoal. Use wh
 Try to prove the work is **not** ready. Accept only when material blockers are gone, evidence matches the risks, and added complexity still has benefit **clearly much greater than** total cost.
 
 `uberaccept` owns final proof in the Uber skill family. It does not write the initial plan; use `uberplan` for planning and `uberskillevolver` for post-run learning.
+
+## Basic Spine First acceptance blocker
+
+For product/rewrite/agentic-system work, final acceptance must name the minimum user-visible product spine, the canonical command or live-safe check that proves it, and the current result. If the result is `fail` or `not available`, do not recommend readiness for added architecture, abstractions, agents, contracts, routers, monitors, or eval frameworks. The only acceptable completion scope is a spine-check fix/creation or an explicitly user-accepted non-readiness spike. Core spine gaps are blockers, not residual risks.
+
+For Type0, default spine: real feed/tip/wire input → normalized signal → admission decision → lane/story assignment → story processing → fact-check/publish/reject guard → traceable result.
 
 ## Output contract
 
@@ -21,7 +27,7 @@ Produce a final acceptance report that names every relevant layer explicitly:
 4. planning-board reconciliation
 5. Agent Advocate final check for agentic work or agent failures
 6. Architecture Steward final check
-7. first-principles simplification and cost/complexity verdict
+7. first-principles simplification and cost/complexity verdict, including any Basic Spine First veto
 8. adversarial acceptance check
 9. post-run learning decision for skill/workflow/agentic-system changes
 10. confidence verdict and completion recommendation
@@ -53,6 +59,7 @@ Only recommend completion when:
 
 - no material blocker remains
 - required evidence is present or explicitly accepted as a residual gap by the user
+- product/rewrite/agentic-system spine proof is green, or the scope is explicitly limited to a spine-check fix/non-readiness spike accepted by the user
 - any repo-local topology/dependency gate relevant to changed code files was run, or its absence is named as a blocker/gap
 - score 0/1 rows are absent
 - score 2 rows have named residual risks or clear not-applicable evidence

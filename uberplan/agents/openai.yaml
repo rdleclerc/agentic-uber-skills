@@ -1,6 +1,6 @@
 interface:
   display_name: "Uberplan"
   short_description: "Rigorous lean planning before coding"
-  default_prompt: "Use $uberplan only when explicitly invoked or routed by $ubergoal; create a lean plan contract, activate only review lanes worth their cost, require benefit >> cost for complexity, and run a confidence gate before implementation."
+  default_prompt: "Use $uberplan only when explicitly invoked or routed by $ubergoal; do not auto-trigger from task similarity; create a lean plan contract, activate only review lanes worth their cost, require benefit >> cost for complexity, and run a confidence gate before implementation."
 policy:
   allow_implicit_invocation: false

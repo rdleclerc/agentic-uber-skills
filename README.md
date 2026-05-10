@@ -4,7 +4,7 @@ A platform-neutral skill pack for agentic coding workflows. These are portable `
 
 The pack is not tied to Claude or Codex. Some skills include optional adapter notes for specific runtimes, such as Codex goals, but the core workflows are general agentic engineering protocols.
 
-Agent-facing source authority lives in [AGENTS.md](AGENTS.md). The default routing rule is: invoke `$ubergoal` as the implicit lifecycle router; invoke phase skills directly only when explicitly named or when `$ubergoal` routes to them.
+Agent-facing source authority lives in [AGENTS.md](AGENTS.md). The default routing rule is: invoke `$ubergoal` as the implicit lifecycle router; invoke phase skills directly only when explicitly named or when `$ubergoal` routes to them. Phase-skill metadata intentionally says not to auto-trigger from task similarity; this prevents ceremony creep from broad descriptions.
 
 ## Skills
 

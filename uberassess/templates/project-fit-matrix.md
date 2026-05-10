@@ -2,14 +2,11 @@
 
 Use inside `assessment-packet.md` when routing an idea across projects.
 
+Project names are environment-specific. Fill only the destinations that are actually relevant. Local adapters may provide a project list (for example Type0/Gaia/Soho/Hermes on Rob's machine), but the portable packet does not require those names.
+
 | Destination | Relevance | Why | Existing related work / duplicate risk | Risk | Action |
 |---|---:|---|---|---|---|
-| Type0 | none/low/med/high |  |  |  |  |
-| Gaia | none/low/med/high |  |  |  |  |
-| Soho House | none/low/med/high |  |  |  |  |
-| OpenClaw / agentic-media | none/low/med/high |  |  |  |  |
-| Agentic architecture | none/low/med/high |  |  |  |  |
-| Uber skills | none/low/med/high |  |  |  |  |
-| Hermes | none/low/med/high |  |  |  |  |
+| <project/system> | none/low/med/high |  |  |  |  |
+| <project/system> | none/low/med/high |  |  |  |  |
 
 Action must be one of: adopt, watch, eval, save, no action, reject, needs more research.

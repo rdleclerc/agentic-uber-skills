@@ -70,22 +70,26 @@ VALID_SOURCE_KINDS = {
     "arxiv_paper",
     "pdf",
     "video",
+    "internal_artifact",
     "mixed",
     "unknown",
 }
-REQUIRED_PROJECTS = [
-    "Type0",
-    "Gaia",
-    "Soho House",
-    "OpenClaw / agentic-media",
-    "Agentic architecture",
-    "Uber skills",
-    "Hermes",
-]
 IMPLEMENTATION_FORBIDDEN_PATTERNS = [
     r"implementation before approval:\s*(yes|allowed|approved)\b",
     r"approval required before:\s*none\b.*\b(code|skill|automation|mcp|server|workflow|config)",
 ]
+PLACEHOLDER_VALUES = {
+    "",
+    "-",
+    "destination",
+    "<destination>",
+    "<project>",
+    "<project a>",
+    "project a",
+    "project b",
+    "none/low/med/high",
+    "<high/med/low/none>",
+}
 
 
 def read(path: Path) -> str:
@@ -102,6 +106,29 @@ def field_value(text: str, field: str) -> str:
 
 def has_section(text: str, section: str) -> bool:
     return bool(re.search(rf"^##\s+{re.escape(section)}\s*$", text, flags=re.I | re.M))
+
+
+def project_matrix_rows(text: str) -> list[list[str]]:
+    match = re.search(r"^##\s+Project relevance matrix\s*$", text, flags=re.I | re.M)
+    if not match:
+        return []
+    start = match.end()
+    next_section = re.search(r"^##\s+", text[start:], flags=re.M)
+    body = text[start : start + next_section.start()] if next_section else text[start:]
+    rows: list[list[str]] = []
+    for line in body.splitlines():
+        if not line.strip().startswith("|"):
+            continue
+        cells = [cell.strip() for cell in line.strip().strip("|").split("|")]
+        if len(cells) < 6:
+            continue
+        first = cells[0].strip().lower()
+        if first in {"destination", "---"} or set(first) <= {"-", ":"}:
+            continue
+        if first in PLACEHOLDER_VALUES or any(cell.strip().lower() in PLACEHOLDER_VALUES for cell in cells[:2]):
+            continue
+        rows.append(cells)
+    return rows
 
 
 def main() -> int:
@@ -135,9 +162,8 @@ def main() -> int:
     if kind and kind not in VALID_SOURCE_KINDS and not args.allow_template:
         errors.append(f"Source kind must be one of {sorted(VALID_SOURCE_KINDS)}; found {kind!r}")
 
-    for project in REQUIRED_PROJECTS:
-        if project not in text:
-            errors.append(f"project relevance matrix missing project: {project}")
+    if not args.allow_template and not project_matrix_rows(text):
+        errors.append("project relevance matrix needs at least one completed destination row; project names are adapter-specific, not hardcoded by the portable validator")
 
     impl = field_value(text, "Implementation before approval:").lower()
     if impl and impl != "no" and not args.allow_template:

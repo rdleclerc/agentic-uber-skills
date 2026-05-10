@@ -4,6 +4,7 @@ import json
 import shutil
 import subprocess
 import sys
+import tempfile
 import unittest
 from pathlib import Path
 
@@ -29,6 +30,25 @@ class AssessmentPacketValidatorTests(unittest.TestCase):
 
     def test_tier1_assessment_passes(self) -> None:
         self.assertPasses(str(VALIDATE), str(FIX / "valid" / "tier1_assessment.md"), "--tier", "1")
+
+    def test_project_matrix_is_portable_not_type0_required(self) -> None:
+        text = (FIX / "valid" / "tier1_assessment.md").read_text()
+        replacements = {
+            "Type0": "Project Alpha",
+            "Gaia": "Project Beta",
+            "Soho House": "Project Gamma",
+            "OpenClaw / agentic-media": "Shared Platform",
+            "Agentic architecture": "Architecture Pack",
+            "Uber skills": "Skill Pack",
+            "Hermes": "Reflective Memory",
+            "Soho ledger": "local ledger",
+        }
+        for old, new in replacements.items():
+            text = text.replace(old, new)
+        with tempfile.TemporaryDirectory() as tmp:
+            packet = Path(tmp) / "generic_assessment.md"
+            packet.write_text(text)
+            self.assertPasses(str(VALIDATE), str(packet), "--tier", "1")
 
     def test_tier3_agent_assessment_passes(self) -> None:
         self.assertPasses(

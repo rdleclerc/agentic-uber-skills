@@ -1,6 +1,6 @@
 # Project Routing
 
-Assessments may route to these destinations, but routing is not adoption.
+Assessments may route to these local destinations on Rob's machine, but routing is not adoption. This is an adapter reference, not a portable validator requirement; other machines should substitute their own project matrix.
 
 - **Soho House**: personal/source memory, ledger, project cards, watchlists, and source handles. Store raw/candidate signals here before promotion.
 - **Type0**: tenant/newsroom behavior and live editorial system. Shared platform behavior should not be patched only in Type0 when agentic-media/OpenClaw should own it.
