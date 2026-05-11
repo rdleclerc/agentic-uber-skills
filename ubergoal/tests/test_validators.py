@@ -31,6 +31,11 @@ class ThinWrapperTests(unittest.TestCase):
         self.assertIn("$uberskillevolver", text)
         self.assertIn("$ubersimplify", text)
         self.assertIn("$uberassess", text)
+        self.assertIn("Implementation effort recommendation", text)
+        self.assertIn("`medium`", text)
+        self.assertIn("`high`", text)
+        self.assertIn("`xhigh`", text)
+        self.assertIn("deletion-first pass", text)
         self.assertNotIn("## Planning review board", text)
 
     def test_monolith_files_are_absent(self) -> None:

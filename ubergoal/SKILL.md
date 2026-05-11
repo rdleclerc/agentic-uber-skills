@@ -64,6 +64,18 @@ Artifact precedence:
 
 If uncertain, choose the lower tier unless a concrete risk requires escalation.
 
+## Implementation effort recommendation
+
+When returning a plan for implementation, recommend a model reasoning-effort level. This is a recommendation, not a permission to expand scope:
+
+| Effort | Use when | Avoid when |
+|---|---|---|
+| `medium` | Tier 0/1 work; localized deterministic patches; clear tests; low ambiguity; no live side effects | user is asking for architecture reset, agentic-system changes, or unresolved root-cause analysis |
+| `high` | Tier 1/2 work with judgment, repo navigation, user-visible behavior, non-trivial tests/evals, or moderate uncertainty | the task is tiny, deterministic, or the extra reasoning would mostly add process |
+| `xhigh` | Tier 3 work; cross-repo or runtime-impacting changes; prompt/skill/eval changes; major refactor/deletion; concurrency/security/privacy; repeated failures where hidden assumptions must be challenged | the work can be reduced to a smaller `medium`/`high` slice that preserves a working product spine |
+
+Before recommending `xhigh`, run the deletion-first pass: can the task be split so the next implementation slice stays `high` or `medium` while preserving safety and visible progress? If yes, recommend the smaller slice instead of escalating the whole plan.
+
 ## Goal launch
 
 Do not create a platform goal merely because this skill is active. Only launch a goal after explicit user instruction such as “Launch this as a goal.” When running in Codex, this means do not call `create_goal` unless explicitly instructed.
