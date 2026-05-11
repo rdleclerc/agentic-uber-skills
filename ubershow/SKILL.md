@@ -13,17 +13,28 @@ Use the smallest visual artifact that materially improves the user's decision sp
 
 ## Decision registration
 
-HTML clicks do not automatically register with the agent. For v0, every decision artifact that asks the user to choose must include a **copyable decision receipt**.
+HTML clicks do not automatically register with the agent. For v1, every decision artifact that asks the user to choose must have **two receipt layers**:
+
+1. a sibling Markdown receipt file written by the agent alongside the HTML artifact; and
+2. a copyable decision receipt in the HTML for any final choice or edit made in the browser.
+
+Default receipt path:
+
+```text
+/Users/claw1/.openclaw/runtime/ubershow/decisions/YYYY-MM-DDTHHMMSS-<slug>-summary.md
+```
+
+Receipt file fields: artifact path, decision question, recommended/default option, sources, constraints, `registration_status`, selected decision when known, rationale, and next action. Use `registration_status: pending_user_choice` until the user confirms in chat, then update the session log/ADR/issue/Markdown handoff from the pasted receipt.
 
 Protocol:
 
-1. User opens/reviews the HTML artifact.
-2. User selects/edits the decision in the artifact.
-3. User clicks **Copy decision for Codex/Claude**.
-4. User pastes the receipt into chat.
-5. Agent records the receipt in the canonical session log, ADR, issue, or Markdown handoff and proceeds.
+1. Agent creates the HTML artifact and sibling Markdown receipt in the same run when a decision is being requested or recommended.
+2. User opens/reviews the HTML artifact.
+3. If the user accepts the default recommendation in chat, agent records that decision using the sibling receipt as context.
+4. If the user selects/edits the decision in the artifact, user clicks **Copy decision for Codex/Claude** and pastes the receipt into chat.
+5. Agent records the confirmed receipt in the canonical session log, ADR, issue, or Markdown handoff and proceeds.
 
-Do not imply that selecting an option in HTML alone is durable. A local write-back server or JSON decision sink is a future upgrade only when repeated usage justifies the extra machinery.
+Do not imply that selecting an option in HTML alone writes files or is durable. A local write-back server or JSON decision sink is a future upgrade only when repeated usage justifies the extra machinery.
 
 ## Source authority
 
@@ -87,10 +98,11 @@ Use `schemas/decision-board.schema.json` only when structured input helps. Do no
 3. **Gather sources.** Cite file paths, URLs, commits, traces, logs, or notes used to build the artifact.
 4. **Copy a template if useful.** Start from one file under `templates/`; edit inline. Final artifacts must be self-contained.
 5. **Place it safely.** Use a generated-artifact directory such as `/Users/claw1/.openclaw/runtime/ubershow/`, repo `runtime/reports/`, `/tmp`, or a project-specific generated folder. Do not put generated HTML in canonical source lanes unless explicitly requested.
-6. **Include a receipt.** Any artifact requiring a choice must include a `decision-receipt` block and copy button.
-7. **Render/verify when possible.** Open or screenshot the artifact and fix obvious rendering issues.
-8. **Summarize in text.** Final response includes artifact path plus concise recommendation/status.
-9. **Record durable decisions separately.** Move final choices into Markdown/session log/ADR/issue as needed.
+6. **Write the sibling Markdown receipt.** For decision artifacts, write `runtime/ubershow/decisions/<timestamp>-<slug>-summary.md` or a project-local equivalent with `registration_status`.
+7. **Include a copyable receipt.** Any artifact requiring a choice must include a `decision-receipt` block and copy button for browser edits/final choices.
+8. **Render/verify when possible.** Open or screenshot the artifact and fix obvious rendering issues.
+9. **Summarize in text.** Final response includes artifact path, receipt path, and concise recommendation/status.
+10. **Record durable decisions separately.** Move final choices into Markdown/session log/ADR/issue as needed.
 
 ## Artifact constraints
 
@@ -101,6 +113,7 @@ Use `schemas/decision-board.schema.json` only when structured input helps. Do no
 - Decision-first: recommendation/open questions visible above the fold.
 - Evidence-visible: show source handles and confidence/uncertainty.
 - Copyable outputs: include copy blocks/buttons for decisions, prompts, configs, answers, or next instructions when useful.
+- Decision receipts: decision artifacts also get a sibling Markdown receipt file; the HTML receipt handles browser-side edits, not local file writes.
 - Diff-aware: if the artifact matters long-term, also create or update a small Markdown handoff because HTML diffs are noisy.
 - Privacy-aware: do not render secrets, credentials, private messages, health/financial/legal data, or personal contact details unless the user explicitly approved that lane and destination.
 - Secret check: when source material may contain private data, run a lightweight secret/privacy scan or manual check before finalizing.
@@ -109,6 +122,7 @@ Use `schemas/decision-board.schema.json` only when structured input helps. Do no
 
 ```text
 /Users/claw1/.openclaw/runtime/ubershow/YYYY-MM-DD-topic-decision-board.html
+/Users/claw1/.openclaw/runtime/ubershow/decisions/YYYY-MM-DDTHHMMSS-topic-summary.md
 /Users/claw1/.openclaw/runtime/ubershow/YYYY-MM-DD-topic-implementation-plan.html
 <repo>/runtime/reports/YYYY-MM-DD-pr-123-review-map.html
 /tmp/ubershow-<slug>.html
@@ -126,7 +140,7 @@ If rendering a screenshot:
 - Is it clearly better than a normal text/table response?
 - Are sources and uncertainty visible?
 - Is generated HTML clearly non-canonical?
-- Is there a decision receipt if the user must choose?
+- Is there a sibling Markdown receipt plus copyable HTML decision receipt if the user must choose?
 - Is there a text/Markdown handoff when future agents need to continue?
 - Are secrets/private lanes protected?
 - Did you verify it renders if tooling was available?

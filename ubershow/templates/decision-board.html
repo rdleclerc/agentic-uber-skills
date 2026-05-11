@@ -14,7 +14,7 @@
     <div>
       <p class="tag">Decision board · browser-first · generated view</p>
       <h1>Should we build the Ubershow pattern kit now?</h1>
-      <p class="muted">Use this surface to choose a path quickly. The pasted decision receipt, not this HTML file, is what registers the decision with Codex/Claude.</p>
+      <p class="muted">Use this surface to choose a path quickly. The sibling Markdown receipt is the durable handoff; paste this HTML receipt only when you choose or edit in the browser.</p>
     </div>
     <aside class="card" aria-label="Recommendation">
       <h2>Recommendation</h2>
@@ -41,7 +41,7 @@
           <h3>B · Tiny static pattern kit</h3>
           <p>Add a few self-contained templates for recurring coding decisions.</p>
           <p><span class="risk low">risk low</span> <span class="risk">reversible easy</span></p>
-          <ul><li>Reusable shapes</li><li>Still simple</li><li>Manual copy/paste receipt</li></ul>
+          <ul><li>Reusable shapes</li><li>Still simple</li><li>Sibling Markdown receipt plus browser copy fallback</li></ul>
         </label>
       </article>
       <article class="card option">
@@ -78,7 +78,7 @@
 
   <section style="margin-top:16px" aria-labelledby="receipt-title">
     <h2 id="receipt-title">Decision receipt</h2>
-    <p class="muted">Edit rationale/constraints if needed, then copy this into Codex/Claude. That paste is the registration event.</p>
+    <p class="muted">A sibling Markdown receipt should already exist for this artifact. If you change the decision here, copy this into Codex/Claude; that paste registers the final choice.</p>
     <textarea id="rationale">Enough reuse to standardize complex coding decisions without overbuilding a UI library or callback server.</textarea>
     <pre id="decision-receipt" aria-live="polite"></pre>
     <button onclick="copyDecisionReceipt(this)">Copy decision for Codex/Claude</button>

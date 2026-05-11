@@ -50,8 +50,15 @@ class UbershowPatternKitTests(unittest.TestCase):
 
     def test_templates_explain_receipt_registration(self) -> None:
         decision_board = (SKILL_DIR / "templates" / "decision-board.html").read_text()
-        self.assertIn("That paste is the registration event.", decision_board)
+        self.assertIn("sibling Markdown receipt", decision_board)
+        self.assertIn("paste registers the final choice", decision_board)
         self.assertIn("HTML is only the generated view", decision_board)
+
+    def test_templates_include_sibling_markdown_receipt_instruction(self) -> None:
+        for name in TEMPLATES:
+            text = (SKILL_DIR / "templates" / name).read_text()
+            with self.subTest(template=name):
+                self.assertIn("sibling Markdown receipt", text)
 
     def test_decision_board_schema_is_minimal_and_valid(self) -> None:
         schema = json.loads((SKILL_DIR / "schemas" / "decision-board.schema.json").read_text())
@@ -65,7 +72,9 @@ class UbershowPatternKitTests(unittest.TestCase):
         text = (SKILL_DIR / "SKILL.md").read_text()
         self.assertIn("browser-first", text)
         self.assertIn("HTML clicks do not automatically register with the agent", text)
+        self.assertIn("sibling Markdown receipt", text)
         self.assertIn("copyable decision receipt", text)
+        self.assertIn("registration_status", text)
         self.assertIn("HTML artifacts are generated **views**, not canonical truth", text)
         self.assertIn("Obsidian/Soho House is optional archive context only", text)
 

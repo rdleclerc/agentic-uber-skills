@@ -28,6 +28,8 @@ TEMPLATES = [rel for rel in REQUIRED_FILES if rel.startswith("templates/")]
 REQUIRED_SKILL_PHRASES = [
     "browser-first",
     "copyable decision receipt",
+    "sibling Markdown receipt",
+    "registration_status",
     "HTML artifacts are generated **views**, not canonical truth",
     "Obsidian/Soho House is optional archive context only",
     "Do **not** turn every answer into HTML",
@@ -118,7 +120,7 @@ def main() -> int:
             continue
         text = path.read_text()
         lower = text.lower()
-        for phrase in ["<!doctype html>", "data-artifact-kind=", "data-ubershow-template=", "decision-receipt", "copyDecisionReceipt", "navigator.clipboard.writeText"]:
+        for phrase in ["<!doctype html>", "data-artifact-kind=", "data-ubershow-template=", "decision-receipt", "copyDecisionReceipt", "navigator.clipboard.writeText", "sibling Markdown receipt"]:
             if phrase.lower() not in lower:
                 errors.append(f"{rel} missing required self-contained artifact phrase: {phrase}")
         if "<script src=" in lower or "<link " in lower or "http://" in lower or "https://" in lower:
