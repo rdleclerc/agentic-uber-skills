@@ -22,6 +22,10 @@ Name the architectural layer(s): deterministic workflow, augmented LLM, agent lo
 |---|---|---|
 |  |  |  |
 
+For model-output boundaries, apply the Agent Boundary Contract: shape, authority, isolation, failure semantics, observability, and replay/eval evidence. Use common failures only as sentinel probes, not as a long mandatory checklist.
+
+For regexes, keyword lists, string matchers, classifiers, routers, or heuristics over human language, apply the Regex / keyword semantic gate: mechanical parsing is allowed, candidate signals must preserve raw input for model/review, and semantic authority over natural language is prohibited unless explicitly approved with eval/replay, observability, and rollback.
+
 ## Required architecture dimensions
 
 Complete each relevant row or explicitly mark it not applicable with a reason.
@@ -32,6 +36,7 @@ Complete each relevant row or explicitly mark it not applicable with a reason.
 | Context assembly | Is needed context available, scoped, fresh, and not overloaded? Are source handles preserved? |  |  |  |
 | Memory behavior | Are memory reads/writes scoped, contradicted/retired safely, and traceable? |  |  |  |
 | Tool boundaries | Are tool names, descriptions, schemas, permissions, outputs, and failure modes model-safe? |  |  |  |
+| Regex / keyword semantics | Are regexes, keyword lists, and string matchers limited to mechanical parsing or candidate signals rather than semantic authority over natural language? |  |  |  |
 | Repository topology | Do new/moved code files land in named packages with an executable topology/dependency guard instead of prose-only hierarchy? |  |  |  |
 | Durable execution | Are checkpoints, replay safety, idempotency keys, stop conditions, and trace IDs defined where needed? |  |  |  |
 | Eval/observability | Are real fixtures, negative cases, traces, and acceptance evidence sufficient? |  |  |  |

@@ -71,6 +71,8 @@ RUBRIC_DIMENSIONS = [
     "first-principles simplification",
     "codebase exploration",
     "agent rca",
+    "agent boundary contract",
+    "regex / keyword semantics",
     "architecture",
     "repository topology",
     "ownership",
@@ -224,6 +226,133 @@ def validate_repository_topology(found: dict[str, str], lower: str, tier: str, e
         errors.append("repository topology guard must name an executable gate/test/lint/validator command")
 
 
+SENTINEL_TERMS = [
+    "wrong-shaped",
+    "identifier",
+    "swallowed",
+    "ask",
+    "shared",
+    "mutable",
+    "untrusted",
+    "bounded",
+    "privileged",
+    "parent",
+    "trace",
+]
+
+
+SEMANTIC_PATTERN_SCOPE_TERMS = [
+    "regex",
+    "regexp",
+    "regular expression",
+    "keyword",
+    "pattern list",
+    "string matcher",
+    "classifier",
+    "router",
+    "routing",
+    "heuristic",
+    "semantic judgment",
+    "semantic judgement",
+    "request-likeness",
+    "intent",
+]
+
+
+def has_semantic_pattern_scope(text: str) -> bool:
+    return any(term in text for term in SEMANTIC_PATTERN_SCOPE_TERMS)
+
+
+def validate_regex_keyword_semantic_gate(found: dict[str, str], required: bool, errors: list[str]) -> None:
+    section_name = "regex / keyword semantic gate"
+    section = found.get(section_name, "")
+    if not required:
+        return
+    if not section:
+        errors.append("agentic or regex/keyword scope requires Regex / keyword semantic gate section")
+        return
+    if not section_has_substance(section):
+        errors.append("required section lacks completed substance: Regex / keyword semantic gate")
+        return
+    section_lower = normalize(section)
+    substantive_lines = [line.strip().lower() for line in section.splitlines() if line.strip()]
+    if substantive_lines and substantive_lines[0].startswith("not applicable because"):
+        errors.append("Regex / keyword semantic gate cannot be marked not applicable when agentic or regex/keyword scope is active")
+        return
+
+    for label in [
+        "Pattern uses introduced/touched",
+        "Classification for each use",
+        "Semantic authority over natural language present?",
+        "Raw input preserved for model/review?",
+        "Eval/replay/negative cases",
+        "Observability and rollback",
+        "Gate verdict",
+    ]:
+        require_field(section, label, errors)
+
+    classification = require_field(section, "Classification for each use", errors).lower()
+    if classification and not any(term in classification for term in ["mechanical", "candidate", "semantic authority"]):
+        errors.append("Regex / keyword semantic gate classification must use mechanical syntax, candidate signal, or semantic authority")
+
+    semantic_authority = require_field(section, "Semantic authority over natural language present?", errors).lower()
+    if semantic_authority and not semantic_authority.startswith(("yes", "no")):
+        errors.append("Semantic authority over natural language present? must be yes or no")
+    if semantic_authority.startswith("yes"):
+        exception = require_field(section, "If yes, explicit exception approval and why model policy is not sufficient", errors).lower()
+        if not exception or "approval" not in exception:
+            errors.append("semantic-authority regex/keyword exception must name explicit approval")
+        if "eval" not in section_lower and "replay" not in section_lower:
+            errors.append("semantic-authority regex/keyword exception requires eval/replay coverage")
+        if "rollback" not in section_lower:
+            errors.append("semantic-authority regex/keyword exception requires rollback")
+    raw_preserved = require_field(section, "Raw input preserved for model/review?", errors).lower()
+    if raw_preserved and not raw_preserved.startswith("yes"):
+        errors.append("Regex / keyword semantic gate must preserve raw input for model/review")
+    verdict = require_field(section, "Gate verdict", errors)
+    if verdict and "proceed? yes" not in verdict.lower():
+        errors.append("Regex / keyword semantic gate verdict must explicitly say proceed? yes")
+
+
+def validate_agent_boundary_contract(found: dict[str, str], behavior_scope: bool, errors: list[str]) -> None:
+    section_name = "agent boundary contract"
+    section = found.get(section_name, "")
+    if not behavior_scope:
+        return
+    if not section:
+        errors.append("agent-behavior scope requires Agent Boundary Contract section")
+        return
+    if not section_has_substance(section):
+        errors.append("required section lacks completed substance: Agent Boundary Contract")
+        return
+    section_lower = normalize(section)
+    if "not applicable because" in section_lower:
+        errors.append("Agent Boundary Contract cannot be marked not applicable when agent-behavior scope is active")
+        return
+
+    for label in [
+        "Boundary surfaces",
+        "Shape contract",
+        "Authority contract",
+        "Isolation contract",
+        "Failure semantics",
+        "Observability/replay evidence",
+        "Sentinel probes checked",
+        "Boundary verdict",
+    ]:
+        require_field(section, label, errors)
+
+    for term in ["shape", "authority", "isolation", "failure", "observability", "replay", "sentinel"]:
+        if term not in section_lower:
+            errors.append(f"Agent Boundary Contract missing concept: {term}")
+    sentinel_value = require_field(section, "Sentinel probes checked", errors).lower()
+    if sentinel_value and not any(term in sentinel_value for term in SENTINEL_TERMS):
+        errors.append("Agent Boundary Contract sentinel probes must name at least one relevant recurring failure probe")
+    verdict = require_field(section, "Boundary verdict", errors)
+    if verdict and "proceed? yes" not in verdict.lower():
+        errors.append("Agent Boundary Contract verdict must explicitly say proceed? yes")
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("path", type=Path, help="Markdown plan contract path")
@@ -302,8 +431,12 @@ def main() -> int:
         found.get("scope", ""),
         found.get("affected surfaces", ""),
         found.get("architecture classification", ""),
+        found.get("deterministic harness vs adaptive policy", ""),
     ]))
-    behavior_scope = args.agent_behavior or any(term in behavior_scan_text for term in behavior_terms)
+    behavior_scope = args.agent_behavior or (args.tier != "0" and any(term in behavior_scan_text for term in behavior_terms))
+    validate_agent_boundary_contract(found, behavior_scope, errors)
+    semantic_pattern_scope = behavior_scope or has_semantic_pattern_scope(behavior_scan_text)
+    validate_regex_keyword_semantic_gate(found, semantic_pattern_scope, errors)
     enforce_agent_advocate = args.agent_behavior or args.tier in {"2", "3"}
     if enforce_agent_advocate:
         if "agent advocate / agent failure rca" not in found:

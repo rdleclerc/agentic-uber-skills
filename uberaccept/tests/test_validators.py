@@ -40,6 +40,24 @@ class AcceptanceValidatorTests(unittest.TestCase):
     def test_code_acceptance_requires_repository_topology(self) -> None:
         self.assertFails(str(ACCEPT), str(FIX / "invalid" / "no_repository_topology_acceptance.md"), "--agent-behavior")
 
+    def test_agent_behavior_requires_boundary_final_check(self) -> None:
+        text = (FIX / "valid" / "final_acceptance.md").read_text()
+        start = text.index("## Agent Boundary Contract final check")
+        end = text.index("## Architecture Steward final check")
+        with tempfile.TemporaryDirectory() as tmp:
+            report = Path(tmp) / "missing_boundary_final_check.md"
+            report.write_text(text[:start] + text[end:])
+            self.assertFails(str(ACCEPT), str(report), "--agent-behavior")
+
+    def test_agent_behavior_requires_regex_keyword_final_check(self) -> None:
+        text = (FIX / "valid" / "final_acceptance.md").read_text()
+        start = text.index("## Regex / keyword semantic gate final check")
+        end = text.index("## Architecture Steward final check")
+        with tempfile.TemporaryDirectory() as tmp:
+            report = Path(tmp) / "missing_regex_keyword_final_check.md"
+            report.write_text(text[:start] + text[end:])
+            self.assertFails(str(ACCEPT), str(report), "--agent-behavior")
+
     def test_existing_file_acceptance_can_mark_topology_not_applicable(self) -> None:
         text = (FIX / "valid" / "final_acceptance.md").read_text()
         text = text.replace(
@@ -98,6 +116,8 @@ class PackageTests(unittest.TestCase):
         self.assertIn("complexity_final_pass_deletes_or_defers", ids)
         self.assertIn("skill_change_triggers_evolver", ids)
         self.assertIn("flat_module_acceptance_requires_topology_evidence", ids)
+        self.assertIn("agent_boundary_contract_acceptance_blocks_generic_reliability", ids)
+        self.assertIn("semantic_regex_gate_acceptance_blocks_keyword_router", ids)
         for case in cases:
             self.assertIn("user_prompt", case)
             self.assertTrue(case.get("required_behavior"))

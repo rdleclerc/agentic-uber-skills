@@ -39,6 +39,24 @@ class PlanValidatorTests(unittest.TestCase):
     def test_agent_behavior_requires_advocate(self) -> None:
         self.assertFails(str(PLAN), str(FIX / "invalid" / "no_agent_advocate_plan.md"), "--tier", "2", "--agent-behavior")
 
+    def test_agent_behavior_requires_boundary_contract(self) -> None:
+        text = (FIX / "valid" / "tier2_agent_plan.md").read_text()
+        start = text.index("## Agent Boundary Contract")
+        end = text.index("## Source authority and truth boundaries")
+        with tempfile.TemporaryDirectory() as tmp:
+            plan = Path(tmp) / "missing_boundary_contract.md"
+            plan.write_text(text[:start] + text[end:])
+            self.assertFails(str(PLAN), str(plan), "--tier", "2", "--agent-behavior")
+
+    def test_agent_behavior_requires_regex_keyword_semantic_gate(self) -> None:
+        text = (FIX / "valid" / "tier2_agent_plan.md").read_text()
+        start = text.index("## Regex / keyword semantic gate")
+        end = text.index("## Source authority and truth boundaries")
+        with tempfile.TemporaryDirectory() as tmp:
+            plan = Path(tmp) / "missing_regex_keyword_gate.md"
+            plan.write_text(text[:start] + text[end:])
+            self.assertFails(str(PLAN), str(plan), "--tier", "2", "--agent-behavior")
+
     def test_code_plan_requires_repository_topology(self) -> None:
         self.assertFails(str(PLAN), str(FIX / "invalid" / "no_repository_topology_plan.md"), "--tier", "2", "--agent-behavior")
 
@@ -77,6 +95,8 @@ class PackageTests(unittest.TestCase):
         self.assertIn("agent_error_triggers_advocate", ids)
         self.assertIn("complex_codebase_exploration_trail", ids)
         self.assertIn("complexity_blocked_without_benefit_gap", ids)
+        self.assertIn("agent_boundary_contract_blocks_generic_reliability_plan", ids)
+        self.assertIn("semantic_regex_gate_blocks_keyword_router_plan", ids)
         for case in cases:
             self.assertIn("user_prompt", case)
             self.assertIn("expected_tier", case)
