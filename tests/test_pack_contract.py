@@ -34,6 +34,15 @@ class PackContractTests(unittest.TestCase):
                 body = (ROOT / skill / "SKILL.md").read_text()
                 self.assertIn("Do not auto-trigger from task similarity", body, skill)
 
+
+    def test_utility_skills_have_task_specific_invocation_policy(self) -> None:
+        text = (ROOT / "ubershow" / "agents" / "openai.yaml").read_text()
+        self.assertIn("allow_implicit_invocation: true", text)
+        self.assertIn("browser-first visual artifact", text)
+        body = (ROOT / "ubershow" / "SKILL.md").read_text()
+        self.assertIn("Do **not** turn every answer into HTML", body)
+        self.assertIn("HTML artifacts are generated **views**, not canonical truth", body)
+
     def test_root_agent_contract_declares_rca_authority(self) -> None:
         text = (ROOT / "AGENTS.md").read_text()
         self.assertIn("deep-rca` = general incident/root-cause authority", text)
@@ -42,7 +51,7 @@ class PackContractTests(unittest.TestCase):
 
     def test_install_docs_include_full_pack(self) -> None:
         text = (ROOT / "README.md").read_text()
-        loop = "for s in deep-rca ubergoal uberplan uberaccept uberskillevolver ubersimplify uberassess; do"
+        loop = "for s in deep-rca ubergoal uberplan uberaccept uberskillevolver ubersimplify uberassess ubershow; do"
         self.assertEqual(text.count(loop), 3)
 
 

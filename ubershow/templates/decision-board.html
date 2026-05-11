@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ubershow Decision Board</title>
+<style>
+:root{color-scheme:dark;--bg:#09111f;--panel:#101a2c;--panel2:#14233b;--text:#edf5ff;--muted:#9fb1d1;--line:#263a5b;--accent:#7dd3fc;--good:#6ee7b7;--warn:#fbbf24;--bad:#fb7185;--violet:#c4b5fd}*{box-sizing:border-box}body{margin:0;font:15px/1.5 ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:radial-gradient(circle at 15% -10%,#1e3a8a55 0,transparent 35%),var(--bg);color:var(--text)}main{max-width:1180px;margin:auto;padding:28px}.hero,.card,section{background:linear-gradient(180deg,#13213a,#0e1728);border:1px solid var(--line);border-radius:20px;padding:20px;box-shadow:0 22px 70px #0006}.hero{display:grid;grid-template-columns:1.3fr .7fr;gap:18px;margin-bottom:18px}.grid{display:grid;gap:16px;grid-template-columns:repeat(auto-fit,minmax(250px,1fr))}.option{position:relative}.option input{position:absolute;inset:18px auto auto 18px;transform:scale(1.25)}.option label{display:block;padding-left:34px;cursor:pointer}.tag,.risk{display:inline-flex;border:1px solid var(--line);border-radius:999px;padding:3px 9px;color:var(--muted);font-size:12px}.risk.low{color:var(--good)}.risk.medium{color:var(--warn)}.risk.high{color:var(--bad)}h1,h2,h3{line-height:1.08;margin:0 0 10px}.muted{color:var(--muted)}ul{padding-left:20px}textarea{width:100%;min-height:86px;border:1px solid var(--line);border-radius:14px;background:#070d18;color:var(--text);padding:12px}button{border:0;border-radius:12px;padding:10px 14px;background:var(--accent);color:#03101a;font-weight:800;cursor:pointer}pre{white-space:pre-wrap;word-break:break-word;background:#050914;border:1px solid var(--line);border-radius:14px;padding:14px}.two{display:grid;gap:16px;grid-template-columns:1fr 1fr}@media(max-width:760px){main{padding:16px}.hero,.two{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<main data-artifact-kind="ubershow-decision-board" data-ubershow-template="decision-board">
+  <header class="hero">
+    <div>
+      <p class="tag">Decision board · browser-first · generated view</p>
+      <h1>Should we build the Ubershow pattern kit now?</h1>
+      <p class="muted">Use this surface to choose a path quickly. The pasted decision receipt, not this HTML file, is what registers the decision with Codex/Claude.</p>
+    </div>
+    <aside class="card" aria-label="Recommendation">
+      <h2>Recommendation</h2>
+      <p><strong>Choose Option B:</strong> a tiny static pattern kit with self-contained templates and copyable decision receipts.</p>
+      <p class="muted">Avoid a callback server or component library until repeated usage proves the need.</p>
+    </aside>
+  </header>
+
+  <section aria-labelledby="options-title">
+    <h2 id="options-title">Options</h2>
+    <div class="grid">
+      <article class="card option">
+        <input type="radio" name="decision" value="A — Instructions only" id="opt-a">
+        <label for="opt-a">
+          <h3>A · Instructions only</h3>
+          <p>Keep Ubershow as prompt guidance with no reusable HTML files.</p>
+          <p><span class="risk low">risk low</span> <span class="risk">reversible easy</span></p>
+          <ul><li>Fastest</li><li>No maintenance</li><li>Inconsistent outputs</li></ul>
+        </label>
+      </article>
+      <article class="card option">
+        <input type="radio" name="decision" value="B — Tiny static pattern kit" id="opt-b" checked>
+        <label for="opt-b">
+          <h3>B · Tiny static pattern kit</h3>
+          <p>Add a few self-contained templates for recurring coding decisions.</p>
+          <p><span class="risk low">risk low</span> <span class="risk">reversible easy</span></p>
+          <ul><li>Reusable shapes</li><li>Still simple</li><li>Manual copy/paste receipt</li></ul>
+        </label>
+      </article>
+      <article class="card option">
+        <input type="radio" name="decision" value="C — Local decision server" id="opt-c">
+        <label for="opt-c">
+          <h3>C · Local decision server</h3>
+          <p>Run localhost callbacks so HTML clicks write decision JSON.</p>
+          <p><span class="risk medium">risk medium</span> <span class="risk">reversible moderate</span></p>
+          <ul><li>Less paste friction</li><li>More moving parts</li><li>Security/sandbox review needed</li></ul>
+        </label>
+      </article>
+    </div>
+  </section>
+
+  <div class="two" style="margin-top:16px">
+    <section aria-labelledby="evidence-title">
+      <h2 id="evidence-title">Evidence / constraints</h2>
+      <ul>
+        <li>HTML is best for visual comparison, diagrams, timelines, and decision density.</li>
+        <li>Generated HTML is a view; Markdown/session log remains source authority.</li>
+        <li>Decision registration v0 is explicit: copy receipt → paste into agent chat.</li>
+        <li>Artifacts must be self-contained and avoid external network dependencies.</li>
+      </ul>
+    </section>
+    <section aria-labelledby="questions-title">
+      <h2 id="questions-title">Open questions</h2>
+      <ul>
+        <li>Which template becomes the default for `uberplan`?</li>
+        <li>When do we graduate from copy/paste receipt to local write-back?</li>
+        <li>Where should project-specific generated artifacts live?</li>
+      </ul>
+    </section>
+  </div>
+
+  <section style="margin-top:16px" aria-labelledby="receipt-title">
+    <h2 id="receipt-title">Decision receipt</h2>
+    <p class="muted">Edit rationale/constraints if needed, then copy this into Codex/Claude. That paste is the registration event.</p>
+    <textarea id="rationale">Enough reuse to standardize complex coding decisions without overbuilding a UI library or callback server.</textarea>
+    <pre id="decision-receipt" aria-live="polite"></pre>
+    <button onclick="copyDecisionReceipt(this)">Copy decision for Codex/Claude</button>
+  </section>
+</main>
+<script>
+function selectedDecision(){return document.querySelector('input[name="decision"]:checked')?.value||'UNDECIDED'}
+function buildReceipt(){
+  const rationale=document.getElementById('rationale').value.trim();
+  const receipt=`Decision receipt\nArtifact: ubershow-decision-board\nDecision: ${selectedDecision()}\nRationale: ${rationale}\nSource authority: Record this decision in the session log/ADR/Markdown handoff; HTML is only the generated view.\nNext action: Proceed according to the selected option and preserve tests/evidence.`;
+  document.getElementById('decision-receipt').textContent=receipt;
+}
+async function copyDecisionReceipt(button){buildReceipt();const text=document.getElementById('decision-receipt').textContent;try{await navigator.clipboard.writeText(text);const old=button.textContent;button.textContent='Copied';setTimeout(()=>button.textContent=old,1200)}catch(e){window.prompt('Copy this decision receipt:',text)}}
+document.querySelectorAll('input,textarea').forEach(el=>el.addEventListener('input',buildReceipt));
+buildReceipt();
+</script>
+</body>
+</html>

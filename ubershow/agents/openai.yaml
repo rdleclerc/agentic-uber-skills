@@ -1,0 +1,6 @@
+interface:
+  display_name: "Ubershow"
+  short_description: "Create visual decision artifacts"
+  default_prompt: "Use $ubershow only when a browser-first visual artifact will materially improve decision speed or comprehension: decision boards, implementation plans, questionnaires, architecture/source/code-review maps, reports, or tuners. Skip it for simple answers or cases where a short table is enough. Keep HTML as a generated view, preserve Markdown/source/ledger authority, protect private data, and include copyable decision receipts for choices plus artifact paths and a short text recommendation."
+policy:
+  allow_implicit_invocation: true

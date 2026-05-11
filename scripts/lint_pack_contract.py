@@ -8,13 +8,14 @@ import re
 import sys
 
 DEFAULT_ROOT = Path(__file__).resolve().parents[1]
-PACK_SKILLS = ["deep-rca", "ubergoal", "uberplan", "uberaccept", "uberskillevolver", "ubersimplify", "uberassess"]
+PACK_SKILLS = ["deep-rca", "ubergoal", "uberplan", "uberaccept", "uberskillevolver", "ubersimplify", "uberassess", "ubershow"]
 UBER_PHASE_SKILLS = ["uberplan", "uberaccept", "uberskillevolver", "ubersimplify", "uberassess"]
 ROOT_REQUIRED_FILES = ["AGENTS.md", "CLAUDE.md", "README.md", "ROADMAP.md"]
 AGENTS_REQUIRED_PHRASES = [
     "$ubergoal` is the only default/implicit Uber lifecycle router",
     "Phase skills are explicit or wrapper-invoked",
     "uberassess` = source-to-recommendation due diligence",
+    "ubershow` = visual communication utility",
     "deep-rca` = general incident/root-cause authority",
     "Agent Advocate = agent-behavior-specific RCA lens",
     "Source repo: `/Users/claw1/agentic-uber-skills`",
@@ -25,6 +26,7 @@ README_REQUIRED_PHRASES = [
     "Agent-facing source authority lives in [AGENTS.md](AGENTS.md)",
     "invoke `$ubergoal` as the implicit lifecycle router",
     "`$deep-rca` is the general incident/debugging/root-cause utility",
+    "`$ubershow`",
 ]
 ROADMAP_REQUIRED_PHRASES = [
     "`ubergoal` is the only implicit/default Uber lifecycle router",
@@ -32,6 +34,7 @@ ROADMAP_REQUIRED_PHRASES = [
     "uberassess` = source-to-recommendation due diligence",
     "Build a small pack-level harness before creating a standalone `ubereval` skill",
     "Uberassess dogfooding",
+    "Ubershow dogfooding",
 ]
 
 

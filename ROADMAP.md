@@ -11,6 +11,7 @@ This roadmap keeps the skill pack evolving without turning it into bureaucracy. 
 - `deep-rca` — class-level root cause analysis before patches.
 - `ubersimplify` — opt-in complexity/modularity/dead-code simplification with timestamped trails and proof gates; Audit/Plan are current default, Patch mode remains conservative/experimental until dogfooded on real codebases.
 - `uberassess` = source-to-recommendation due diligence — explicit assessment for X/GitHub/arXiv/articles/videos/Hermes signals before adoption; produces packets, not implementation.
+- `ubershow` — browser-first visual communication utility for decision boards, implementation plans, maps, timelines, questionnaires, and visual briefs; produces generated HTML views with copyable decision receipts, not source-of-truth records.
 
 ## Routing and source-authority policy
 
@@ -18,6 +19,7 @@ This roadmap keeps the skill pack evolving without turning it into bureaucracy. 
 - Phase skills are explicit or wrapper-invoked to prevent ceremony creep; metadata says not to auto-trigger from task similarity.
 - `uberassess` is explicit or routed by `ubergoal` for source/artifact assessment only. Its portable validator requires completed project rows but does not hardcode Rob-local project names; local adapter references may provide Type0/Gaia/Soho/Hermes defaults.
 - `deep-rca` is the general incident RCA utility. Agent Advocate is the agent-behavior RCA lens inside planning/acceptance/simplification. If both apply, use the `deep-rca` ladder plus Agent Advocate human-counterfactual evidence.
+- `ubershow` is a utility skill, not a lifecycle phase. It may be used when the user needs visual compression; source authority stays in Markdown/session logs/ADRs and decisions register via pasted receipts.
 - Pack-level drift tests should enforce routing metadata, root agent contracts, install consistency, and RCA authority wording.
 
 ## Near-term priorities
@@ -49,7 +51,12 @@ This roadmap keeps the skill pack evolving without turning it into bureaucracy. 
    - Promote only repeated, evidence-backed assessment lessons into validators/evals/templates.
    - Retirement trigger: if three real assessment batches show it adds ceremony without preventing shallow-source, over-adoption, or approval-boundary failures, fold the useful checklist back into `ubergoal`/`uberplan` and remove the standalone skill.
 
-6. **Ubersimplify dogfooding**
+6. **Ubershow dogfooding**
+   - Use `ubershow` only when it materially increases decision speed or comprehension.
+   - Keep artifacts static and self-contained; do not add a callback server or component library until repeated receipt-copy friction proves the need.
+   - Track whether visual artifacts reduce user back-and-forth or hide missing evidence. If they become decorative ceremony, fold the useful templates back into prose examples and retire the standalone skill.
+
+7. **Ubersimplify dogfooding**
    - Run `ubersimplify` Audit mode on real codebases before trusting Patch mode.
    - Promote only simplification patterns that survive tests/evals and rollback review.
    - Watch for undersimplification (reports only, no code removal) and oversimplification (deleting hidden invariants).
@@ -62,7 +69,7 @@ Do not build these until real usage proves benefit >> cost:
 - `ubercode` — execution-wave orchestration.
 - `ubergit` / `ubership` — commit, PR, release, and GitHub-management workflows.
 - `ubereval` — dedicated eval design/execution workflow.
-- `uberui` — UI/browser verification workflow.
+- `uberui` — UI/browser verification workflow, distinct from `ubershow` visual communication artifacts.
 - standalone specialist skills for Codebase Scout, Architecture Steward, Agent Advocate, Loophole Hunter, Quality/Eval Strategist.
 
 Default: keep specialist roles as lanes/templates inside `uberplan` and `uberaccept` until repeated use proves a standalone skill would reduce context/cost or prevent failures.

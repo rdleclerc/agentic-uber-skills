@@ -1,0 +1,20 @@
+[
+  {
+    "id": "visual-decision-board",
+    "user_prompt": "Show me the options visually so I can choose quickly.",
+    "expected_behavior": [
+      "uses ubershow only if a visual artifact materially improves decision speed",
+      "creates or adapts a self-contained HTML decision surface",
+      "includes a copyable decision receipt and tells the user to paste it back for registration",
+      "states that HTML is a generated view and Markdown/session log remains source authority"
+    ]
+  },
+  {
+    "id": "deescalate-simple-answer",
+    "user_prompt": "What command runs the tests?",
+    "expected_behavior": [
+      "does not create an HTML artifact for a simple factual answer",
+      "answers concisely in text or a small code block"
+    ]
+  }
+]

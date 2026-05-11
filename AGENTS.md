@@ -19,6 +19,7 @@ Read in this order:
 - `$ubergoal` is the only default/implicit Uber lifecycle router.
 - Phase skills are explicit or wrapper-invoked: `$uberplan`, `$uberaccept`, `$uberskillevolver`, `$ubersimplify`, and `$uberassess` should not implicitly trigger merely because a task resembles their domain. Their metadata should say "Do not auto-trigger from task similarity" so runtime skill routers do not confuse examples with permission.
 - `$deep-rca` is a utility skill, not an Uber lifecycle phase. Use it directly for general incidents, debugging, postmortems, repeated bugs, and class-level root-cause analysis.
+- `ubershow` = visual communication utility, not an Uber lifecycle phase. Use it when a browser-first static artifact will materially improve decision speed or comprehension; generated HTML is a view, and copy/paste receipts are the decision registration path.
 - `uberassess` = source-to-recommendation due diligence. It assesses X/GitHub/arXiv/articles/videos/Hermes signals for adoption; it does not implement or mutate without approval, and approved build work routes to `ubergoal`/`uberplan`.
 - If a user names a phase skill directly, use that phase skill. If the user asks which Uber skill to use, route through `$ubergoal`.
 - Use the lightest tier that makes the work safe. Process is cost.
@@ -36,7 +37,7 @@ Read in this order:
 - Keep `ubergoal` thin. It routes; it does not absorb planning, acceptance, simplification, or learning machinery.
 - Add durable machinery only when benefit is clearly **much greater than** implementation, maintenance, context, coordination, eval, rollback, latency, and operator-attention cost.
 - Prefer small validators/tests over prose-only policy when a failure class can drift.
-- Do not create another new `uber*` skill until repeated real-project use proves extraction makes the common path smaller, faster, or safer; `uberassess` is admitted because source-to-recommendation assessment is already a repeated cross-project workflow with clear no-implementation safety boundaries.
+- Do not create another new `uber*` skill until repeated real-project use proves extraction makes the common path smaller, faster, or safer; `uberassess` is admitted because source-to-recommendation assessment is a repeated cross-project workflow with clear no-implementation safety boundaries, and `ubershow` is admitted because repeated coding sessions needed high-bandwidth visual decision surfaces without adding a server or UI framework.
 - Do not silently self-modify skills from learning records; learning packets are evidence, not authority.
 
 ## Test commands
