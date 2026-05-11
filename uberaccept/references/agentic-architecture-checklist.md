@@ -24,6 +24,20 @@ Deterministic harness should own schemas, permissions, idempotency, budgets, che
 
 Model/adaptive policy should own ambiguous interpretation, context gathering, tool choice within allowed tools, memory retrieval choices, decomposition, plan revision, recovery, and synthesis.
 
+## Agent Boundary Contract
+
+For every boundary where model output becomes tool input, state, memory, context, delegated work, external action, or durable truth, require a contract for shape, authority, isolation, failure semantics, observability, and replay/eval evidence.
+
+Use recurring failures as sentinel probes, not as the doctrine: wrong-shaped IDs, swallowed tool errors, missing ask path, shared mutable state, untrusted memory/context, unbounded loops, ungated privileged action, parent-history dumps to subagents, and missing trace propagation.
+
+## Regex / keyword semantic gate
+
+Regex and keyword matching are allowed for mechanical syntax: identifiers, timestamps, paths, protocol envelopes, command flags, and owned structured formats.
+
+Regex and keyword matching must not be the authority for semantic judgment over natural language: intent, request-likeness, routing, memory meaning, source selection, priority, importance, or whether a model sees a message. If a regex/keyword result is useful, treat it as a candidate signal passed to model policy or human review with the raw input preserved.
+
+Any proposed semantic-authority exception requires explicit approval, named eval/replay coverage, observability, and rollback. The default verdict is no.
+
 ## Source and truth boundaries
 
 State what is raw evidence, authoritative truth, retrieval-only material, memory/recall, synthesis, candidate signal, sidecar output, and outbound artifact. Do not silently promote synthesis or sidecar output into truth.
@@ -39,7 +53,7 @@ For LLM judgment or generated behavior, require real-world fixtures when possibl
 ## Anti-patterns
 
 - brittle keyword routing for semantic judgment
-- regex as a substitute for model policy unless the task is deterministic and tested
+- regex as semantic authority over natural language
 - silent paid/provider fallback
 - vague tools like `run(query: string)` without contracts
 - subagents with overlapping write sets and no integrator

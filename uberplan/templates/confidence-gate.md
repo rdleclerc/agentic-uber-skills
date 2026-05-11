@@ -18,6 +18,8 @@ Check:
 - Has the Agent Advocate answered the human counterfactual: would a competent human with normal context/tools have made the error?
 - If a human likely would not have erred, does the plan fix the agent's missing context, capability, tool feedback, source clarity, memory/history, state signal, or recovery guidance?
 - Does the plan fix the failed context/tool/source/memory/feedback/invariant layer instead of patching a symptom?
+- For model-output boundaries, did the plan prove shape, authority, isolation, failure semantics, observability, and replay/eval evidence rather than listing generic reliability words?
+- Are regexes, keyword lists, and string matchers limited to mechanical parsing or candidate signals, with no unapproved semantic authority over natural language?
 - Has the Loophole Hunter found any unresolved blockers?
 - Has the Simplifier found a smaller/elegant path that should replace this plan?
 - Has the Codebase Scout checked existing patterns/tests/claims when the repo is nontrivial?

@@ -47,6 +47,14 @@ Confirm every material planning-board blocker was resolved, explicitly deferred 
 
 For agent behavior or multi-agent changes, confirm the final implementation fixes the upstream reason the agent erred: context, tool affordance/output, source authority, memory, feedback, state/admission, handoff, stop condition, eval, or guard. Confirm the human counterfactual was answered and any human-parity gap was fixed or explicitly accepted. State why this is not just a symptom patch.
 
+## Agent Boundary Contract final check
+
+For agentic/tool/memory/subagent/external-action changes, confirm every model-output boundary has shape, authority, isolation, failure semantics, observability, and replay/eval evidence. Name only relevant sentinel probes: wrong-shaped identifiers, swallowed errors, ambiguity/no ask path, shared mutable state, untrusted memory/context, unbounded loop, privileged action, parent-context dump, or missing trace propagation.
+
+## Regex / keyword semantic gate final check
+
+For agentic-system changes and any changed regex/keyword/string-matcher logic, confirm every use was classified as mechanical syntax, candidate signal, or semantic authority. Confirm no regex/keyword/string matcher has unapproved semantic authority over natural language. If there is an exception, name the approval, eval/replay coverage, observability, and rollback.
+
 ## Architecture Steward final check
 
 Confirm the implementation still matches the architecture plan, relevant guide sections, and harness/policy split. List blocker and non-blocker findings.

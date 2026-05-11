@@ -27,6 +27,7 @@ Skill, multi-agent/subagent system, guardrail/human-review layer, eval/observabi
 | Context assembly | Is needed context scoped and fresh? | skill loads relevant templates/references only | SKILL.md resources | no |
 | Memory behavior | Are memory reads/writes scoped? | no durable memory writes in scope | plan contract says local skill only | no |
 | Tool boundaries | Are tool schemas/outputs model-safe? | validators expose explicit CLI flags and errors | scripts validators | no |
+| Regex / keyword semantics | Are regexes, keyword lists, and string matchers limited to mechanical parsing or candidate signals rather than semantic authority over natural language? | regexes parse markdown sections and fields only; no natural-language semantic authority | validator scripts and fixtures | no |
 | Repository topology | Do new/moved code files land in named packages with an executable topology/dependency guard instead of prose-only hierarchy? | validator scripts stay inside the existing skill package and are covered by package lint | scripts/lint_skill_package.py and validator tests | no |
 | Durable execution | Are checkpoints/replay/idempotency defined? | local files only, session log records evidence | session log policy | no |
 | Eval/observability | Are fixtures/traces enough? | positive/negative fixtures and eval seeds added | tests/evals | no |

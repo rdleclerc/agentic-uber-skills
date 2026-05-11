@@ -100,6 +100,30 @@ Required because this is a skill and multi-agent coordination change.
 |---|---|
 | validator schema, explicit write sets, return contract, side-effect gates, evidence rows | task decomposition, context selection, tool choice inside allowed tools, synthesis |
 
+## Agent Boundary Contract
+Required because model-produced task decomposition can become delegated work and shared-file edits.
+
+- Boundary surfaces: subagent task input, worker write set, returned evidence, and integrator acceptance.
+- Shape contract: worker briefs must name role, allowed read scope, disjoint write set, return contract, and stop condition.
+- Authority contract: integrator owns final acceptance; workers cannot broaden scope, change shared ownership, or claim completion without evidence.
+- Isolation contract: no overlapping write sets; no shared mutable work queue; parent context is summarized into a bounded task brief rather than dumped wholesale.
+- Failure semantics: missing owner/write set/evidence is a blocking validation failure, not a warning.
+- Observability/replay evidence: validator fixture and golden eval seed record the recurrence proof; session logs preserve command outputs.
+- Sentinel probes checked: parent-context dump, shared mutable write state, missing trace/evidence propagation, and swallowed worker failure.
+- Boundary verdict: proceed? yes
+
+## Regex / keyword semantic gate
+Required because this plan changes agentic validators and prompt policy.
+
+- Pattern uses introduced/touched: validator regexes for markdown headings, field labels, table rows, and placeholder detection.
+- Classification for each use: mechanical syntax for owned markdown contract parsing; no candidate signal or semantic authority over natural language.
+- Semantic authority over natural language present? no
+- If yes, explicit exception approval and why model policy is not sufficient: not applicable because no semantic-authority regex/keyword use is present.
+- Raw input preserved for model/review? yes, plans and reports remain intact; validators only accept or reject contract shape.
+- Eval/replay/negative cases: valid and invalid validator fixtures cover missing required sections, hollow fields, and boundary contract omissions.
+- Observability and rollback: validator errors name missing fields; rollback is normal file revert.
+- Gate verdict: proceed? yes
+
 ## Source authority and truth boundaries
 
 Authoritative: skill files and validator outputs. Retrieval-only: prior incident narratives. Synthesis: planning board recommendations. No synthesis may become acceptance evidence without command/test output.
@@ -145,6 +169,8 @@ Only used if user explicitly authorizes subagents.
 | First-principles simplification | Full fresh-agent harness deferred; small validator chosen | simplifier section | 3 |
 | Codebase exploration | Key skill files and validator tests were read by main agent | codebase exploration section | 3 |
 | Agent RCA | Agent behavior fix names why the agent erred and failed invariant | Agent Advocate report | 3 |
+| Agent boundary contract | Delegation boundary has shape, authority, isolation, failure, observability, and replay evidence | Agent Boundary Contract section | 3 |
+| Regex / keyword semantics | Regex/keyword uses are mechanical markdown contract parsing only; no natural-language semantic authority | Regex / keyword semantic gate | 3 |
 | Architecture | Guide sections applied and harness/policy split respected | Architecture Steward report | 3 |
 | Repository topology | New validator/test files stay inside the existing skill package and package lint/validator tests run | package lint and validator commands | 3 |
 | Ownership | Write sets and integrator role are clear | agent brief | 3 |

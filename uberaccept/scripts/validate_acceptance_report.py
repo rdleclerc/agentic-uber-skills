@@ -155,6 +155,81 @@ def evidence_is_not_applicable(text: str) -> bool:
     return "not applicable" in low or "no code files" in low or "no new/moved code" in low
 
 
+BOUNDARY_SENTINEL_TERMS = [
+    "wrong-shaped",
+    "identifier",
+    "swallowed",
+    "ask",
+    "shared",
+    "mutable",
+    "untrusted",
+    "bounded",
+    "privileged",
+    "parent",
+    "trace",
+]
+
+
+SEMANTIC_PATTERN_SCOPE_TERMS = [
+    "regex",
+    "regexp",
+    "regular expression",
+    "keyword",
+    "pattern list",
+    "string matcher",
+    "classifier",
+    "router",
+    "routing",
+    "heuristic",
+    "semantic judgment",
+    "semantic judgement",
+    "request-likeness",
+    "intent",
+]
+
+
+def has_semantic_pattern_scope(text: str) -> bool:
+    return any(term in text for term in SEMANTIC_PATTERN_SCOPE_TERMS)
+
+
+def validate_regex_keyword_semantic_acceptance(found: dict[str, str], errors: list[str]) -> None:
+    section = found.get("regex / keyword semantic gate final check", "")
+    if not section:
+        errors.append("agentic or regex/keyword acceptance requires Regex / keyword semantic gate final check section")
+        return
+    section_lower = normalize(section)
+    if not meaningful_lines(section):
+        errors.append("Regex / keyword semantic gate final check lacks completed substance")
+        return
+    for term in ["regex", "keyword", "mechanical", "candidate", "semantic authority", "natural language"]:
+        if term not in section_lower:
+            errors.append(f"Regex / keyword semantic gate final check missing: {term}")
+    if "unapproved semantic authority" not in section_lower and "no semantic authority" not in section_lower:
+        errors.append("Regex / keyword semantic gate final check must state no unapproved semantic authority")
+    if "eval" not in section_lower and "replay" not in section_lower:
+        errors.append("Regex / keyword semantic gate final check must mention eval/replay coverage")
+    if "rollback" not in section_lower:
+        errors.append("Regex / keyword semantic gate final check must mention rollback")
+
+
+def validate_agent_boundary_acceptance(found: dict[str, str], errors: list[str]) -> None:
+    section = found.get("agent boundary contract final check", "")
+    if not section:
+        errors.append("agent behavior acceptance requires Agent Boundary Contract final check section")
+        return
+    section_lower = normalize(section)
+    if not meaningful_lines(section):
+        errors.append("Agent Boundary Contract final check lacks completed substance")
+        return
+    for term in ["shape", "authority", "isolation", "failure", "observability", "replay", "eval", "evidence"]:
+        if term not in section_lower:
+            errors.append(f"Agent Boundary Contract final check missing: {term}")
+    if "sentinel" not in section_lower:
+        errors.append("Agent Boundary Contract final check must mention relevant sentinel probes")
+    if not any(term in section_lower for term in BOUNDARY_SENTINEL_TERMS):
+        errors.append("Agent Boundary Contract final check must name at least one recurring failure probe")
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("path", type=Path, help="Markdown final acceptance report path")
@@ -247,6 +322,9 @@ def main() -> int:
                 errors.append(f"agent behavior acceptance missing: {phrase}")
         if "symptom" not in agent_section:
             errors.append("agent behavior acceptance must state why this is not a symptom patch")
+        validate_agent_boundary_acceptance(found, errors)
+    if args.agent_behavior or has_semantic_pattern_scope(lower):
+        validate_regex_keyword_semantic_acceptance(found, errors)
 
     evidence_hits = [term for term in EVIDENCE_TERMS if term in lower]
     if len(evidence_hits) < 4:

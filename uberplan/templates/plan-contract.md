@@ -130,6 +130,32 @@ Required for Tier 2/3 and any agentic-system behavior. If subagents are not auth
 |---|---|
 | schemas, permissions, idempotency, budgets, tests, traces, side-effect gates | ambiguous intent, context gathering, plan revision, synthesis, tool choice within harness |
 
+## Agent Boundary Contract
+
+Required when model output can become tool input, state, memory, context, delegated work, external action, or durable truth. If not applicable, say why.
+
+- Boundary surfaces:
+- Shape contract:
+- Authority contract:
+- Isolation contract:
+- Failure semantics:
+- Observability/replay evidence:
+- Sentinel probes checked: wrong-shaped identifiers, swallowed errors, ambiguity/no ask path, shared mutable state, untrusted memory/context, unbounded loop, privileged action, parent-context dump, missing trace propagation, or not applicable because:
+- Boundary verdict: proceed? yes/no
+
+## Regex / keyword semantic gate
+
+Required for agentic-system behavior and for any added or changed regex, pattern list, keyword list, string matcher, classifier, router, or heuristic over human language. Regex/keywords may parse mechanical syntax; they must not decide semantic judgment over natural language unless explicitly approved as an exception.
+
+- Pattern uses introduced/touched:
+- Classification for each use: mechanical syntax / candidate signal / semantic authority:
+- Semantic authority over natural language present? yes/no
+- If yes, explicit exception approval and why model policy is not sufficient:
+- Raw input preserved for model/review? yes/no
+- Eval/replay/negative cases:
+- Observability and rollback:
+- Gate verdict: proceed? yes/no
+
 ## Source authority and truth boundaries
 
 State authoritative sources, retrieval-only sources, synthesis artifacts, sidecars, and promotion rules. If not relevant, say why.
@@ -181,6 +207,8 @@ Score only relevant dimensions. Use 0 = blocker, 1 = weak/unresolved, 2 = accept
 | First-principles simplification | Requirements and added machinery were challenged; deletion/simplification was considered | Simplifier report |  |
 | Codebase exploration | Key files/patterns/tests were explored when context risk was material | Exploration trail or explicit non-applicability |  |
 | Agent RCA | Agent behavior fixes name why the agent erred and the failed invariant/tool/context/source/eval layer | Agent Advocate report or explicit non-applicability |  |
+| Agent boundary contract | Model-output boundaries have shape, authority, isolation, failure, observability, and replay/eval evidence | Agent Boundary Contract section or explicit non-applicability |  |
+| Regex / keyword semantics | Regex/keyword uses are classified; natural-language semantic authority is prohibited unless explicitly approved with eval/replay and rollback | Regex / keyword semantic gate |  |
 | Architecture | Relevant guide sections were applied; deterministic harness/adaptive policy split is respected where relevant | Architecture Steward report or explicit non-applicability |  |
 | Repository topology | New/moved code files land in named packages and repo topology/dependency guard is run or added | topology test/dependency-map command or explicit accepted gap |  |
 | Ownership | Write sets and integrator role are clear | claim/briefs |  |

@@ -72,5 +72,44 @@
       "accept agentic_media/foo.py with only generic architecture prose",
       "treat unit tests as sufficient topology evidence"
     ]
+  },
+  {
+    "id": "agent_boundary_contract_blocks_generic_reliability_plan",
+    "user_prompt": "Use uberplan to plan a fix for an agent that sometimes passes emails where canonical customer IDs are required, sometimes swallows tool errors, and occasionally delegates work by dumping the full parent conversation to workers.",
+    "expected_tier": 3,
+    "required_lanes": [
+      "Architecture Steward",
+      "Agent Advocate / Agent Failure RCA",
+      "Quality/Eval Strategist"
+    ],
+    "required_behavior": [
+      "use an Agent Boundary Contract instead of a long generic bug checklist",
+      "prove shape authority isolation failure semantics observability and replay/eval evidence for model-output boundaries",
+      "treat wrong-shaped identifiers swallowed errors and parent-context dumps as sentinel probes"
+    ],
+    "forbidden_behavior": [
+      "say only to improve tool contracts and observability",
+      "paste a top ten agent bugs list without a general boundary invariant"
+    ]
+  },
+  {
+    "id": "semantic_regex_gate_blocks_keyword_router_plan",
+    "user_prompt": "Use uberplan to plan a Slack agent dispatch change that adds regexes or keyword lists to decide whether a human message is a request Gaia should answer.",
+    "expected_tier": 2,
+    "required_lanes": [
+      "Architecture Steward",
+      "Agent Advocate / Agent Failure RCA",
+      "Quality/Eval Strategist"
+    ],
+    "required_behavior": [
+      "require the Regex / keyword semantic gate",
+      "classify each regex or keyword use as mechanical syntax candidate signal or semantic authority",
+      "reject unapproved semantic authority over natural-language intent or request-likeness",
+      "preserve raw input for model policy or human review"
+    ],
+    "forbidden_behavior": [
+      "approve keyword-only routing because it has tests",
+      "let regex decide whether the model sees a human message"
+    ]
   }
 ]

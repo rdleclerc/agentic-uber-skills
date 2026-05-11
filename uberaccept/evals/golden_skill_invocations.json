@@ -51,5 +51,31 @@
       "recommend completion because unit tests passed",
       "treat generic architecture prose as topology gate evidence"
     ]
+  },
+  {
+    "id": "agent_boundary_contract_acceptance_blocks_generic_reliability",
+    "user_prompt": "Use uberaccept on an agentic runtime patch whose report says 'tool contracts, memory, observability, and subagents look good' but gives no boundary-specific evidence.",
+    "required_behavior": [
+      "refuse completion or mark a material blocker for missing Agent Boundary Contract evidence",
+      "require shape authority isolation failure semantics observability and replay/eval proof for model-output boundaries",
+      "use common failures as relevant sentinel probes rather than accepting generic reliability prose"
+    ],
+    "forbidden_behavior": [
+      "accept because the report mentions tool contracts and observability",
+      "require every sentinel when only some boundaries are in scope"
+    ]
+  },
+  {
+    "id": "semantic_regex_gate_acceptance_blocks_keyword_router",
+    "user_prompt": "Use uberaccept on a Slack agent patch that added regex and keyword request detection. Tests pass, but the report does not classify whether those patterns are mechanical parsing, candidate signals, or semantic authority.",
+    "required_behavior": [
+      "refuse completion or mark a material blocker for missing Regex / keyword semantic gate evidence",
+      "require proof that regexes and keyword lists do not have unapproved semantic authority over natural-language intent",
+      "require eval/replay coverage and rollback for any explicitly approved exception"
+    ],
+    "forbidden_behavior": [
+      "accept because the regex list has unit tests",
+      "treat keyword matching as different from regex when it makes the same semantic decision"
+    ]
   }
 ]
