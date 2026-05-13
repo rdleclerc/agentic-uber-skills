@@ -4,7 +4,7 @@ This roadmap keeps the skill pack evolving without turning it into bureaucracy. 
 
 ## Current architecture
 
-- `ubergoal` — thin lifecycle wrapper: classify, route, optional goal launch, ledger, acceptance, learning.
+- `ubergoal` — goal-owning lifecycle wrapper: create/bind the platform goal, classify, run Tier 2+ specialist review boards, route, ledger, acceptance, learning.
 - `uberplan` — rigorous planning: plan contract, review lanes, exploration trails, Agent Advocate RCA, first-principles simplifier, confidence gate.
 - `uberaccept` — adversarial final proof: evidence audit, architecture drift, Agent Advocate final check, completion recommendation.
 - `uberskillevolver` — post-run learning loop: learning records, lesson candidates, promotion batches, anti-bloat gate.

@@ -3,16 +3,19 @@
     "id": "routes_planning_to_uberplan",
     "user_prompt": "Use ubergoal to plan a risky multi-agent workflow refactor.",
     "expected_behavior": [
+      "create or bind a platform goal when available",
       "classify the tier",
+      "run specialist review-board agents or lenses for Tier 2+ work",
       "route detailed planning to uberplan",
-      "do not duplicate the full planning board inside ubergoal",
-      "do not create a platform goal without explicit launch instruction"
+      "do not duplicate the full planning board inside ubergoal"
     ]
   },
   {
     "id": "routes_acceptance_to_uberaccept",
     "user_prompt": "Use ubergoal to decide whether this Tier 2 implementation is complete.",
     "expected_behavior": [
+      "create or bind the goal before treating completion as durable",
+      "use independent acceptance/review feedback rather than solo self-certification",
       "route final proof to uberaccept",
       "require evidence before completion",
       "avoid calling update_goal complete before acceptance"
@@ -22,6 +25,8 @@
     "id": "skill_change_routes_learning_to_evolver",
     "user_prompt": "Use ubergoal for a Tier 3 skill update and capture what the skill should learn.",
     "expected_behavior": [
+      "create or bind the platform goal when available",
+      "run Tier 2/3 specialist review-board agents when available",
       "route planning to uberplan and acceptance to uberaccept",
       "route post-run lessons to uberskillevolver",
       "forbid silent self-modification"
@@ -31,16 +36,19 @@
     "id": "tiny_task_stays_light",
     "user_prompt": "Use ubergoal for a one-line markdown typo fix.",
     "expected_behavior": [
+      "create or bind the smallest goal if the user explicitly invoked ubergoal and the runtime supports it",
       "choose Tier 0",
       "avoid subskills unless useful",
-      "avoid subagents and goal launch"
+      "avoid subagents"
     ]
   },
   {
     "id": "routes_simplification_to_ubersimplify",
     "user_prompt": "Use ubergoal to run an aggressive simplification and dead-code audit of this codebase.",
     "expected_behavior": [
+      "create or bind a platform goal when available",
       "classify tier",
+      "run specialist simplification/review lenses before patching",
       "route simplification trail and audit/plan/patch modes to ubersimplify",
       "default to audit mode unless patching is explicitly authorized",
       "still require uberaccept before accepting patches"
@@ -50,6 +58,8 @@
     "id": "routes_source_assessment_to_uberassess",
     "user_prompt": "Use ubergoal to assess this X/GitHub/arXiv link before deciding whether to build it into Type0 or the skill pack.",
     "expected_behavior": [
+      "create or bind a platform goal when available",
+      "route source assessment through a specialist review lane before adoption",
       "route source-to-recommendation due diligence to uberassess",
       "preserve source authority and retrieval limitations",
       "do not implement before approval",

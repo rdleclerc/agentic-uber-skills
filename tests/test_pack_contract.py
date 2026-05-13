@@ -34,6 +34,36 @@ class PackContractTests(unittest.TestCase):
                 body = (ROOT / skill / "SKILL.md").read_text()
                 self.assertIn("Do not auto-trigger from task similarity", body, skill)
 
+    def test_ubergoal_owns_platform_goal_by_default(self) -> None:
+        body = (ROOT / "ubergoal" / "SKILL.md").read_text()
+        meta = (ROOT / "ubergoal" / "agents" / "openai.yaml").read_text()
+        evals = (ROOT / "ubergoal" / "evals" / "golden_skill_invocations.json").read_text()
+        combined = "\n".join([body, meta, evals])
+
+        self.assertIn("`ubergoal` is a superset of the platform goal primitive", body)
+        self.assertIn("If no goal exists and the user explicitly invoked `ubergoal`, call `create_goal`", body)
+        self.assertIn("create or bind a Codex/platform goal", meta)
+
+        obsolete_phrases = [
+            "Do not create a platform goal merely because this skill is active",
+            "do not call create_goal unless",
+            "do not create a platform goal without explicit launch instruction",
+            "avoid subagents and goal launch",
+        ]
+        for phrase in obsolete_phrases:
+            self.assertNotIn(phrase, combined)
+
+    def test_ubergoal_tier2_requires_specialist_review_board(self) -> None:
+        body = (ROOT / "ubergoal" / "SKILL.md").read_text()
+        meta = (ROOT / "ubergoal" / "agents" / "openai.yaml").read_text()
+        evals = (ROOT / "ubergoal" / "evals" / "golden_skill_invocations.json").read_text()
+
+        self.assertIn("bounded review-board coordinator", body)
+        self.assertIn("Tier 2 is valuable because it changes the decision shape", body)
+        self.assertIn("launch 2-3 bounded review lanes", body)
+        self.assertIn("Codebase/State Scout, Architecture/Contract Steward, and Quality/Eval/Hygiene Auditor", body)
+        self.assertIn("specialist review-board agents", meta)
+        self.assertIn("run specialist review-board agents or lenses for Tier 2+ work", evals)
 
     def test_utility_skills_have_task_specific_invocation_policy(self) -> None:
         text = (ROOT / "ubershow" / "agents" / "openai.yaml").read_text()

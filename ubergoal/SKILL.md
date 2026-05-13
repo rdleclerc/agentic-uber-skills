@@ -1,13 +1,13 @@
 ---
 name: ubergoal
-description: "Use when an agent needs a thin lifecycle wrapper for substantial coding or agentic-system work: classify risk, route to uberplan for rigorous planning, optionally launch a compact Codex goal only when explicitly instructed, coordinate execution at the right tier, route to uberaccept for final proof, and route to uberskillevolver for post-run learning. Trigger for long plans, goal launch decisions, goal ledgers, multi-agent coding sessions, agentic-system changes, rigorous-multiagent-coding, the former monolithic ubergoal workflow, 100% confident strategy checks, final completion orchestration, or deciding which Uber subskill to use."
+description: "Use when an agent needs the goal-owning lifecycle wrapper for substantial coding or agentic-system work: create or bind a Codex/platform goal by default when available, classify risk, route to uberplan for rigorous planning, run Tier 2+ specialist review-board agents when available, coordinate execution at the right tier, route to uberaccept for final proof, and route to uberskillevolver for post-run learning. Trigger for explicit goal/objective work, long plans, goal ledgers, multi-agent coding sessions, agentic-system changes, rigorous-multiagent-coding, the former monolithic ubergoal workflow, 100% confident strategy checks, final completion orchestration, or deciding which Uber subskill to use."
 ---
 
 # Ubergoal
 
 ## Core rule
 
-`ubergoal` is the **thin lifecycle wrapper** for the Uber skill family. It should route to focused subskills instead of carrying all planning and acceptance machinery itself.
+`ubergoal` is the **thin lifecycle wrapper**, goal owner, and bounded review-board coordinator for the Uber skill family. In runtimes with a platform goal object, explicit `ubergoal` use means create or bind that goal first, then route to focused subskills and specialist agents instead of carrying all planning and acceptance machinery itself.
 
 Use the lightest tier that makes the work safe. Treat process as cost. Add agents, review lanes, validators, evals, templates, or subskills only when benefit is **clearly much greater than** total downstream cost.
 
@@ -16,12 +16,12 @@ Use the lightest tier that makes the work safe. Treat process as cost. Add agent
 | Need | Use |
 |---|---|
 | Rigorous planning, review-board lanes, codebase exploration, confidence gate | `$uberplan` |
-| Implementation/execution coordination | main coding agent, with subagents only when explicitly authorized |
+| Implementation/execution coordination | main coding agent orchestrates; Tier 2+ uses bounded specialist review-board subagents when available |
 | Final acceptance, evidence audit, architecture drift, dead-code/test/eval proof | `$uberaccept` |
 | Complexity/modularity/dead-code simplification campaign with timestamped trail | `$ubersimplify` |
 | Assess source/research signal/internal artifact before adoption | `$uberassess` |
 | Post-run learning for skills/prompts/workflows/agentic systems | `$uberskillevolver` |
-| Compact goal objective and goal ledger | `ubergoal` resources |
+| Codex/platform goal ownership, compact objective, goal ledger | `ubergoal` resources |
 
 Deferred until real usage proves benefit >> cost: `ubercode`, `ubergit`, `ubereval`, `uberui`, and standalone specialist-lane skills. Use lanes inside `uberplan`/`uberaccept` first.
 
@@ -45,8 +45,8 @@ Artifact precedence:
 
 1. **Classify tier.** Use Tier 0/1/2/3 and choose the lowest safe tier.
 2. **Plan.** For Tier 1, use the Coding Agent Work Contract as the compact plan unless risk demands more. For Tier 2/3, invoke or follow `$uberplan` and embed/extend the work contract. For Tier 0, use a concise plan/test note.
-3. **Launch goal only if explicit.** Create a platform goal only when the user explicitly says to launch one.
-4. **Execute.** Keep the main agent as overseer. Use subagents only when the current user request explicitly authorizes subagents, delegation, or parallel agents.
+3. **Create or bind the goal.** In Codex or any runtime with a platform goal object, explicit `ubergoal` use launches a compact goal by default for Tier 1+ work and for any task where the user explicitly names `ubergoal`. If a goal already exists, bind the work to it instead of creating a duplicate. Skip goal creation only when the user explicitly asks for no goal/lightweight mode, the runtime has no goal facility, or the task is not actually being handled through `ubergoal`.
+4. **Run the review board and execute.** Keep the main agent as orchestrator. Explicit `ubergoal` use authorizes bounded specialist review-board agents for Tier 2+ work unless the user says no agents/lightweight mode. Use implementation workers only when write scopes are disjoint.
 5. **Ledger.** For long work, maintain `templates/goal-ledger.md`.
 6. **Assess sources/artifacts when needed.** Route source-to-recommendation due diligence to `$uberassess`; do not let assessment become implementation before approval.
 7. **Simplify when needed.** Invoke or follow `$ubersimplify` for opt-in complexity/dead-code/modularity campaigns; default to Audit mode unless patching is explicitly authorized.
@@ -57,10 +57,10 @@ Artifact precedence:
 
 | Tier | Use for | Wrapper behavior |
 |---|---|---|
-| Tier 0 | Small isolated deterministic edits | no goal, no subagents, short plan/tests |
-| Tier 1 | Long but contained work | `$uberplan` light plan, optional ledger, `$uberaccept` final proof |
-| Tier 2 | Medium/high-risk work | `$uberplan` audited plan, evidence rubric, `$uberaccept`, optional learning loop |
-| Tier 3 | Cross-repo, agentic-system, production/runtime, major refactor/deletion, prompt/skill/eval, concurrency/security, complex UI | full `$uberplan`, carefully bounded execution/audits, `$uberaccept`, `$uberskillevolver` if skill/workflow/agentic lessons exist |
+| Tier 0 | Small isolated deterministic edits | if `ubergoal` was explicitly invoked in a goal-capable runtime, create/bind the smallest goal; otherwise no goal, no subagents, short plan/tests |
+| Tier 1 | Long but contained work | create/bind goal, `$uberplan` light plan, optional ledger, `$uberaccept` final proof |
+| Tier 2 | Medium/high-risk work where a solo coding agent is likely to miss context, overfit a patch, mishandle dirty state, or misjudge acceptance | create/bind goal, `$uberplan` audited plan, 2-3 specialist review-board agents/lenses by default, evidence rubric, `$uberaccept`, optional learning loop |
+| Tier 3 | Cross-repo, agentic-system, production/runtime, major refactor/deletion, prompt/skill/eval, concurrency/security, complex UI | create/bind goal, full `$uberplan`, batched review board plus disjoint implementation workers when useful, carefully bounded execution/audits, `$uberaccept`, `$uberskillevolver` if skill/workflow/agentic lessons exist |
 
 If uncertain, choose the lower tier unless a concrete risk requires escalation.
 
@@ -76,9 +76,16 @@ When returning a plan for implementation, recommend a model reasoning-effort lev
 
 Before recommending `xhigh`, run the deletion-first pass: can the task be split so the next implementation slice stays `high` or `medium` while preserving safety and visible progress? If yes, recommend the smaller slice instead of escalating the whole plan.
 
-## Goal launch
+## Goal ownership
 
-Do not create a platform goal merely because this skill is active. Only launch a goal after explicit user instruction such as “Launch this as a goal.” When running in Codex, this means do not call `create_goal` unless explicitly instructed.
+`ubergoal` is a superset of the platform goal primitive. The goal object is the durable execution spine; the Uber wrapper adds tiering, routing, subskills, agents, acceptance, and learning.
+
+When running in Codex:
+
+- If no goal exists and the user explicitly invoked `ubergoal`, call `create_goal` before substantial planning or execution.
+- If a goal already exists, keep using it and update the goal ledger/status around it rather than creating a duplicate.
+- If the user explicitly asks for no goal/lightweight mode, record that as the reason for skipping goal creation.
+- If the runtime lacks a goal facility, continue with a local goal ledger and say that no platform goal object is available.
 
 When launching, keep the goal objective compact. Include:
 
@@ -109,6 +116,10 @@ For Tier 3 or other wide review-board work:
 
 When implementation begins:
 
+- Tier 2 is valuable because it changes the decision shape: the orchestrator does not just think harder; it receives independent feedback from specialist context lenses.
+- For Tier 2, launch 2-3 bounded review lanes when the runtime supports subagents. Default lanes are Codebase/State Scout, Architecture/Contract Steward, and Quality/Eval/Hygiene Auditor; choose fewer only when the risk is clearly narrower.
+- Review-board agents inspect, challenge, and recommend. They do not mutate files unless explicitly assigned a disjoint worker write scope.
+- If subagents are unavailable or the thread cap is hit, run the same specialist lenses sequentially in the main thread and report the degraded execution mode.
 - keep write sets disjoint if using workers
 - do not delegate the immediate critical-path blocker
 - require evidence-backed outputs, not generic approval

@@ -24,7 +24,24 @@ FORBIDDEN_MONOLITH_FILES = [
 ]
 FORBIDDEN_SUFFIXES = {".pyc", ".pyo"}
 FORBIDDEN_DIRS = {"__pycache__", ".pytest_cache", ".mypy_cache"}
-REQUIRED_PHRASES = ["thin lifecycle wrapper", "$uberplan", "$uberaccept", "$uberskillevolver", "$ubersimplify", "$uberassess", "benefit is **clearly much greater than**"]
+REQUIRED_PHRASES = [
+    "thin lifecycle wrapper",
+    "goal owner",
+    "bounded review-board coordinator",
+    "create or bind",
+    "specialist review-board agents",
+    "$uberplan",
+    "$uberaccept",
+    "$uberskillevolver",
+    "$ubersimplify",
+    "$uberassess",
+    "benefit is **clearly much greater than**",
+]
+FORBIDDEN_PHRASES = [
+    "Do not create a platform goal merely because this skill is active",
+    "do not call create_goal unless",
+    "do not create a platform goal without explicit launch instruction",
+]
 
 
 def main() -> int:
@@ -45,12 +62,18 @@ def main() -> int:
     for phrase in REQUIRED_PHRASES:
         if phrase not in skill:
             errors.append(f"SKILL.md missing phrase: {phrase}")
+    for phrase in FORBIDDEN_PHRASES:
+        if phrase in skill:
+            errors.append(f"SKILL.md still contains obsolete goal-launch rule: {phrase}")
     if len(skill.splitlines()) > 150:
         errors.append("SKILL.md should stay thin (<150 lines)")
     meta = (root / "agents" / "openai.yaml").read_text() if (root / "agents" / "openai.yaml").exists() else ""
-    for phrase in ["$ubergoal", "$uberplan", "$uberaccept", "$uberskillevolver", "$ubersimplify", "$uberassess", "do not call create_goal"]:
+    for phrase in ["$ubergoal", "$uberplan", "$uberaccept", "$uberskillevolver", "$ubersimplify", "$uberassess", "create or bind", "specialist review-board agents"]:
         if phrase not in meta:
             errors.append(f"agents/openai.yaml missing phrase: {phrase}")
+    for phrase in FORBIDDEN_PHRASES:
+        if phrase in meta:
+            errors.append(f"agents/openai.yaml still contains obsolete goal-launch rule: {phrase}")
     evals = root / "evals" / "golden_skill_invocations.json"
     if evals.exists():
         try:
