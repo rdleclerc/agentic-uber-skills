@@ -55,9 +55,12 @@ class ThinWrapperTests(unittest.TestCase):
         self.assertIn("skill_change_routes_learning_to_evolver", ids)
         self.assertIn("tiny_task_stays_light", ids)
         self.assertIn("routes_simplification_to_ubersimplify", ids)
+        self.assertIn("one_line_refactor_campaign_uses_profile", ids)
         self.assertIn("routes_source_assessment_to_uberassess", ids)
         route_case = next(case for case in cases if case["id"] == "routes_simplification_to_ubersimplify")
         self.assertTrue(any("ubersimplify" in item for item in route_case.get("expected_behavior", [])))
+        refactor_case = next(case for case in cases if case["id"] == "one_line_refactor_campaign_uses_profile")
+        self.assertTrue(any("profile" in item for item in refactor_case.get("expected_behavior", [])))
         assess_case = next(case for case in cases if case["id"] == "routes_source_assessment_to_uberassess")
         self.assertTrue(any("uberassess" in item for item in assess_case.get("expected_behavior", [])))
         for case in cases:

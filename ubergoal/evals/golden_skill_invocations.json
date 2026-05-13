@@ -55,6 +55,17 @@
     ]
   },
   {
+    "id": "one_line_refactor_campaign_uses_profile",
+    "user_prompt": "Use ubergoal refactor campaign on this repo.",
+    "expected_behavior": [
+      "load the reusable refactor-campaign profile instead of asking the user to paste a long checklist",
+      "create or bind a platform goal when available",
+      "run Tier 2 specialist review-board lanes for HOT files, KISS/modularity/dead-code, regex/structured-data, code review, and tests/evals",
+      "default to audit/plan unless patching is explicitly authorized",
+      "route simplification work to ubersimplify and final readiness to uberaccept"
+    ]
+  },
+  {
     "id": "routes_source_assessment_to_uberassess",
     "user_prompt": "Use ubergoal to assess this X/GitHub/arXiv link before deciding whether to build it into Type0 or the skill pack.",
     "expected_behavior": [

@@ -1,6 +1,6 @@
 interface:
   display_name: "Ubergoal"
   short_description: "Goal-owning wrapper for Uber coding workflows"
-  default_prompt: "Use $ubergoal to create or bind a Codex/platform goal when available, classify this work, run Tier 2+ specialist review-board agents when available, route planning to $uberplan, route final proof to $uberaccept, use $uberassess for external-source adoption assessments, use $ubersimplify for opt-in complexity/dead-code simplification, and use $uberskillevolver for Tier 2/3 skill or workflow learning."
+  default_prompt: "Use $ubergoal to create or bind a Codex/platform goal when available, classify this work, run Tier 2+ specialist review-board agents when available, route planning to $uberplan, route final proof to $uberaccept, use $uberassess for external-source adoption assessments, use $ubersimplify for opt-in complexity/dead-code simplification, use the refactor-campaign profile when asked for codebase health/HOT-file/nightly refactor work, and use $uberskillevolver for Tier 2/3 skill or workflow learning."
 policy:
   allow_implicit_invocation: true

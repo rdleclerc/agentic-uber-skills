@@ -13,6 +13,7 @@ REQUIRED_FILES = [
     "agents/openai.yaml",
     "templates/goal-ledger.md",
     "references/goal-objective.md",
+    "references/refactor-campaign-profile.md",
     "scripts/validate_goal_objective.py",
     "evals/golden_skill_invocations.json",
 ]
@@ -30,6 +31,7 @@ REQUIRED_PHRASES = [
     "bounded review-board coordinator",
     "create or bind",
     "specialist review-board agents",
+    "refactor campaign",
     "$uberplan",
     "$uberaccept",
     "$uberskillevolver",
@@ -68,7 +70,7 @@ def main() -> int:
     if len(skill.splitlines()) > 150:
         errors.append("SKILL.md should stay thin (<150 lines)")
     meta = (root / "agents" / "openai.yaml").read_text() if (root / "agents" / "openai.yaml").exists() else ""
-    for phrase in ["$ubergoal", "$uberplan", "$uberaccept", "$uberskillevolver", "$ubersimplify", "$uberassess", "create or bind", "specialist review-board agents"]:
+    for phrase in ["$ubergoal", "$uberplan", "$uberaccept", "$uberskillevolver", "$ubersimplify", "$uberassess", "create or bind", "specialist review-board agents", "refactor-campaign profile"]:
         if phrase not in meta:
             errors.append(f"agents/openai.yaml missing phrase: {phrase}")
     for phrase in FORBIDDEN_PHRASES:

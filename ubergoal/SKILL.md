@@ -25,6 +25,11 @@ Use the lightest tier that makes the work safe. Treat process as cost. Add agent
 
 Deferred until real usage proves benefit >> cost: `ubercode`, `ubergit`, `ubereval`, `uberui`, and standalone specialist-lane skills. Use lanes inside `uberplan`/`uberaccept` first.
 
+## Named profiles
+
+When the user says **refactor campaign**, **codebase health campaign**, **nightly refactor**, **HOT-file audit**, or similar, do not ask them to restate the long checklist. Load and follow `references/refactor-campaign-profile.md`.
+
+That profile stays inside `ubergoal` until repeated real runs prove a standalone `uberrefactor` skill would make the common path smaller, faster, or safer.
 
 ## Coding-agent work contract
 
@@ -137,4 +142,5 @@ For “100% confident” prompts, use the scoped meaning: 100% confident within 
 
 - `templates/goal-ledger.md` — compact long-running goal state.
 - `references/goal-objective.md` — compact goal objective guidance.
+- `references/refactor-campaign-profile.md` — reusable HOT-file/refactor campaign profile.
 - `scripts/validate_goal_objective.py` — objective length validator.
