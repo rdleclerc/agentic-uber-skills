@@ -25,16 +25,20 @@ Return or create a plan contract with:
 
 1. tier and why it is not overkill
 2. clarified objective, scope, assumptions, and non-goals
-3. affected repos/files and protected-file constraints
-4. codebase exploration / pheromone trails when context risk is material
-5. architecture options when the design is non-obvious
-6. activated/skipped review lanes and blocker authority
-7. deterministic harness responsibilities vs adaptive model policy
-8. source authority, side-effect, approval, rollback, and adoption-state policy when relevant
-9. repository topology/package-seam plan for any new or moved code files, including the executable gate that will catch drift
-10. Basic Spine First statement for product/rewrite/agentic-system work, or why not applicable
-11. risk-to-evidence map and acceptance rubric
-12. confidence verdict after trying to falsify the plan
+3. a checkable Product / PRD checklist for Tier 2/3 work, so workers can mark requirements, non-goals, acceptance targets, and deferred items without inventing a second artifact
+4. a detailed task map / implementation graph with stable task IDs, dependencies, owners, write scopes, done conditions, evidence, and a Mermaid diagram for Tier 2/3 work
+5. affected repos/files and protected-file constraints
+6. codebase exploration / pheromone trails when context risk is material
+7. architecture options when the design is non-obvious
+8. activated/skipped review lanes and blocker authority
+9. deterministic harness responsibilities vs adaptive model policy
+10. for agentic-system plans, a thin harness / fat agent rubric: deterministic harness owns contracts, state, tools, permissions, traces, and evals; agents own ambiguous interpretation, decomposition, recovery, synthesis, and tool choice inside the harness
+11. for agentic-system plans, a source-convention check for approved/local/public Codex and OpenClaude/Claude Code conventions; use conventions, not copied proprietary/leaked code
+12. source authority, side-effect, approval, rollback, and adoption-state policy when relevant
+13. repository topology/package-seam plan for any new or moved code files, including the executable gate that will catch drift
+14. Basic Spine First statement for product/rewrite/agentic-system work, or why not applicable
+15. risk-to-evidence map and acceptance rubric with testable goals across unit/regression, integration, acceptance, e2e or simulation, and eval/replay evidence; use real bugs/content when available
+16. confidence verdict after trying to falsify the plan
 
 Use `templates/plan-contract.md` for durable plans and `templates/confidence-gate.md` for the adversarial pre-launch check.
 
@@ -85,6 +89,12 @@ When a planning board has more useful lanes than the cap allows:
 ## Repository topology gate
 
 For any task that adds, moves, or meaningfully reorganizes code files, the plan must name the intended package/module destination and the repo-local guard that enforces it (for example `tests/test_package_topology.py`, an import-boundary test, or a dependency-map check). If no such guard exists and the task is non-trivial, add the smallest useful guard before or with the feature/refactor. Do not rely on prose-only hierarchy guidance.
+
+## Agentic system planning bias
+
+For agentic-system plans, prefer thin harness / fat agent. The harness should be small, deterministic, inspectable, and testable: schemas, tool contracts, state, permissions, budgets, source authority, replay, traces, and evals. The agent should carry the adaptive work: ambiguous intent, context selection, tool choice, task decomposition, plan revision, recovery, synthesis, and judgment.
+
+The plan must actively reject deterministic monolith drift: giant routers, keyword/regex semantic authority, broad blob files, hardcoded example branches, hidden state bags, and tools that secretly absorb agent policy. Prefer reusable skills and tools with encapsulated dependencies. A wrapper tool may call downstream tools, but it must keep its boundary explicit.
 
 ## First-principles simplification
 

@@ -25,6 +25,8 @@ TIER_REQUIREMENTS = {
     ],
     "2": CORE_SECTIONS
     + [
+        "product / prd checklist",
+        "task map / implementation graph",
         "cost/complexity check",
         "first-principles simplifier / complexity auditor",
         "planning review board",
@@ -37,6 +39,8 @@ TIER_REQUIREMENTS = {
     ],
     "3": CORE_SECTIONS
     + [
+        "product / prd checklist",
+        "task map / implementation graph",
         "cost/complexity check",
         "first-principles simplifier / complexity auditor",
         "planning review board",
@@ -73,6 +77,10 @@ RUBRIC_DIMENSIONS = [
     "agent rca",
     "agent boundary contract",
     "regex / keyword semantics",
+    "prd checklist",
+    "task map",
+    "thin harness / fat agent",
+    "source-convention check",
     "architecture",
     "repository topology",
     "ownership",
@@ -259,8 +267,136 @@ SEMANTIC_PATTERN_SCOPE_TERMS = [
 ]
 
 
+AGENTIC_SYSTEM_TERMS = [
+    "agentic-system",
+    "agentic system",
+    "agent loop",
+    "multi-agent",
+    "subagent",
+    "skill",
+    "tool registry",
+    "memory subsystem",
+    "context engine",
+    "source authority",
+    "cross-agent",
+    "prompt",
+    "model/adaptive",
+]
+
+
 def has_semantic_pattern_scope(text: str) -> bool:
     return any(term in text for term in SEMANTIC_PATTERN_SCOPE_TERMS)
+
+
+def has_agentic_system_scope(text: str) -> bool:
+    return any(term in text for term in AGENTIC_SYSTEM_TERMS)
+
+
+def validate_prd_checklist(found: dict[str, str], tier: str, errors: list[str]) -> None:
+    if tier == "0":
+        return
+    section_name = "product / prd checklist"
+    section = found.get(section_name, "")
+    if not section:
+        return
+    if not section_has_substance(section):
+        errors.append("required section lacks completed substance: Product / PRD checklist")
+        return
+    checked_items = re.findall(r"^\s*-\s*\[[ xX]\]\s+\S+", section, re.M)
+    if len(checked_items) < 3:
+        errors.append("Product / PRD checklist must include at least three checkable - [ ] / - [x] items")
+    section_lower = normalize(section)
+    for term in ["user", "problem", "requirement", "non-goal", "acceptance"]:
+        if term not in section_lower:
+            errors.append(f"Product / PRD checklist missing concept: {term}")
+
+
+def validate_task_map(found: dict[str, str], tier: str, errors: list[str]) -> None:
+    if tier == "0":
+        return
+    section_name = "task map / implementation graph"
+    section = found.get(section_name, "")
+    if not section:
+        return
+    if not section_has_substance(section):
+        errors.append("required section lacks completed substance: Task map / implementation graph")
+        return
+    section_lower = normalize(section)
+    if "```mermaid" not in section_lower:
+        errors.append("Task map / implementation graph must include a Mermaid diagram")
+    if not re.search(r"\bT[0-9]+\b", section):
+        errors.append("Task map / implementation graph must use stable task IDs such as T1, T2, T3")
+    for term in ["depend", "owner", "write", "evidence", "done"]:
+        if term not in section_lower:
+            errors.append(f"Task map / implementation graph missing concept: {term}")
+
+
+def validate_thin_harness_rubric(found: dict[str, str], required: bool, errors: list[str]) -> None:
+    section_name = "thin harness / fat agent design rubric"
+    section = found.get(section_name, "")
+    if not required:
+        return
+    if not section:
+        errors.append("agentic-system scope requires Thin harness / fat agent design rubric section")
+        return
+    if not section_has_substance(section):
+        errors.append("required section lacks completed substance: Thin harness / fat agent design rubric")
+        return
+    section_lower = normalize(section)
+    for term in [
+        "harness owns",
+        "agent owns",
+        "monolith",
+        "deterministic",
+        "skill",
+        "tool",
+        "reusable",
+        "modular",
+        "depend",
+    ]:
+        if term not in section_lower:
+            errors.append(f"Thin harness / fat agent design rubric missing concept: {term}")
+    if "regex" not in section_lower and "keyword" not in section_lower:
+        errors.append("Thin harness / fat agent design rubric must address regex/keyword semantic-authority risk")
+
+
+def validate_source_convention_check(found: dict[str, str], required: bool, errors: list[str]) -> None:
+    section_name = "source-convention check"
+    section = found.get(section_name, "")
+    if not required:
+        return
+    if not section:
+        errors.append("agentic-system scope requires Source-convention check section")
+        return
+    if not section_has_substance(section):
+        errors.append("required section lacks completed substance: Source-convention check")
+        return
+    section_lower = normalize(section)
+    for term in ["source", "codex", "openclaude", "claude code", "convention", "copied"]:
+        if term not in section_lower:
+            errors.append(f"Source-convention check missing concept: {term}")
+    if not any(term in section_lower for term in ["public", "approved", "local", "available", "unavailable"]):
+        errors.append("Source-convention check must name whether source references are approved/public/local/available or unavailable")
+    if not any(term in section_lower for term in ["no leaked", "proprietary", "do not copy", "not copied", "no code copied"]):
+        errors.append("Source-convention check must state the no-leaked/proprietary/no-copy boundary")
+
+
+def validate_agentic_evidence_map(found: dict[str, str], required: bool, errors: list[str]) -> None:
+    if not required:
+        return
+    evidence = normalize(found.get("risk-to-evidence map", ""))
+    rubric = normalize(found.get("acceptance rubric", ""))
+    combined = evidence + " " + rubric
+    evidence_groups = {
+        "unit/regression": ["unit", "regression"],
+        "integration": ["integration"],
+        "acceptance": ["acceptance"],
+        "e2e/simulation": ["e2e", "end-to-end", "simulation", "simulated"],
+        "evals": ["eval", "fixture", "real-world", "real bug", "replay"],
+    }
+    for label, terms in evidence_groups.items():
+        if not any(term in combined for term in terms):
+            errors.append(f"agentic-system evidence map must cover or explicitly reject {label} evidence")
 
 
 def validate_regex_keyword_semantic_gate(found: dict[str, str], required: bool, errors: list[str]) -> None:
@@ -387,6 +523,8 @@ def main() -> int:
         if section in found and not section_has_substance(found[section]):
             errors.append(f"required section lacks completed substance: {section}")
 
+    validate_prd_checklist(found, args.tier or "1", errors)
+    validate_task_map(found, args.tier or "1", errors)
     validate_repository_topology(found, lower, args.tier or "1", errors)
 
     # Tier 0 is intentionally light but still needs a concrete test/evidence note.
@@ -434,6 +572,9 @@ def main() -> int:
         found.get("deterministic harness vs adaptive policy", ""),
     ]))
     behavior_scope = args.agent_behavior or (args.tier != "0" and any(term in behavior_scan_text for term in behavior_terms))
+    agentic_system_scope = args.tier != "0" and (behavior_scope or has_agentic_system_scope(behavior_scan_text))
+    validate_thin_harness_rubric(found, agentic_system_scope, errors)
+    validate_source_convention_check(found, agentic_system_scope, errors)
     validate_agent_boundary_contract(found, behavior_scope, errors)
     semantic_pattern_scope = behavior_scope or has_semantic_pattern_scope(behavior_scan_text)
     validate_regex_keyword_semantic_gate(found, semantic_pattern_scope, errors)
@@ -462,6 +603,7 @@ def main() -> int:
     risk_rows = table_meaningful_rows(found.get("risk-to-evidence map", ""))
     if args.tier != "0" and not risk_rows:
         errors.append("risk-to-evidence map needs at least one meaningful row")
+    validate_agentic_evidence_map(found, agentic_system_scope, errors)
 
     rubric = found.get("acceptance rubric", "")
     present_dimensions = [dimension for dimension in RUBRIC_DIMENSIONS if dimension in normalize(rubric)]

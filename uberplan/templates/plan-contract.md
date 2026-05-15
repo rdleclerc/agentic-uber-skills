@@ -18,6 +18,42 @@ State the concrete outcome and why it matters.
 
 -
 
+## Product / PRD checklist
+
+Use this as the checkable product requirements document for Tier 2/3 work. Keep it specific enough that coding agents can mark items complete without guessing.
+
+- User / operator problem:
+- Primary user-visible outcome:
+- Non-goals:
+- Acceptance target:
+- [ ] Requirement:
+- [ ] Requirement:
+- [ ] Requirement:
+- [ ] Test/eval evidence captured:
+- [ ] Deferred item recorded with owner:
+
+## Task map / implementation graph
+
+For Tier 2/3 work, provide stable task IDs, dependencies, owners, write scopes, done conditions, and evidence. Include a Mermaid diagram that coding agents can follow.
+
+```mermaid
+flowchart TD
+    T1["T1: Orient and confirm contracts"]
+    T2["T2: Implement bounded change"]
+    T3["T3: Add tests/evals"]
+    T4["T4: Review, accept, and report"]
+    T1 --> T2
+    T1 --> T3
+    T2 --> T4
+    T3 --> T4
+```
+
+| Task ID | Purpose | Dependencies | Owner | Write scope | Done condition | Required evidence |
+|---|---|---|---|---|---|---|
+| T1 |  | none |  |  |  |  |
+| T2 |  | T1 |  |  |  |  |
+| T3 |  | T1 |  |  |  |  |
+
 ## Tier decision
 
 - Tier: 0 / 1 / 2 / 3
@@ -130,6 +166,30 @@ Required for Tier 2/3 and any agentic-system behavior. If subagents are not auth
 |---|---|
 | schemas, permissions, idempotency, budgets, tests, traces, side-effect gates | ambiguous intent, context gathering, plan revision, synthesis, tool choice within harness |
 
+## Thin harness / fat agent design rubric
+
+Required for agentic-system behavior. The default target is a thin deterministic harness around a capable adaptive agent, not a deterministic monolith that imitates agency.
+
+- Harness owns:
+- Agent owns:
+- Monolith risk assessment:
+- Deterministic branches/routers/regex/keyword uses reviewed:
+- Reusable skills/tools to create or reuse:
+- Modular boundaries and encapsulated dependencies:
+- Downstream tool wrapper boundaries, if any:
+- Thin-harness score and blocker notes:
+
+## Source-convention check
+
+Required for agentic-system behavior when Codex, OpenClaude, Claude Code, or similar source conventions are material. Use approved public/local source references and extract conventions, not copied proprietary or leaked code.
+
+- Source handles checked, or why unavailable:
+- Codex conventions adopted:
+- OpenClaude / Claude Code conventions adopted:
+- Conventions rejected, and why:
+- No leaked/proprietary code copied:
+- Dependency or license caveats:
+
 ## Agent Boundary Contract
 
 Required when model output can become tool input, state, memory, context, delegated work, external action, or durable truth. If not applicable, say why.
@@ -209,6 +269,10 @@ Score only relevant dimensions. Use 0 = blocker, 1 = weak/unresolved, 2 = accept
 | Agent RCA | Agent behavior fixes name why the agent erred and the failed invariant/tool/context/source/eval layer | Agent Advocate report or explicit non-applicability |  |
 | Agent boundary contract | Model-output boundaries have shape, authority, isolation, failure, observability, and replay/eval evidence | Agent Boundary Contract section or explicit non-applicability |  |
 | Regex / keyword semantics | Regex/keyword uses are classified; natural-language semantic authority is prohibited unless explicitly approved with eval/replay and rollback | Regex / keyword semantic gate |  |
+| PRD checklist | Requirements, non-goals, acceptance targets, and deferred items are checkable | Product / PRD checklist |  |
+| Task map | Coding tasks have stable IDs, dependencies, owners, write scopes, done conditions, evidence, and Mermaid graph | Task map / implementation graph |  |
+| Thin harness / fat agent | Agentic behavior keeps deterministic code in the harness and adaptive judgment in the agent; monolith/regex/router drift is blocked | Thin harness / fat agent rubric |  |
+| Source-convention check | Approved/local/public Codex and OpenClaude/Claude Code conventions were checked where material; no leaked/proprietary code copied | Source-convention check |  |
 | Architecture | Relevant guide sections were applied; deterministic harness/adaptive policy split is respected where relevant | Architecture Steward report or explicit non-applicability |  |
 | Repository topology | New/moved code files land in named packages and repo topology/dependency guard is run or added | topology test/dependency-map command or explicit accepted gap |  |
 | Ownership | Write sets and integrator role are clear | claim/briefs |  |

@@ -29,6 +29,8 @@ Deferred until real usage proves benefit >> cost: `ubercode`, `ubergit`, `uberev
 
 When the user says **refactor campaign**, **codebase health campaign**, **nightly refactor**, **HOT-file audit**, or similar, do not ask them to restate the long checklist. Load and follow `references/refactor-campaign-profile.md`.
 
+The refactor-campaign profile includes a tight generated HTML report plus project-local refactor history so recurring runs can build on prior attention maps and no-change decisions.
+
 That profile stays inside `ubergoal` until repeated real runs prove a standalone `uberrefactor` skill would make the common path smaller, faster, or safer.
 
 ## Coding-agent work contract
@@ -44,12 +46,12 @@ Artifact precedence:
 
 - **Tier 0:** concise inline note only.
 - **Tier 1:** the Coding Agent Work Contract is the plan artifact unless a concrete risk requires a fuller `uberplan` contract.
-- **Tier 2/3:** `uberplan` may extend the Coding Agent Work Contract, but should not create a disconnected second plan with duplicate objective/scope/evidence sections.
+- **Tier 2/3:** `uberplan` may extend the Coding Agent Work Contract, but should not create a disconnected second plan with duplicate objective/scope/evidence sections. The `uberplan` contract should be a checkable PRD with a detailed Mermaid task map, testable acceptance goals, and, for agentic systems, a thin harness / fat agent rubric plus source-convention check.
 
 ## Lifecycle
 
 1. **Classify tier.** Use Tier 0/1/2/3 and choose the lowest safe tier.
-2. **Plan.** For Tier 1, use the Coding Agent Work Contract as the compact plan unless risk demands more. For Tier 2/3, invoke or follow `$uberplan` and embed/extend the work contract. For Tier 0, use a concise plan/test note.
+2. **Plan.** For Tier 1, use the Coding Agent Work Contract as the compact plan unless risk demands more. For Tier 2/3, invoke or follow `$uberplan` and embed/extend the work contract. For Tier 0, use a concise plan/test note. Agentic-system plans must bias toward thin deterministic harnesses around capable agents, not deterministic monoliths that absorb agent judgment.
 3. **Create or bind the goal.** In Codex or any runtime with a platform goal object, explicit `ubergoal` use launches a compact goal by default for Tier 1+ work and for any task where the user explicitly names `ubergoal`. If a goal already exists, bind the work to it instead of creating a duplicate. Skip goal creation only when the user explicitly asks for no goal/lightweight mode, the runtime has no goal facility, or the task is not actually being handled through `ubergoal`.
 4. **Run the review board and execute.** Keep the main agent as orchestrator. Explicit `ubergoal` use authorizes bounded specialist review-board agents for Tier 2+ work unless the user says no agents/lightweight mode. Use implementation workers only when write scopes are disjoint.
 5. **Ledger.** For long work, maintain `templates/goal-ledger.md`.

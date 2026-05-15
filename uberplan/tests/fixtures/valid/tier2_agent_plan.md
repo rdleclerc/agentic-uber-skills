@@ -6,6 +6,41 @@ Improve a multi-agent handoff prompt so workers stop overwriting each other and 
 ## Scope
 In scope: one skill prompt, one agent brief template, validator fixture updates. Out of scope: live runtime changes, commits, pushes, or production writes.
 
+## Product / PRD checklist
+- User / operator problem: coding agents in a multi-agent handoff can overwrite each other or claim success without evidence.
+- Primary user-visible outcome: worker handoffs are clear enough that agents preserve file ownership and return evidence-backed findings.
+- Non-goals: no live runtime change, no new service, no production writes, and no broad fresh-agent eval platform.
+- Acceptance target: prompt/template/validator changes create a checkable contract and fail plans that omit ownership, evidence, or agent-boundary requirements.
+- [x] Requirement: every worker brief names role, read scope, disjoint write scope, return contract, and stop condition.
+- [x] Requirement: plan validation fails when the agent boundary contract or ownership evidence is missing.
+- [x] Requirement: acceptance evidence includes unit/regression, integration-shape, acceptance, simulation/e2e substitute, and eval/replay coverage notes.
+- [x] Test/eval evidence captured: validator fixtures and golden eval seeds are updated from the recurring shared-file overwrite failure.
+- [x] Deferred item recorded with owner: fresh-agent behavioral replay remains owned by the future evaluator when the pack grows a live eval harness.
+
+## Task map / implementation graph
+
+```mermaid
+flowchart TD
+    T1["T1: Confirm recurring failure and boundaries"]
+    T2["T2: Update prompt and brief contract"]
+    T3["T3: Add validator and fixture coverage"]
+    T4["T4: Add eval seed"]
+    T5["T5: Run acceptance commands"]
+    T1 --> T2
+    T1 --> T3
+    T2 --> T5
+    T3 --> T5
+    T4 --> T5
+```
+
+| Task ID | Purpose | Dependencies | Owner | Write scope | Done condition | Required evidence |
+|---|---|---|---|---|---|---|
+| T1 | Reconstruct the agent failure and source contracts | none | overseer | plan only | failed invariant and non-goals are explicit | Product / PRD checklist and Agent Advocate section |
+| T2 | Make worker handoff reusable and modular | T1 | prompt owner | SKILL.md, templates/agent-brief.md | role/read/write/return/stop contract is checkable | template review and rubric score |
+| T3 | Add deterministic harness validation without semantic regex authority | T1 | validator owner | scripts/validate_plan_contract.py, tests/fixtures | invalid plans fail and valid plan passes | unit/regression test output |
+| T4 | Preserve real bug as eval seed | T1 | eval owner | evals/golden_skill_invocations.json | recurring overwrite bug is captured as replayable fixture | eval schema test output |
+| T5 | Acceptance review and report | T2, T3, T4 | integrator | no new writes except report | all goals satisfy acceptance rubric | unittest, package lint, and acceptance summary |
+
 ## Tier decision
 - Tier: 2
 - Why this tier is sufficient: agent behavior changes are meaningful but contained to one skill package.
@@ -100,6 +135,26 @@ Required because this is a skill and multi-agent coordination change.
 |---|---|
 | validator schema, explicit write sets, return contract, side-effect gates, evidence rows | task decomposition, context selection, tool choice inside allowed tools, synthesis |
 
+## Thin harness / fat agent design rubric
+
+- Harness owns: deterministic shape validation, allowed write scopes, evidence requirements, tool/skill boundaries, side-effect gates, replay fixtures, and acceptance tests.
+- Agent owns: ambiguous decomposition, context selection, judgment about which tools to use inside the allowed harness, recovery, synthesis, and review reasoning.
+- Monolith risk assessment: low if the validator stays limited to contract shape; high if it starts deciding semantic plan quality through deterministic routing.
+- Deterministic branches/routers/regex/keyword uses reviewed: markdown-heading and field regexes are mechanical only; no regex/keyword semantic authority over natural-language intent or plan judgment is allowed.
+- Reusable skills/tools to create or reuse: reuse `uberplan` templates, validator script, and golden eval seed; no new skill is created for this contained failure class.
+- Modular boundaries and encapsulated dependencies: prompt/template code stays inside the `uberplan` skill; validator dependencies remain Python stdlib and package-local fixtures.
+- Downstream tool wrapper boundaries, if any: no wrapper tool is introduced; if one is later added, it must expose accepted input, returned evidence, downstream commands, failure semantics, and authority limits.
+- Thin-harness score and blocker notes: 3/3 because deterministic code only enforces contract structure while the agent keeps adaptive planning and synthesis authority.
+
+## Source-convention check
+
+- Source handles checked, or why unavailable: fixture plan does not inspect live Codex/OpenClaude sources; implementation plans using this pattern must inspect approved public or local source handles when those conventions are material.
+- Codex conventions adopted: use skill/tool contracts, bounded worker briefs, explicit evidence, and non-interactive validator commands.
+- OpenClaude / Claude Code conventions adopted: use modular tool/skill boundaries and clear prompt contracts only when approved public/local sources are available; otherwise record source unavailable.
+- Conventions rejected, and why: no copied orchestration internals or broad framework assumptions because this is a small skill-package validator change.
+- No leaked/proprietary code copied: no code copied; no leaked or proprietary Claude Code/OpenClaude material may be used as source authority.
+- Dependency or license caveats: no new dependencies; future source-derived conventions must preserve license and attribution boundaries.
+
 ## Agent Boundary Contract
 Required because model-produced task decomposition can become delegated work and shared-file edits.
 
@@ -158,6 +213,10 @@ Only used if user explicitly authorizes subagents.
 | hollow plan passes | regression test | tests/test_validators.py invalid hollow fixture | overseer |
 | symptom patch accepted | agent behavior eval fixture | evals/golden_skill_invocations.json | overseer |
 | subagent conflict | template review | templates/agent-brief.md | architecture steward |
+| integration contract drifts | integration-shape test across validator fixture and template contract | python3 -m unittest discover -s tests -v | overseer |
+| acceptance claim lacks proof | acceptance rubric must name command or artifact for each relevant dimension | final acceptance report | integrator |
+| live e2e unsafe for local skill package | simulation/e2e substitute via invalid fixture replay and golden eval seed | validator fixture plus eval seed | quality strategist |
+| real bug forgotten | eval/replay fixture derived from recurring shared-file overwrite bug | golden_skill_invocations.json | agent advocate |
 
 ## Acceptance rubric
 
@@ -171,6 +230,10 @@ Only used if user explicitly authorizes subagents.
 | Agent RCA | Agent behavior fix names why the agent erred and failed invariant | Agent Advocate report | 3 |
 | Agent boundary contract | Delegation boundary has shape, authority, isolation, failure, observability, and replay evidence | Agent Boundary Contract section | 3 |
 | Regex / keyword semantics | Regex/keyword uses are mechanical markdown contract parsing only; no natural-language semantic authority | Regex / keyword semantic gate | 3 |
+| PRD checklist | Requirements, non-goals, acceptance target, and deferred item are checkable | Product / PRD checklist | 3 |
+| Task map | Stable task IDs, dependencies, owners, write scopes, done conditions, evidence, and Mermaid graph are present | Task map / implementation graph | 3 |
+| Thin harness / fat agent | Deterministic code enforces contract shape while adaptive agent reasoning owns planning judgment; monolith drift blocked | Thin harness / fat agent design rubric | 3 |
+| Source-convention check | Codex and OpenClaude / Claude Code convention source boundary is explicit; no leaked/proprietary code copied | Source-convention check | 3 |
 | Architecture | Guide sections applied and harness/policy split respected | Architecture Steward report | 3 |
 | Repository topology | New validator/test files stay inside the existing skill package and package lint/validator tests run | package lint and validator commands | 3 |
 | Ownership | Write sets and integrator role are clear | agent brief | 3 |

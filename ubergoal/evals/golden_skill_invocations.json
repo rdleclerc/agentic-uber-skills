@@ -61,8 +61,20 @@
       "load the reusable refactor-campaign profile instead of asking the user to paste a long checklist",
       "create or bind a platform goal when available",
       "run Tier 2 specialist review-board lanes for HOT files, KISS/modularity/dead-code, regex/structured-data, code review, and tests/evals",
+      "produce a tight generated HTML report and update project-local refactor history when artifacts are allowed",
       "default to audit/plan unless patching is explicitly authorized",
       "route simplification work to ubersimplify and final readiness to uberaccept"
+    ]
+  },
+  {
+    "id": "recurring_refactor_campaign_uses_history",
+    "user_prompt": "Use ubergoal nightly refactor campaign on this repo. We do this every few days, so keep the history useful.",
+    "expected_behavior": [
+      "read the project-local refactor history before ranking HOT files",
+      "write or update a compact refactor-history.md when artifacts are allowed",
+      "include HOT files still hot/newly hot/cooled down plus no-change rationale",
+      "generate a concise HTML report that points back to history and evidence",
+      "avoid treating history as source authority over current code and tests"
     ]
   },
   {

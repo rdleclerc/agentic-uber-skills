@@ -57,6 +57,42 @@ class PlanValidatorTests(unittest.TestCase):
             plan.write_text(text[:start] + text[end:])
             self.assertFails(str(PLAN), str(plan), "--tier", "2", "--agent-behavior")
 
+    def test_tier2_requires_prd_checklist(self) -> None:
+        text = (FIX / "valid" / "tier2_agent_plan.md").read_text()
+        start = text.index("## Product / PRD checklist")
+        end = text.index("## Task map / implementation graph")
+        with tempfile.TemporaryDirectory() as tmp:
+            plan = Path(tmp) / "missing_prd_checklist.md"
+            plan.write_text(text[:start] + text[end:])
+            self.assertFails(str(PLAN), str(plan), "--tier", "2", "--agent-behavior")
+
+    def test_tier2_requires_task_map_mermaid(self) -> None:
+        text = (FIX / "valid" / "tier2_agent_plan.md").read_text()
+        start = text.index("## Task map / implementation graph")
+        end = text.index("## Tier decision")
+        with tempfile.TemporaryDirectory() as tmp:
+            plan = Path(tmp) / "missing_task_map.md"
+            plan.write_text(text[:start] + text[end:])
+            self.assertFails(str(PLAN), str(plan), "--tier", "2", "--agent-behavior")
+
+    def test_agentic_plan_requires_thin_harness_rubric(self) -> None:
+        text = (FIX / "valid" / "tier2_agent_plan.md").read_text()
+        start = text.index("## Thin harness / fat agent design rubric")
+        end = text.index("## Source-convention check")
+        with tempfile.TemporaryDirectory() as tmp:
+            plan = Path(tmp) / "missing_thin_harness.md"
+            plan.write_text(text[:start] + text[end:])
+            self.assertFails(str(PLAN), str(plan), "--tier", "2", "--agent-behavior")
+
+    def test_agentic_plan_requires_source_convention_check(self) -> None:
+        text = (FIX / "valid" / "tier2_agent_plan.md").read_text()
+        start = text.index("## Source-convention check")
+        end = text.index("## Agent Boundary Contract")
+        with tempfile.TemporaryDirectory() as tmp:
+            plan = Path(tmp) / "missing_source_convention.md"
+            plan.write_text(text[:start] + text[end:])
+            self.assertFails(str(PLAN), str(plan), "--tier", "2", "--agent-behavior")
+
     def test_code_plan_requires_repository_topology(self) -> None:
         self.assertFails(str(PLAN), str(FIX / "invalid" / "no_repository_topology_plan.md"), "--tier", "2", "--agent-behavior")
 
@@ -65,6 +101,8 @@ class PlanValidatorTests(unittest.TestCase):
         text = text.replace("the added validator fixture", "the validator fixture")
         text = text.replace("one small validator fixture", "the small validator fixture")
         text = text.replace("New validator/test files stay inside the existing skill package", "Existing validator/test files stay inside the existing skill package")
+        text = text.replace("Add validator and fixture coverage", "Update validator and fixture coverage")
+        text = text.replace("Add deterministic harness validation", "Update deterministic harness validation")
         start = text.index("## Repository topology / package seam")
         end = text.index("## Architecture classification")
         replacement = """## Repository topology / package seam
@@ -97,6 +135,7 @@ class PackageTests(unittest.TestCase):
         self.assertIn("complexity_blocked_without_benefit_gap", ids)
         self.assertIn("agent_boundary_contract_blocks_generic_reliability_plan", ids)
         self.assertIn("semantic_regex_gate_blocks_keyword_router_plan", ids)
+        self.assertIn("agentic_system_plan_requires_prd_task_map_and_thin_harness", ids)
         for case in cases:
             self.assertIn("user_prompt", case)
             self.assertIn("expected_tier", case)

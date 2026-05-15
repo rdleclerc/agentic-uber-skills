@@ -111,5 +111,29 @@
       "approve keyword-only routing because it has tests",
       "let regex decide whether the model sees a human message"
     ]
+  },
+  {
+    "id": "agentic_system_plan_requires_prd_task_map_and_thin_harness",
+    "user_prompt": "Use uberplan to plan an agentic refactor system. It should avoid deterministic monoliths, use reusable skills and tools, follow Codex and OpenClaude/Claude Code conventions where approved sources are available, and give coding agents a detailed plan they can execute.",
+    "expected_tier": 3,
+    "required_lanes": [
+      "Architecture Steward",
+      "Agent Advocate / Agent Failure RCA",
+      "First-Principles Simplifier / Complexity Auditor",
+      "Quality/Eval Strategist"
+    ],
+    "required_behavior": [
+      "produce a checkable Product / PRD checklist",
+      "produce a detailed task map with stable task IDs dependencies owners write scopes done conditions evidence and a Mermaid diagram",
+      "include a thin harness / fat agent rubric that blocks deterministic monolith blob router regex or keyword semantic-authority drift",
+      "prefer reusable modular encapsulated skills and tools with explicit downstream wrapper boundaries",
+      "include a source-convention check for approved local or public Codex and OpenClaude/Claude Code conventions without copying leaked or proprietary code",
+      "define testable acceptance goals across unit/regression integration acceptance e2e or simulation and eval/replay evidence using real bugs or real content where possible"
+    ],
+    "forbidden_behavior": [
+      "treat thin harness as a vague style preference",
+      "ship only a prose plan with no PRD checklist or Mermaid task map",
+      "let deterministic routers own ambiguous agent judgment"
+    ]
   }
 ]
