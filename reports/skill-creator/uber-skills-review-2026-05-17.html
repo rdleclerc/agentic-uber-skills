@@ -1,0 +1,195 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>agentic-uber-skills Eval Report</title>
+  <style>
+    :root { color-scheme: light; --ink:#17202a; --muted:#586575; --line:#d8dee8; --bg:#f7f9fc; --panel:#ffffff; }
+    body { margin:0; font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; color:var(--ink); background:var(--bg); }
+    main { max-width:1100px; margin:0 auto; padding:32px 20px 48px; }
+    header.hero { border-bottom:1px solid var(--line); margin-bottom:22px; padding-bottom:18px; }
+    h1 { margin:0 0 8px; font-size:28px; letter-spacing:0; }
+    p { line-height:1.5; }
+    .meta, .counts { color:var(--muted); display:flex; flex-wrap:wrap; gap:8px; }
+    .pill { border:1px solid var(--line); border-radius:999px; padding:4px 9px; background:var(--panel); font-size:13px; }
+    .pass { border-color:#7bc99a; } .partial { border-color:#e5bd5a; } .fail { border-color:#dc7d7d; } .blocked { border-color:#9ba7b7; }
+    .case { background:var(--panel); border:1px solid var(--line); border-left-width:5px; border-radius:8px; padding:18px; margin:16px 0; }
+    .verdict-pass { border-left-color:#34a853; } .verdict-partial { border-left-color:#d59b00; } .verdict-fail { border-left-color:#c5221f; } .verdict-blocked { border-left-color:#748094; }
+    .case header { display:flex; justify-content:space-between; gap:12px; align-items:center; }
+    .case-id { color:var(--muted); font-size:13px; }
+    .verdict { font-weight:700; text-transform:uppercase; font-size:12px; }
+    .case h2 { font-size:18px; margin:10px 0 14px; }
+    dl { display:grid; grid-template-columns:minmax(110px, 160px) 1fr; gap:10px 14px; margin:0; }
+    dt { color:var(--muted); font-weight:700; }
+    dd { margin:0; white-space:pre-wrap; }
+    section { margin-top:28px; }
+    code { background:#eef2f7; padding:1px 4px; border-radius:4px; }
+  </style>
+</head>
+<body>
+  <main>
+    <header class="hero">
+      <h1>agentic-uber-skills Eval Report</h1>
+      <div class="meta"><span>2026-05-17 skill-creator review</span><span>10 cases</span></div>
+      <p>Codex skill-creator review of the Uber skill pack. All skills pass basic quick validation. All skills with package lints and tests pass them. The earlier deep-rca hardening gap has been closed with Codex metadata, golden evals, package lint, tests, and removal of the package-local README.</p>
+      <div class="counts"><span class="pill pass">pass: 10</span> <span class="pill partial">partial: 0</span> <span class="pill fail">fail: 0</span> <span class="pill blocked">blocked: 0</span></div>
+    </header>
+    <section aria-label="Eval cases">
+      
+            <article class="case verdict-pass">
+              <header>
+                <span class="case-id">pack-quick-validation</span>
+                <span class="verdict">pass</span>
+              </header>
+              <h2>Validate all Uber skill folders with the Codex skill quick validator.</h2>
+              <dl>
+                <dt>Expected</dt><dd>Every SKILL.md has valid frontmatter, a valid name, and a valid description.</dd>
+                <dt>With Skill</dt><dd>All nine folders passed quick_validate.py: deep-rca, skill-creator, uberaccept, uberassess, ubergoal, uberplan, ubershow, ubersimplify, and uberskillevolver.</dd>
+                <dt>Without Skill</dt><dd>Not run; this review used the repo-local Codex skill-creator validator as the structural baseline.</dd>
+                <dt>Notes</dt><dd>Command used /Users/rob/repos/agentic-uber-skills/skill-creator/scripts/quick_validate.py through uv with pyyaml.</dd>
+              </dl>
+            </article>
+            
+            <article class="case verdict-pass">
+              <header>
+                <span class="case-id">deep-rca-packaging-gap</span>
+                <span class="verdict">pass</span>
+              </header>
+              <h2>Review deep-rca as a Codex skill package.</h2>
+              <dl>
+                <dt>Expected</dt><dd>Codex metadata, eval/trigger examples, and at least small validation coverage for a reusable skill.</dd>
+                <dt>With Skill</dt><dd>deep-rca now passes quick validation, package lint, and tests. It has agents/openai.yaml, golden trigger/non-trigger evals, a package lint, unit tests, and no package-local README.</dd>
+                <dt>Without Skill</dt><dd>A basic markdown-only review would likely miss the pack-shape gap because the skill text itself is strong.</dd>
+                <dt>Notes</dt><dd>Hardening completed after the initial review finding.</dd>
+              </dl>
+            </article>
+            
+            <article class="case verdict-pass">
+              <header>
+                <span class="case-id">skill-creator-codex-native</span>
+                <span class="verdict">pass</span>
+              </header>
+              <h2>Review the new repo-local skill-creator as a general Codex skill creator.</h2>
+              <dl>
+                <dt>Expected</dt><dd>Codex-native wording, provenance boundary, eval-driven extension, report generator, installability, and tests.</dd>
+                <dt>With Skill</dt><dd>skill-creator passed quick validation, package lint, and its tests. It has Codex-native wording, provenance notice, eval-driven extension, HTML report generator, openai metadata, and installed symlink coverage.</dd>
+                <dt>Without Skill</dt><dd>The prior hidden system skill was not repo-owned and did not include the repo-local eval-driven extension.</dd>
+                <dt>Notes</dt><dd>Residual risk: it has no golden trigger evals of its own yet; add held-out trigger/non-trigger examples after first real use.</dd>
+              </dl>
+            </article>
+            
+            <article class="case verdict-pass">
+              <header>
+                <span class="case-id">ubergoal-wrapper-shape</span>
+                <span class="verdict">pass</span>
+              </header>
+              <h2>Review ubergoal for thin-wrapper behavior and refactor-campaign usability.</h2>
+              <dl>
+                <dt>Expected</dt><dd>Thin lifecycle router, not a monolith; routes to focused phase skills and captures refactor-campaign profile without requiring long repeated prompts.</dd>
+                <dt>With Skill</dt><dd>ubergoal passed quick validation, package lint, and tests. It remains a thin lifecycle wrapper with refactor-campaign profile wiring and goal-objective validation.</dd>
+                <dt>Without Skill</dt><dd>No separate baseline run; evidence is package lint/tests plus SKILL.md review.</dd>
+                <dt>Notes</dt><dd>Continue watching for wrapper bloat as refactor-campaign behavior matures.</dd>
+              </dl>
+            </article>
+            
+            <article class="case verdict-pass">
+              <header>
+                <span class="case-id">uberplan-agentic-planning</span>
+                <span class="verdict">pass</span>
+              </header>
+              <h2>Review uberplan for Codex general planning quality.</h2>
+              <dl>
+                <dt>Expected</dt><dd>Checkable PRD/task map, thin harness/fat agent rubric, source-convention check, acceptance goals, and validators.</dd>
+                <dt>With Skill</dt><dd>uberplan passed quick validation, package lint, and 16 tests. It now validates PRD checklist, Mermaid task map, thin-harness rubric, source-convention check, regex/keyword semantic gate, and evidence layers.</dd>
+                <dt>Without Skill</dt><dd>Prior planning relied more on prose expectations and would be easier for future agents to skip.</dd>
+                <dt>Notes</dt><dd>This is the strongest current example of skill-creator methodology turned into executable gates.</dd>
+              </dl>
+            </article>
+            
+            <article class="case verdict-pass">
+              <header>
+                <span class="case-id">uberaccept-final-proof</span>
+                <span class="verdict">pass</span>
+              </header>
+              <h2>Review uberaccept for final acceptance quality.</h2>
+              <dl>
+                <dt>Expected</dt><dd>Adversarial acceptance, architecture drift checks, boundary checks, topology checks, and validators.</dd>
+                <dt>With Skill</dt><dd>uberaccept passed quick validation, package lint, and 14 tests. It has final acceptance and architecture-steward validators with negative fixtures.</dd>
+                <dt>Without Skill</dt><dd>No separate baseline run; evidence is package lint/tests plus SKILL.md review.</dd>
+                <dt>Notes</dt><dd>No immediate packaging issue found.</dd>
+              </dl>
+            </article>
+            
+            <article class="case verdict-pass">
+              <header>
+                <span class="case-id">uberassess-source-boundary</span>
+                <span class="verdict">pass</span>
+              </header>
+              <h2>Review uberassess for source-to-recommendation boundaries.</h2>
+              <dl>
+                <dt>Expected</dt><dd>Assessment packets, no-implementation boundary, project fit, source resolution, and approval separation.</dd>
+                <dt>With Skill</dt><dd>uberassess passed quick validation, package lint, and 9 tests. Its description and validators preserve assessment vs implementation boundaries.</dd>
+                <dt>Without Skill</dt><dd>No separate baseline run; evidence is package lint/tests plus SKILL.md review.</dd>
+                <dt>Notes</dt><dd>No immediate packaging issue found.</dd>
+              </dl>
+            </article>
+            
+            <article class="case verdict-pass">
+              <header>
+                <span class="case-id">ubershow-visual-artifacts</span>
+                <span class="verdict">pass</span>
+              </header>
+              <h2>Review ubershow as a Codex utility skill.</h2>
+              <dl>
+                <dt>Expected</dt><dd>Visual artifacts only when useful, source authority preserved, static templates, receipt mechanism, and tests.</dd>
+                <dt>With Skill</dt><dd>ubershow passed quick validation, package lint, and 6 tests. It has templates, schema, snippets, and copyable decision receipt guidance.</dd>
+                <dt>Without Skill</dt><dd>No separate baseline run; evidence is package lint/tests plus SKILL.md review.</dd>
+                <dt>Notes</dt><dd>Implicit invocation is acceptable because it is a task-specific utility, not an Uber lifecycle phase.</dd>
+              </dl>
+            </article>
+            
+            <article class="case verdict-pass">
+              <header>
+                <span class="case-id">ubersimplify-proof-gates</span>
+                <span class="verdict">pass</span>
+              </header>
+              <h2>Review ubersimplify for simplification/refactor safety.</h2>
+              <dl>
+                <dt>Expected</dt><dd>Audit-first behavior, patch authorization gates, rollback evidence, dynamic-reference safety, and tests.</dd>
+                <dt>With Skill</dt><dd>ubersimplify passed quick validation, package lint, and 12 tests. It has strong report validators and negative fixtures.</dd>
+                <dt>Without Skill</dt><dd>No separate baseline run; evidence is package lint/tests plus SKILL.md review.</dd>
+                <dt>Notes</dt><dd>No immediate packaging issue found.</dd>
+              </dl>
+            </article>
+            
+            <article class="case verdict-pass">
+              <header>
+                <span class="case-id">uberskillevolver-learning-loop</span>
+                <span class="verdict">pass</span>
+              </header>
+              <h2>Review uberskillevolver for skill-learning governance.</h2>
+              <dl>
+                <dt>Expected</dt><dd>Evidence-backed learning, no silent self-modification, promotion batches, validators, and tests.</dd>
+                <dt>With Skill</dt><dd>uberskillevolver passed quick validation, package lint, and 6 tests. It validates learning records and promotion batches.</dd>
+                <dt>Without Skill</dt><dd>No separate baseline run; evidence is package lint/tests plus SKILL.md review.</dd>
+                <dt>Notes</dt><dd>No immediate packaging issue found.</dd>
+              </dl>
+            </article>
+            
+    </section>
+    <section aria-label="Description tuning">
+      <h2>Description Tuning</h2>
+      <dl>
+        <dt>Old</dt><dd>Current descriptions reviewed in place.</dd>
+        <dt>New</dt><dd>No immediate broad trigger-description rewrite recommended. deep-rca hardening is complete; add held-out trigger/non-trigger evals for skill-creator after first real use.</dd>
+        <dt>Held-out examples</dt><dd><ul><li>Use deep-rca to explain why this repeated CI failure keeps coming back.</li>
+<li>Create a general Codex skill for reviewing Terraform modules.</li>
+<li>Run a codebase refactor campaign overnight and generate a report.</li>
+<li>Make an HTML decision board for these architecture options.</li>
+<li>Assess whether this GitHub repo is worth adopting before we implement anything.</li></ul></dd>
+      </dl>
+    </section>
+  </main>
+</body>
+</html>

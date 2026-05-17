@@ -1,0 +1,8 @@
+interface:
+  display_name: "Skill Creator"
+  short_description: "Create, update, or evaluate a Codex skill"
+  default_prompt: "Use $skill-creator when creating, updating, or evaluating Codex skills. Keep the skill Codex-native, concise, and progressively disclosed; use scripts/references/assets only when they reduce repeated work or improve reliability; for non-trivial skills run the eval-driven extension with intent examples, eval prompts, with/without-skill comparison when feasible, an HTML review report, and trigger-description tuning."
+  icon_small: "./assets/skill-creator-small.svg"
+  icon_large: "./assets/skill-creator.png"
+policy:
+  allow_implicit_invocation: true

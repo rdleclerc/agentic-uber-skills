@@ -79,9 +79,18 @@ class PackContractTests(unittest.TestCase):
         self.assertIn("Agent Advocate = agent-behavior-specific RCA lens", text)
         self.assertIn("use the `deep-rca` ladder for depth", text)
 
+    def test_deep_rca_is_hardened_as_codex_utility_skill(self) -> None:
+        self.assertFalse((ROOT / "deep-rca" / "README.md").exists())
+        self.assertTrue((ROOT / "deep-rca" / "agents" / "openai.yaml").exists())
+        self.assertTrue((ROOT / "deep-rca" / "evals" / "golden_skill_invocations.json").exists())
+        self.assertTrue((ROOT / "deep-rca" / "scripts" / "lint_skill_package.py").exists())
+        meta = (ROOT / "deep-rca" / "agents" / "openai.yaml").read_text()
+        self.assertIn("allow_implicit_invocation: true", meta)
+        self.assertIn("$deep-rca", meta)
+
     def test_install_docs_include_full_pack(self) -> None:
         text = (ROOT / "README.md").read_text()
-        loop = "for s in deep-rca ubergoal uberplan uberaccept uberskillevolver ubersimplify uberassess ubershow; do"
+        loop = "for s in deep-rca skill-creator ubergoal uberplan uberaccept uberskillevolver ubersimplify uberassess ubershow; do"
         self.assertEqual(text.count(loop), 3)
 
 

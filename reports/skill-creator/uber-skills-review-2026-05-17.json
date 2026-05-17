@@ -1,0 +1,108 @@
+{
+  "skill_name": "agentic-uber-skills",
+  "iteration": "2026-05-17 skill-creator review",
+  "summary": "Codex skill-creator review of the Uber skill pack. All skills pass basic quick validation. All skills with package lints and tests pass them. The earlier deep-rca hardening gap has been closed with Codex metadata, golden evals, package lint, tests, and removal of the package-local README.",
+  "cases": [
+    {
+      "id": "pack-quick-validation",
+      "prompt": "Validate all Uber skill folders with the Codex skill quick validator.",
+      "expected": "Every SKILL.md has valid frontmatter, a valid name, and a valid description.",
+      "with_skill": "All nine folders passed quick_validate.py: deep-rca, skill-creator, uberaccept, uberassess, ubergoal, uberplan, ubershow, ubersimplify, and uberskillevolver.",
+      "without_skill": "Not run; this review used the repo-local Codex skill-creator validator as the structural baseline.",
+      "verdict": "pass",
+      "notes": "Command used /Users/rob/repos/agentic-uber-skills/skill-creator/scripts/quick_validate.py through uv with pyyaml."
+    },
+    {
+      "id": "deep-rca-packaging-gap",
+      "prompt": "Review deep-rca as a Codex skill package.",
+      "expected": "Codex metadata, eval/trigger examples, and at least small validation coverage for a reusable skill.",
+      "with_skill": "deep-rca now passes quick validation, package lint, and tests. It has agents/openai.yaml, golden trigger/non-trigger evals, a package lint, unit tests, and no package-local README.",
+      "without_skill": "A basic markdown-only review would likely miss the pack-shape gap because the skill text itself is strong.",
+      "verdict": "pass",
+      "notes": "Hardening completed after the initial review finding."
+    },
+    {
+      "id": "skill-creator-codex-native",
+      "prompt": "Review the new repo-local skill-creator as a general Codex skill creator.",
+      "expected": "Codex-native wording, provenance boundary, eval-driven extension, report generator, installability, and tests.",
+      "with_skill": "skill-creator passed quick validation, package lint, and its tests. It has Codex-native wording, provenance notice, eval-driven extension, HTML report generator, openai metadata, and installed symlink coverage.",
+      "without_skill": "The prior hidden system skill was not repo-owned and did not include the repo-local eval-driven extension.",
+      "verdict": "pass",
+      "notes": "Residual risk: it has no golden trigger evals of its own yet; add held-out trigger/non-trigger examples after first real use."
+    },
+    {
+      "id": "ubergoal-wrapper-shape",
+      "prompt": "Review ubergoal for thin-wrapper behavior and refactor-campaign usability.",
+      "expected": "Thin lifecycle router, not a monolith; routes to focused phase skills and captures refactor-campaign profile without requiring long repeated prompts.",
+      "with_skill": "ubergoal passed quick validation, package lint, and tests. It remains a thin lifecycle wrapper with refactor-campaign profile wiring and goal-objective validation.",
+      "without_skill": "No separate baseline run; evidence is package lint/tests plus SKILL.md review.",
+      "verdict": "pass",
+      "notes": "Continue watching for wrapper bloat as refactor-campaign behavior matures."
+    },
+    {
+      "id": "uberplan-agentic-planning",
+      "prompt": "Review uberplan for Codex general planning quality.",
+      "expected": "Checkable PRD/task map, thin harness/fat agent rubric, source-convention check, acceptance goals, and validators.",
+      "with_skill": "uberplan passed quick validation, package lint, and 16 tests. It now validates PRD checklist, Mermaid task map, thin-harness rubric, source-convention check, regex/keyword semantic gate, and evidence layers.",
+      "without_skill": "Prior planning relied more on prose expectations and would be easier for future agents to skip.",
+      "verdict": "pass",
+      "notes": "This is the strongest current example of skill-creator methodology turned into executable gates."
+    },
+    {
+      "id": "uberaccept-final-proof",
+      "prompt": "Review uberaccept for final acceptance quality.",
+      "expected": "Adversarial acceptance, architecture drift checks, boundary checks, topology checks, and validators.",
+      "with_skill": "uberaccept passed quick validation, package lint, and 14 tests. It has final acceptance and architecture-steward validators with negative fixtures.",
+      "without_skill": "No separate baseline run; evidence is package lint/tests plus SKILL.md review.",
+      "verdict": "pass",
+      "notes": "No immediate packaging issue found."
+    },
+    {
+      "id": "uberassess-source-boundary",
+      "prompt": "Review uberassess for source-to-recommendation boundaries.",
+      "expected": "Assessment packets, no-implementation boundary, project fit, source resolution, and approval separation.",
+      "with_skill": "uberassess passed quick validation, package lint, and 9 tests. Its description and validators preserve assessment vs implementation boundaries.",
+      "without_skill": "No separate baseline run; evidence is package lint/tests plus SKILL.md review.",
+      "verdict": "pass",
+      "notes": "No immediate packaging issue found."
+    },
+    {
+      "id": "ubershow-visual-artifacts",
+      "prompt": "Review ubershow as a Codex utility skill.",
+      "expected": "Visual artifacts only when useful, source authority preserved, static templates, receipt mechanism, and tests.",
+      "with_skill": "ubershow passed quick validation, package lint, and 6 tests. It has templates, schema, snippets, and copyable decision receipt guidance.",
+      "without_skill": "No separate baseline run; evidence is package lint/tests plus SKILL.md review.",
+      "verdict": "pass",
+      "notes": "Implicit invocation is acceptable because it is a task-specific utility, not an Uber lifecycle phase."
+    },
+    {
+      "id": "ubersimplify-proof-gates",
+      "prompt": "Review ubersimplify for simplification/refactor safety.",
+      "expected": "Audit-first behavior, patch authorization gates, rollback evidence, dynamic-reference safety, and tests.",
+      "with_skill": "ubersimplify passed quick validation, package lint, and 12 tests. It has strong report validators and negative fixtures.",
+      "without_skill": "No separate baseline run; evidence is package lint/tests plus SKILL.md review.",
+      "verdict": "pass",
+      "notes": "No immediate packaging issue found."
+    },
+    {
+      "id": "uberskillevolver-learning-loop",
+      "prompt": "Review uberskillevolver for skill-learning governance.",
+      "expected": "Evidence-backed learning, no silent self-modification, promotion batches, validators, and tests.",
+      "with_skill": "uberskillevolver passed quick validation, package lint, and 6 tests. It validates learning records and promotion batches.",
+      "without_skill": "No separate baseline run; evidence is package lint/tests plus SKILL.md review.",
+      "verdict": "pass",
+      "notes": "No immediate packaging issue found."
+    }
+  ],
+  "description_tuning": {
+    "old": "Current descriptions reviewed in place.",
+    "new": "No immediate broad trigger-description rewrite recommended. deep-rca hardening is complete; add held-out trigger/non-trigger evals for skill-creator after first real use.",
+    "held_out_examples": [
+      "Use deep-rca to explain why this repeated CI failure keeps coming back.",
+      "Create a general Codex skill for reviewing Terraform modules.",
+      "Run a codebase refactor campaign overnight and generate a report.",
+      "Make an HTML decision board for these architecture options.",
+      "Assess whether this GitHub repo is worth adopting before we implement anything."
+    ]
+  }
+}

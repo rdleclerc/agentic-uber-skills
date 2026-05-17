@@ -8,8 +8,19 @@ import re
 import sys
 
 DEFAULT_ROOT = Path(__file__).resolve().parents[1]
-PACK_SKILLS = ["deep-rca", "ubergoal", "uberplan", "uberaccept", "uberskillevolver", "ubersimplify", "uberassess", "ubershow"]
+PACK_SKILLS = [
+    "deep-rca",
+    "skill-creator",
+    "ubergoal",
+    "uberplan",
+    "uberaccept",
+    "uberskillevolver",
+    "ubersimplify",
+    "uberassess",
+    "ubershow",
+]
 UBER_PHASE_SKILLS = ["uberplan", "uberaccept", "uberskillevolver", "ubersimplify", "uberassess"]
+UTILITY_IMPLICIT_SKILLS = ["deep-rca", "skill-creator", "ubershow"]
 ROOT_REQUIRED_FILES = ["AGENTS.md", "CLAUDE.md", "README.md", "ROADMAP.md"]
 AGENTS_REQUIRED_PHRASES = [
     "$ubergoal` is the only default/implicit Uber lifecycle router",
@@ -80,6 +91,9 @@ def main() -> int:
     for skill in UBER_PHASE_SKILLS:
         if implicit.get(skill) != "false":
             errors.append(f"{skill} must be explicit/wrapper-invoked with allow_implicit_invocation: false")
+    for skill in UTILITY_IMPLICIT_SKILLS:
+        if policy_value(root, skill) != "true":
+            errors.append(f"{skill} utility metadata must allow task-specific implicit invocation")
 
     for skill in UBER_PHASE_SKILLS:
         skill_text = read(root / skill / "SKILL.md")
@@ -94,6 +108,19 @@ def main() -> int:
                 errors.append(f"{skill} SKILL.md must state direct-use/routed-only policy")
             if "only when explicitly invoked or routed by $ubergoal" not in meta:
                 errors.append(f"{skill} metadata must state explicit-or-routed invocation")
+
+    deep = read(root / "deep-rca" / "SKILL.md")
+    deep_meta = read(root / "deep-rca" / "agents" / "openai.yaml")
+    deep_evals = root / "deep-rca" / "evals" / "golden_skill_invocations.json"
+    deep_lint = root / "deep-rca" / "scripts" / "lint_skill_package.py"
+    if "self-challenge loop" not in deep or "lowest enforceable layer" not in deep:
+        errors.append("deep-rca must keep RCA depth and durable-fix doctrine")
+    if "$deep-rca" not in deep_meta or "proximate cause" not in deep_meta:
+        errors.append("deep-rca metadata must describe proximate-cause RCA trigger")
+    if not deep_evals.exists() or not deep_lint.exists():
+        errors.append("deep-rca must keep golden evals and package lint")
+    if (root / "deep-rca" / "README.md").exists():
+        errors.append("deep-rca must not carry package-local README.md")
 
     agents = read(root / "AGENTS.md")
     for phrase in AGENTS_REQUIRED_PHRASES:
