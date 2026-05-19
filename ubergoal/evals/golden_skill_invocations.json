@@ -88,5 +88,28 @@
       "do not implement before approval",
       "only hand approved build work to uberplan/ubergoal"
     ]
+  },
+  {
+    "id": "final_policy_adherence_check_reports_surprises",
+    "user_prompt": "Use ubergoal to finish this Tier 3 implementation. I especially want to know whether the implementation drifted into a fat harness and what tradeoffs or surprising choices were made.",
+    "expected_behavior": [
+      "route final proof to uberaccept before completion",
+      "check implementation against the uberplan and OpenClaw/agentic architecture policy",
+      "verify thin-harness/fat-agent adherence and block deterministic monolith drift",
+      "use specialist review-board agents or lenses for Tier 2/3 final policy checks when available and allowed",
+      "report issues tradeoffs implementation choices and surprises in the final handoff",
+      "avoid solo self-certification or update_goal complete before acceptance"
+    ]
+  },
+  {
+    "id": "final_handoff_reports_skills_used",
+    "user_prompt": "Use ubergoal to complete this work and tell me which Uber skills you actually used so I can verify we used our created skill system.",
+    "expected_behavior": [
+      "include a Skills used summary in the ledger or final handoff",
+      "list ubergoal uberassess uberplan uberaccept ubersimplify uberskillevolver ubershow deep-rca and skill-creator as used skipped or not applicable",
+      "name where each used skill's artifact or evidence lives",
+      "explain why applicable skills were skipped instead of silently omitting them",
+      "do not claim completion with only generic planning language"
+    ]
   }
 ]

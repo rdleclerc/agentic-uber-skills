@@ -34,7 +34,7 @@ Use this as the checkable product requirements document for Tier 2/3 work. Keep 
 
 ## Task map / implementation graph
 
-For Tier 2/3 work, provide stable task IDs, dependencies, owners, write scopes, done conditions, and evidence. Include a Mermaid diagram that coding agents can follow.
+For Tier 2/3 work, provide stable task IDs, dependencies, owners, write scopes, done conditions, evidence, and whether each task is serial, parallelizable, or on the critical path. Include a Mermaid diagram that coding agents can follow.
 
 ```mermaid
 flowchart TD
@@ -53,6 +53,27 @@ flowchart TD
 | T1 |  | none |  |  |  |  |
 | T2 |  | T1 |  |  |  |  |
 | T3 |  | T1 |  |  |  |  |
+
+## Verifiable subgoals and metrics
+
+For Tier 1+ work, convert the objective into high-quality subgoals. Every subgoal needs observable evidence; use quantitative scores where useful, but allow qualitative rubrics when judgment is the product.
+
+| Subgoal ID | Outcome | Acceptance evidence | Metric / score / rubric | Owner | Parallelizable? | Done when |
+|---|---|---|---|---|---|---|
+| G1 |  | command/artifact/eval/manual proof |  |  | yes/no/serial |  |
+| G2 |  | command/artifact/eval/manual proof |  |  | yes/no/serial |  |
+
+## Parallelization plan
+
+Plan the work graph even if the current runtime or user does not authorize subagents. Mark what can run in parallel, what must stay serial, and what write scopes must remain disjoint. Do not spawn agents unless the active runtime/user policy allows it.
+
+- Critical path:
+- Parallelizable slices:
+- Serial/blocking slices:
+- Disjoint write scopes:
+- Max concurrency / batching policy:
+- Integration order:
+- If subagents are not authorized or unavailable:
 
 ## Tier decision
 
@@ -105,6 +126,25 @@ Required for non-obvious feature architecture. Keep concise; do not force this f
 | Surface | Files/areas | Risk | Owner |
 |---|---|---|---|
 |  |  |  |  |
+
+## Target architecture / file tree
+
+Required for new, moved, or meaningfully reorganized code files. Propose the intended structure before implementation so coding agents do not create root-level dumps, random helpers, or mixed-concern folders. If not applicable, say why.
+
+```text
+<target package or repo slice>/
+  <owning module>/
+    <public seam file>
+    <private implementation file>
+    tests/
+```
+
+- Owning package/folder:
+- Public seams:
+- Private/internal modules:
+- Tests/evals location:
+- Files/folders to avoid or delete:
+- Separation-of-concerns rationale:
 
 ## Repository topology / package seam
 
@@ -249,6 +289,18 @@ Only fill this if the user explicitly authorized subagents/parallel work.
 | OpenClaw / Platform Steward | Bring OpenClaw/Type0/runtime/local-policy constraints when relevant | read local policy/docs only as needed | platform constraints and preflight needs | no policy/protected-file blockers |
 | Quality/Eval Strategist | Ensure risk-to-evidence map and rubric are real | read plan/tests/evals | evidence matrix | no material evidence gaps |
 
+## Code-health / dead-code tool plan
+
+Required for Tier 2/3 work and for refactors, deletions, new modules, or package moves. Use repo-local tools first; name gaps explicitly. Static dead-code tools produce candidates, not automatic deletion authority.
+
+- Stack/languages touched:
+- Repo-local lint/type/test gates:
+- Dead-code/static tools to run or why unavailable: Python `vulture`, `ruff`, `pyright`/`mypy`; TS/JS `knip`, `ts-prune`, `depcheck`, `eslint`, `tsc`; plus `grep`/`git grep`/call-site review as applicable.
+- Dynamic-reference safeguards: CLI entrypoints, framework routes, configs, migrations, prompts, tools, plugins, generated files, and external references checked.
+- Deletion/refactor candidates and proof required:
+- Tool findings treated as candidates, not deletion authority:
+- Cleanup accepted/deferred:
+
 ## Risk-to-evidence map
 
 | Risk/failure mode | Required evidence | Command/artifact | Owner |
@@ -271,13 +323,16 @@ Score only relevant dimensions. Use 0 = blocker, 1 = weak/unresolved, 2 = accept
 | Regex / keyword semantics | Regex/keyword uses are classified; natural-language semantic authority is prohibited unless explicitly approved with eval/replay and rollback | Regex / keyword semantic gate |  |
 | PRD checklist | Requirements, non-goals, acceptance targets, and deferred items are checkable | Product / PRD checklist |  |
 | Task map | Coding tasks have stable IDs, dependencies, owners, write scopes, done conditions, evidence, and Mermaid graph | Task map / implementation graph |  |
+| Verifiable subgoals | Objective is decomposed into observable subgoals with evidence and metrics/rubrics | Verifiable subgoals and metrics |  |
+| Parallelization | Critical path, parallelizable slices, serial blockers, disjoint write scopes, batching, and integration order are explicit | Parallelization plan |  |
 | Thin harness / fat agent | Agentic behavior keeps deterministic code in the harness and adaptive judgment in the agent; monolith/regex/router drift is blocked | Thin harness / fat agent rubric |  |
 | Source-convention check | Approved/local/public Codex and OpenClaude/Claude Code conventions were checked where material; no leaked/proprietary code copied | Source-convention check |  |
 | Architecture | Relevant guide sections were applied; deterministic harness/adaptive policy split is respected where relevant | Architecture Steward report or explicit non-applicability |  |
+| Target file tree | New/moved/reorganized files have a proposed owning package, public/private seams, test/eval locations, and separation-of-concerns rationale | Target architecture / file tree |  |
 | Repository topology | New/moved code files land in named packages and repo topology/dependency guard is run or added | topology test/dependency-map command or explicit accepted gap |  |
 | Ownership | Write sets and integrator role are clear | claim/briefs |  |
 | Code quality | Code is simple, maintainable, typed/idiomatic where applicable | review/tests |  |
-| Dead code | References searched and deletions justified | rg/audit output |  |
+| Dead code | References searched and deletions justified; stack-appropriate dead-code tools run or unavailable gaps named | code-health/dead-code tool plan plus tool output |  |
 | Unit/regression tests | Changed behavior has focused coverage | test command output |  |
 | Integration tests | Cross-component behavior is verified where relevant | command/output or explicit non-applicability |  |
 | UI/browser tests | User-visible UI flows verified where relevant | browser/e2e evidence or explicit non-applicability |  |
@@ -285,7 +340,30 @@ Score only relevant dimensions. Use 0 = blocker, 1 = weak/unresolved, 2 = accept
 | Safety | External/destructive side effects are approved and idempotent | approval/evidence |  |
 | Observability | Logs/traces/artifacts are enough to debug failures | trace/log artifacts |  |
 | Rollback | Revert/adoption-state plan exists | rollback note |  |
+| Decision/tradeoff register | Issues, tradeoffs, implementation choices, and surprising decisions are explicit | Decision / tradeoff / surprise register |  |
+| Plan acceptance | Plan was rejected or accepted against OpenClaw/agentic architecture, thin-harness/fat-agent policy, topology, dead-code, and evidence gates | Plan acceptance gate |  |
 | Acceptance evidence | Commands, outputs, screenshots/traces/gaps recorded | final acceptance report |  |
+
+## Decision / tradeoff / surprise register
+
+Required before launch and final handoff. Record issues, implementation choices, tradeoffs, and anything likely to surprise a future agent or human reviewer.
+
+| Item | Type: issue/tradeoff/choice/surprise | Decision or finding | Why it was chosen / accepted | Risk or surprise | Follow-up / owner |
+|---|---|---|---|---|---|
+| D1 |  |  |  |  |  |
+
+## Plan acceptance gate
+
+Required for Tier 2/3 before implementation. Try to reject the plan before launch, especially for OpenClaw/agentic architecture drift and fat-harness creep.
+
+- OpenClaw / agentic architecture policy checked:
+- Thin-harness / fat-agent adherence:
+- Fat-harness or deterministic-monolith risk:
+- Source authority / tool-contract / context-affordance gaps:
+- File-tree/topology/dead-code plan adequate:
+- Issues/tradeoffs/surprises recorded:
+- Material blockers:
+- Acceptance verdict: proceed? yes/no
 
 ## Pre-launch confidence gate
 

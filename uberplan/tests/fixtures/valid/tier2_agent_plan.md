@@ -41,6 +41,24 @@ flowchart TD
 | T4 | Preserve real bug as eval seed | T1 | eval owner | evals/golden_skill_invocations.json | recurring overwrite bug is captured as replayable fixture | eval schema test output |
 | T5 | Acceptance review and report | T2, T3, T4 | integrator | no new writes except report | all goals satisfy acceptance rubric | unittest, package lint, and acceptance summary |
 
+## Verifiable subgoals and metrics
+
+| Subgoal ID | Outcome | Acceptance evidence | Metric / score / rubric | Owner | Parallelizable? | Done when |
+|---|---|---|---|---|---|---|
+| G1 | Worker handoff contract is checkable | agent brief/template review | rubric score 3 for ownership and evidence | prompt owner | yes | role/read/write/return/stop fields are present |
+| G2 | Validator catches missing planning evidence | unittest invalid fixtures | 100% of targeted invalid fixtures fail | validator owner | yes | validator tests pass |
+| G3 | Behavioral lesson is replayable later | golden eval seed | eval schema includes recurrence case | eval owner | serial after G1 | eval schema test passes |
+
+## Parallelization plan
+
+- Critical path: T1 defines the invariant, then T5 acceptance waits for prompt/template, validator, and eval updates.
+- Parallelizable slices: T2 prompt/template work and T3 validator fixture work can run in parallel after T1; T4 eval seed can run after T1 and reconcile before T5.
+- Serial/blocking slices: T1 root-invariant reconstruction and T5 final acceptance are serial blockers.
+- Disjoint write scopes: prompt/template files, validator/tests, and eval JSON are separate write scopes.
+- Max concurrency / batching policy: up to three independent slices if subagents are authorized; otherwise main agent performs them sequentially.
+- Integration order: merge prompt/template, validator, then eval seed, then run full package checks.
+- If subagents are not authorized or unavailable: no subagents are required; the main agent performs all slices and records degraded parallelism only as a note.
+
 ## Tier decision
 - Tier: 2
 - Why this tier is sufficient: agent behavior changes are meaningful but contained to one skill package.
@@ -82,6 +100,30 @@ flowchart TD
 |---|---|---|---|
 | skill prompt | SKILL.md and templates/agent-brief.md | medium | overseer |
 | validators | scripts/validate_plan_contract.py | medium | overseer |
+
+## Target architecture / file tree
+
+```text
+uberplan/
+  SKILL.md
+  templates/
+    agent-brief.md
+    plan-contract.md
+  scripts/
+    validate_plan_contract.py
+  tests/
+    test_validators.py
+    fixtures/
+  evals/
+    golden_skill_invocations.json
+```
+
+- Owning package/folder: existing `uberplan/` skill package.
+- Public seams: `SKILL.md`, `templates/plan-contract.md`, and CLI validator `scripts/validate_plan_contract.py`.
+- Private/internal modules: fixture files and package-local test helpers.
+- Tests/evals location: `uberplan/tests/` and `uberplan/evals/`.
+- Files/folders to avoid or delete: no root-level helper scripts, no generated reports in source lanes, no unrelated package moves.
+- Separation-of-concerns rationale: prompt policy, templates, validators, fixtures, and eval seeds stay in their owning subfolders so future agents can find the right surface.
 
 ## Repository topology / package seam
 
@@ -206,6 +248,16 @@ Only used if user explicitly authorizes subagents.
 | Architecture Steward | Enforce guide and harness/policy split | read-only skill files | blocker/non-blocker findings | no material architecture blockers |
 | Agent Advocate / Agent Failure RCA | Explain why an agent would err | read-only prompts/templates/traces | failed invariant and recurrence evidence | root cause understood |
 
+## Code-health / dead-code tool plan
+
+- Stack/languages touched: Markdown skill/templates, Python validator/tests, JSON eval seed.
+- Repo-local lint/type/test gates: `python3 scripts/lint_pack_contract.py`, `python3 uberplan/scripts/lint_skill_package.py "$PWD/uberplan"`, and `python3 -B -m unittest discover -s uberplan/tests -v`.
+- Dead-code/static tools to run or why unavailable: use package lint plus `grep`/`git grep` call-site review for touched validator helpers; Python `vulture` may be run when installed, but absence is not a blocker for this contained package change.
+- Dynamic-reference safeguards: validator CLI entrypoint, templates, eval JSON, tests, and install docs checked before deletion.
+- Deletion/refactor candidates and proof required: none planned; any validator helper deletion needs call-site grep and passing validator tests.
+- Tool findings treated as candidates, not deletion authority: yes, static findings require Chesterton/dynamic-reference and rollback proof.
+- Cleanup accepted/deferred: accept cache removal via package lint; defer broad pack dead-code campaign to ubersimplify/refactor profile.
+
 ## Risk-to-evidence map
 
 | Risk/failure mode | Required evidence | Command/artifact | Owner |
@@ -232,14 +284,39 @@ Only used if user explicitly authorizes subagents.
 | Regex / keyword semantics | Regex/keyword uses are mechanical markdown contract parsing only; no natural-language semantic authority | Regex / keyword semantic gate | 3 |
 | PRD checklist | Requirements, non-goals, acceptance target, and deferred item are checkable | Product / PRD checklist | 3 |
 | Task map | Stable task IDs, dependencies, owners, write scopes, done conditions, evidence, and Mermaid graph are present | Task map / implementation graph | 3 |
+| Verifiable subgoals | Subgoals have observable evidence and metrics/rubrics | Verifiable subgoals and metrics | 3 |
+| Parallelization | Critical path, parallel slices, serial blockers, disjoint write scopes, batching, and integration order are explicit | Parallelization plan | 3 |
 | Thin harness / fat agent | Deterministic code enforces contract shape while adaptive agent reasoning owns planning judgment; monolith drift blocked | Thin harness / fat agent design rubric | 3 |
 | Source-convention check | Codex and OpenClaude / Claude Code convention source boundary is explicit; no leaked/proprietary code copied | Source-convention check | 3 |
 | Architecture | Guide sections applied and harness/policy split respected | Architecture Steward report | 3 |
+| Target file tree | Skill, template, validator, test, and eval changes stay in the proposed `uberplan/` owning tree | Target architecture / file tree | 3 |
 | Repository topology | New validator/test files stay inside the existing skill package and package lint/validator tests run | package lint and validator commands | 3 |
 | Ownership | Write sets and integrator role are clear | agent brief | 3 |
 | Code quality | Validators are simple and maintainable | tests and review | 3 |
+| Dead code | Package lint plus grep/git grep/call-site review covers touched helpers; tool findings remain candidates | Code-health / dead-code tool plan | 3 |
 | Unit/regression tests | Positive and negative validator fixtures pass | unittest output | 3 |
 | Evals | Golden behavioral cases exist for future forward tests | evals/golden_skill_invocations.json | 3 |
+| Decision/tradeoff register | Issues, tradeoffs, implementation choices, and surprises are recorded | Decision / tradeoff / surprise register | 3 |
+| Plan acceptance | OpenClaw/agentic architecture, thin-harness/fat-agent, topology, dead-code, source-authority, and evidence gates are accepted | Plan acceptance gate | 3 |
+
+## Decision / tradeoff / surprise register
+
+| Item | Type: issue/tradeoff/choice/surprise | Decision or finding | Why it was chosen / accepted | Risk or surprise | Follow-up / owner |
+|---|---|---|---|---|---|
+| D1 | choice | chose validator/template hardening instead of a fresh-agent eval harness | smaller change blocks the known overwrite failure now | future agents may assume behavioral evals already ran | evaluator owns later fresh-agent replay |
+| D2 | tradeoff | allow parallel work only with disjoint write scopes | preserves speed without shared-file collisions | no subagent speedup when write scopes overlap | overseer records serial fallback |
+| D3 | surprise | passing unit tests alone did not prove plan quality | acceptance needs topology, evidence, and agent-boundary proof | reviewers may over-trust green tests | final report must name missing layers |
+
+## Plan acceptance gate
+
+- OpenClaw / agentic architecture policy checked: yes, use thin deterministic validation around agent judgment and avoid hidden orchestration.
+- Thin-harness / fat-agent adherence: validator checks contract shape while agents own decomposition, synthesis, and judgment.
+- Fat-harness or deterministic-monolith risk: no material blocker; broad fresh-agent harness deferred because it would be too much machinery for this local package change.
+- Source authority / tool-contract / context-affordance gaps: no blocker; source authority remains skill files, validator outputs, and eval fixtures.
+- File-tree/topology/dead-code plan adequate: yes, package-local tree and lint/test/dead-code candidate policy are explicit.
+- Issues/tradeoffs/surprises recorded: yes, D1-D3 record implementation choices and surprises.
+- Material blockers: none
+- Acceptance verdict: proceed? yes
 
 ## Pre-launch confidence gate
 

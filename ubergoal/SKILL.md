@@ -17,7 +17,7 @@ Use the lightest tier that makes the work safe. Treat process as cost. Add agent
 |---|---|
 | Rigorous planning, review-board lanes, codebase exploration, confidence gate | `$uberplan` |
 | Implementation/execution coordination | main coding agent orchestrates; Tier 2+ uses bounded specialist review-board subagents when available |
-| Final acceptance, evidence audit, architecture drift, dead-code/test/eval proof | `$uberaccept` |
+| Final acceptance, policy-adherence audit, architecture drift, dead-code/test/eval proof, surprise/tradeoff report | `$uberaccept` |
 | Complexity/modularity/dead-code simplification campaign with timestamped trail | `$ubersimplify` |
 | Assess source/research signal/internal artifact before adoption | `$uberassess` |
 | Post-run learning for skills/prompts/workflows/agentic systems | `$uberskillevolver` |
@@ -54,10 +54,10 @@ Artifact precedence:
 2. **Plan.** For Tier 1, use the Coding Agent Work Contract as the compact plan unless risk demands more. For Tier 2/3, invoke or follow `$uberplan` and embed/extend the work contract. For Tier 0, use a concise plan/test note. Agentic-system plans must bias toward thin deterministic harnesses around capable agents, not deterministic monoliths that absorb agent judgment.
 3. **Create or bind the goal.** In Codex or any runtime with a platform goal object, explicit `ubergoal` use launches a compact goal by default for Tier 1+ work and for any task where the user explicitly names `ubergoal`. If a goal already exists, bind the work to it instead of creating a duplicate. Skip goal creation only when the user explicitly asks for no goal/lightweight mode, the runtime has no goal facility, or the task is not actually being handled through `ubergoal`.
 4. **Run the review board and execute.** Keep the main agent as orchestrator. Explicit `ubergoal` use authorizes bounded specialist review-board agents for Tier 2+ work unless the user says no agents/lightweight mode. Use implementation workers only when write scopes are disjoint.
-5. **Ledger.** For long work, maintain `templates/goal-ledger.md`.
+5. **Ledger.** For long work, maintain `templates/goal-ledger.md`, including the Skills used summary so final handoff proves which custom skills were used or skipped.
 6. **Assess sources/artifacts when needed.** Route source-to-recommendation due diligence to `$uberassess`; do not let assessment become implementation before approval.
 7. **Simplify when needed.** Invoke or follow `$ubersimplify` for opt-in complexity/dead-code/modularity campaigns; default to Audit mode unless patching is explicitly authorized.
-8. **Accept.** Invoke or follow `$uberaccept` before claiming completion or calling `update_goal(status="complete")`.
+8. **Accept.** Invoke or follow `$uberaccept` before claiming completion or calling `update_goal(status="complete")`; acceptance must check implementation against the `uberplan`, OpenClaw/agentic architecture, thin-harness/fat-agent policy, evidence gaps, and surprising tradeoffs/choices.
 9. **Learn.** For Tier 2/3 skill, prompt, workflow, multi-agent protocol, or agentic-system changes, invoke `$uberskillevolver` after acceptance.
 
 ## Tier selection
@@ -136,7 +136,7 @@ When implementation begins:
 
 ## Completion rule
 
-Do not call `update_goal(status="complete")` until `$uberaccept` says the objective is achieved, no required work remains, and every touched repo is locally committed, reverted, intentionally stashed, or explicitly user-approved as uncommitted. Final handoff must include `git status --short --branch` for each touched repo.
+Do not call `update_goal(status="complete")` until `$uberaccept` says the objective is achieved, no required work remains, policy-adherence has been checked against the plan and OpenClaw/agentic architecture, issues/tradeoffs/surprising implementation choices are reported, and every touched repo is locally committed, reverted, intentionally stashed, or explicitly user-approved as uncommitted. For Tier 2/3, use specialist review-board agents/lenses for this final policy check when available and allowed; no solo self-certification. Final handoff must include `git status --short --branch` for each touched repo plus a Skills used summary listing each Uber/utility skill used or skipped and where the artifact/evidence lives.
 
 For “100% confident” prompts, use the scoped meaning: 100% confident within the stated scope after trying to disprove the plan/work and finding no material unresolved blocker.
 

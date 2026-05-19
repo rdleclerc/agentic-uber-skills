@@ -27,12 +27,18 @@ TIER_REQUIREMENTS = {
     + [
         "product / prd checklist",
         "task map / implementation graph",
+        "verifiable subgoals and metrics",
+        "parallelization plan",
         "cost/complexity check",
         "first-principles simplifier / complexity auditor",
         "planning review board",
         "agent advocate / agent failure rca",
         "architecture steward lane",
+        "target architecture / file tree",
         "repository topology / package seam",
+        "code-health / dead-code tool plan",
+        "decision / tradeoff / surprise register",
+        "plan acceptance gate",
         "risk-to-evidence map",
         "acceptance rubric",
         "pre-launch confidence gate",
@@ -41,13 +47,19 @@ TIER_REQUIREMENTS = {
     + [
         "product / prd checklist",
         "task map / implementation graph",
+        "verifiable subgoals and metrics",
+        "parallelization plan",
         "cost/complexity check",
         "first-principles simplifier / complexity auditor",
         "planning review board",
         "agent advocate / agent failure rca",
         "architecture steward lane",
         "multi-agent plan",
+        "target architecture / file tree",
         "repository topology / package seam",
+        "code-health / dead-code tool plan",
+        "decision / tradeoff / surprise register",
+        "plan acceptance gate",
         "risk-to-evidence map",
         "acceptance rubric",
         "pre-launch confidence gate",
@@ -79,9 +91,12 @@ RUBRIC_DIMENSIONS = [
     "regex / keyword semantics",
     "prd checklist",
     "task map",
+    "verifiable subgoals",
+    "parallelization",
     "thin harness / fat agent",
     "source-convention check",
     "architecture",
+    "target file tree",
     "repository topology",
     "ownership",
     "code quality",
@@ -93,6 +108,8 @@ RUBRIC_DIMENSIONS = [
     "safety",
     "observability",
     "rollback",
+    "decision/tradeoff register",
+    "plan acceptance",
     "acceptance evidence",
 ]
 
@@ -331,6 +348,151 @@ def validate_task_map(found: dict[str, str], tier: str, errors: list[str]) -> No
             errors.append(f"Task map / implementation graph missing concept: {term}")
 
 
+
+DEAD_CODE_TOOL_TERMS = [
+    "vulture",
+    "knip",
+    "ruff",
+    "pyright",
+    "mypy",
+    "ts-prune",
+    "depcheck",
+    "eslint",
+    "tsc",
+    "grep",
+    "git grep",
+    "lint",
+    "test",
+]
+
+
+def validate_verifiable_subgoals(found: dict[str, str], tier: str, errors: list[str]) -> None:
+    if tier == "0":
+        return
+    section_name = "verifiable subgoals and metrics"
+    section = found.get(section_name, "")
+    if not section:
+        return
+    if not section_has_substance(section):
+        errors.append("required section lacks completed substance: Verifiable subgoals and metrics")
+        return
+    rows = table_meaningful_rows(section)
+    if len(rows) < 2:
+        errors.append("Verifiable subgoals and metrics needs at least two meaningful subgoal rows")
+    section_lower = normalize(section)
+    for term in ["evidence", "metric", "score", "rubric", "owner", "done"]:
+        if term not in section_lower:
+            errors.append(f"Verifiable subgoals and metrics missing concept: {term}")
+    if not re.search(r"\bG[0-9]+\b", section):
+        errors.append("Verifiable subgoals and metrics must use stable subgoal IDs such as G1, G2")
+
+
+def validate_parallelization_plan(found: dict[str, str], tier: str, errors: list[str]) -> None:
+    if tier == "0":
+        return
+    section_name = "parallelization plan"
+    section = found.get(section_name, "")
+    if not section:
+        return
+    if not section_has_substance(section):
+        errors.append("required section lacks completed substance: Parallelization plan")
+        return
+    section_lower = normalize(section)
+    for term in ["critical path", "parallel", "serial", "write", "concurrency", "integration"]:
+        if term not in section_lower:
+            errors.append(f"Parallelization plan missing concept: {term}")
+    if "subagent" not in section_lower and "unavailable" not in section_lower and "not authorized" not in section_lower:
+        errors.append("Parallelization plan must state what happens if subagents are not authorized or unavailable")
+
+
+def validate_target_file_tree(found: dict[str, str], lower: str, tier: str, errors: list[str]) -> None:
+    if tier == "0":
+        return
+    section_name = "target architecture / file tree"
+    section = found.get(section_name, "")
+    if not section:
+        return
+    if not section_has_substance(section):
+        errors.append("required section lacks completed substance: Target architecture / file tree")
+        return
+    code_scope = has_code_or_topology_scope(lower)
+    section_lower = normalize(section)
+    explicitly_na = "not applicable because" in section_lower
+    if explicitly_na:
+        if code_scope:
+            errors.append("Target architecture / file tree cannot be marked not applicable when plan indicates new/moved code, refactors, or package/dependency seams")
+        return
+    if code_scope and "```" not in section:
+        errors.append("Target architecture / file tree must include a fenced target tree for code/topology/refactor work")
+    for term in ["owning", "public", "private", "test", "avoid", "separation"]:
+        if term not in section_lower:
+            errors.append(f"Target architecture / file tree missing concept: {term}")
+
+
+def validate_code_health_dead_code_plan(found: dict[str, str], lower: str, tier: str, errors: list[str]) -> None:
+    if tier == "0":
+        return
+    section_name = "code-health / dead-code tool plan"
+    section = found.get(section_name, "")
+    if not section:
+        return
+    if not section_has_substance(section):
+        errors.append("required section lacks completed substance: Code-health / dead-code tool plan")
+        return
+    section_lower = normalize(section)
+    code_scope = has_code_or_topology_scope(lower)
+    explicitly_na = "not applicable because" in section_lower
+    if explicitly_na:
+        if code_scope:
+            errors.append("Code-health / dead-code tool plan cannot be marked not applicable for code/refactor/topology scope")
+        return
+    for term in ["stack", "tool", "dynamic", "candidate", "deletion", "defer"]:
+        if term not in section_lower:
+            errors.append(f"Code-health / dead-code tool plan missing concept: {term}")
+    if code_scope and not any(term in section_lower for term in DEAD_CODE_TOOL_TERMS):
+        errors.append("Code-health / dead-code tool plan must name at least one concrete stack tool or grep/git grep/lint/test fallback")
+    if code_scope and "candidate" not in section_lower:
+        errors.append("Code-health / dead-code tool plan must state static findings are candidates, not deletion authority")
+
+
+def validate_decision_tradeoff_register(found: dict[str, str], tier: str, errors: list[str]) -> None:
+    if tier == "0":
+        return
+    section_name = "decision / tradeoff / surprise register"
+    section = found.get(section_name, "")
+    if not section:
+        return
+    if not section_has_substance(section):
+        errors.append("required section lacks completed substance: Decision / tradeoff / surprise register")
+        return
+    section_lower = normalize(section)
+    rows = table_meaningful_rows(section)
+    if len(rows) < 1:
+        errors.append("Decision / tradeoff / surprise register needs at least one meaningful row")
+    for term in ["issue", "tradeoff", "choice", "surprise", "risk", "follow-up"]:
+        if term not in section_lower:
+            errors.append(f"Decision / tradeoff / surprise register missing concept: {term}")
+
+
+def validate_plan_acceptance_gate(found: dict[str, str], tier: str, errors: list[str]) -> None:
+    if tier == "0":
+        return
+    section_name = "plan acceptance gate"
+    section = found.get(section_name, "")
+    if not section:
+        return
+    if not section_has_substance(section):
+        errors.append("required section lacks completed substance: Plan acceptance gate")
+        return
+    section_lower = normalize(section)
+    for term in ["openclaw", "agentic architecture", "thin-harness", "fat", "source authority", "topology", "dead-code", "tradeoff", "blocker"]:
+        if term not in section_lower:
+            errors.append(f"Plan acceptance gate missing concept: {term}")
+    blockers_clear(section, errors)
+    verdict = require_field(section, "Acceptance verdict", errors)
+    if verdict and "proceed? yes" not in verdict.lower():
+        errors.append("Plan acceptance gate verdict must explicitly say proceed? yes")
+
 def validate_thin_harness_rubric(found: dict[str, str], required: bool, errors: list[str]) -> None:
     section_name = "thin harness / fat agent design rubric"
     section = found.get(section_name, "")
@@ -525,7 +687,13 @@ def main() -> int:
 
     validate_prd_checklist(found, args.tier or "1", errors)
     validate_task_map(found, args.tier or "1", errors)
+    validate_verifiable_subgoals(found, args.tier or "1", errors)
+    validate_parallelization_plan(found, args.tier or "1", errors)
+    validate_target_file_tree(found, lower, args.tier or "1", errors)
     validate_repository_topology(found, lower, args.tier or "1", errors)
+    validate_code_health_dead_code_plan(found, lower, args.tier or "1", errors)
+    validate_decision_tradeoff_register(found, args.tier or "1", errors)
+    validate_plan_acceptance_gate(found, args.tier or "1", errors)
 
     # Tier 0 is intentionally light but still needs a concrete test/evidence note.
     if args.tier == "0":
@@ -609,8 +777,14 @@ def main() -> int:
     present_dimensions = [dimension for dimension in RUBRIC_DIMENSIONS if dimension in normalize(rubric)]
     if args.tier != "0" and len(present_dimensions) < 5:
         errors.append("rubric has fewer than five recognized risk-mapped dimensions")
-    if args.tier != "0" and has_code_or_topology_scope(lower) and "repository topology" not in normalize(rubric):
-        errors.append("acceptance rubric must include repository topology when plan indicates new/moved code or package seams")
+    if args.tier != "0" and has_code_or_topology_scope(lower):
+        rubric_lower = normalize(rubric)
+        if "repository topology" not in rubric_lower:
+            errors.append("acceptance rubric must include repository topology when plan indicates new/moved code or package seams")
+        if "target file tree" not in rubric_lower:
+            errors.append("acceptance rubric must include target file tree when plan indicates new/moved code, refactors, or package seams")
+        if "dead code" not in rubric_lower:
+            errors.append("acceptance rubric must include dead-code/code-health evidence when plan indicates code/refactor/topology scope")
 
     if args.tier != "0":
         cost = found.get("cost/complexity check", "")
