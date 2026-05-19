@@ -9,6 +9,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 GOAL = ROOT / "scripts" / "validate_goal_objective.py"
+RECEIPT = ROOT / "scripts" / "validate_uber_run_receipt.py"
 LINT = ROOT / "scripts" / "lint_skill_package.py"
 
 
@@ -40,6 +41,7 @@ class ThinWrapperTests(unittest.TestCase):
         self.assertIn("OpenClaw/agentic architecture", text)
         self.assertIn("no solo self-certification", text)
         self.assertIn("Skills used summary", text)
+        self.assertIn("Uber run receipt", text)
         self.assertNotIn("## Planning review board", text)
 
     def test_monolith_files_are_absent(self) -> None:
@@ -53,9 +55,21 @@ class ThinWrapperTests(unittest.TestCase):
 
     def test_goal_ledger_has_skills_used_summary(self) -> None:
         text = (ROOT / "templates" / "goal-ledger.md").read_text()
+        self.assertIn("## Uber run receipt", text)
         self.assertIn("## Skills used summary", text)
         for skill in ["ubergoal", "uberassess", "uberplan", "uberaccept", "ubersimplify", "uberskillevolver", "ubershow", "deep-rca", "skill-creator"]:
             self.assertIn(skill, text)
+
+    def test_uber_run_receipt_validator(self) -> None:
+        self.assertEqual(run_cmd(str(RECEIPT), str(ROOT / "templates" / "uber-run-receipt.md"), "--allow-template").returncode, 0)
+        valid = run_cmd(str(RECEIPT), str(ROOT / "tests" / "fixtures" / "valid" / "uber_run_receipt.md"))
+        self.assertEqual(valid.returncode, 0, valid.stderr + valid.stdout)
+        missing = run_cmd(str(RECEIPT), str(ROOT / "tests" / "fixtures" / "invalid" / "uber_run_receipt_missing_skill.md"))
+        self.assertNotEqual(missing.returncode, 0)
+        self.assertIn("skills used table missing skill", missing.stderr)
+        failed_gate = run_cmd(str(RECEIPT), str(ROOT / "tests" / "fixtures" / "invalid" / "uber_run_receipt_failed_gate.md"))
+        self.assertNotEqual(failed_gate.returncode, 0)
+        self.assertIn("expected gate did not pass", failed_gate.stderr)
 
     def test_golden_eval_schema(self) -> None:
         cases = json.loads((ROOT / "evals" / "golden_skill_invocations.json").read_text())
@@ -70,6 +84,7 @@ class ThinWrapperTests(unittest.TestCase):
         self.assertIn("routes_source_assessment_to_uberassess", ids)
         self.assertIn("final_policy_adherence_check_reports_surprises", ids)
         self.assertIn("final_handoff_reports_skills_used", ids)
+        self.assertIn("uber_run_receipt_enables_skill_evolution", ids)
         route_case = next(case for case in cases if case["id"] == "routes_simplification_to_ubersimplify")
         self.assertTrue(any("ubersimplify" in item for item in route_case.get("expected_behavior", [])))
         refactor_case = next(case for case in cases if case["id"] == "one_line_refactor_campaign_uses_profile")
