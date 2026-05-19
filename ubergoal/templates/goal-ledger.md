@@ -6,6 +6,12 @@
 ## Current phase
 
 
+## Uber run receipt
+
+- Receipt path:
+- Validator command:
+- Receipt status: not-started | draft | pass | partial | failed
+
 ## Completed
 
 -

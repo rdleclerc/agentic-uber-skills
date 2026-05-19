@@ -111,5 +111,17 @@
       "explain why applicable skills were skipped instead of silently omitting them",
       "do not claim completion with only generic planning language"
     ]
+  },
+  {
+    "id": "uber_run_receipt_enables_skill_evolution",
+    "user_prompt": "Use ubergoal on a Tier 2 skill workflow and leave enough tracing for uberskillevolver to decide what should change later.",
+    "expected_behavior": [
+      "create or update an Uber run receipt rather than relying on prose memory",
+      "record skills used skipped and not applicable with artifact evidence",
+      "record plan acceptance uberaccept policy-adherence and skills-used gates",
+      "include fresh-agent replay mode or explicitly record the replay gap",
+      "handoff concrete receipt evidence to uberskillevolver",
+      "avoid building a hidden telemetry or orchestration monolith"
+    ]
   }
 ]

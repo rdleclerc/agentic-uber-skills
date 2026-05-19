@@ -12,9 +12,11 @@ REQUIRED_FILES = [
     "SKILL.md",
     "agents/openai.yaml",
     "templates/goal-ledger.md",
+    "templates/uber-run-receipt.md",
     "references/goal-objective.md",
     "references/refactor-campaign-profile.md",
     "scripts/validate_goal_objective.py",
+    "scripts/validate_uber_run_receipt.py",
     "evals/golden_skill_invocations.json",
 ]
 FORBIDDEN_MONOLITH_FILES = [
@@ -31,6 +33,7 @@ REQUIRED_PHRASES = [
     "bounded review-board coordinator",
     "create or bind",
     "specialist review-board agents",
+    "Uber run receipt",
     "refactor campaign",
     "$uberplan",
     "$uberaccept",
