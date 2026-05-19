@@ -59,7 +59,7 @@ python3 -B -m unittest discover -s <skill>/tests -v
 For skill shape changes, also run the Codex skill validator when available:
 
 ```bash
-python3 ~/.codex/skills/.system/skill-creator/scripts/quick_validate.py <skill>
+uv run --with pyyaml python uber-skill-creator/scripts/quick_validate.py <skill>
 ```
 
 ## Install and sync policy

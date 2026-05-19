@@ -90,7 +90,7 @@ class PackContractTests(unittest.TestCase):
 
     def test_install_docs_include_full_pack(self) -> None:
         text = (ROOT / "README.md").read_text()
-        loop = "for s in deep-rca skill-creator ubergoal uberplan uberaccept uberskillevolver ubersimplify uberassess ubershow; do"
+        loop = "for s in deep-rca uber-skill-creator ubergoal uberplan uberaccept uberskillevolver ubersimplify uberassess ubershow; do"
         self.assertEqual(text.count(loop), 3)
 
 

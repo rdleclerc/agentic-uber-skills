@@ -1,0 +1,8 @@
+interface:
+  display_name: "Uber Skill Creator"
+  short_description: "Create, update, or evaluate a portable skill"
+  default_prompt: "Use $uber-skill-creator when creating, updating, or evaluating portable SKILL.md skills for Codex, Claude, or compatible coding agents. Keep skills concise, progressively disclosed, and runtime-neutral; use scripts/references/assets only when they reduce repeated work or improve reliability; for non-trivial skills run the eval-driven extension with intent examples, eval prompts, with/without-skill comparison when feasible, an HTML review report, and trigger-description tuning."
+  icon_small: "./assets/uber-skill-creator-small.svg"
+  icon_large: "./assets/uber-skill-creator.png"
+policy:
+  allow_implicit_invocation: true

@@ -31,8 +31,8 @@
   <main>
     <header class="hero">
       <h1>agentic-uber-skills Eval Report</h1>
-      <div class="meta"><span>2026-05-17 skill-creator review</span><span>10 cases</span></div>
-      <p>Codex skill-creator review of the Uber skill pack. All skills pass basic quick validation. All skills with package lints and tests pass them. The earlier deep-rca hardening gap has been closed with Codex metadata, golden evals, package lint, tests, and removal of the package-local README.</p>
+      <div class="meta"><span>2026-05-17 uber-skill-creator review</span><span>10 cases</span></div>
+      <p>Codex uber-skill-creator review of the Uber skill pack. All skills pass basic quick validation. All skills with package lints and tests pass them. The earlier deep-rca hardening gap has been closed with Codex metadata, golden evals, package lint, tests, and removal of the package-local README.</p>
       <div class="counts"><span class="pill pass">pass: 10</span> <span class="pill partial">partial: 0</span> <span class="pill fail">fail: 0</span> <span class="pill blocked">blocked: 0</span></div>
     </header>
     <section aria-label="Eval cases">
@@ -42,12 +42,12 @@
                 <span class="case-id">pack-quick-validation</span>
                 <span class="verdict">pass</span>
               </header>
-              <h2>Validate all Uber skill folders with the Codex skill quick validator.</h2>
+              <h2>Validate all Uber skill folders with the portable skill quick validator.</h2>
               <dl>
                 <dt>Expected</dt><dd>Every SKILL.md has valid frontmatter, a valid name, and a valid description.</dd>
-                <dt>With Skill</dt><dd>All nine folders passed quick_validate.py: deep-rca, skill-creator, uberaccept, uberassess, ubergoal, uberplan, ubershow, ubersimplify, and uberskillevolver.</dd>
-                <dt>Without Skill</dt><dd>Not run; this review used the repo-local Codex skill-creator validator as the structural baseline.</dd>
-                <dt>Notes</dt><dd>Command used /Users/rob/repos/agentic-uber-skills/skill-creator/scripts/quick_validate.py through uv with pyyaml.</dd>
+                <dt>With Skill</dt><dd>All nine folders passed quick_validate.py: deep-rca, uber-skill-creator, uberaccept, uberassess, ubergoal, uberplan, ubershow, ubersimplify, and uberskillevolver.</dd>
+                <dt>Without Skill</dt><dd>Not run; this review used the repo-local Codex uber-skill-creator validator as the structural baseline.</dd>
+                <dt>Notes</dt><dd>Command used /Users/rob/repos/agentic-uber-skills/uber-skill-creator/scripts/quick_validate.py through uv with pyyaml.</dd>
               </dl>
             </article>
             
@@ -56,7 +56,7 @@
                 <span class="case-id">deep-rca-packaging-gap</span>
                 <span class="verdict">pass</span>
               </header>
-              <h2>Review deep-rca as a Codex skill package.</h2>
+              <h2>Review deep-rca as a portable skill package.</h2>
               <dl>
                 <dt>Expected</dt><dd>Codex metadata, eval/trigger examples, and at least small validation coverage for a reusable skill.</dd>
                 <dt>With Skill</dt><dd>deep-rca now passes quick validation, package lint, and tests. It has agents/openai.yaml, golden trigger/non-trigger evals, a package lint, unit tests, and no package-local README.</dd>
@@ -67,13 +67,13 @@
             
             <article class="case verdict-pass">
               <header>
-                <span class="case-id">skill-creator-codex-native</span>
+                <span class="case-id">uber-skill-creator-codex-native</span>
                 <span class="verdict">pass</span>
               </header>
-              <h2>Review the new repo-local skill-creator as a general Codex skill creator.</h2>
+              <h2>Review the new repo-local uber-skill-creator as a general Uber skill creator.</h2>
               <dl>
-                <dt>Expected</dt><dd>Codex-native wording, provenance boundary, eval-driven extension, report generator, installability, and tests.</dd>
-                <dt>With Skill</dt><dd>skill-creator passed quick validation, package lint, and its tests. It has Codex-native wording, provenance notice, eval-driven extension, HTML report generator, openai metadata, and installed symlink coverage.</dd>
+                <dt>Expected</dt><dd>portable wording, provenance boundary, eval-driven extension, report generator, installability, and tests.</dd>
+                <dt>With Skill</dt><dd>uber-skill-creator passed quick validation, package lint, and its tests. It has portable wording, provenance notice, eval-driven extension, HTML report generator, openai metadata, and installed symlink coverage.</dd>
                 <dt>Without Skill</dt><dd>The prior hidden system skill was not repo-owned and did not include the repo-local eval-driven extension.</dd>
                 <dt>Notes</dt><dd>Residual risk: it has no golden trigger evals of its own yet; add held-out trigger/non-trigger examples after first real use.</dd>
               </dl>
@@ -103,7 +103,7 @@
                 <dt>Expected</dt><dd>Checkable PRD/task map, thin harness/fat agent rubric, source-convention check, acceptance goals, and validators.</dd>
                 <dt>With Skill</dt><dd>uberplan passed quick validation, package lint, and 16 tests. It now validates PRD checklist, Mermaid task map, thin-harness rubric, source-convention check, regex/keyword semantic gate, and evidence layers.</dd>
                 <dt>Without Skill</dt><dd>Prior planning relied more on prose expectations and would be easier for future agents to skip.</dd>
-                <dt>Notes</dt><dd>This is the strongest current example of skill-creator methodology turned into executable gates.</dd>
+                <dt>Notes</dt><dd>This is the strongest current example of uber-skill-creator methodology turned into executable gates.</dd>
               </dl>
             </article>
             
@@ -182,9 +182,9 @@
       <h2>Description Tuning</h2>
       <dl>
         <dt>Old</dt><dd>Current descriptions reviewed in place.</dd>
-        <dt>New</dt><dd>No immediate broad trigger-description rewrite recommended. deep-rca hardening is complete; add held-out trigger/non-trigger evals for skill-creator after first real use.</dd>
+        <dt>New</dt><dd>No immediate broad trigger-description rewrite recommended. deep-rca hardening is complete; add held-out trigger/non-trigger evals for uber-skill-creator after first real use.</dd>
         <dt>Held-out examples</dt><dd><ul><li>Use deep-rca to explain why this repeated CI failure keeps coming back.</li>
-<li>Create a general Codex skill for reviewing Terraform modules.</li>
+<li>Create a general portable skill for reviewing Terraform modules.</li>
 <li>Run a codebase refactor campaign overnight and generate a report.</li>
 <li>Make an HTML decision board for these architecture options.</li>
 <li>Assess whether this GitHub repo is worth adopting before we implement anything.</li></ul></dd>

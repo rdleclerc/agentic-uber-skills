@@ -4,7 +4,7 @@ Use this reference when a skill is reusable, high-impact, likely to be installed
 
 ## Provenance
 
-This workflow is Codex-native. It adapts public skill-creation methodology from OpenAI's Codex skill-creator, Anthropic's public skill-creator workflow, and community skill-evaluation patterns. Do not copy proprietary or runtime-specific commands from another agent platform into Codex skills. Translate useful methods into Codex terms and cite provenance in a `NOTICE.md` or reference note when material.
+This workflow is portable across Codex, Claude, and SKILL.md-compatible agent runtimes. It adapts public skill-creation methodology from OpenAI's Codex skill-creator, Anthropic's public skill-creator workflow, and community skill-evaluation patterns. Do not copy proprietary or runtime-specific commands from another agent platform into skills. Translate useful methods into neutral SKILL.md terms and cite provenance in a `NOTICE.md` or reference note when material.
 
 ## Workflow
 

@@ -12,7 +12,7 @@ This roadmap keeps the skill pack evolving without turning it into bureaucracy. 
 - `ubersimplify` — opt-in complexity/modularity/dead-code simplification with timestamped trails and proof gates; Audit/Plan are current default, Patch mode remains conservative/experimental until dogfooded on real codebases.
 - `uberassess` = source-to-recommendation due diligence — explicit assessment for X/GitHub/arXiv/articles/videos/Hermes signals before adoption; produces packets, not implementation.
 - `ubershow` — browser-first visual communication utility for decision boards, implementation plans, maps, timelines, questionnaires, and visual briefs; produces generated HTML views with copyable decision receipts, not source-of-truth records.
-- `skill-creator` — repo-local Codex-native skill authoring utility; keeps Codex wording under version control and adds eval-driven iteration, HTML review reports, and trigger-description tuning without Claude-specific runtime commands.
+- `uber-skill-creator` — portable Uber skill authoring utility for Codex, Claude, and SKILL.md-compatible agents; keeps general skill-authoring guidance under version control and adds eval-driven iteration, HTML review reports, and trigger-description tuning without runtime-specific commands.
 
 ## Routing and source-authority policy
 

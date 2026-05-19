@@ -11,7 +11,7 @@ Agent-facing source authority lives in [AGENTS.md](AGENTS.md). The default routi
 | Skill | What it does |
 |-------|-------------|
 | [deep-rca](deep-rca/) | Utility skill for general class-level root cause analysis before patches; Agent Advocate remains the agent-behavior RCA lens inside Uber planning/acceptance |
-| [skill-creator](skill-creator/) | Repo-local Codex-native skill authoring guide with eval-driven iteration, HTML review reports, and trigger-description tuning |
+| [uber-skill-creator](uber-skill-creator/) | Portable Uber skill authoring guide for Codex, Claude, and SKILL.md-compatible agents, with eval-driven iteration, HTML review reports, and trigger-description tuning |
 | [ubergoal](ubergoal/) | Thin lifecycle wrapper for substantial agentic coding workflows: classify, route, launch goals, accept, learn |
 | [uberplan](uberplan/) | Rigorous lean planning with review lanes, exploration trails, confidence gates, and benefit >> cost pressure |
 | [uberaccept](uberaccept/) | Adversarial final acceptance with evidence audits, architecture drift checks, and completion proof |
@@ -36,7 +36,7 @@ Copy or symlink the skill directories into your agent runtime's local skill dire
 ```bash
 # Example: install the Uber family into a generic local skill dir
 mkdir -p ~/.agent/skills
-for s in deep-rca skill-creator ubergoal uberplan uberaccept uberskillevolver ubersimplify uberassess ubershow; do
+for s in deep-rca uber-skill-creator ubergoal uberplan uberaccept uberskillevolver ubersimplify uberassess ubershow; do
   rm -rf "$HOME/.agent/skills/$s"
   ln -s "$PWD/$s" "$HOME/.agent/skills/$s"
 done
@@ -46,7 +46,7 @@ done
 
 ```bash
 mkdir -p ~/.codex/skills
-for s in deep-rca skill-creator ubergoal uberplan uberaccept uberskillevolver ubersimplify uberassess ubershow; do
+for s in deep-rca uber-skill-creator ubergoal uberplan uberaccept uberskillevolver ubersimplify uberassess ubershow; do
   rm -rf "$HOME/.codex/skills/$s"
   ln -s "$PWD/$s" "$HOME/.codex/skills/$s"
 done
@@ -58,7 +58,7 @@ Invoke the wrapper with `$ubergoal` by default. Call `$deep-rca` for general RCA
 
 ```bash
 mkdir -p ~/.claude/skills
-for s in deep-rca skill-creator ubergoal uberplan uberaccept uberskillevolver ubersimplify uberassess ubershow; do
+for s in deep-rca uber-skill-creator ubergoal uberplan uberaccept uberskillevolver ubersimplify uberassess ubershow; do
   rm -rf "$HOME/.claude/skills/$s"
   cp -R "$PWD/$s" "$HOME/.claude/skills/$s"
 done

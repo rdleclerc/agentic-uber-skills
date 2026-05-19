@@ -1,21 +1,21 @@
 ---
-name: skill-creator
-description: Codex-native guide for creating, updating, and evaluating skills. Use when users want to create a new skill, update an existing skill, add scripts/references/assets, run eval-driven skill iteration, compare with-skill vs without-skill behavior, generate an HTML review report, or tune a skill description for better Codex triggering.
+name: uber-skill-creator
+description: Portable guide for creating, updating, and evaluating Uber-style SKILL.md skills for Codex, Claude, and compatible coding agents. Use when users want to create a new general skill, update an existing skill, add scripts/references/assets, run eval-driven skill iteration, compare with-skill vs without-skill behavior, generate an HTML review report, or tune a skill description for better triggering. For OpenClaw/Gaia/Type0/Soho-specific skills, prefer openclaw-skill-creator.
 metadata:
-  short-description: Create or update a skill
+  short-description: Create or update an Uber skill
 ---
 
-# Skill Creator
+# Uber Skill Creator
 
-This skill provides guidance for creating effective Codex skills.
+This skill provides guidance for creating effective portable `SKILL.md` skills for Codex, Claude, and compatible coding agents.
 
-This repo-local version is the source of truth for this pack. It keeps the Codex-native skill format and adds an eval-driven extension inspired by public skill-creation methodology without importing platform-specific commands from other agents.
+This repo-local version is the source of truth for the Uber skill pack. It keeps the portable `SKILL.md` format and adds an eval-driven extension inspired by public skill-creation methodology without importing platform-specific commands from any single agent runtime.
 
 ## About Skills
 
-Skills are modular, self-contained folders that extend Codex's capabilities by providing
+Skills are modular, self-contained folders that extend a coding agent's capabilities by providing
 specialized knowledge, workflows, and tools. Think of them as "onboarding guides" for specific
-domains or tasks—they transform Codex from a general-purpose agent into a specialized agent
+domains or tasks—they transform a general-purpose agent into a specialized agent
 equipped with procedural knowledge that no model can fully possess.
 
 ### What Skills Provide
@@ -29,9 +29,9 @@ equipped with procedural knowledge that no model can fully possess.
 
 ### Concise is Key
 
-The context window is a public good. Skills share the context window with everything else Codex needs: system prompt, conversation history, other Skills' metadata, and the actual user request.
+The context window is a public good. Skills share the context window with everything else the agent needs: system prompt, conversation history, other skills' metadata, and the actual user request.
 
-**Default assumption: Codex is already very smart.** Only add context Codex doesn't already have. Challenge each piece of information: "Does Codex really need this explanation?" and "Does this paragraph justify its token cost?"
+**Default assumption: the agent is already very capable.** Only add context the agent does not already have. Challenge each piece of information: "Does the agent really need this explanation?" and "Does this paragraph justify its token cost?"
 
 Prefer concise examples over verbose explanations.
 
@@ -45,7 +45,7 @@ Match the level of specificity to the task's fragility and variability:
 
 **Low freedom (specific scripts, few parameters)**: Use when operations are fragile and error-prone, consistency is critical, or a specific sequence must be followed.
 
-Think of Codex as exploring a path: a narrow bridge with cliffs needs specific guardrails (low freedom), while an open field allows many routes (high freedom).
+Think of the agent as exploring a path: a narrow bridge with cliffs needs specific guardrails (low freedom), while an open field allows many routes (high freedom).
 
 ### Protect Validation Integrity
 
@@ -57,7 +57,7 @@ Prefer raw artifacts such as example prompts, outputs, diffs, logs, or traces. G
 
 ### Anatomy of a Skill
 
-Every skill consists of a required SKILL.md file and optional bundled resources:
+Every Uber-style skill consists of a required `SKILL.md` file and optional bundled resources:
 
 ```
 skill-name/
@@ -78,7 +78,7 @@ skill-name/
 
 Every SKILL.md consists of:
 
-- **Frontmatter** (YAML): Contains `name` and `description` fields. These are the only fields that Codex reads to determine when the skill gets used, thus it is very important to be clear and comprehensive in describing what the skill is, and when it should be used.
+- **Frontmatter** (YAML): Contains `name` and `description` fields. These are the primary fields agents and skill routers read to determine when the skill gets used, so be clear and comprehensive about what the skill is and when it should be used.
 - **Body** (Markdown): Instructions and guidance for using the skill. Only loaded AFTER the skill triggers (if at all).
 
 #### Agents metadata (recommended)
@@ -399,7 +399,7 @@ Read `references/eval_driven_skill_creation.md` when this step applies. The exte
 - generated HTML review report using `scripts/generate_eval_report.py`
 - trigger-description tuning with held-out examples to reduce overfitting
 
-Keep this Codex-native. Do not paste platform-specific slash commands, subprocess commands, or hidden assumptions from other agent runtimes into the skill being created. If an upstream method is useful, translate it into Codex terms and record provenance in the skill's notice or reference notes.
+Keep this portable. Do not paste platform-specific slash commands, subprocess commands, or hidden assumptions from one agent runtime into the skill being created. If an upstream method is useful, translate it into neutral SKILL.md terms and record provenance in the skill's notice or reference notes.
 
 ## Forward-testing
 

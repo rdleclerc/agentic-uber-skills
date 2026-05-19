@@ -10,7 +10,7 @@ import sys
 DEFAULT_ROOT = Path(__file__).resolve().parents[1]
 PACK_SKILLS = [
     "deep-rca",
-    "skill-creator",
+    "uber-skill-creator",
     "ubergoal",
     "uberplan",
     "uberaccept",
@@ -20,7 +20,7 @@ PACK_SKILLS = [
     "ubershow",
 ]
 UBER_PHASE_SKILLS = ["uberplan", "uberaccept", "uberskillevolver", "ubersimplify", "uberassess"]
-UTILITY_IMPLICIT_SKILLS = ["deep-rca", "skill-creator", "ubershow"]
+UTILITY_IMPLICIT_SKILLS = ["deep-rca", "uber-skill-creator", "ubershow"]
 ROOT_REQUIRED_FILES = ["AGENTS.md", "CLAUDE.md", "README.md", "ROADMAP.md"]
 AGENTS_REQUIRED_PHRASES = [
     "$ubergoal` is the only default/implicit Uber lifecycle router",

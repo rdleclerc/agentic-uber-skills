@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
-"""Lint the repo-local Codex skill-creator package."""
+"""Lint the repo-local Uber skill creator package."""
 from __future__ import annotations
 
 import argparse
 import sys
 from pathlib import Path
 
-SKILL_NAME = "skill-creator"
+SKILL_NAME = "uber-skill-creator"
 REQUIRED_FILES = [
     "SKILL.md",
     "NOTICE.md",
@@ -20,7 +20,7 @@ REQUIRED_FILES = [
     "scripts/generate_eval_report.py",
 ]
 REQUIRED_PHRASES = [
-    "Codex-native",
+    "portable",
     "eval-driven extension",
     "with-skill vs without-skill",
     "HTML review report",
@@ -56,7 +56,7 @@ def main() -> int:
             errors.append(f"SKILL.md contains platform-specific phrase: {phrase}")
 
     notice = (root / "NOTICE.md").read_text() if (root / "NOTICE.md").exists() else ""
-    for phrase in ["OpenAI", "Anthropic", "No proprietary or leaked", "Codex-native"]:
+    for phrase in ["OpenAI", "Anthropic", "No proprietary or leaked", "portable"]:
         if phrase not in notice:
             errors.append(f"NOTICE.md missing provenance phrase: {phrase}")
 
