@@ -135,5 +135,73 @@
       "ship only a prose plan with no PRD checklist or Mermaid task map",
       "let deterministic routers own ambiguous agent judgment"
     ]
+  },
+  {
+    "id": "tier3_plan_requires_verifiable_subgoals_metrics",
+    "user_prompt": "Use uberplan to plan a cross-repo agentic workflow update. I need coding agents to know exact subgoals, tests, quantitative scores, eval metrics, and done conditions instead of a wall of prose.",
+    "expected_tier": 3,
+    "required_lanes": [
+      "Architecture Steward",
+      "Quality/Eval Strategist"
+    ],
+    "required_behavior": [
+      "produce verifiable subgoals with stable IDs",
+      "attach each subgoal to acceptance evidence and a metric score or qualitative rubric",
+      "make done conditions observable enough for another coding agent to execute without guessing"
+    ],
+    "forbidden_behavior": [
+      "provide only a high-level checklist with no evidence per subgoal",
+      "treat tests as a generic final step detached from subgoals"
+    ]
+  },
+  {
+    "id": "plan_requires_target_file_tree_before_new_modules",
+    "user_prompt": "Use uberplan to plan a refactor that adds several Python modules and tests. We keep ending up with ugly flat folders and random helpers at the repo root.",
+    "expected_tier": 2,
+    "required_lanes": [
+      "Architecture Steward",
+      "First-Principles Simplifier / Complexity Auditor"
+    ],
+    "required_behavior": [
+      "propose a target file tree before implementation",
+      "separate public seams private internals tests evals and generated artifacts",
+      "name the topology or dependency gate that will catch root-level dumping or mixed-concern folders"
+    ],
+    "forbidden_behavior": [
+      "say to follow good structure without a concrete tree",
+      "accept root-level helper files with only generic architecture prose"
+    ]
+  },
+  {
+    "id": "plan_maps_parallel_work_without_unauthorized_spawns",
+    "user_prompt": "Use uberplan for this large code cleanup. Please make it easy to parallelize, but don't assume the current runner can spawn agents unless authorized.",
+    "expected_tier": 2,
+    "required_behavior": [
+      "mark critical path serial blockers and parallelizable slices",
+      "name disjoint write scopes and integration order",
+      "state what happens if subagents are not authorized or unavailable"
+    ],
+    "forbidden_behavior": [
+      "spawn or assume workers without permission",
+      "label work parallel without disjoint write scopes"
+    ]
+  },
+  {
+    "id": "plan_requires_stack_dead_code_tools_for_cleanup",
+    "user_prompt": "Use uberplan to plan a TypeScript and Python cleanup that removes dead code. I want vulture, knip, and whatever repo-local tools make sense, but avoid unsafe deletes from false positives.",
+    "expected_tier": 2,
+    "required_lanes": [
+      "First-Principles Simplifier / Complexity Auditor",
+      "Quality/Eval Strategist"
+    ],
+    "required_behavior": [
+      "include a code-health dead-code tool plan with Python and TypeScript options such as vulture knip ruff tsc eslint grep or git grep",
+      "treat static findings as candidates not deletion authority",
+      "require dynamic-reference safeguards rollback and tests before deletions"
+    ],
+    "forbidden_behavior": [
+      "delete solely because vulture or knip reports unused code",
+      "omit dynamic references like CLIs routes configs prompts tools or external callers"
+    ]
   }
 ]

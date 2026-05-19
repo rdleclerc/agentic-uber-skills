@@ -36,6 +36,10 @@ class ThinWrapperTests(unittest.TestCase):
         self.assertIn("`high`", text)
         self.assertIn("`xhigh`", text)
         self.assertIn("deletion-first pass", text)
+        self.assertIn("policy-adherence", text)
+        self.assertIn("OpenClaw/agentic architecture", text)
+        self.assertIn("no solo self-certification", text)
+        self.assertIn("Skills used summary", text)
         self.assertNotIn("## Planning review board", text)
 
     def test_monolith_files_are_absent(self) -> None:
@@ -46,6 +50,12 @@ class ThinWrapperTests(unittest.TestCase):
             "scripts/validate_acceptance_report.py",
         ]:
             self.assertFalse((ROOT / rel).exists(), rel)
+
+    def test_goal_ledger_has_skills_used_summary(self) -> None:
+        text = (ROOT / "templates" / "goal-ledger.md").read_text()
+        self.assertIn("## Skills used summary", text)
+        for skill in ["ubergoal", "uberassess", "uberplan", "uberaccept", "ubersimplify", "uberskillevolver", "ubershow", "deep-rca", "skill-creator"]:
+            self.assertIn(skill, text)
 
     def test_golden_eval_schema(self) -> None:
         cases = json.loads((ROOT / "evals" / "golden_skill_invocations.json").read_text())
@@ -58,6 +68,8 @@ class ThinWrapperTests(unittest.TestCase):
         self.assertIn("one_line_refactor_campaign_uses_profile", ids)
         self.assertIn("recurring_refactor_campaign_uses_history", ids)
         self.assertIn("routes_source_assessment_to_uberassess", ids)
+        self.assertIn("final_policy_adherence_check_reports_surprises", ids)
+        self.assertIn("final_handoff_reports_skills_used", ids)
         route_case = next(case for case in cases if case["id"] == "routes_simplification_to_ubersimplify")
         self.assertTrue(any("ubersimplify" in item for item in route_case.get("expected_behavior", [])))
         refactor_case = next(case for case in cases if case["id"] == "one_line_refactor_campaign_uses_profile")

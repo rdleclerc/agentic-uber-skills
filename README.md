@@ -12,8 +12,8 @@ Agent-facing source authority lives in [AGENTS.md](AGENTS.md). The default routi
 |-------|-------------|
 | [deep-rca](deep-rca/) | Utility skill for general class-level root cause analysis before patches; Agent Advocate remains the agent-behavior RCA lens inside Uber planning/acceptance |
 | [skill-creator](skill-creator/) | Repo-local Codex-native skill authoring guide with eval-driven iteration, HTML review reports, and trigger-description tuning |
-| [ubergoal](ubergoal/) | Thin lifecycle wrapper for substantial agentic coding workflows: classify, route, launch goals, accept, learn |
-| [uberplan](uberplan/) | Rigorous lean planning with review lanes, exploration trails, confidence gates, and benefit >> cost pressure |
+| [ubergoal](ubergoal/) | Thin lifecycle wrapper for substantial agentic coding workflows: classify, route, launch goals, enforce final policy-adherence acceptance, report tradeoffs/surprises, learn |
+| [uberplan](uberplan/) | Rigorous lean planning with review lanes, verifiable subgoals, Mermaid task graphs, target file trees, code-health/dead-code plans, confidence gates, and benefit >> cost pressure |
 | [uberaccept](uberaccept/) | Adversarial final acceptance with evidence audits, architecture drift checks, and completion proof |
 | [uberskillevolver](uberskillevolver/) | Captures post-run skill lessons and promotes only evidence-backed evals, validators, templates, or deletions |
 | [ubersimplify](ubersimplify/) | Opt-in complexity/modularity/dead-code audits with timestamped trails; Patch mode is conservative/experimental until dogfooded |

@@ -75,6 +75,60 @@ class PlanValidatorTests(unittest.TestCase):
             plan.write_text(text[:start] + text[end:])
             self.assertFails(str(PLAN), str(plan), "--tier", "2", "--agent-behavior")
 
+    def test_tier2_requires_verifiable_subgoals(self) -> None:
+        text = (FIX / "valid" / "tier2_agent_plan.md").read_text()
+        start = text.index("## Verifiable subgoals and metrics")
+        end = text.index("## Parallelization plan")
+        with tempfile.TemporaryDirectory() as tmp:
+            plan = Path(tmp) / "missing_subgoals.md"
+            plan.write_text(text[:start] + text[end:])
+            self.assertFails(str(PLAN), str(plan), "--tier", "2", "--agent-behavior")
+
+    def test_tier2_requires_parallelization_plan(self) -> None:
+        text = (FIX / "valid" / "tier2_agent_plan.md").read_text()
+        start = text.index("## Parallelization plan")
+        end = text.index("## Tier decision")
+        with tempfile.TemporaryDirectory() as tmp:
+            plan = Path(tmp) / "missing_parallelization.md"
+            plan.write_text(text[:start] + text[end:])
+            self.assertFails(str(PLAN), str(plan), "--tier", "2", "--agent-behavior")
+
+    def test_code_plan_requires_target_file_tree(self) -> None:
+        text = (FIX / "valid" / "tier2_agent_plan.md").read_text()
+        start = text.index("## Target architecture / file tree")
+        end = text.index("## Repository topology / package seam")
+        with tempfile.TemporaryDirectory() as tmp:
+            plan = Path(tmp) / "missing_target_file_tree.md"
+            plan.write_text(text[:start] + text[end:])
+            self.assertFails(str(PLAN), str(plan), "--tier", "2", "--agent-behavior")
+
+    def test_code_plan_requires_dead_code_tool_plan(self) -> None:
+        text = (FIX / "valid" / "tier2_agent_plan.md").read_text()
+        start = text.index("## Code-health / dead-code tool plan")
+        end = text.index("## Risk-to-evidence map")
+        with tempfile.TemporaryDirectory() as tmp:
+            plan = Path(tmp) / "missing_dead_code_plan.md"
+            plan.write_text(text[:start] + text[end:])
+            self.assertFails(str(PLAN), str(plan), "--tier", "2", "--agent-behavior")
+
+    def test_tier2_requires_decision_tradeoff_register(self) -> None:
+        text = (FIX / "valid" / "tier2_agent_plan.md").read_text()
+        start = text.index("## Decision / tradeoff / surprise register")
+        end = text.index("## Plan acceptance gate")
+        with tempfile.TemporaryDirectory() as tmp:
+            plan = Path(tmp) / "missing_decision_register.md"
+            plan.write_text(text[:start] + text[end:])
+            self.assertFails(str(PLAN), str(plan), "--tier", "2", "--agent-behavior")
+
+    def test_tier2_requires_plan_acceptance_gate(self) -> None:
+        text = (FIX / "valid" / "tier2_agent_plan.md").read_text()
+        start = text.index("## Plan acceptance gate")
+        end = text.index("## Pre-launch confidence gate")
+        with tempfile.TemporaryDirectory() as tmp:
+            plan = Path(tmp) / "missing_plan_acceptance.md"
+            plan.write_text(text[:start] + text[end:])
+            self.assertFails(str(PLAN), str(plan), "--tier", "2", "--agent-behavior")
+
     def test_agentic_plan_requires_thin_harness_rubric(self) -> None:
         text = (FIX / "valid" / "tier2_agent_plan.md").read_text()
         start = text.index("## Thin harness / fat agent design rubric")
@@ -103,9 +157,16 @@ class PlanValidatorTests(unittest.TestCase):
         text = text.replace("New validator/test files stay inside the existing skill package", "Existing validator/test files stay inside the existing skill package")
         text = text.replace("Add validator and fixture coverage", "Update validator and fixture coverage")
         text = text.replace("Add deterministic harness validation", "Update deterministic harness validation")
-        start = text.index("## Repository topology / package seam")
+        text = text.replace("root-level", "top-level")
+        text = text.replace("refactor", "cleanup")
+        text = text.replace("Refactor", "Cleanup")
+        start = text.index("## Target architecture / file tree")
         end = text.index("## Architecture classification")
-        replacement = """## Repository topology / package seam
+        replacement = """## Target architecture / file tree
+
+Not applicable because this plan only edits existing files inside their current owning package and does not add or relocate files, create root-level modules, restructure package boundaries, or change import/dependency seams.
+
+## Repository topology / package seam
 
 Not applicable because this plan only edits existing files inside their current owning package and does not add or relocate files, create root-level modules, restructure package boundaries, or change import/dependency seams.
 
@@ -147,6 +208,7 @@ class PackageTests(unittest.TestCase):
             "templates/confidence-gate.md",
             "templates/exploration-trail.md",
             "templates/first-principles-simplifier-report.md",
+            "templates/plan-contract.md",
         ]:
             self.assertTrue((ROOT / rel).exists(), rel)
 
