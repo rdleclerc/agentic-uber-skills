@@ -1,6 +1,6 @@
 ---
 name: uber-skill-creator
-description: Portable guide for creating, updating, and evaluating Uber-style SKILL.md skills for Codex, Claude, and compatible coding agents. Use when users want to create a new general skill, update an existing skill, audit an existing skill or skill pack with a read-only quality report, add scripts/references/assets, run eval-driven skill iteration, compare with-skill vs without-skill behavior, generate an HTML review report, or tune a skill description for better triggering. For OpenClaw/Gaia/Type0/Soho-specific skills, prefer openclaw-skill-creator.
+description: Portable guide for creating, updating, migrating, deprecating, and evaluating Uber-style SKILL.md skills for Codex, Claude, and compatible coding agents. Use when users want to create a new general skill, update an existing skill, audit an existing skill or skill pack with a read-only quality report, migrate or purge legacy local skill-creator or skill-creator-pro aliases, add scripts/references/assets, run eval-driven skill iteration, compare with-skill vs without-skill behavior, generate an HTML review report, or tune a skill description for better triggering. For OpenClaw/Gaia/Type0/Soho-specific skills, prefer openclaw-skill-creator.
 metadata:
   short-description: Create or update an Uber skill
 ---
@@ -10,6 +10,25 @@ metadata:
 This skill provides guidance for creating effective portable `SKILL.md` skills for Codex, Claude, and compatible coding agents.
 
 This repo-local version is the source of truth for the Uber skill pack. It keeps the portable `SKILL.md` format and adds an eval-driven extension inspired by public skill-creation methodology without importing platform-specific commands from any single agent runtime.
+
+## Relationship to this pack
+
+This skill lives in `agentic-uber-skills` because the pack needs one canonical way to create, migrate, test, and deprecate portable SKILL.md skills. It is a bundled utility, not an Uber lifecycle phase.
+
+- Use `uber-skill-creator` to create, update, migrate, deprecate, install, validate, audit, and evaluate portable SKILL.md skills.
+- Use `uberskillevolver` after substantial or surprising runs to capture lessons and decide which evidence-backed changes should be promoted into a skill.
+- Treat local skills named `skill-creator` or `skill-creator-pro` as legacy aliases. Redirect them to `uber-skill-creator` for general portable skills, or to `openclaw-skill-creator` for OpenClaw/Gaia/Type0/Soho-specific skills.
+- Do not keep two active creator skills with overlapping trigger descriptions. Migrate durable guidance into the canonical skill and leave only a small redirect/deprecation shim until removal is explicitly approved.
+
+## Choose the target profile first
+
+Before drafting or editing a skill, classify the target runtime. This skill handles portable SKILL.md work; OpenClaw-specific work should use the OpenClaw creator instead.
+
+| Target profile | Use when | Install/source path | Extra requirements |
+|---|---|---|---|
+| Portable Codex/Claude-compatible skill | The skill should work across coding agents that support local SKILL.md folders | `$CODEX_HOME/skills/<skill>`, `~/.codex/skills/<skill>`, `~/.claude/skills/<skill>`, or another runtime skill root | Strong trigger `description`, `agents/openai.yaml` when supported, `quick_validate.py`, package lint/tests when present |
+| Uber-family skill | The skill is part of this `agentic-uber-skills` pack | `/Users/claw1/agentic-uber-skills/<skill>` plus installed Codex copy when needed | Follow pack routing rules, run pack contract tests, local skill lint/tests, Codex validation, and use `uberskillevolver` for post-run lessons |
+| OpenClaw/Gaia/Type0/Soho-specific skill | The skill depends on OpenClaw runtime behavior, tenant policy, live source lanes, agent affordance, or local workspace conventions | Use `openclaw-skill-creator`, not this generic creator | Preserve high agent affordance; name source/tool/context expectations; avoid brittle hidden gates; verify with a live-safe OpenClaw agent run or record the gap |
 
 ## About Skills
 
@@ -248,7 +267,7 @@ Follow these steps in order, skipping only if there is a clear reason why they a
 
 Skip this step only when the skill's usage patterns are already clearly understood. It remains valuable even when working with an existing skill.
 
-To create an effective skill, clearly understand concrete examples of how the skill will be used. This understanding can come from either direct user examples or generated examples that are validated with user feedback.
+To create an effective skill, clearly understand concrete examples of how the skill will be used and which target profile it serves. This understanding can come from either direct user examples or generated examples that are validated with user feedback.
 
 For example, when building an image-editor skill, relevant questions include:
 
@@ -256,6 +275,7 @@ For example, when building an image-editor skill, relevant questions include:
 - "Can you give some examples of how this skill would be used?"
 - "I can imagine users asking for things like 'Remove the red-eye from this image' or 'Rotate this image'. Are there other ways you imagine this skill being used?"
 - "What would a user say that should trigger this skill?"
+- "Is this a portable Codex/Claude-compatible skill, an Uber-family skill, or an OpenClaw-specific skill that should use `openclaw-skill-creator` instead?"
 - "Where should I create this skill? If you do not have a preference, I will place it in `$CODEX_HOME/skills` (or `~/.codex/skills` when `CODEX_HOME` is unset) so Codex can discover it automatically."
 
 To avoid overwhelming users, avoid asking too many questions in a single message. Start with the most important questions and follow up as needed for better effectiveness.
@@ -415,6 +435,17 @@ Read `references/eval_driven_skill_creation.md` when this step applies. The exte
 - trigger-description tuning with held-out examples to reduce overfitting
 
 Keep this portable. Do not paste platform-specific slash commands, subprocess commands, or hidden assumptions from one agent runtime into the skill being created. If an upstream method is useful, translate it into neutral SKILL.md terms and record provenance in the skill's notice or reference notes.
+
+### Migrating from legacy local creator aliases
+
+Use this path when the user mentions `skill-creator` or `skill-creator-pro`, asks whether either is deprecated, or wants to purge old creator skills.
+
+1. Inventory the old alias behavior and preserve only guidance that is still useful for the chosen target profile.
+2. Move durable portable guidance into `uber-skill-creator` or a focused reference file; move OpenClaw/Gaia/Type0/Soho-specific guidance into `openclaw-skill-creator`.
+3. Install/sync the canonical creator package to the runtime skill directory.
+4. Replace the old alias with a small deprecation shim; do not leave the old broad trigger description active.
+5. Validate both the canonical skill and the shim with `quick_validate.py`.
+6. Use `uberskillevolver` to record the lesson and promotion decision: what was migrated, what was deleted, which evals/validators protect the boundary, and what future evidence would justify removing the shim entirely.
 
 ## Forward-testing
 

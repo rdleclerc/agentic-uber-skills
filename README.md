@@ -11,7 +11,7 @@ Agent-facing source authority lives in [AGENTS.md](AGENTS.md). The default routi
 | Skill | What it does |
 |-------|-------------|
 | [deep-rca](deep-rca/) | Utility skill for general class-level root cause analysis before patches; Agent Advocate remains the agent-behavior RCA lens inside Uber planning/acceptance |
-| [uber-skill-creator](uber-skill-creator/) | Portable Uber skill authoring guide for Codex, Claude, and SKILL.md-compatible agents, with read-only skill-quality reports, eval-driven iteration, HTML review reports, and trigger-description tuning |
+| [uber-skill-creator](uber-skill-creator/) | Portable Uber skill authoring guide for Codex, Claude, and SKILL.md-compatible agents, with legacy alias migration support, read-only skill-quality reports, eval-driven iteration, HTML review reports, and trigger-description tuning |
 | [ubergoal](ubergoal/) | Thin lifecycle wrapper for substantial agentic coding workflows: classify, route, launch goals, enforce final policy-adherence acceptance, report tradeoffs/surprises, learn |
 | [uberplan](uberplan/) | Rigorous lean planning with review lanes, verifiable subgoals, Mermaid task graphs, target file trees, code-health/dead-code plans, confidence gates, and benefit >> cost pressure |
 | [uberaccept](uberaccept/) | Adversarial final acceptance with evidence audits, architecture drift checks, and completion proof |
@@ -86,6 +86,10 @@ The goal is progressive disclosure: load the skill metadata first, then the `SKI
 - Cross-machine learning guide: [uberskillevolver/references/cross-machine-learning.md](uberskillevolver/references/cross-machine-learning.md)
 
 Keep raw learning records local/private. Commit only sanitized learning packets under `learning/inbox/<machine-id>/...` after `uberskillevolver` validation and privacy review.
+
+## Utility skills and deprecated aliases
+
+Not every directory in this pack is an Uber lifecycle phase. `uber-skill-creator`, `deep-rca`, and `ubershow` are bundled utilities used by the Uber workflow ecosystem. `uber-skill-creator` is the canonical creator/migration skill for general portable SKILL.md skills. Older local installs named `skill-creator` or `skill-creator-pro` should redirect to `uber-skill-creator` for general skills, or to `openclaw-skill-creator` for OpenClaw/Gaia/Type0/Soho-specific skills; do not keep parallel creator implementations with overlapping trigger descriptions.
 
 ## Update
 

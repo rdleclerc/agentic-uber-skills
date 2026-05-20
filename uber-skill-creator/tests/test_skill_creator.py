@@ -25,6 +25,21 @@ class SkillCreatorPackageTests(unittest.TestCase):
         result = run_cmd(str(LINT), str(ROOT))
         self.assertEqual(result.returncode, 0, result.stderr + result.stdout)
 
+    def test_uber_skill_creator_declares_target_profiles_and_alias_boundary(self) -> None:
+        body = (ROOT / "SKILL.md").read_text()
+        meta = (ROOT / "agents" / "openai.yaml").read_text()
+        combined = body + "\n" + meta
+
+        self.assertIn("Choose the target profile first", body)
+        self.assertIn("Portable Codex/Claude-compatible skill", body)
+        self.assertIn("Uber-family skill", body)
+        self.assertIn("OpenClaw/Gaia/Type0/Soho-specific skill", body)
+        self.assertIn("openclaw-skill-creator", combined)
+        self.assertIn("skill-creator-pro", combined)
+        self.assertIn("deprecation shim", body)
+        self.assertIn("Use `uberskillevolver` after substantial or surprising runs", body)
+        self.assertIn("use uberskillevolver after real runs", meta)
+
     def test_eval_report_escapes_and_summarizes(self) -> None:
         payload = {
             "skill_name": "demo <skill>",

@@ -88,6 +88,20 @@ class PackContractTests(unittest.TestCase):
         self.assertIn("allow_implicit_invocation: true", meta)
         self.assertIn("$deep-rca", meta)
 
+    def test_uber_skill_creator_is_canonical_and_legacy_aliases_are_deprecated(self) -> None:
+        body = (ROOT / "uber-skill-creator" / "SKILL.md").read_text()
+        meta = (ROOT / "uber-skill-creator" / "agents" / "openai.yaml").read_text()
+        agents = (ROOT / "AGENTS.md").read_text()
+        docs = (ROOT / "README.md").read_text() + "\n" + (ROOT / "ROADMAP.md").read_text()
+
+        self.assertIn("Portable Codex/Claude-compatible skill", body)
+        self.assertIn("OpenClaw/Gaia/Type0/Soho-specific skill", body)
+        self.assertIn("skill-creator-pro", body)
+        self.assertIn("deprecation shim", body)
+        self.assertIn("Legacy local installs named `skill-creator` or `skill-creator-pro`", agents)
+        self.assertIn("Older local installs named `skill-creator` or `skill-creator-pro` should redirect", docs)
+        self.assertIn("allow_implicit_invocation: true", meta)
+
     def test_install_docs_include_full_pack(self) -> None:
         text = (ROOT / "README.md").read_text()
         loop = "for s in deep-rca uber-skill-creator ubergoal uberplan uberaccept uberskillevolver ubersimplify uberassess ubershow; do"
