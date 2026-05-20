@@ -11,7 +11,7 @@ Agent-facing source authority lives in [AGENTS.md](AGENTS.md). The default routi
 | Skill | What it does |
 |-------|-------------|
 | [deep-rca](deep-rca/) | Utility skill for general class-level root cause analysis before patches; Agent Advocate remains the agent-behavior RCA lens inside Uber planning/acceptance |
-| [uber-skill-creator](uber-skill-creator/) | Portable Uber skill authoring guide for Codex, Claude, and SKILL.md-compatible agents, with eval-driven iteration, HTML review reports, and trigger-description tuning |
+| [uber-skill-creator](uber-skill-creator/) | Portable Uber skill authoring guide for Codex, Claude, and SKILL.md-compatible agents, with read-only skill-quality reports, eval-driven iteration, HTML review reports, and trigger-description tuning |
 | [ubergoal](ubergoal/) | Thin lifecycle wrapper for substantial agentic coding workflows: classify, route, launch goals, accept, learn |
 | [uberplan](uberplan/) | Rigorous lean planning with review lanes, exploration trails, confidence gates, and benefit >> cost pressure |
 | [uberaccept](uberaccept/) | Adversarial final acceptance with evidence audits, architecture drift checks, and completion proof |

@@ -1,6 +1,6 @@
 ---
 name: uber-skill-creator
-description: Portable guide for creating, updating, and evaluating Uber-style SKILL.md skills for Codex, Claude, and compatible coding agents. Use when users want to create a new general skill, update an existing skill, add scripts/references/assets, run eval-driven skill iteration, compare with-skill vs without-skill behavior, generate an HTML review report, or tune a skill description for better triggering. For OpenClaw/Gaia/Type0/Soho-specific skills, prefer openclaw-skill-creator.
+description: Portable guide for creating, updating, and evaluating Uber-style SKILL.md skills for Codex, Claude, and compatible coding agents. Use when users want to create a new general skill, update an existing skill, audit an existing skill or skill pack with a read-only quality report, add scripts/references/assets, run eval-driven skill iteration, compare with-skill vs without-skill behavior, generate an HTML review report, or tune a skill description for better triggering. For OpenClaw/Gaia/Type0/Soho-specific skills, prefer openclaw-skill-creator.
 metadata:
   short-description: Create or update an Uber skill
 ---
@@ -371,6 +371,21 @@ scripts/quick_validate.py <path/to/skill-folder>
 ```
 
 The validation script checks YAML frontmatter format, required fields, and naming rules. If validation fails, fix the reported issues and run the command again.
+
+### Evaluation Mode
+
+Use evaluation mode when the user asks whether an existing skill or skill pack is production-grade, should be tightened, split, deleted, or promoted.
+
+Run the read-only evaluator before recommending broad rewrites:
+
+```bash
+scripts/evaluate_skill_quality.py <skill-or-pack-path> --format markdown
+scripts/evaluate_skill_quality.py <skill-or-pack-path> --format json --output skill-quality.json
+```
+
+The evaluator checks trigger clarity, concision, progressive disclosure, verification evidence, side-effect policy, eval coverage, package shape, anti-shortcut guidance, and likely overlap with sibling skills.
+
+Treat the output as a review surface, not authority. Use it to choose the smallest useful next change. Do not mutate skills during evaluation mode unless the user explicitly approves edits.
 
 ### Step 6: Iterate
 

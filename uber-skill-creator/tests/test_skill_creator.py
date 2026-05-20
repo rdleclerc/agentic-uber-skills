@@ -11,6 +11,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 LINT = ROOT / "scripts" / "lint_skill_package.py"
 REPORT = ROOT / "scripts" / "generate_eval_report.py"
+QUALITY = ROOT / "scripts" / "evaluate_skill_quality.py"
 
 
 def run_cmd(*args: str) -> subprocess.CompletedProcess[str]:
@@ -68,6 +69,85 @@ class SkillCreatorPackageTests(unittest.TestCase):
         self.assertIn("partial: 1", html)
         self.assertIn("Looks &lt;safe&gt;", html)
         self.assertNotIn("Create <x>", html)
+
+    def test_quality_evaluator_flags_vague_skill(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            skill = Path(tmp) / "vague-skill"
+            skill.mkdir()
+            (skill / "SKILL.md").write_text(
+                """---
+name: vague-skill
+description: Helpful skill.
+---
+
+# Vague Skill
+
+Do things for the user.
+"""
+            )
+            result = run_cmd(str(QUALITY), str(skill))
+            self.assertEqual(result.returncode, 0, result.stderr + result.stdout)
+            data = json.loads(result.stdout)
+
+        [record] = data["skills"]
+        categories = set(record["issue_categories"])
+        self.assertLess(record["score"], 75)
+        self.assertIn("triggering", categories)
+        self.assertIn("verification", categories)
+        self.assertIn("eval_coverage", categories)
+
+    def test_quality_evaluator_rewards_production_shape(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            skill = Path(tmp) / "solid-skill"
+            (skill / "scripts").mkdir(parents=True)
+            (skill / "evals").mkdir()
+            (skill / "agents").mkdir()
+            (skill / "scripts" / "check.py").write_text("print('ok')\n")
+            (skill / "evals" / "golden_skill_invocations.json").write_text("[]\n")
+            (skill / "agents" / "openai.yaml").write_text("policy:\n  allow_implicit_invocation: true\n")
+            (skill / "SKILL.md").write_text(
+                """---
+name: solid-skill
+description: Use when Codex needs to evaluate a portable skill with read-only checks, proof requirements, and bounded recommendations.
+---
+
+# Solid Skill
+
+Use `scripts/check.py` for deterministic validation and `evals/` for golden prompts.
+
+Do not mutate the target skill during evaluation. Verify outputs with evidence before recommending changes.
+"""
+            )
+            result = run_cmd(str(QUALITY), str(skill))
+            self.assertEqual(result.returncode, 0, result.stderr + result.stdout)
+            data = json.loads(result.stdout)
+
+        [record] = data["skills"]
+        self.assertGreaterEqual(record["score"], 90)
+        self.assertEqual(record["issue_count"], 0)
+
+    def test_quality_evaluator_reports_pack_markdown_and_overlap(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            for name in ["alpha-skill", "beta-skill"]:
+                skill = root / name
+                skill.mkdir()
+                (skill / "SKILL.md").write_text(
+                    f"""---
+name: {name}
+description: Use when Codex needs a portable release review checklist with verification evidence and approval boundaries.
+---
+
+# {name}
+
+Do not publish without approval. Verify with tests and evidence.
+"""
+                )
+            result = run_cmd(str(QUALITY), str(root), "--format", "markdown")
+            self.assertEqual(result.returncode, 0, result.stderr + result.stdout)
+
+        self.assertIn("# Skill Quality Report", result.stdout)
+        self.assertIn("Overlap candidates", result.stdout)
 
 
 if __name__ == "__main__":
