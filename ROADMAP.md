@@ -17,8 +17,8 @@ This roadmap keeps the skill pack evolving without turning it into bureaucracy. 
 ## Routing and source-authority policy
 
 - `ubergoal` is the only implicit/default Uber lifecycle router.
-- Phase skills are explicit or wrapper-invoked to prevent ceremony creep; metadata says not to auto-trigger from task similarity.
-- `skill-creator` and `skill-creator-pro` are legacy local alias names, not parallel canonical creator skills. Redirect them to `uber-skill-creator` for portable SKILL.md work, or `openclaw-skill-creator` for OpenClaw/Gaia/Type0/Soho-specific skills.
+- Phase skills are explicit or wrapper-invoked to prevent ceremony creep; descriptions/prompts say not to auto-trigger from task similarity, while Codex adapter metadata still exposes every skill in the pack.
+- `skill-creator` and `skill-creator-pro` are legacy local alias names, not parallel canonical creator skills. Redirect them to `uber-skill-creator` for portable SKILL.md work, or `openclaw-agentic-skill-creator` for OpenClaw/Gaia/Type0/Soho-specific skills.
 - `uberassess` is explicit or routed by `ubergoal` for source/artifact assessment only. Its portable validator requires completed project rows but does not hardcode Rob-local project names; local adapter references may provide Type0/Gaia/Soho/Hermes defaults.
 - `deep-rca` is the general incident RCA utility. Agent Advocate is the agent-behavior RCA lens inside planning/acceptance/simplification. If both apply, use the `deep-rca` ladder plus Agent Advocate human-counterfactual evidence.
 - `ubershow` is a utility skill, not a lifecycle phase. It may be used when the user needs visual compression; source authority stays in Markdown/session logs/ADRs and decisions register via pasted receipts.

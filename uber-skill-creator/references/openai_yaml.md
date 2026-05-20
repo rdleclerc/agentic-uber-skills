@@ -44,6 +44,14 @@ Top-level constraints:
 - `dependencies.tools[].description`: Human-readable explanation of the dependency.
 - `dependencies.tools[].transport`: Connection type when `type` is `mcp`.
 - `dependencies.tools[].url`: MCP server URL when `type` is `mcp`.
-- `policy.allow_implicit_invocation`: When false, the skill is not injected into
-  the model context by default, but can still be invoked explicitly via `$skill`.
-  Defaults to true.
+- `policy.allow_implicit_invocation`: Current Codex adapter behavior uses this
+  as an exposure/injection switch. When false, the skill may be omitted from the
+  session's advertised skill context, which can make explicit `$skill` use
+  unreliable even if the folder exists on disk. Defaults to true.
+
+For skills that should be available in every Codex session but should not
+auto-trigger from task similarity, keep `allow_implicit_invocation: true` and put
+the direct-use boundary in `SKILL.md` frontmatter plus `interface.default_prompt`
+(for example: "Use `$skill` only when explicitly invoked or routed by
+`$ubergoal`; do not auto-trigger from task similarity."). Use `false` only when
+the skill should normally be hidden from the session context.

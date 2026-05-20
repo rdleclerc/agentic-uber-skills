@@ -34,7 +34,7 @@ class SkillCreatorPackageTests(unittest.TestCase):
         self.assertIn("Portable Codex/Claude-compatible skill", body)
         self.assertIn("Uber-family skill", body)
         self.assertIn("OpenClaw/Gaia/Type0/Soho-specific skill", body)
-        self.assertIn("openclaw-skill-creator", combined)
+        self.assertIn("openclaw-agentic-skill-creator", combined)
         self.assertIn("skill-creator-pro", combined)
         self.assertIn("deprecation shim", body)
         self.assertIn("Use `uberskillevolver` after substantial or surprising runs", body)
@@ -140,6 +140,34 @@ Do not mutate the target skill during evaluation. Verify outputs with evidence b
         [record] = data["skills"]
         self.assertGreaterEqual(record["score"], 90)
         self.assertEqual(record["issue_count"], 0)
+
+    def test_quality_evaluator_parses_folded_description(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            skill = Path(tmp) / "folded-skill"
+            (skill / "agents").mkdir(parents=True)
+            (skill / "agents" / "openai.yaml").write_text("policy:\n  allow_implicit_invocation: true\n")
+            (skill / "SKILL.md").write_text(
+                """---
+name: folded-skill
+description: >-
+  Use when adding, modifying, reviewing, or debugging an agent-facing tool
+  whose schema, side effects, source authority, errors, traces, or eval cases
+  need to be clear enough for a coding agent to call safely.
+---
+
+# Folded Skill
+
+Verify the tool contract with evidence and add eval cases for misuse, errors, and side effects.
+Do not mutate live systems during review.
+"""
+            )
+            result = run_cmd(str(QUALITY), str(skill))
+            self.assertEqual(result.returncode, 0, result.stderr + result.stdout)
+            data = json.loads(result.stdout)
+
+        [record] = data["skills"]
+        self.assertGreaterEqual(record["description_chars"], 170)
+        self.assertNotIn("triggering", set(record["issue_categories"]))
 
     def test_quality_evaluator_reports_pack_markdown_and_overlap(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:

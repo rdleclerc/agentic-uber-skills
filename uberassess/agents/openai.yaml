@@ -3,4 +3,4 @@ interface:
   short_description: "Assess external sources/artifacts before adoption"
   default_prompt: "Use $uberassess only when explicitly invoked, when I ask to assess an external source or artifact for adoption, or when routed by $ubergoal; do not auto-trigger from task similarity; produce a source-grounded recommendation packet, enforce benefit >> cost, keep implementation behind approval, and hand approved work to $ubergoal/$uberplan."
 policy:
-  allow_implicit_invocation: false
+  allow_implicit_invocation: true

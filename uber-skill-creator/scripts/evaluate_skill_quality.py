@@ -99,14 +99,40 @@ def frontmatter(text: str) -> tuple[dict[str, str], str]:
     if not match:
         return {}, text
     data: dict[str, str] = {}
-    for line in match.group(1).splitlines():
+    lines = match.group(1).splitlines()
+    index = 0
+    while index < len(lines):
+        line = lines[index]
         if not line.strip() or line.lstrip().startswith("#") or ":" not in line:
+            index += 1
             continue
-        key, value = line.split(":", 1)
+        indent = len(line) - len(line.lstrip(" "))
+        key, value = line.strip().split(":", 1)
         value = value.strip()
+        if value.startswith((">", "|")):
+            block_lines: list[str] = []
+            block_indent: int | None = None
+            index += 1
+            while index < len(lines):
+                child = lines[index]
+                child_indent = len(child) - len(child.lstrip(" "))
+                if child.strip() and child_indent <= indent:
+                    break
+                if child.strip():
+                    block_indent = child_indent if block_indent is None else min(block_indent, child_indent)
+                block_lines.append(child)
+                index += 1
+            if block_indent is not None:
+                block_lines = [line[block_indent:] if len(line) >= block_indent else "" for line in block_lines]
+            if value.startswith(">"):
+                data[key.strip()] = " ".join(part.strip() for part in block_lines if part.strip())
+            else:
+                data[key.strip()] = "\n".join(block_lines).strip()
+            continue
         if len(value) >= 2 and value[0] == value[-1] and value[0] in {'"', "'"}:
             value = value[1:-1]
         data[key.strip()] = value
+        index += 1
     return data, text[match.end() :]
 
 

@@ -3,4 +3,4 @@ interface:
   short_description: "Evolve skills from evidence without drift"
   default_prompt: "Use $uberskillevolver only when explicitly invoked or routed by $ubergoal; do not auto-trigger from task similarity; after substantial Tier 2/3 skill, prompt, workflow, or agentic-system work; capture lessons and decide which should become evals, validators, template changes, or no change."
 policy:
-  allow_implicit_invocation: false
+  allow_implicit_invocation: true

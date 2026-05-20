@@ -4,7 +4,7 @@ A platform-neutral skill pack for agentic coding workflows. These are portable `
 
 The pack is not tied to Claude or Codex. Some skills include optional adapter notes for specific runtimes, such as Codex goals, but the core workflows are general agentic engineering protocols.
 
-Agent-facing source authority lives in [AGENTS.md](AGENTS.md). The default routing rule is: invoke `$ubergoal` as the implicit lifecycle router; invoke utility skills like `$deep-rca` and `$ubershow` directly when their specific trigger applies; invoke phase skills directly only when explicitly named or when `$ubergoal` routes to them. Phase-skill metadata intentionally says not to auto-trigger from task similarity; this prevents ceremony creep from broad descriptions.
+Agent-facing source authority lives in [AGENTS.md](AGENTS.md). The default routing rule is: invoke `$ubergoal` as the implicit lifecycle router; invoke utility skills like `$deep-rca` and `$ubershow` directly when their specific trigger applies; invoke phase skills directly only when explicitly named or when `$ubergoal` routes to them. Codex sessions should expose every skill in this pack; phase-skill descriptions intentionally say not to auto-trigger from task similarity, which prevents ceremony creep from broad descriptions without hiding the skills from direct use.
 
 ## Skills
 
@@ -89,7 +89,7 @@ Keep raw learning records local/private. Commit only sanitized learning packets 
 
 ## Utility skills and deprecated aliases
 
-Not every directory in this pack is an Uber lifecycle phase. `uber-skill-creator`, `deep-rca`, and `ubershow` are bundled utilities used by the Uber workflow ecosystem. `uber-skill-creator` is the canonical creator/migration skill for general portable SKILL.md skills. Older local installs named `skill-creator` or `skill-creator-pro` should redirect to `uber-skill-creator` for general skills, or to `openclaw-skill-creator` for OpenClaw/Gaia/Type0/Soho-specific skills; do not keep parallel creator implementations with overlapping trigger descriptions.
+Not every directory in this pack is an Uber lifecycle phase. `uber-skill-creator`, `deep-rca`, and `ubershow` are bundled utilities used by the Uber workflow ecosystem. `uber-skill-creator` is the canonical creator/migration skill for general portable SKILL.md skills. Older local installs named `skill-creator` or `skill-creator-pro` should redirect to `uber-skill-creator` for general skills, or to `openclaw-agentic-skill-creator` for OpenClaw/Gaia/Type0/Soho-specific skills; do not keep parallel creator implementations with overlapping trigger descriptions.
 
 ## Update
 

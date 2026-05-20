@@ -3,4 +3,4 @@ interface:
   short_description: "Opt-in safe simplification audits"
   default_prompt: "Use $ubersimplify only when explicitly invoked or routed by $ubergoal; do not auto-trigger from task similarity; in Audit mode to find complexity, modularity, dead-code, agent-affordance, and fail-fast opportunities; do not patch unless explicitly authorized and backed by strong evidence, tests, and rollback."
 policy:
-  allow_implicit_invocation: false
+  allow_implicit_invocation: true

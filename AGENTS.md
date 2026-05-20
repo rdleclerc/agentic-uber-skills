@@ -17,10 +17,11 @@ Read in this order:
 ## Routing contract
 
 - `$ubergoal` is the only default/implicit Uber lifecycle router.
-- Phase skills are explicit or wrapper-invoked: `$uberplan`, `$uberaccept`, `$uberskillevolver`, `$ubersimplify`, and `$uberassess` should not implicitly trigger merely because a task resembles their domain. Their metadata should say "Do not auto-trigger from task similarity" so runtime skill routers do not confuse examples with permission.
+- All skills in this pack must be installed and exposed to Codex sessions. Exposure is not trigger authority.
+- Phase skills are explicit or wrapper-invoked: `$uberplan`, `$uberaccept`, `$uberskillevolver`, `$ubersimplify`, and `$uberassess` should not trigger merely because a task resembles their domain. Their descriptions and OpenAI adapter prompts should say "Do not auto-trigger from task similarity" so runtime skill routers do not confuse examples with permission.
 - `$deep-rca` is a utility skill, not an Uber lifecycle phase. Use it directly for general incidents, debugging, postmortems, repeated bugs, and class-level root-cause analysis.
 - `ubershow` = visual communication utility, not an Uber lifecycle phase. Use it when a browser-first static artifact will materially improve decision speed or comprehension; generated HTML is a view, and copy/paste receipts are the decision registration path.
-- `uber-skill-creator` = bundled utility for creating, updating, evaluating, and migrating portable SKILL.md skills. Legacy local installs named `skill-creator` or `skill-creator-pro` should redirect to `uber-skill-creator` for general portable skills, or to `openclaw-skill-creator` for OpenClaw/Gaia/Type0/Soho-specific skills.
+- `uber-skill-creator` = bundled utility for creating, updating, evaluating, and migrating portable SKILL.md skills. Legacy local installs named `skill-creator` or `skill-creator-pro` should redirect to `uber-skill-creator` for general portable skills, or to `openclaw-agentic-skill-creator` for OpenClaw/Gaia/Type0/Soho-specific skills.
 - `uberassess` = source-to-recommendation due diligence. It assesses X/GitHub/arXiv/articles/videos/Hermes signals for adoption; it does not implement or mutate without approval, and approved build work routes to `ubergoal`/`uberplan`.
 - If a user names a phase skill directly, use that phase skill. If the user asks which Uber skill to use, route through `$ubergoal`.
 - Use the lightest tier that makes the work safe. Process is cost.
@@ -69,6 +70,7 @@ uv run --with pyyaml python uber-skill-creator/scripts/quick_validate.py <skill>
 - Local Codex install target: `/Users/claw1/.codex/skills/<skill>`.
 - After changing a skill that local Codex should use, sync that skill directory to `/Users/claw1/.codex/skills/<skill>` and validate the installed copy.
 - Generic/Codex/Claude install docs should list the same pack directories unless a directory is explicitly labelled optional.
+- Codex adapter metadata should expose every pack skill; direct-use/phase gating belongs in the skill descriptions and prompts, not in hiding the skill from session context.
 - Do not commit, tag, push, or publish without explicit user authorization.
 
 ## Release checklist

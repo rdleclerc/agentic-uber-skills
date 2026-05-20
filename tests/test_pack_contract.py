@@ -18,21 +18,23 @@ class PackContractTests(unittest.TestCase):
         )
         self.assertEqual(proc.returncode, 0, proc.stderr + proc.stdout)
 
-    def test_only_ubergoal_is_implicit(self) -> None:
+    def test_all_uber_skills_are_exposed_but_phase_skills_are_explicit(self) -> None:
         expected = {
             "ubergoal": "allow_implicit_invocation: true",
-            "uberplan": "allow_implicit_invocation: false",
-            "uberaccept": "allow_implicit_invocation: false",
-            "uberskillevolver": "allow_implicit_invocation: false",
-            "ubersimplify": "allow_implicit_invocation: false",
-            "uberassess": "allow_implicit_invocation: false",
+            "uberplan": "allow_implicit_invocation: true",
+            "uberaccept": "allow_implicit_invocation: true",
+            "uberskillevolver": "allow_implicit_invocation: true",
+            "ubersimplify": "allow_implicit_invocation: true",
+            "uberassess": "allow_implicit_invocation: true",
         }
         for skill, phrase in expected.items():
             text = (ROOT / skill / "agents" / "openai.yaml").read_text()
             self.assertIn(phrase, text, skill)
             if skill != "ubergoal":
                 body = (ROOT / skill / "SKILL.md").read_text()
+                meta = (ROOT / skill / "agents" / "openai.yaml").read_text()
                 self.assertIn("Do not auto-trigger from task similarity", body, skill)
+                self.assertIn("do not auto-trigger from task similarity", meta, skill)
 
     def test_ubergoal_owns_platform_goal_by_default(self) -> None:
         body = (ROOT / "ubergoal" / "SKILL.md").read_text()

@@ -55,7 +55,7 @@ def main() -> int:
         if not (root / match).exists():
             errors.append(f"SKILL.md references missing resource: {match}")
     meta = (root / "agents" / "openai.yaml").read_text() if (root / "agents" / "openai.yaml").exists() else ""
-    for phrase in ["$uberassess", "external source", "benefit >> cost", "allow_implicit_invocation: false"]:
+    for phrase in ["$uberassess", "external source", "benefit >> cost", "allow_implicit_invocation: true", "do not auto-trigger from task similarity"]:
         if phrase not in meta:
             errors.append(f"agents/openai.yaml missing phrase: {phrase}")
     evals = root / "evals" / "golden_skill_invocations.json"

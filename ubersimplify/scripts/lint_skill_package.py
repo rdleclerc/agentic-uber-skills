@@ -158,8 +158,10 @@ def main() -> int:
     meta = meta_path.read_text() if meta_path.exists() else ""
     if "$ubersimplify" not in meta or "Audit mode" not in meta:
         errors.append("agents/openai.yaml default prompt must mention $ubersimplify and Audit mode")
-    if "allow_implicit_invocation: false" not in meta:
-        errors.append("agents/openai.yaml should keep ubersimplify opt-in")
+    if "allow_implicit_invocation: true" not in meta:
+        errors.append("agents/openai.yaml should expose ubersimplify to Codex sessions")
+    if "do not auto-trigger from task similarity" not in meta:
+        errors.append("agents/openai.yaml should keep ubersimplify explicit-use guidance")
 
     validate_eval_schema(root, errors)
 

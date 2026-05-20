@@ -24,6 +24,7 @@ UTILITY_IMPLICIT_SKILLS = ["deep-rca", "uber-skill-creator", "ubershow"]
 ROOT_REQUIRED_FILES = ["AGENTS.md", "CLAUDE.md", "README.md", "ROADMAP.md"]
 AGENTS_REQUIRED_PHRASES = [
     "$ubergoal` is the only default/implicit Uber lifecycle router",
+    "All skills in this pack must be installed and exposed to Codex sessions",
     "Phase skills are explicit or wrapper-invoked",
     "uberassess` = source-to-recommendation due diligence",
     "ubershow` = visual communication utility",
@@ -31,6 +32,7 @@ AGENTS_REQUIRED_PHRASES = [
     "Agent Advocate = agent-behavior-specific RCA lens",
     "Source repo: `/Users/claw1/agentic-uber-skills`",
     "Local Codex install target: `/Users/claw1/.codex/skills/<skill>`",
+    "Codex adapter metadata should expose every pack skill",
     "Do not commit, tag, push, or publish without explicit user authorization",
 ]
 README_REQUIRED_PHRASES = [
@@ -42,6 +44,7 @@ README_REQUIRED_PHRASES = [
 ROADMAP_REQUIRED_PHRASES = [
     "`ubergoal` is the only implicit/default Uber lifecycle router",
     "Phase skills are explicit or wrapper-invoked",
+    "Codex adapter metadata still exposes every skill in the pack",
     "uberassess` = source-to-recommendation due diligence",
     "Build a small pack-level harness before creating a standalone `ubereval` skill",
     "Uberassess dogfooding",
@@ -89,8 +92,8 @@ def main() -> int:
     if implicit.get("ubergoal") != "true":
         errors.append("ubergoal must be the only implicit/default Uber router")
     for skill in UBER_PHASE_SKILLS:
-        if implicit.get(skill) != "false":
-            errors.append(f"{skill} must be explicit/wrapper-invoked with allow_implicit_invocation: false")
+        if implicit.get(skill) != "true":
+            errors.append(f"{skill} must be exposed to Codex sessions with allow_implicit_invocation: true")
     for skill in UTILITY_IMPLICIT_SKILLS:
         if policy_value(root, skill) != "true":
             errors.append(f"{skill} utility metadata must allow task-specific implicit invocation")
