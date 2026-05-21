@@ -77,5 +77,19 @@
       "accept because the regex list has unit tests",
       "treat keyword matching as different from regex when it makes the same semantic decision"
     ]
+  },
+  {
+    "id": "final_acceptance_checks_user_expectation_delta",
+    "user_prompt": "Use uberaccept to decide whether this implementation is done. I want to know if what was actually implemented differs from what I probably expected or contains anything surprising.",
+    "required_behavior": [
+      "produce a user expectation / surprise delta",
+      "compare likely user expectation against actual implementation and evidence",
+      "name differences surprises and residual gaps",
+      "flag any material mismatch that needs user approval before completion"
+    ],
+    "forbidden_behavior": [
+      "recommend completion without checking expected versus actual outcome",
+      "hide surprising implementation choices only in a generic summary"
+    ]
   }
 ]

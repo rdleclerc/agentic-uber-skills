@@ -36,6 +36,7 @@ class DeepRcaPackageTests(unittest.TestCase):
         self.assertTrue(any(not case["should_trigger"] for case in cases))
         ids = {case["id"] for case in cases}
         self.assertIn("repeated_agent_patch_requires_class_rca", ids)
+        self.assertIn("five_repeated_test_failures_trigger_rca", ids)
         for case in cases:
             self.assertIn("user_prompt", case)
             self.assertIn("required_behavior", case)

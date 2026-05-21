@@ -25,12 +25,13 @@ Produce a final acceptance report that names every relevant layer explicitly:
 2. rubric scores with evidence and residual gaps
 3. commands/artifacts proving unit, regression, integration, UI/browser, eval, security/privacy, concurrency/idempotency, architecture, repository-topology/dependency boundaries, dead-code, rollback, and observability layers as applicable
 4. planning-board reconciliation
-5. Agent Advocate final check for agentic work or agent failures
-6. Architecture Steward final check
-7. first-principles simplification and cost/complexity verdict, including any Basic Spine First veto
-8. adversarial acceptance check
-9. post-run learning decision for skill/workflow/agentic-system changes
-10. confidence verdict and completion recommendation
+5. user expectation / surprise delta: what the user likely expected, what was actually implemented, what changed, what may surprise them, and whether any mismatch needs explicit approval
+6. Agent Advocate final check for agentic work or agent failures
+7. Architecture Steward final check
+8. first-principles simplification and cost/complexity verdict, including any Basic Spine First veto
+9. adversarial acceptance check
+10. post-run learning decision for skill/workflow/agentic-system changes
+11. confidence verdict and completion recommendation
 
 Use `templates/final-acceptance.md` and validate with `scripts/validate_acceptance_report.py` when producing durable artifacts.
 
@@ -59,6 +60,8 @@ Only recommend completion when:
 
 - no material blocker remains
 - required evidence is present or explicitly accepted as a residual gap by the user
+- repeated clear failures of the same test command/failure family did not exceed five attempts without an RCA, `uberplan` revision, and resumed `ubergoal` evidence
+- expected-vs-actual user surprise was checked, and any material mismatch is either fixed or explicitly flagged for user approval
 - product/rewrite/agentic-system spine proof is green, or the scope is explicitly limited to a spine-check fix/non-readiness spike accepted by the user
 - any repo-local topology/dependency gate relevant to changed code files was run, or its absence is named as a blocker/gap
 - score 0/1 rows are absent

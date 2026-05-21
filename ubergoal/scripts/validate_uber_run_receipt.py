@@ -35,7 +35,9 @@ REQUIRED_SKILLS = [
 REQUIRED_GATES = [
     "goal created/bound or explicitly skipped",
     "uberplan or work-contract planning",
+    "user expectation / surprise assessment",
     "plan acceptance / thin-harness check",
+    "repeated-test-failure adaptation",
     "uberaccept final proof",
     "policy-adherence / openclaw architecture check",
     "skills used summary",

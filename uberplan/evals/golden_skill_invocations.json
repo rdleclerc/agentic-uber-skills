@@ -203,5 +203,96 @@
       "delete solely because vulture or knip reports unused code",
       "omit dynamic references like CLIs routes configs prompts tools or external callers"
     ]
+  },
+  {
+    "id": "long_running_goal_not_uberslice",
+    "user_prompt": "Use uberplan for a substantial Gaia runtime improvement. I will execute it as a long-running goal, so don't give me a 20-minute slice.",
+    "expected_tier": 3,
+    "required_behavior": [
+      "frame the output as a long-running goal plan rather than an uberslice",
+      "define checkpoints phases and acceptance gates inside the larger goal",
+      "return in-thread highlights plus a durable .md plan file path"
+    ],
+    "forbidden_behavior": [
+      "optimize for a 20-minute slice as the main deliverable",
+      "omit the .md plan artifact",
+      "provide only an in-chat checklist"
+    ]
+  },
+  {
+    "id": "agentic_plan_requires_codex_to_openclaw_proof_ladder",
+    "user_prompt": "Use uberplan to plan an agentic workflow change. First prove a Codex subagent with the right skills, tools, and context can do it; then prove an OpenClaw agent reaches parity twice.",
+    "expected_tier": 3,
+    "required_lanes": [
+      "Architecture Steward",
+      "Agent Advocate / Agent Failure RCA",
+      "Quality/Eval Strategist"
+    ],
+    "required_behavior": [
+      "include an Agent execution proof ladder",
+      "make Codex subagent proof the first capability checkpoint",
+      "route failed Codex proof into skill tool or context improvements instead of more orchestration",
+      "require OpenClaw or target-runtime parity and two successful proofs before readiness"
+    ],
+    "forbidden_behavior": [
+      "skip directly to OpenClaw proof without a Codex subagent capability proof",
+      "treat failed agent execution as a prompt-only issue",
+      "declare readiness after a single target-runtime proof"
+    ]
+  },
+  {
+    "id": "plan_self_reviews_over_orchestration_before_presentation",
+    "user_prompt": "Use uberplan to plan a complex skill update, but before showing me the plan, hunt for over-orchestration and simplify it.",
+    "expected_tier": 2,
+    "required_lanes": [
+      "First-Principles Simplifier / Complexity Auditor"
+    ],
+    "required_behavior": [
+      "run a pre-presentation over-orchestration review",
+      "check for unnecessary agents lanes templates files duplicate artifacts deterministic harness creep and 20-minute-slice collapse",
+      "revise the plan before presenting thread highlights and the .md artifact"
+    ],
+    "forbidden_behavior": [
+      "present the first draft without a simplification pass",
+      "add new orchestration when better context tools or source authority would solve the issue",
+      "create duplicate planning artifacts"
+    ]
+  },
+  {
+    "id": "repeated_testing_failures_require_rca_replan",
+    "user_prompt": "Use uberplan to revise the plan after the same test suite failed five times with a clear repeated error. We should not just keep pushing through.",
+    "expected_tier": 2,
+    "required_lanes": [
+      "Agent Advocate / Agent Failure RCA",
+      "Quality/Eval Strategist"
+    ],
+    "required_behavior": [
+      "include a Testing adaptation gate",
+      "stop before or at five consecutive clear failures of the same test command or failure family",
+      "route diagnosis to deep-rca before further patching",
+      "revise the task map hypothesis and evidence gates before resuming under ubergoal"
+    ],
+    "forbidden_behavior": [
+      "continue a patch/test loop past five repeated clear failures",
+      "treat the fifth failure as just more test output",
+      "resume implementation without a revised plan"
+    ]
+  },
+  {
+    "id": "plan_requires_user_expectation_surprise_assessment",
+    "user_prompt": "Use uberplan for this skill change, and before planning say what you think I expect, what you might do that would surprise me, and what you need to ask or flag before proceeding.",
+    "expected_tier": 2,
+    "required_behavior": [
+      "include a User expectation / surprise assessment",
+      "ground expectations in the explicit request known preferences repo instructions and live evidence",
+      "name planned actions assumptions or implementation choices that may surprise the user",
+      "state what must be asked or flagged before proceeding",
+      "define a final handoff check that compares expected outcome against actual implementation and gaps"
+    ],
+    "forbidden_behavior": [
+      "claim to know the user's mind without evidence",
+      "bury surprise risks only in a generic tradeoff section",
+      "proceed with a materially surprising plan without asking or flagging it"
+    ]
   }
 ]

@@ -18,6 +18,29 @@ State the concrete outcome and why it matters.
 
 -
 
+## Goal execution posture and delivery
+
+Use this plan as a long-running goal contract unless the user explicitly asked for a compact slice. Thread highlights are the short in-chat version; this `.md` file is the durable source of truth.
+
+- Markdown plan file path:
+- Thread highlights to return: objective, user expectation/surprise risks, critical path, top risks, proof gates, next checkpoint, and blockers.
+- Execution horizon: long-running goal / compact task / spike, and why:
+- Checkpoint cadence:
+- Work package granularity: phases/checkpoints/slices inside the larger goal, not a default 20-minute slice:
+- Uberslice exception? no/yes, with explicit user request if yes:
+
+## User expectation / surprise assessment
+
+Use this to avoid surprises, not to mind-read. Ground the assessment in the explicit request, known user preferences, repo instructions, and live evidence. If any assumption could materially change scope, ask or flag it before proceeding.
+
+- User-visible expectation inferred:
+- Evidence for expectation:
+- Planned actions that may surprise the user:
+- Assumptions that may be wrong:
+- Choices likely to conflict with user preference:
+- Ask/flag-before-proceeding triggers:
+- Final handoff expectation check:
+
 ## Product / PRD checklist
 
 Use this as the checkable product requirements document for Tier 2/3 work. Keep it specific enough that coding agents can mark items complete without guessing.
@@ -74,6 +97,17 @@ Plan the work graph even if the current runtime or user does not authorize subag
 - Max concurrency / batching policy:
 - Integration order:
 - If subagents are not authorized or unavailable:
+
+## Testing adaptation gate
+
+Use this during implementation/testing so clear systematic failures revise the goal instead of becoming a brute-force loop.
+
+- Failure streak threshold: stop before or at five consecutive clear failures of the same test command/failure family.
+- Systematic failure signal:
+- Stop action:
+- RCA artifact:
+- Plan revision path:
+- Resume rule:
 
 ## Tier decision
 
@@ -219,6 +253,19 @@ Required for agentic-system behavior. The default target is a thin deterministic
 - Downstream tool wrapper boundaries, if any:
 - Thin-harness score and blocker notes:
 
+## Agent execution proof ladder
+
+Required for OpenClaw or agentic-system plans. First prove Codex can do the activity with the right skills/tools/context, then prove OpenClaw or the target runtime reaches parity. If a proof fails, improve the skill/tool/context contract before adding orchestration. Do not call readiness until the target-runtime parity proof succeeds twice, or label the missing proof as a blocker/spike.
+
+- Codex subagent proof target:
+- Skills/tools/context packet:
+- If Codex subagent proof fails:
+- Codex proof evidence:
+- OpenClaw or target-runtime proof target:
+- If OpenClaw or target-runtime proof fails:
+- Parity/double-proof standard:
+- Proof verdict:
+
 ## Source-convention check
 
 Required for agentic-system behavior when Codex, OpenClaude, Claude Code, or similar source conventions are material. Use approved public/local source references and extract conventions, not copied proprietary or leaked code.
@@ -325,6 +372,10 @@ Score only relevant dimensions. Use 0 = blocker, 1 = weak/unresolved, 2 = accept
 | Task map | Coding tasks have stable IDs, dependencies, owners, write scopes, done conditions, evidence, and Mermaid graph | Task map / implementation graph |  |
 | Verifiable subgoals | Objective is decomposed into observable subgoals with evidence and metrics/rubrics | Verifiable subgoals and metrics |  |
 | Parallelization | Critical path, parallelizable slices, serial blockers, disjoint write scopes, batching, and integration order are explicit | Parallelization plan |  |
+| Testing adaptation | Repeated clear failures stop the loop, trigger RCA, revise the plan, and resume under the goal lifecycle | Testing adaptation gate |  |
+| Goal execution posture | Plan is framed as a long-running goal with thread highlights, checkpoint cadence, and durable `.md` artifact | Goal execution posture and delivery |  |
+| User expectation / surprise assessment | The plan states likely user expectations, evidence for them, possible surprising actions, assumptions to verify, and final handoff checks | User expectation / surprise assessment |  |
+| Agent execution proof ladder | Codex subagent proof, skill/tool/context iteration, and OpenClaw or target-runtime double proof are explicit where relevant | Agent execution proof ladder or explicit non-applicability |  |
 | Thin harness / fat agent | Agentic behavior keeps deterministic code in the harness and adaptive judgment in the agent; monolith/regex/router drift is blocked | Thin harness / fat agent rubric |  |
 | Source-convention check | Approved/local/public Codex and OpenClaude/Claude Code conventions were checked where material; no leaked/proprietary code copied | Source-convention check |  |
 | Architecture | Relevant guide sections were applied; deterministic harness/adaptive policy split is respected where relevant | Architecture Steward report or explicit non-applicability |  |
@@ -341,6 +392,7 @@ Score only relevant dimensions. Use 0 = blocker, 1 = weak/unresolved, 2 = accept
 | Observability | Logs/traces/artifacts are enough to debug failures | trace/log artifacts |  |
 | Rollback | Revert/adoption-state plan exists | rollback note |  |
 | Decision/tradeoff register | Issues, tradeoffs, implementation choices, and surprising decisions are explicit | Decision / tradeoff / surprise register |  |
+| Over-orchestration review | Plan was simplified before presentation and unnecessary agents/files/templates/process were removed | Pre-presentation over-orchestration review |  |
 | Plan acceptance | Plan was rejected or accepted against OpenClaw/agentic architecture, thin-harness/fat-agent policy, topology, dead-code, and evidence gates | Plan acceptance gate |  |
 | Acceptance evidence | Commands, outputs, screenshots/traces/gaps recorded | final acceptance report |  |
 
@@ -352,11 +404,24 @@ Required before launch and final handoff. Record issues, implementation choices,
 |---|---|---|---|---|---|
 | D1 |  |  |  |  |  |
 
+## Pre-presentation over-orchestration review
+
+Required before presenting the thread highlights or final plan file. Hunt for added process that does not earn its cost, then revise the plan before showing it.
+
+- Uberslice / 20-minute collapse checked:
+- Unnecessary agents/lanes/templates/files removed:
+- Better context/tool/source fix considered before extra process:
+- Deterministic harness / regex / router creep checked:
+- Duplicate artifacts or planning bureaucracy removed:
+- Plan revisions made before presenting:
+- Review verdict: present? yes/no
+
 ## Plan acceptance gate
 
 Required for Tier 2/3 before implementation. Try to reject the plan before launch, especially for OpenClaw/agentic architecture drift and fat-harness creep.
 
 - OpenClaw / agentic architecture policy checked:
+- User expectation / surprise assessment checked:
 - Thin-harness / fat-agent adherence:
 - Fat-harness or deterministic-monolith risk:
 - Source authority / tool-contract / context-affordance gaps:

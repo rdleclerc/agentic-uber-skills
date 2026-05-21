@@ -21,6 +21,7 @@ REQUIRED_SKILL_PHRASES = [
     "depth floor",
     "RCA ladder",
     "lowest enforceable layer",
+    "five consecutive clear failures",
 ]
 REQUIRED_META_PHRASES = [
     "allow_implicit_invocation: true",

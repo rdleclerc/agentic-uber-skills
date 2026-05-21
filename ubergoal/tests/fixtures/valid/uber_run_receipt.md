@@ -40,7 +40,9 @@
 |---|---|---|---|---|
 | Goal created/bound or explicitly skipped | yes | ledger.md | pass | none |
 | Uberplan or work-contract planning | yes | plan.md | pass | none |
+| User expectation / surprise assessment | yes | plan.md and final handoff | pass | none |
 | Plan acceptance / thin-harness check | yes | plan.md | pass | none |
+| Repeated-test-failure adaptation | yes | ledger.md | pass | no repeated clear failures; gate documented |
 | Uberaccept final proof | yes | acceptance.md | pass | none |
 | Policy-adherence / OpenClaw architecture check | yes | acceptance.md | pass | none |
 | Skills used summary | yes | ledger.md | pass | none |

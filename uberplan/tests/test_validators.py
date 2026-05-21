@@ -87,9 +87,36 @@ class PlanValidatorTests(unittest.TestCase):
     def test_tier2_requires_parallelization_plan(self) -> None:
         text = (FIX / "valid" / "tier2_agent_plan.md").read_text()
         start = text.index("## Parallelization plan")
-        end = text.index("## Tier decision")
+        end = text.index("## Testing adaptation gate")
         with tempfile.TemporaryDirectory() as tmp:
             plan = Path(tmp) / "missing_parallelization.md"
+            plan.write_text(text[:start] + text[end:])
+            self.assertFails(str(PLAN), str(plan), "--tier", "2", "--agent-behavior")
+
+    def test_tier2_requires_testing_adaptation_gate(self) -> None:
+        text = (FIX / "valid" / "tier2_agent_plan.md").read_text()
+        start = text.index("## Testing adaptation gate")
+        end = text.index("## Tier decision")
+        with tempfile.TemporaryDirectory() as tmp:
+            plan = Path(tmp) / "missing_testing_adaptation.md"
+            plan.write_text(text[:start] + text[end:])
+            self.assertFails(str(PLAN), str(plan), "--tier", "2", "--agent-behavior")
+
+    def test_tier2_requires_goal_execution_posture(self) -> None:
+        text = (FIX / "valid" / "tier2_agent_plan.md").read_text()
+        start = text.index("## Goal execution posture and delivery")
+        end = text.index("## Product / PRD checklist")
+        with tempfile.TemporaryDirectory() as tmp:
+            plan = Path(tmp) / "missing_goal_execution_posture.md"
+            plan.write_text(text[:start] + text[end:])
+            self.assertFails(str(PLAN), str(plan), "--tier", "2", "--agent-behavior")
+
+    def test_tier2_requires_user_expectation_surprise_assessment(self) -> None:
+        text = (FIX / "valid" / "tier2_agent_plan.md").read_text()
+        start = text.index("## User expectation / surprise assessment")
+        end = text.index("## Product / PRD checklist")
+        with tempfile.TemporaryDirectory() as tmp:
+            plan = Path(tmp) / "missing_user_expectation.md"
             plan.write_text(text[:start] + text[end:])
             self.assertFails(str(PLAN), str(plan), "--tier", "2", "--agent-behavior")
 
@@ -114,9 +141,18 @@ class PlanValidatorTests(unittest.TestCase):
     def test_tier2_requires_decision_tradeoff_register(self) -> None:
         text = (FIX / "valid" / "tier2_agent_plan.md").read_text()
         start = text.index("## Decision / tradeoff / surprise register")
-        end = text.index("## Plan acceptance gate")
+        end = text.index("## Pre-presentation over-orchestration review")
         with tempfile.TemporaryDirectory() as tmp:
             plan = Path(tmp) / "missing_decision_register.md"
+            plan.write_text(text[:start] + text[end:])
+            self.assertFails(str(PLAN), str(plan), "--tier", "2", "--agent-behavior")
+
+    def test_tier2_requires_over_orchestration_review(self) -> None:
+        text = (FIX / "valid" / "tier2_agent_plan.md").read_text()
+        start = text.index("## Pre-presentation over-orchestration review")
+        end = text.index("## Plan acceptance gate")
+        with tempfile.TemporaryDirectory() as tmp:
+            plan = Path(tmp) / "missing_over_orchestration_review.md"
             plan.write_text(text[:start] + text[end:])
             self.assertFails(str(PLAN), str(plan), "--tier", "2", "--agent-behavior")
 
@@ -138,6 +174,15 @@ class PlanValidatorTests(unittest.TestCase):
             plan.write_text(text[:start] + text[end:])
             self.assertFails(str(PLAN), str(plan), "--tier", "2", "--agent-behavior")
 
+    def test_agentic_plan_requires_agent_execution_proof_ladder(self) -> None:
+        text = (FIX / "valid" / "tier2_agent_plan.md").read_text()
+        start = text.index("## Agent execution proof ladder")
+        end = text.index("## Source-convention check")
+        with tempfile.TemporaryDirectory() as tmp:
+            plan = Path(tmp) / "missing_agent_execution_proof_ladder.md"
+            plan.write_text(text[:start] + text[end:])
+            self.assertFails(str(PLAN), str(plan), "--tier", "2", "--agent-behavior")
+
     def test_agentic_plan_requires_source_convention_check(self) -> None:
         text = (FIX / "valid" / "tier2_agent_plan.md").read_text()
         start = text.index("## Source-convention check")
@@ -154,6 +199,7 @@ class PlanValidatorTests(unittest.TestCase):
         text = (FIX / "valid" / "tier2_agent_plan.md").read_text()
         text = text.replace("the added validator fixture", "the validator fixture")
         text = text.replace("one small validator fixture", "the small validator fixture")
+        text = text.replace("adding validator fixture coverage", "updating validator fixture coverage")
         text = text.replace("New validator/test files stay inside the existing skill package", "Existing validator/test files stay inside the existing skill package")
         text = text.replace("Add validator and fixture coverage", "Update validator and fixture coverage")
         text = text.replace("Add deterministic harness validation", "Update deterministic harness validation")
@@ -197,6 +243,11 @@ class PackageTests(unittest.TestCase):
         self.assertIn("agent_boundary_contract_blocks_generic_reliability_plan", ids)
         self.assertIn("semantic_regex_gate_blocks_keyword_router_plan", ids)
         self.assertIn("agentic_system_plan_requires_prd_task_map_and_thin_harness", ids)
+        self.assertIn("long_running_goal_not_uberslice", ids)
+        self.assertIn("agentic_plan_requires_codex_to_openclaw_proof_ladder", ids)
+        self.assertIn("plan_self_reviews_over_orchestration_before_presentation", ids)
+        self.assertIn("repeated_testing_failures_require_rca_replan", ids)
+        self.assertIn("plan_requires_user_expectation_surprise_assessment", ids)
         for case in cases:
             self.assertIn("user_prompt", case)
             self.assertIn("expected_tier", case)

@@ -22,7 +22,7 @@ REQUIRED_FILES = [
 ]
 FORBIDDEN_SUFFIXES = {".pyc", ".pyo"}
 FORBIDDEN_DIRS = {"__pycache__", ".pytest_cache", ".mypy_cache"}
-REQUIRED_PHRASES = ["adversarial acceptance", "Agent Advocate", "benefit >> cost", "Architecture Steward", "uberskillevolver"]
+REQUIRED_PHRASES = ["adversarial acceptance", "Agent Advocate", "benefit >> cost", "Architecture Steward", "uberskillevolver", "user expectation / surprise delta"]
 
 
 def main() -> int:

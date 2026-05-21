@@ -17,6 +17,9 @@ TIER_REQUIREMENTS = {
     "0": CORE_SECTIONS,
     "1": CORE_SECTIONS
     + [
+        "goal execution posture and delivery",
+        "user expectation / surprise assessment",
+        "testing adaptation gate",
         "cost/complexity check",
         "repository topology / package seam",
         "risk-to-evidence map",
@@ -25,10 +28,13 @@ TIER_REQUIREMENTS = {
     ],
     "2": CORE_SECTIONS
     + [
+        "goal execution posture and delivery",
+        "user expectation / surprise assessment",
         "product / prd checklist",
         "task map / implementation graph",
         "verifiable subgoals and metrics",
         "parallelization plan",
+        "testing adaptation gate",
         "cost/complexity check",
         "first-principles simplifier / complexity auditor",
         "planning review board",
@@ -38,6 +44,7 @@ TIER_REQUIREMENTS = {
         "repository topology / package seam",
         "code-health / dead-code tool plan",
         "decision / tradeoff / surprise register",
+        "pre-presentation over-orchestration review",
         "plan acceptance gate",
         "risk-to-evidence map",
         "acceptance rubric",
@@ -45,10 +52,13 @@ TIER_REQUIREMENTS = {
     ],
     "3": CORE_SECTIONS
     + [
+        "goal execution posture and delivery",
+        "user expectation / surprise assessment",
         "product / prd checklist",
         "task map / implementation graph",
         "verifiable subgoals and metrics",
         "parallelization plan",
+        "testing adaptation gate",
         "cost/complexity check",
         "first-principles simplifier / complexity auditor",
         "planning review board",
@@ -59,6 +69,7 @@ TIER_REQUIREMENTS = {
         "repository topology / package seam",
         "code-health / dead-code tool plan",
         "decision / tradeoff / surprise register",
+        "pre-presentation over-orchestration review",
         "plan acceptance gate",
         "risk-to-evidence map",
         "acceptance rubric",
@@ -93,6 +104,11 @@ RUBRIC_DIMENSIONS = [
     "task map",
     "verifiable subgoals",
     "parallelization",
+    "testing adaptation",
+    "goal execution posture",
+    "user expectation",
+    "surprise assessment",
+    "agent execution proof ladder",
     "thin harness / fat agent",
     "source-convention check",
     "architecture",
@@ -109,6 +125,7 @@ RUBRIC_DIMENSIONS = [
     "observability",
     "rollback",
     "decision/tradeoff register",
+    "over-orchestration review",
     "plan acceptance",
     "acceptance evidence",
 ]
@@ -405,6 +422,95 @@ def validate_parallelization_plan(found: dict[str, str], tier: str, errors: list
         errors.append("Parallelization plan must state what happens if subagents are not authorized or unavailable")
 
 
+def validate_testing_adaptation_gate(found: dict[str, str], tier: str, errors: list[str]) -> None:
+    if tier == "0":
+        return
+    section_name = "testing adaptation gate"
+    section = found.get(section_name, "")
+    if not section:
+        return
+    if not section_has_substance(section):
+        errors.append("required section lacks completed substance: Testing adaptation gate")
+        return
+    section_lower = normalize(section)
+    for label in [
+        "Failure streak threshold",
+        "Systematic failure signal",
+        "Stop action",
+        "RCA artifact",
+        "Plan revision path",
+        "Resume rule",
+    ]:
+        require_field(section, label, errors)
+    if "five" not in section_lower and "5" not in section_lower:
+        errors.append("Testing adaptation gate must stop before or at five consecutive clear failures")
+    for term in ["clear", "failure", "test", "rca", "uberplan", "ubergoal", "resume"]:
+        if term not in section_lower:
+            errors.append(f"Testing adaptation gate missing concept: {term}")
+
+
+def validate_goal_execution_posture(found: dict[str, str], tier: str, errors: list[str]) -> None:
+    if tier == "0":
+        return
+    section_name = "goal execution posture and delivery"
+    section = found.get(section_name, "")
+    if not section:
+        return
+    if not section_has_substance(section):
+        errors.append("required section lacks completed substance: Goal execution posture and delivery")
+        return
+    section_lower = normalize(section)
+    for label in [
+        "Markdown plan file path",
+        "Thread highlights to return",
+        "Execution horizon",
+        "Checkpoint cadence",
+        "Work package granularity",
+        "Uberslice exception?",
+    ]:
+        require_field(section, label, errors)
+    path = require_field(section, "Markdown plan file path", errors)
+    if path and ".md" not in path.lower():
+        errors.append("Goal execution posture must name a durable .md plan file path")
+    for term in ["thread", "highlight", "checkpoint"]:
+        if term not in section_lower:
+            errors.append(f"Goal execution posture missing concept: {term}")
+    if tier in {"2", "3"} and "long-running" not in section_lower and "long running" not in section_lower:
+        errors.append("Tier 2/3 uberplan contracts must frame the work as a long-running goal unless explicitly downgraded")
+    if "20-minute" not in section_lower and "uberslice" not in section_lower:
+        errors.append("Goal execution posture must explicitly reject or justify uberslice / 20-minute collapse")
+
+
+def validate_user_expectation_surprise(found: dict[str, str], tier: str, errors: list[str]) -> None:
+    if tier == "0":
+        return
+    section_name = "user expectation / surprise assessment"
+    section = found.get(section_name, "")
+    if not section:
+        return
+    if not section_has_substance(section):
+        errors.append("required section lacks completed substance: User expectation / surprise assessment")
+        return
+    section_lower = normalize(section)
+    for label in [
+        "User-visible expectation inferred",
+        "Evidence for expectation",
+        "Planned actions that may surprise the user",
+        "Assumptions that may be wrong",
+        "Choices likely to conflict with user preference",
+        "Ask/flag-before-proceeding triggers",
+        "Final handoff expectation check",
+    ]:
+        require_field(section, label, errors)
+    for term in ["user", "expect", "surprise", "evidence", "assumption"]:
+        if term not in section_lower:
+            errors.append(f"User expectation / surprise assessment missing concept: {term}")
+    if "ask" not in section_lower and "flag" not in section_lower:
+        errors.append("User expectation / surprise assessment must say what to ask or flag before proceeding")
+    if "final" not in section_lower and "handoff" not in section_lower:
+        errors.append("User expectation / surprise assessment must define a final handoff expectation check")
+
+
 def validate_target_file_tree(found: dict[str, str], lower: str, tier: str, errors: list[str]) -> None:
     if tier == "0":
         return
@@ -493,6 +599,36 @@ def validate_plan_acceptance_gate(found: dict[str, str], tier: str, errors: list
     if verdict and "proceed? yes" not in verdict.lower():
         errors.append("Plan acceptance gate verdict must explicitly say proceed? yes")
 
+
+def validate_over_orchestration_review(found: dict[str, str], tier: str, errors: list[str]) -> None:
+    if tier not in {"2", "3"}:
+        return
+    section_name = "pre-presentation over-orchestration review"
+    section = found.get(section_name, "")
+    if not section:
+        return
+    if not section_has_substance(section):
+        errors.append("required section lacks completed substance: Pre-presentation over-orchestration review")
+        return
+    section_lower = normalize(section)
+    for label in [
+        "Uberslice / 20-minute collapse checked",
+        "Unnecessary agents/lanes/templates/files removed",
+        "Better context/tool/source fix considered before extra process",
+        "Deterministic harness / regex / router creep checked",
+        "Duplicate artifacts or planning bureaucracy removed",
+        "Plan revisions made before presenting",
+        "Review verdict",
+    ]:
+        require_field(section, label, errors)
+    for term in ["20-minute", "agents", "templates", "context", "tool", "source", "deterministic", "revision"]:
+        if term not in section_lower:
+            errors.append(f"Pre-presentation over-orchestration review missing concept: {term}")
+    verdict = require_field(section, "Review verdict", errors)
+    if verdict and "present? yes" not in verdict.lower():
+        errors.append("Pre-presentation over-orchestration review verdict must explicitly say present? yes")
+
+
 def validate_thin_harness_rubric(found: dict[str, str], required: bool, errors: list[str]) -> None:
     section_name = "thin harness / fat agent design rubric"
     section = found.get(section_name, "")
@@ -520,6 +656,41 @@ def validate_thin_harness_rubric(found: dict[str, str], required: bool, errors: 
             errors.append(f"Thin harness / fat agent design rubric missing concept: {term}")
     if "regex" not in section_lower and "keyword" not in section_lower:
         errors.append("Thin harness / fat agent design rubric must address regex/keyword semantic-authority risk")
+
+
+def validate_agent_execution_proof_ladder(found: dict[str, str], required: bool, errors: list[str]) -> None:
+    section_name = "agent execution proof ladder"
+    section = found.get(section_name, "")
+    if not required:
+        return
+    if not section:
+        errors.append("agentic-system scope requires Agent execution proof ladder section")
+        return
+    if not section_has_substance(section):
+        errors.append("required section lacks completed substance: Agent execution proof ladder")
+        return
+    section_lower = normalize(section)
+    for label in [
+        "Codex subagent proof target",
+        "Skills/tools/context packet",
+        "If Codex subagent proof fails",
+        "Codex proof evidence",
+        "OpenClaw or target-runtime proof target",
+        "If OpenClaw or target-runtime proof fails",
+        "Parity/double-proof standard",
+        "Proof verdict",
+    ]:
+        require_field(section, label, errors)
+    for term in ["codex", "subagent", "skill", "tool", "context", "parity"]:
+        if term not in section_lower:
+            errors.append(f"Agent execution proof ladder missing concept: {term}")
+    if "openclaw" not in section_lower and "target-runtime" not in section_lower and "target runtime" not in section_lower:
+        errors.append("Agent execution proof ladder must name OpenClaw or the target runtime")
+    if "twice" not in section_lower and "double" not in section_lower and "two " not in section_lower:
+        errors.append("Agent execution proof ladder must require two target-runtime parity proofs before readiness")
+    verdict = require_field(section, "Proof verdict", errors).lower()
+    if verdict and not any(term in verdict for term in ["proceed", "block", "spike"]):
+        errors.append("Agent execution proof ladder verdict must say whether the plan proceeds, is blocked, or is a spike")
 
 
 def validate_source_convention_check(found: dict[str, str], required: bool, errors: list[str]) -> None:
@@ -689,10 +860,14 @@ def main() -> int:
     validate_task_map(found, args.tier or "1", errors)
     validate_verifiable_subgoals(found, args.tier or "1", errors)
     validate_parallelization_plan(found, args.tier or "1", errors)
+    validate_testing_adaptation_gate(found, args.tier or "1", errors)
+    validate_goal_execution_posture(found, args.tier or "1", errors)
+    validate_user_expectation_surprise(found, args.tier or "1", errors)
     validate_target_file_tree(found, lower, args.tier or "1", errors)
     validate_repository_topology(found, lower, args.tier or "1", errors)
     validate_code_health_dead_code_plan(found, lower, args.tier or "1", errors)
     validate_decision_tradeoff_register(found, args.tier or "1", errors)
+    validate_over_orchestration_review(found, args.tier or "1", errors)
     validate_plan_acceptance_gate(found, args.tier or "1", errors)
 
     # Tier 0 is intentionally light but still needs a concrete test/evidence note.
@@ -742,6 +917,7 @@ def main() -> int:
     behavior_scope = args.agent_behavior or (args.tier != "0" and any(term in behavior_scan_text for term in behavior_terms))
     agentic_system_scope = args.tier != "0" and (behavior_scope or has_agentic_system_scope(behavior_scan_text))
     validate_thin_harness_rubric(found, agentic_system_scope, errors)
+    validate_agent_execution_proof_ladder(found, agentic_system_scope, errors)
     validate_source_convention_check(found, agentic_system_scope, errors)
     validate_agent_boundary_contract(found, behavior_scope, errors)
     semantic_pattern_scope = behavior_scope or has_semantic_pattern_scope(behavior_scan_text)

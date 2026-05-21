@@ -15,6 +15,7 @@ Use 0 = blocker, 1 = weak/unresolved, 2 = acceptable with named residual risk, 3
 |---|---:|---|---|
 | Scope clarity |  |  |  |
 | Planning review board |  | board findings reconciled |  |
+| User expectation / surprise delta |  | expected user outcome compared against actual implementation and gaps |  |
 | Cost/complexity |  | smallest useful guardrail; deferred machinery named |  |
 | Agent Advocate / Agent RCA |  | failed invariant, human counterfactual, human-parity fix, and recurrence evidence |  |
 | Architecture Steward |  | planning/final steward report |  |
@@ -42,6 +43,17 @@ Use 0 = blocker, 1 = weak/unresolved, 2 = acceptable with named residual risk, 3
 ## Planning review reconciliation
 
 Confirm every material planning-board blocker was resolved, explicitly deferred with user acceptance, or converted into a known residual risk.
+
+## User expectation / surprise delta
+
+Compare what the user likely expected against what was actually implemented or accepted. Ground this in the request, known preferences, plan, and evidence; do not claim to read the user's mind.
+
+- Expected outcome inferred before/during plan:
+- Evidence for expectation:
+- Actual implementation/result:
+- Differences or surprises:
+- Material mismatch requiring user approval:
+- Final handoff wording:
 
 ## Agent Advocate final check
 

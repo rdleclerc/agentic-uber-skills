@@ -21,6 +21,8 @@ Use the lightest tier that makes the work safe. Treat process as cost. Add agent
 | Complexity/modularity/dead-code simplification campaign with timestamped trail | `$ubersimplify` |
 | Assess source/research signal/internal artifact before adoption | `$uberassess` |
 | Post-run learning for skills/prompts/workflows/agentic systems | `$uberskillevolver` |
+| User expectation / surprise assessment for a goal or final handoff | assess in `ubergoal`, detail in `$uberplan`, verify in `$uberaccept` |
+| Repeated clear test failures or stuck execution loop | stop, run `$deep-rca`, revise via `$uberplan`, then continue under the same `ubergoal` |
 | Codex/platform goal ownership, compact objective, goal ledger | `ubergoal` resources |
 
 Deferred until real usage proves benefit >> cost: `ubercode`, `ubergit`, `ubereval`, `uberui`, and standalone specialist-lane skills. Use lanes inside `uberplan`/`uberaccept` first.
@@ -51,14 +53,15 @@ Artifact precedence:
 ## Lifecycle
 
 1. **Classify tier.** Use Tier 0/1/2/3 and choose the lowest safe tier.
-2. **Plan.** For Tier 1, use the Coding Agent Work Contract as the compact plan unless risk demands more. For Tier 2/3, invoke or follow `$uberplan` and embed/extend the work contract. For Tier 0, use a concise plan/test note. Agentic-system plans must bias toward thin deterministic harnesses around capable agents, not deterministic monoliths that absorb agent judgment.
+2. **Plan.** For Tier 1+, start with a user expectation / surprise assessment: what the user likely expects, what may surprise them, and what needs asking or flagging before proceeding. For Tier 1, use the Coding Agent Work Contract unless risk demands more. For Tier 2/3, invoke or follow `$uberplan` and embed/extend the work contract. For Tier 0, use a concise plan/test note. Agentic-system plans must bias toward thin deterministic harnesses around capable agents, not deterministic monoliths that absorb agent judgment.
 3. **Create or bind the goal.** In Codex or any runtime with a platform goal object, explicit `ubergoal` use launches a compact goal by default for Tier 1+ work and for any task where the user explicitly names `ubergoal`. If a goal already exists, bind the work to it instead of creating a duplicate. Skip goal creation only when the user explicitly asks for no goal/lightweight mode, the runtime has no goal facility, or the task is not actually being handled through `ubergoal`.
 4. **Run the review board and execute.** Keep the main agent as orchestrator. Explicit `ubergoal` use authorizes bounded specialist review-board agents for Tier 2+ work unless the user says no agents/lightweight mode. Use implementation workers only when write scopes are disjoint.
-5. **Ledger/receipt.** For long work, maintain `templates/goal-ledger.md` plus the lightweight `templates/uber-run-receipt.md`, including the Skills used summary so final handoff proves which custom skills were used or skipped.
-6. **Assess sources/artifacts when needed.** Route source-to-recommendation due diligence to `$uberassess`; do not let assessment become implementation before approval.
-7. **Simplify when needed.** Invoke or follow `$ubersimplify` for opt-in complexity/dead-code/modularity campaigns; default to Audit mode unless patching is explicitly authorized.
-8. **Accept.** Invoke or follow `$uberaccept` before claiming completion or calling `update_goal(status="complete")`; acceptance must check implementation against the `uberplan`, OpenClaw/agentic architecture, thin-harness/fat-agent policy, evidence gaps, and surprising tradeoffs/choices.
-9. **Learn.** For Tier 2/3 skill, prompt, workflow, multi-agent protocol, or agentic-system changes, invoke `$uberskillevolver` after acceptance.
+5. **Adapt on systematic test failure.** If a test set has clear repeated failures, stop before or at five consecutive failures of the same command/failure family. Capture evidence, run `$deep-rca`, revise the plan with `$uberplan`, update the ledger/receipt, then continue under the same `ubergoal` rather than pushing through.
+6. **Ledger/receipt.** For long work, maintain `templates/goal-ledger.md` plus the lightweight `templates/uber-run-receipt.md`, including the Skills used summary so final handoff proves which custom skills were used or skipped.
+7. **Assess sources/artifacts when needed.** Route source-to-recommendation due diligence to `$uberassess`; do not let assessment become implementation before approval.
+8. **Simplify when needed.** Invoke or follow `$ubersimplify` for opt-in complexity/dead-code/modularity campaigns; default to Audit mode unless patching is explicitly authorized.
+9. **Accept.** Invoke or follow `$uberaccept` before claiming completion or calling `update_goal(status="complete")`; acceptance must check implementation against the `uberplan`, OpenClaw/agentic architecture, thin-harness/fat-agent policy, evidence gaps, and surprising tradeoffs/choices.
+10. **Learn.** For Tier 2/3 skill, prompt, workflow, multi-agent protocol, or agentic-system changes, invoke `$uberskillevolver` after acceptance.
 
 ## Tier selection
 
@@ -99,6 +102,7 @@ When launching, keep the goal objective compact. Include:
 - destination and starting point
 - objective/scope and out-of-scope boundaries
 - tier and plan artifact path/summary
+- user expectation/surprise risks to ask or flag
 - preserve/non-regression constraints
 - verification gates and required evidence
 - allowed subagent/audit shape, if useful
@@ -132,11 +136,12 @@ When implementation begins:
 - require evidence-backed outputs, not generic approval
 - serialize overlapping work
 - update `templates/goal-ledger.md` after major checkpoints
+- stop and replan after clear repeated test failures instead of pushing through five consecutive failures
 - stop and ask before destructive/external side effects unless already approved
 
 ## Completion rule
 
-Do not call `update_goal(status="complete")` until `$uberaccept` says the objective is achieved, no required work remains, policy-adherence has been checked against the plan and OpenClaw/agentic architecture, issues/tradeoffs/surprising implementation choices are reported, and every touched repo is locally committed, reverted, intentionally stashed, or explicitly user-approved as uncommitted. For Tier 2/3, use specialist review-board agents/lenses for this final policy check when available and allowed; no solo self-certification. Final handoff must include `git status --short --branch`, a Skills used summary, and an Uber run receipt validated when feasible.
+Do not call `update_goal(status="complete")` until `$uberaccept` says the objective is achieved, no required work remains, policy-adherence has been checked against the plan and OpenClaw/agentic architecture, expected-vs-actual user surprise has been checked, issues/tradeoffs/surprising implementation choices are reported, and every touched repo is locally committed, reverted, intentionally stashed, or explicitly user-approved as uncommitted. For Tier 2/3, use specialist review-board agents/lenses for this final policy check when available and allowed; no solo self-certification. Final handoff must include `git status --short --branch`, a Skills used summary, and an Uber run receipt validated when feasible.
 
 For “100% confident” prompts, use the scoped meaning: 100% confident within the stated scope after trying to disprove the plan/work and finding no material unresolved blocker.
 

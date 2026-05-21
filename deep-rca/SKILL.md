@@ -82,6 +82,10 @@ Treat these as incomplete until traced deeper:
 - "The UI showed the wrong stage." → What state model conflates terminal/display/operational states?
 - "We hit the cap." → What terminal path should own capped/exhausted work?
 
+## Repeated test failure trigger
+
+If a coding run hits clear repeated failures from the same test command or failure family, do not keep patching through the loop. At or before five consecutive clear failures, preserve the command output, build the RCA ladder, name the missing invariant, and hand the revised hypothesis back to `uberplan`/`ubergoal` before implementation resumes.
+
 ## Patch selection — after RCA is complete
 
 Map the fix to the lowest enforceable layer. Prefer in order:

@@ -26,6 +26,23 @@
 - Simpler path discovered:
 - Deferred machinery still deferred? yes/no:
 
+## User expectation / surprise assessment
+
+- User-visible expectation inferred:
+- Evidence for expectation:
+- Potential surprises or expectation mismatches:
+- Ask/flag before proceeding:
+- Final handoff expected-vs-actual check:
+
+## Testing adaptation gate
+
+- Current repeated-failure streak:
+- Failure family / command:
+- Stop threshold: stop before or at five consecutive clear failures of the same command/failure family.
+- RCA status: not-needed | pending | complete
+- Plan revision path:
+- Resume condition:
+
 ## Decisions
 
 | Decision | Reason | Date |
@@ -65,4 +82,3 @@ Record the custom skills actually used so the final handoff proves the run used 
 -
 
 ## Next checkpoint
-

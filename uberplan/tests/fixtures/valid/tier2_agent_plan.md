@@ -6,6 +6,23 @@ Improve a multi-agent handoff prompt so workers stop overwriting each other and 
 ## Scope
 In scope: one skill prompt, one agent brief template, validator fixture updates. Out of scope: live runtime changes, commits, pushes, or production writes.
 
+## Goal execution posture and delivery
+- Markdown plan file path: `plans/2026-05-21-multi-agent-handoff-contract.md`
+- Thread highlights to return: objective, user expectation/surprise risks, critical path, top risks, proof gates, next checkpoint, and blockers.
+- Execution horizon: long-running goal because the handoff contract needs staged prompt, validator, eval, and acceptance checkpoints rather than a default compact task.
+- Checkpoint cadence: after contract orientation, after validator/eval updates, and after acceptance commands.
+- Work package granularity: phases/checkpoints inside the larger goal; no 20-minute slice is used as the plan boundary.
+- Uberslice exception? no; the user did not request an uberslice and the work should not collapse into a 20-minute slice.
+
+## User expectation / surprise assessment
+- User-visible expectation inferred: the user expects a durable multi-agent handoff contract that prevents worker overwrite surprises, not a generic prompt warning or hidden orchestration layer.
+- Evidence for expectation: the request names repeated multi-agent overwrite behavior, asks for evidence-backed findings, and this repo's instructions prefer small validators over prose-only policy when drift is possible.
+- Planned actions that may surprise the user: adding validator fixture coverage could surprise the user if presented as behavioral proof, so the plan labels fresh-agent behavioral replay as a deferred gap.
+- Assumptions that may be wrong: the plan assumes local skill-package validation is enough for this contained change and that no live OpenClaw runtime proof is required before local readiness.
+- Choices likely to conflict with user preference: building a broad eval harness or extra orchestration agents would conflict with the user's preference for benefit >> cost and no ceremony creep.
+- Ask/flag-before-proceeding triggers: ask or flag before adding new skills, CI, broad eval infrastructure, external writes, commits, pushes, or overlapping worker write scopes.
+- Final handoff expectation check: final acceptance must compare the expected durable handoff contract against actual files, tests, gaps, and any surprising implementation choices.
+
 ## Product / PRD checklist
 - User / operator problem: coding agents in a multi-agent handoff can overwrite each other or claim success without evidence.
 - Primary user-visible outcome: worker handoffs are clear enough that agents preserve file ownership and return evidence-backed findings.
@@ -58,6 +75,15 @@ flowchart TD
 - Max concurrency / batching policy: up to three independent slices if subagents are authorized; otherwise main agent performs them sequentially.
 - Integration order: merge prompt/template, validator, then eval seed, then run full package checks.
 - If subagents are not authorized or unavailable: no subagents are required; the main agent performs all slices and records degraded parallelism only as a note.
+
+## Testing adaptation gate
+
+- Failure streak threshold: stop before or at five consecutive clear failures of the same test command or failure family.
+- Systematic failure signal: repeated validator or unittest failures with the same missing contract, stack trace, or assertion across attempts.
+- Stop action: stop the patch/test loop, preserve the failing command output, and mark the goal ledger as blocked on RCA.
+- RCA artifact: run `deep-rca` and record the RCA ladder in the goal ledger or plan appendix.
+- Plan revision path: revise this `uberplan` contract with the new hypothesis, changed task map, and evidence gate before editing again.
+- Resume rule: continue under the same `ubergoal` only after the revised plan names the failure class and next test evidence.
 
 ## Tier decision
 - Tier: 2
@@ -188,6 +214,18 @@ Required because this is a skill and multi-agent coordination change.
 - Downstream tool wrapper boundaries, if any: no wrapper tool is introduced; if one is later added, it must expose accepted input, returned evidence, downstream commands, failure semantics, and authority limits.
 - Thin-harness score and blocker notes: 3/3 because deterministic code only enforces contract structure while the agent keeps adaptive planning and synthesis authority.
 
+## Agent execution proof ladder
+Required because this is an agentic-system planning contract.
+
+- Codex subagent proof target: first have a bounded Codex subagent use the updated skill/template context to produce a safe handoff plan for the shared-file overwrite case.
+- Skills/tools/context packet: `uberplan/SKILL.md`, `templates/agent-brief.md`, validator command, fixture paths, and a bounded incident summary; no full parent-context dump.
+- If Codex subagent proof fails: improve the skill/tool/context packet before adding new orchestration or more review lanes.
+- Codex proof evidence: subagent output must include disjoint write scopes, return contract, stop condition, and evidence rows; until run, this remains the first execution checkpoint.
+- OpenClaw or target-runtime proof target: after Codex proof, run the same class through OpenClaw or the target runtime using the same skill/tool/context contract.
+- If OpenClaw or target-runtime proof fails: iterate the skill/tool/context contract until target-runtime parity is reached instead of adding hidden deterministic routing.
+- Parity/double-proof standard: target-runtime parity must succeed twice on representative handoff tasks before readiness is claimed.
+- Proof verdict: proceed as a plan with the Codex proof as the first checkpoint; readiness remains blocked until the OpenClaw or target-runtime proof succeeds twice.
+
 ## Source-convention check
 
 - Source handles checked, or why unavailable: fixture plan does not inspect live Codex/OpenClaude sources; implementation plans using this pattern must inspect approved public or local source handles when those conventions are material.
@@ -286,6 +324,8 @@ Only used if user explicitly authorizes subagents.
 | Task map | Stable task IDs, dependencies, owners, write scopes, done conditions, evidence, and Mermaid graph are present | Task map / implementation graph | 3 |
 | Verifiable subgoals | Subgoals have observable evidence and metrics/rubrics | Verifiable subgoals and metrics | 3 |
 | Parallelization | Critical path, parallel slices, serial blockers, disjoint write scopes, batching, and integration order are explicit | Parallelization plan | 3 |
+| Testing adaptation | Five repeated clear failures stop the loop, trigger RCA, revise the plan, and resume under the same goal | Testing adaptation gate | 3 |
+| User expectation / surprise assessment | Likely user expectations, evidence, possible surprises, assumptions, ask/flag triggers, and final handoff checks are explicit | User expectation / surprise assessment | 3 |
 | Thin harness / fat agent | Deterministic code enforces contract shape while adaptive agent reasoning owns planning judgment; monolith drift blocked | Thin harness / fat agent design rubric | 3 |
 | Source-convention check | Codex and OpenClaude / Claude Code convention source boundary is explicit; no leaked/proprietary code copied | Source-convention check | 3 |
 | Architecture | Guide sections applied and harness/policy split respected | Architecture Steward report | 3 |
@@ -296,7 +336,10 @@ Only used if user explicitly authorizes subagents.
 | Dead code | Package lint plus grep/git grep/call-site review covers touched helpers; tool findings remain candidates | Code-health / dead-code tool plan | 3 |
 | Unit/regression tests | Positive and negative validator fixtures pass | unittest output | 3 |
 | Evals | Golden behavioral cases exist for future forward tests | evals/golden_skill_invocations.json | 3 |
+| Goal execution posture | Long-running goal posture, thread highlights, checkpoint cadence, and `.md` plan path are explicit | Goal execution posture and delivery | 3 |
+| Agent execution proof ladder | Codex subagent proof leads to OpenClaw/target-runtime parity with two successful proofs before readiness | Agent execution proof ladder | 3 |
 | Decision/tradeoff register | Issues, tradeoffs, implementation choices, and surprises are recorded | Decision / tradeoff / surprise register | 3 |
+| Over-orchestration review | 20-minute-slice collapse, unnecessary agents/files/templates, and better context/tool/source fixes were checked before presentation | Pre-presentation over-orchestration review | 3 |
 | Plan acceptance | OpenClaw/agentic architecture, thin-harness/fat-agent, topology, dead-code, source-authority, and evidence gates are accepted | Plan acceptance gate | 3 |
 
 ## Decision / tradeoff / surprise register
@@ -307,9 +350,20 @@ Only used if user explicitly authorizes subagents.
 | D2 | tradeoff | allow parallel work only with disjoint write scopes | preserves speed without shared-file collisions | no subagent speedup when write scopes overlap | overseer records serial fallback |
 | D3 | surprise | passing unit tests alone did not prove plan quality | acceptance needs topology, evidence, and agent-boundary proof | reviewers may over-trust green tests | final report must name missing layers |
 
+## Pre-presentation over-orchestration review
+
+- Uberslice / 20-minute collapse checked: yes, the plan stays a long-running goal with staged checkpoints and does not become a 20-minute slice.
+- Unnecessary agents/lanes/templates/files removed: yes, no new skill, no new CI, and no extra planning templates beyond the existing contract.
+- Better context/tool/source fix considered before extra process: yes, the first fix is clearer skill/tool/context handoff, not additional orchestration.
+- Deterministic harness / regex / router creep checked: yes, validator regex remains mechanical markdown parsing and does not decide semantic plan quality.
+- Duplicate artifacts or planning bureaucracy removed: yes, the plan contract is the single durable `.md` artifact, with thread highlights only as a summary.
+- Plan revisions made before presenting: deferred fresh-agent harness, removed extra audit agents, and kept proof work as checkpoints.
+- Review verdict: present? yes
+
 ## Plan acceptance gate
 
 - OpenClaw / agentic architecture policy checked: yes, use thin deterministic validation around agent judgment and avoid hidden orchestration.
+- User expectation / surprise assessment checked: yes, the plan names likely user expectations, possible validator-proof surprise, assumptions, and ask/flag triggers.
 - Thin-harness / fat-agent adherence: validator checks contract shape while agents own decomposition, synthesis, and judgment.
 - Fat-harness or deterministic-monolith risk: no material blocker; broad fresh-agent harness deferred because it would be too much machinery for this local package change.
 - Source authority / tool-contract / context-affordance gaps: no blocker; source authority remains skill files, validator outputs, and eval fixtures.

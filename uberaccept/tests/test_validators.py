@@ -58,6 +58,15 @@ class AcceptanceValidatorTests(unittest.TestCase):
             report.write_text(text[:start] + text[end:])
             self.assertFails(str(ACCEPT), str(report), "--agent-behavior")
 
+    def test_acceptance_requires_user_expectation_surprise_delta(self) -> None:
+        text = (FIX / "valid" / "final_acceptance.md").read_text()
+        start = text.index("## User expectation / surprise delta")
+        end = text.index("## Agent Advocate final check")
+        with tempfile.TemporaryDirectory() as tmp:
+            report = Path(tmp) / "missing_user_expectation_delta.md"
+            report.write_text(text[:start] + text[end:])
+            self.assertFails(str(ACCEPT), str(report), "--agent-behavior")
+
     def test_existing_file_acceptance_can_mark_topology_not_applicable(self) -> None:
         text = (FIX / "valid" / "final_acceptance.md").read_text()
         text = text.replace(
@@ -118,6 +127,7 @@ class PackageTests(unittest.TestCase):
         self.assertIn("flat_module_acceptance_requires_topology_evidence", ids)
         self.assertIn("agent_boundary_contract_acceptance_blocks_generic_reliability", ids)
         self.assertIn("semantic_regex_gate_acceptance_blocks_keyword_router", ids)
+        self.assertIn("final_acceptance_checks_user_expectation_delta", ids)
         for case in cases:
             self.assertIn("user_prompt", case)
             self.assertTrue(case.get("required_behavior"))

@@ -26,7 +26,18 @@ REQUIRED_FILES = [
 ]
 FORBIDDEN_SUFFIXES = {".pyc", ".pyo"}
 FORBIDDEN_DIRS = {"__pycache__", ".pytest_cache", ".mypy_cache"}
-REQUIRED_PHRASES = ["benefit >> cost", "Agent Advocate", "human counterfactual", "First-Principles", "confidence gate"]
+REQUIRED_PHRASES = [
+    "benefit >> cost",
+    "Agent Advocate",
+    "human counterfactual",
+    "First-Principles",
+    "confidence gate",
+    "long-running goal",
+    "Agent execution proof ladder",
+    "User expectation / surprise assessment",
+    "over-orchestration",
+    "five consecutive clear failures",
+]
 
 
 def main() -> int:

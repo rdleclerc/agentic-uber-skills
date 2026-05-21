@@ -12,9 +12,9 @@ Agent-facing source authority lives in [AGENTS.md](AGENTS.md). The default routi
 |-------|-------------|
 | [deep-rca](deep-rca/) | Utility skill for general class-level root cause analysis before patches; Agent Advocate remains the agent-behavior RCA lens inside Uber planning/acceptance |
 | [uber-skill-creator](uber-skill-creator/) | Portable Uber skill authoring guide for Codex, Claude, and SKILL.md-compatible agents, with legacy alias migration support, read-only skill-quality reports, eval-driven iteration, HTML review reports, and trigger-description tuning |
-| [ubergoal](ubergoal/) | Thin lifecycle wrapper for substantial agentic coding workflows: classify, route, launch goals, enforce final policy-adherence acceptance, report tradeoffs/surprises, learn |
-| [uberplan](uberplan/) | Rigorous lean planning with review lanes, verifiable subgoals, Mermaid task graphs, target file trees, code-health/dead-code plans, confidence gates, and benefit >> cost pressure |
-| [uberaccept](uberaccept/) | Adversarial final acceptance with evidence audits, architecture drift checks, and completion proof |
+| [ubergoal](ubergoal/) | Thin lifecycle wrapper for substantial agentic coding workflows: classify, route, launch goals, assess user expectation/surprise risk, enforce final policy-adherence acceptance, report tradeoffs/surprises, learn |
+| [uberplan](uberplan/) | Rigorous lean planning for long-running goals with thread highlights plus a `.md` plan file, user expectation/surprise assessment, review lanes, verifiable subgoals, Mermaid task graphs, Codex-to-OpenClaw proof ladders, repeated-test-failure adaptation gates, confidence gates, and benefit >> cost pressure |
+| [uberaccept](uberaccept/) | Adversarial final acceptance with evidence audits, expected-vs-actual user surprise checks, architecture drift checks, and completion proof |
 | [uberskillevolver](uberskillevolver/) | Captures post-run skill lessons and promotes only evidence-backed evals, validators, templates, or deletions |
 | [ubersimplify](ubersimplify/) | Opt-in complexity/modularity/dead-code audits with timestamped trails; Patch mode is conservative/experimental until dogfooded |
 | [uberassess](uberassess/) | Explicit source-to-recommendation assessment for X/GitHub/arXiv/articles/videos before adoption; preserves source authority and approval boundaries |

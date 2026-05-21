@@ -17,6 +17,7 @@ REQUIRED_SECTIONS = [
     "rubric scores",
     "commands and artifacts",
     "planning review reconciliation",
+    "user expectation / surprise delta",
     "agent advocate final check",
     "architecture steward final check",
     "adversarial acceptance check",
@@ -230,6 +231,28 @@ def validate_agent_boundary_acceptance(found: dict[str, str], errors: list[str])
         errors.append("Agent Boundary Contract final check must name at least one recurring failure probe")
 
 
+def validate_user_expectation_delta(found: dict[str, str], errors: list[str]) -> None:
+    section = found.get("user expectation / surprise delta", "")
+    if not section:
+        return
+    section_lower = normalize(section)
+    for label in [
+        "Expected outcome inferred before/during plan",
+        "Evidence for expectation",
+        "Actual implementation/result",
+        "Differences or surprises",
+        "Material mismatch requiring user approval",
+        "Final handoff wording",
+    ]:
+        require_field(section, label, errors)
+    for term in ["expect", "evidence", "actual", "surprise", "mismatch", "handoff"]:
+        if term not in section_lower:
+            errors.append(f"User expectation / surprise delta missing: {term}")
+    mismatch = require_field(section, "Material mismatch requiring user approval", errors).lower()
+    if mismatch and not any(term in mismatch for term in ["no", "none", "approved", "needs approval", "flagged", "blocked"]):
+        errors.append("User expectation / surprise delta must say whether material mismatch is none, approved, flagged, or blocked")
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("path", type=Path, help="Markdown final acceptance report path")
@@ -306,6 +329,8 @@ def main() -> int:
         command_blob = normalize(found.get("commands and artifacts", ""))
         if not any(term in command_blob for term in ["topology", "dependency", "lint", "validator", "validate", "package", "gate"]):
             errors.append("commands and artifacts must include topology/dependency gate evidence when the report indicates new/moved code, refactors, or package/dependency seams")
+
+    validate_user_expectation_delta(found, errors)
 
     verdict = require_field(text, "100% confident within scope?", errors)
     if verdict and not verdict.lower().startswith("yes"):

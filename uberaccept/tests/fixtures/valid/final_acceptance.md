@@ -17,6 +17,7 @@ Hardened validators, metadata, templates, package lint, and golden eval fixtures
 |---|---:|---|---|
 | Scope clarity | 3 | tier2_agent_plan.md fixture | none |
 | Planning review board | 3 | planning review findings reconciled in plan | none |
+| User expectation / surprise delta | 3 | expected local skill-package hardening compared against actual files, tests, and deferred fresh-agent gap | none |
 | Cost/complexity | 3 | one Agent Advocate pass and validator fixture added; fresh-agent harness deferred | none |
 | Agent Advocate / Agent RCA | 3 | failed invariant fixed, human counterfactual answered, human-parity fix added, and recurrence fixture present | none |
 | Agent boundary contract | 3 | delegation boundary includes shape, authority, isolation, failure, observability, replay/eval evidence, and sentinel probes | none |
@@ -49,6 +50,14 @@ Hardened validators, metadata, templates, package lint, and golden eval fixtures
 
 ## Planning review reconciliation
 All material planning-board blockers were resolved: hollow validators now fail, Agent Advocate fields are enforced with --agent-behavior, and templates have allow-template validation mode.
+
+## User expectation / surprise delta
+- Expected outcome inferred before/during plan: the user expected local skill-package hardening with evidence-backed validators and explicit deferred gaps, not a claim of full runtime parity.
+- Evidence for expectation: the plan fixture and skill contract emphasize local package validation, benefit >> cost, and fresh-agent behavioral evals as a future improvement.
+- Actual implementation/result: validators, templates, lint, and eval fixtures were updated inside the skill package and deterministic tests passed.
+- Differences or surprises: fresh-agent behavioral evals are not automated, so the final handoff must not imply behavioral parity beyond seeded eval fixtures.
+- Material mismatch requiring user approval: no material mismatch; the deferred fresh-agent gap is explicitly named as a residual risk.
+- Final handoff wording: report local readiness, changed files, commands run, residual fresh-agent gap, and no canonical GitHub release claim.
 
 ## Agent Advocate final check
 The final implementation fixes the failed invariant that agent-behavior plans must explain why the agent erred, answer the human counterfactual, name a human-parity gap, and provide recurrence evidence. This is not a symptom patch because the validator now rejects missing Agent Advocate evidence when agent behavior is in scope.

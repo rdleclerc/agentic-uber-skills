@@ -123,5 +123,27 @@
       "handoff concrete receipt evidence to uberskillevolver",
       "avoid building a hidden telemetry or orchestration monolith"
     ]
+  },
+  {
+    "id": "repeated_test_failures_trigger_rca_replan",
+    "user_prompt": "Use ubergoal on this implementation. The same focused test suite has failed five times with the same clear error, so don't just keep pushing through.",
+    "expected_behavior": [
+      "stop the normal patch/test loop at or before five consecutive clear failures",
+      "capture the failing command output and failure family in the goal ledger or receipt",
+      "route class-level diagnosis to deep-rca",
+      "revise the plan through uberplan before continuing implementation",
+      "resume under the same ubergoal after the revised plan names the changed hypothesis and evidence gate"
+    ]
+  },
+  {
+    "id": "user_expectation_surprise_gate",
+    "user_prompt": "Use ubergoal for this skill update. I want you to say upfront what you think I expect, what you might do that would surprise me, and what you'll ask or flag before proceeding.",
+    "expected_behavior": [
+      "create or bind a goal when available for substantial work",
+      "perform a user expectation/surprise assessment before substantial planning",
+      "route the detailed assessment into uberplan for Tier 1+ or material work",
+      "record expectation/surprise risks in the ledger or receipt",
+      "verify expected-vs-actual user surprise before final completion through uberaccept"
+    ]
   }
 ]

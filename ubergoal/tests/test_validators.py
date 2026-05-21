@@ -26,7 +26,7 @@ class ThinWrapperTests(unittest.TestCase):
 
     def test_skill_body_is_thin_and_routes(self) -> None:
         text = (ROOT / "SKILL.md").read_text()
-        self.assertLess(len(text.splitlines()), 150)
+        self.assertLess(len(text.splitlines()), 160)
         self.assertIn("$uberplan", text)
         self.assertIn("$uberaccept", text)
         self.assertIn("$uberskillevolver", text)
@@ -42,6 +42,9 @@ class ThinWrapperTests(unittest.TestCase):
         self.assertIn("no solo self-certification", text)
         self.assertIn("Skills used summary", text)
         self.assertIn("Uber run receipt", text)
+        self.assertIn("five consecutive failures", text)
+        self.assertIn("user expectation / surprise assessment", text)
+        self.assertIn("$deep-rca", text)
         self.assertNotIn("## Planning review board", text)
 
     def test_monolith_files_are_absent(self) -> None:
@@ -56,6 +59,7 @@ class ThinWrapperTests(unittest.TestCase):
     def test_goal_ledger_has_skills_used_summary(self) -> None:
         text = (ROOT / "templates" / "goal-ledger.md").read_text()
         self.assertIn("## Uber run receipt", text)
+        self.assertIn("## User expectation / surprise assessment", text)
         self.assertIn("## Skills used summary", text)
         for skill in ["ubergoal", "uberassess", "uberplan", "uberaccept", "ubersimplify", "uberskillevolver", "ubershow", "deep-rca", "skill-creator"]:
             self.assertIn(skill, text)
@@ -85,6 +89,8 @@ class ThinWrapperTests(unittest.TestCase):
         self.assertIn("final_policy_adherence_check_reports_surprises", ids)
         self.assertIn("final_handoff_reports_skills_used", ids)
         self.assertIn("uber_run_receipt_enables_skill_evolution", ids)
+        self.assertIn("repeated_test_failures_trigger_rca_replan", ids)
+        self.assertIn("user_expectation_surprise_gate", ids)
         route_case = next(case for case in cases if case["id"] == "routes_simplification_to_ubersimplify")
         self.assertTrue(any("ubersimplify" in item for item in route_case.get("expected_behavior", [])))
         refactor_case = next(case for case in cases if case["id"] == "one_line_refactor_campaign_uses_profile")

@@ -41,6 +41,8 @@ REQUIRED_PHRASES = [
     "$ubersimplify",
     "$uberassess",
     "benefit is **clearly much greater than**",
+    "five consecutive failures",
+    "user expectation / surprise assessment",
 ]
 FORBIDDEN_PHRASES = [
     "Do not create a platform goal merely because this skill is active",
@@ -70,10 +72,10 @@ def main() -> int:
     for phrase in FORBIDDEN_PHRASES:
         if phrase in skill:
             errors.append(f"SKILL.md still contains obsolete goal-launch rule: {phrase}")
-    if len(skill.splitlines()) > 150:
-        errors.append("SKILL.md should stay thin (<150 lines)")
+    if len(skill.splitlines()) > 160:
+        errors.append("SKILL.md should stay thin (<160 lines)")
     meta = (root / "agents" / "openai.yaml").read_text() if (root / "agents" / "openai.yaml").exists() else ""
-    for phrase in ["$ubergoal", "$uberplan", "$uberaccept", "$uberskillevolver", "$ubersimplify", "$uberassess", "create or bind", "specialist review-board agents", "refactor-campaign profile"]:
+    for phrase in ["$ubergoal", "$uberplan", "$deep-rca", "$uberaccept", "$uberskillevolver", "$ubersimplify", "$uberassess", "create or bind", "specialist review-board agents", "refactor-campaign profile", "five consecutive failures", "user expectation/surprise"]:
         if phrase not in meta:
             errors.append(f"agents/openai.yaml missing phrase: {phrase}")
     for phrase in FORBIDDEN_PHRASES:

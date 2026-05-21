@@ -52,5 +52,20 @@
       "overbuild a broad architecture review without evidence of recurrence or blast radius",
       "skip validation if malformed input can become state, memory, tool input, or external action"
     ]
+  },
+  {
+    "id": "five_repeated_test_failures_trigger_rca",
+    "user_prompt": "The same unit test has failed five times with the same assertion while the agent keeps patching. Do RCA before continuing.",
+    "should_trigger": true,
+    "required_behavior": [
+      "stop the patch/test loop at or before five consecutive clear failures",
+      "preserve the failing command output and failure family",
+      "build the RCA ladder before proposing another patch",
+      "hand a revised hypothesis back to uberplan or the active goal workflow"
+    ],
+    "forbidden_behavior": [
+      "recommend another blind patch attempt",
+      "treat five repeated failures as ordinary test churn"
+    ]
   }
 ]

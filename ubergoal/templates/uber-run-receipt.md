@@ -42,7 +42,9 @@ Use this as the thin tracing artifact for an `ubergoal` run. It is not an orches
 |---|---|---|---|---|
 | Goal created/bound or explicitly skipped |  |  |  |  |
 | Uberplan or work-contract planning |  |  |  |  |
+| User expectation / surprise assessment |  |  |  |  |
 | Plan acceptance / thin-harness check |  |  |  |  |
+| Repeated-test-failure adaptation |  |  |  |  |
 | Uberaccept final proof |  |  |  |  |
 | Policy-adherence / OpenClaw architecture check |  |  |  |  |
 | Skills used summary |  |  |  |  |
