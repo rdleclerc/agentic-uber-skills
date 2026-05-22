@@ -34,17 +34,18 @@ Escalate only for concrete risk. Do not spend Tier 3 effort on every bookmark.
 ## Procedure
 
 0. **Frame the assessment question.** Restate the seed in one sentence, identify whether this is source-first, idea-first, implementation-question, or mixed, and name the research mode: quick source assessment or Deep Research Assessment. If the input is vague, define the smallest useful question instead of asking the user to over-specify.
-1. **Resolve the source or seed.** Capture raw source handles before summarizing. For source-first work, use source-specific tools/skills when available, e.g. X bookmark/Type0 resolvers, GitHub tooling, arXiv/PDF extraction, web fetch/browser, or transcript/OCR sidecars. For idea-first work, record the user's wording as the raw seed and label it `idea_seed`, `implementation_question`, or `open_research_question`. Record failures and uninspected media.
-2. **Create a Source Packet.** Use `templates/source-packet.md` or embed its fields in the assessment packet. Separate raw source/seed, linked sources, retrieval limits, synthesis, and uncertainty.
-3. **Build the research map.** For Deep Research Assessment, intentionally choose lanes: local codebase/source-of-truth, primary docs/specs, GitHub alternatives/prior art, issues/forums/practitioner discussion, papers/blogs where relevant, and contradiction search. State coverage claimed and not claimed; never imply exhaustive research when only a slice was inspected.
-4. **Check project context.** Inspect the relevant project/source-of-truth paths/cards/docs enough to avoid stale or duplicate recommendations. Use local adapter references when present (for example Type0/Gaia/Soho/Hermes on Rob's machine), but do not force unrelated local projects into portable assessments. Record context freshness and gaps.
-5. **Extract ideas and claims.** Distinguish user/source/author claims from your inferences. Record evidence quality, contradiction risk, local fit, and what is actually actionable.
-6. **Compare alternatives.** For implementation questions and architecture/tool ideas, produce an alternatives/prior-art matrix. Include the "do nothing / note / eval-only / improve context or skill" option alongside new machinery.
-7. **Run benefit >> cost.** Ask what to delete or simplify first. Prefer notes, eval seeds, or tool/context fixes over new machinery unless benefit is clearly much greater than hidden cost.
-8. **Run Agent Advocate when agent systems are involved.** Ask the human counterfactual: would a competent human with the same context/tools have made the error? If not, identify the missing context, source authority, tool feedback, memory, affordance, or approval boundary.
-9. **Decide.** Choose Adopt now, Watch, Archive, Reject, Needs more research, or Convert to eval only.
-10. **Set approval boundary.** State `Implementation before approval: no`. If approved, provide a compact `$ubergoal`/`$uberplan` handoff and evidence plan.
-11. **Leave a learning trail.** For accepted/rejected high-signal assessments, note how outcome should feed `$uberskillevolver` or Hermes later.
+1. **Clarify before broad research when it matters.** Ask one to three targeted questions when the answer would materially change research direction, source lanes, cost, privacy/side-effect boundaries, or adoption criteria. Do not send a generic questionnaire. If the ambiguity is low-risk or the user asked for speed, state assumptions and proceed; record unanswered clarifications as coverage gaps.
+2. **Resolve the source or seed.** Capture raw source handles before summarizing. For source-first work, use source-specific tools/skills when available, e.g. X bookmark/Type0 resolvers, GitHub tooling, arXiv/PDF extraction, web fetch/browser, or transcript/OCR sidecars. For idea-first work, record the user's wording as the raw seed and label it `idea_seed`, `implementation_question`, or `open_research_question`. Record failures and uninspected media.
+3. **Create a Source Packet.** Use `templates/source-packet.md` or embed its fields in the assessment packet. Separate raw source/seed, linked sources, retrieval limits, synthesis, and uncertainty.
+4. **Build the research map.** For Deep Research Assessment, intentionally choose lanes: local codebase/source-of-truth, primary docs/specs, GitHub alternatives/prior art, issues/forums/practitioner discussion, papers/blogs where relevant, and contradiction search. State coverage claimed and not claimed; never imply exhaustive research when only a slice was inspected.
+5. **Check project context.** Inspect the relevant project/source-of-truth paths/cards/docs enough to avoid stale or duplicate recommendations. Use local adapter references when present (for example Type0/Gaia/Soho/Hermes on Rob's machine), but do not force unrelated local projects into portable assessments. Record context freshness and gaps.
+6. **Extract ideas and claims.** Distinguish user/source/author claims from your inferences. Record evidence quality, contradiction risk, local fit, and what is actually actionable.
+7. **Compare alternatives.** For implementation questions and architecture/tool ideas, produce an alternatives/prior-art matrix. Include the "do nothing / note / eval-only / improve context or skill" option alongside new machinery.
+8. **Run benefit >> cost.** Ask what to delete or simplify first. Prefer notes, eval seeds, or tool/context fixes over new machinery unless benefit is clearly much greater than hidden cost.
+9. **Run Agent Advocate when agent systems are involved.** Ask the human counterfactual: would a competent human with the same context/tools have made the error? If not, identify the missing context, source authority, tool feedback, memory, affordance, or approval boundary.
+10. **Decide.** Choose Adopt now, Watch, Archive, Reject, Needs more research, or Convert to eval only.
+11. **Set approval boundary.** State `Implementation before approval: no`. If approved, provide a compact `$ubergoal`/`$uberplan` handoff and evidence plan.
+12. **Leave a learning trail.** For accepted/rejected high-signal assessments, note how outcome should feed `$uberskillevolver` or Hermes later.
 
 ## Deep Research Assessment mode
 
@@ -53,7 +54,7 @@ Use this mode when the user says "boil the ocean," asks for deep research, reque
 Minimum lanes to consider:
 
 - **Seed/source capture** — exact user wording, source URL, linked artifacts, raw media/transcripts, and retrieval limits.
-- **Question framing** — what decision this assessment must support and what would be overreach.
+- **Question framing and clarification** — what decision this assessment must support, what would be overreach, and what targeted user feedback would materially improve the research.
 - **Local project context** — current codebase, skills, docs, tests, policies, and duplicate/prior attempts.
 - **Primary docs/specs** — official docs and source-of-truth references such as OpenClaw docs when relevant.
 - **Alternatives/prior art** — GitHub repos, libraries, patterns, architecture options, and why they do or do not transfer.
@@ -68,7 +69,7 @@ Stop research when additional sources are unlikely to change the recommendation,
 For Tier 1+, produce an assessment packet with:
 
 - source URL/type and raw capture status
-- assessment mode and research question
+- assessment mode, research question, and clarification checkpoint
 - research/source map with coverage claimed and not claimed
 - linked sources/media inspected and retrieval limitations
 - key ideas, author claims, and model inferences

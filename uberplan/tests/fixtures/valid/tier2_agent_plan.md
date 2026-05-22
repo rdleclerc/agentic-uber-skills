@@ -25,7 +25,7 @@ In scope: one skill prompt, one agent brief template, validator fixture updates.
 
 ## Pre-planning research / assessment boundary
 - Assessment needed? no, because this plan is grounded in an already-known local recurring failure and does not start from an external source, vague idea, or alternatives research question.
-- Uberassess packet path or inline packet reference: n/a; no separate assessment packet is required for this contained local failure fix.
+- Uberassess packet path, inline packet reference, or in-plan assessment summary: n/a; no separate assessment packet is required for this contained local failure fix.
 - Assessment decision/recommendation consumed: n/a; the approved recommendation is the user's explicit request to plan the handoff contract fix.
 - Research question: How should the known multi-agent overwrite failure be turned into a small checkable planning contract?
 - Coverage claimed: local skill-package prompt, template, validator, fixture, and eval-seed planning coverage only.
@@ -35,6 +35,7 @@ In scope: one skill prompt, one agent brief template, validator fixture updates.
 - Alternatives/prior art evidence: local validator/eval pattern compared with prompt-only and full harness alternatives.
 - Forums/issues/practitioner evidence: not applicable because the failure is local and already observed.
 - Contradiction/simpler-alternative evidence: one-line prompt warning rejected as too weak; full eval harness deferred as too costly.
+- Clarification needed before broad assessment? no; the local failure class is already concrete enough for planning.
 - Approval state for planning: approved to plan only; implementation still follows the plan evidence gates.
 - If no assessment exists, why planning may proceed anyway or why this is a blocker/spike: planning may proceed because the source is a concrete local failure, not an unresearched adoption question.
 

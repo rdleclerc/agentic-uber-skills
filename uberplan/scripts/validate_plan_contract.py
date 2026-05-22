@@ -527,11 +527,12 @@ def validate_preplanning_assessment_boundary(found: dict[str, str], tier: str, e
     section_lower = normalize(section)
     for label in [
         "Assessment needed?",
-        "Uberassess packet path or inline packet reference",
+        "Uberassess packet path, inline packet reference, or in-plan assessment summary",
         "Assessment decision/recommendation consumed",
         "Research question",
         "Coverage claimed",
         "Coverage not claimed / gaps",
+        "Clarification needed before broad assessment?",
         "Approval state for planning",
         "If no assessment exists, why planning may proceed anyway or why this is a blocker/spike",
     ]:
@@ -541,7 +542,7 @@ def validate_preplanning_assessment_boundary(found: dict[str, str], tier: str, e
             errors.append(f"Pre-planning research / assessment boundary missing concept: {term}")
     assessment_needed = require_field(section, "Assessment needed?", errors).lower()
     if assessment_needed.startswith("yes"):
-        packet = require_field(section, "Uberassess packet path or inline packet reference", errors).lower()
+        packet = require_field(section, "Uberassess packet path, inline packet reference, or in-plan assessment summary", errors).lower()
         decision = require_field(section, "Assessment decision/recommendation consumed", errors).lower()
         if packet in {"n/a", "na", "none"} and "block" not in section_lower and "spike" not in section_lower:
             errors.append("assessment-needed plan must cite an uberassess packet or explicitly mark the missing assessment as blocker/spike")

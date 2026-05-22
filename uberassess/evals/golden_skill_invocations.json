@@ -45,6 +45,7 @@
     "expected_behavior": [
       "treat the input as an idea_seed or implementation_question, not as a missing URL",
       "frame the research question and source/source-map coverage before synthesis",
+      "ask one to three targeted clarifying questions when ambiguity would materially change the research lanes or adoption criteria",
       "inspect or explicitly defer local codebase/docs, primary docs, GitHub alternatives, practitioner discussion, and contradiction search",
       "return an adopt/watch/archive/reject/eval/needs-more-research recommendation before any uberplan handoff"
     ]

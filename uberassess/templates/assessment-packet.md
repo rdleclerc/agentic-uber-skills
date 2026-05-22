@@ -9,6 +9,9 @@ Confidence: <high/medium/low>
 Confidence scope: <what this confidence covers>
 Known gaps: <none or list>
 Research question: <one sentence decision/question this packet answers>
+Clarification checkpoint: <asked / assumptions-only / not needed + why>
+Clarifying questions asked: <questions or n/a>
+User answers / assumptions used: <answers or assumptions>
 
 ## Source packet
 
