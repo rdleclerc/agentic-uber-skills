@@ -19,6 +19,7 @@ TIER_REQUIREMENTS = {
     + [
         "goal execution posture and delivery",
         "user expectation / surprise assessment",
+        "uberassess plan-assessment loop",
         "pre-planning research / assessment boundary",
         "testing adaptation gate",
         "cost/complexity check",
@@ -31,6 +32,7 @@ TIER_REQUIREMENTS = {
     + [
         "goal execution posture and delivery",
         "user expectation / surprise assessment",
+        "uberassess plan-assessment loop",
         "pre-planning research / assessment boundary",
         "product / prd checklist",
         "task map / implementation graph",
@@ -56,6 +58,7 @@ TIER_REQUIREMENTS = {
     + [
         "goal execution posture and delivery",
         "user expectation / surprise assessment",
+        "uberassess plan-assessment loop",
         "pre-planning research / assessment boundary",
         "product / prd checklist",
         "task map / implementation graph",
@@ -513,6 +516,37 @@ def validate_user_expectation_surprise(found: dict[str, str], tier: str, errors:
     if "final" not in section_lower and "handoff" not in section_lower:
         errors.append("User expectation / surprise assessment must define a final handoff expectation check")
 
+def validate_uberassess_plan_assessment_loop(found: dict[str, str], tier: str, errors: list[str]) -> None:
+    if tier == "0":
+        return
+    section_name = "uberassess plan-assessment loop"
+    section = found.get(section_name, "")
+    if not section:
+        return
+    if not section_has_substance(section):
+        errors.append("required section lacks completed substance: Uberassess plan-assessment loop")
+        return
+    section_lower = normalize(section)
+    for label in [
+        "Plan artifact assessment needed?",
+        "Uberassess packet path or inline plan-artifact assessment",
+        "Intent fit finding",
+        "Clarifications requested or assumptions recorded",
+        "Research/evidence gaps found in the plan",
+        "Alternatives/deletion options raised by assessment",
+        "Plan revision decision",
+        "Plan changes made from assessment",
+    ]:
+        require_field(section, label, errors)
+    for term in ["uberassess", "plan", "intent", "clarification", "evidence", "revision"]:
+        if term not in section_lower:
+            errors.append(f"Uberassess plan-assessment loop missing concept: {term}")
+    needed = require_field(section, "Plan artifact assessment needed?", errors).lower()
+    decision = require_field(section, "Plan revision decision", errors).lower()
+    if needed.startswith("yes") and decision in {"n/a", "na", "none"}:
+        errors.append("plan-assessment-needed plans require a concrete Plan revision decision")
+
+
 
 def validate_preplanning_assessment_boundary(found: dict[str, str], tier: str, errors: list[str]) -> None:
     if tier == "0":
@@ -902,6 +936,7 @@ def main() -> int:
     validate_testing_adaptation_gate(found, args.tier or "1", errors)
     validate_goal_execution_posture(found, args.tier or "1", errors)
     validate_user_expectation_surprise(found, args.tier or "1", errors)
+    validate_uberassess_plan_assessment_loop(found, args.tier or "1", errors)
     validate_preplanning_assessment_boundary(found, args.tier or "1", errors)
     validate_target_file_tree(found, lower, args.tier or "1", errors)
     validate_repository_topology(found, lower, args.tier or "1", errors)

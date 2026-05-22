@@ -23,6 +23,16 @@ In scope: one skill prompt, one agent brief template, validator fixture updates.
 - Ask/flag-before-proceeding triggers: ask or flag before adding new skills, CI, broad eval infrastructure, external writes, commits, pushes, or overlapping worker write scopes.
 - Final handoff expectation check: final acceptance must compare the expected durable handoff contract against actual files, tests, gaps, and any surprising implementation choices.
 
+## Uberassess plan-assessment loop
+- Plan artifact assessment needed? yes, because this Tier 2 agent-behavior plan should be assessed before implementation readiness.
+- Uberassess packet path or inline plan-artifact assessment: inline assessment in this section; no separate packet file needed for the fixture.
+- Intent fit finding: high; the plan targets the known multi-agent overwrite failure instead of drifting into broad orchestration.
+- Clarifications requested or assumptions recorded: assumed the user wants a bounded local skill-package fix, not a live runtime change.
+- Research/evidence gaps found in the plan: fresh-agent behavioral replay is deferred and recorded as a gap.
+- Alternatives/deletion options raised by assessment: prompt-only warning rejected as too weak; full harness deferred as overbuilt.
+- Plan revision decision: revise then proceed; keep the validator/eval fixture path and explicitly record behavioral replay gap.
+- Plan changes made from assessment: added deferred fresh-agent replay note and kept implementation scope inside existing skill package.
+
 ## Pre-planning research / assessment boundary
 - Assessment needed? no, because this plan is grounded in an already-known local recurring failure and does not start from an external source, vague idea, or alternatives research question.
 - Uberassess packet path, inline packet reference, or in-plan assessment summary: n/a; no separate assessment packet is required for this contained local failure fix.

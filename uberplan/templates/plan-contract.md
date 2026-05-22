@@ -41,6 +41,19 @@ Use this to avoid surprises, not to mind-read. Ground the assessment in the expl
 - Ask/flag-before-proceeding triggers:
 - Final handoff expectation check:
 
+## Uberassess plan-assessment loop
+
+Use this to assess the draft plan itself before implementation readiness. For tiny deterministic work, say why this is skipped.
+
+- Plan artifact assessment needed? yes/no, because:
+- Uberassess packet path or inline plan-artifact assessment:
+- Intent fit finding:
+- Clarifications requested or assumptions recorded:
+- Research/evidence gaps found in the plan:
+- Alternatives/deletion options raised by assessment:
+- Plan revision decision: approve as-is / revise then proceed / deeper assessment / eval-only / watch / reject:
+- Plan changes made from assessment:
+
 ## Pre-planning research / assessment boundary
 
 Use this whenever the request starts from a source, bookmark, vague idea, implementation question, alternatives/state-of-the-art question, or "boil the ocean" research request. Users may start with `uberplan`; `uberplan` should enact the `uberassess` boundary by consuming an existing packet, running an in-plan assessment phase, or explicitly marking the missing assessment as a blocker/spike.

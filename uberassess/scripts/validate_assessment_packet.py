@@ -10,6 +10,7 @@ from pathlib import Path
 REQUIRED_SECTIONS = [
     "Source packet",
     "Research frame and source map",
+    "Plan artifact assessment",
     "Key ideas and claims",
     "Alternatives and adoption options",
     "Project relevance matrix",
@@ -44,6 +45,12 @@ REQUIRED_FIELDS = [
     "Media/transcript/OCR inspected:",
     "Retrieval limitations:",
     "Source authority role:",
+    "Plan/artifact assessed:",
+    "Intent fit:",
+    "Plan assumptions found:",
+    "Clarifications needed before plan adoption:",
+    "Research/evidence gaps in the plan:",
+    "Plan revision recommendation:",
     "Local codebase/docs inspected:",
     "External primary docs inspected:",
     "Alternatives/prior art inspected:",
@@ -85,6 +92,7 @@ VALID_SOURCE_KINDS = {
     "pdf",
     "video",
     "internal_artifact",
+    "plan_artifact",
     "idea_seed",
     "implementation_question",
     "open_research_question",
@@ -246,6 +254,11 @@ def main() -> int:
         mode = field_value(text, "Assessment mode:").lower()
         if "deep" not in mode and not args.allow_template:
             errors.append(f"{kind} assessments should use Assessment mode: deep research assessment or mixed")
+
+    if kind == "plan_artifact" and not args.allow_template:
+        recommendation = field_value(text, "Plan revision recommendation:").lower()
+        if not recommendation or recommendation in {"n/a", "na", "none"}:
+            errors.append("plan_artifact assessments require a concrete Plan revision recommendation")
 
     if args.agent_system or (tier_num is not None and tier_num >= 3):
         if not has_section(text, "Agent Advocate / human counterfactual"):

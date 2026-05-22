@@ -311,5 +311,22 @@
       "claim state-of-the-art or alternatives research without source-grounded assessment evidence",
       "proceed to implementation planning when the assessment recommendation is missing or unapproved"
     ]
+  },
+  {
+    "id": "plan_uses_uberassess_to_assess_draft_plan",
+    "user_prompt": "Use uberplan for this agentic skill change, but use uberassess to assess the draft plan before we treat it as implementation-ready.",
+    "expected_tier": 2,
+    "required_behavior": [
+      "include an Uberassess plan-assessment loop",
+      "treat the draft plan as a plan_artifact assessment surface",
+      "check intent fit clarifications research sufficiency alternatives evidence gaps and revision decision",
+      "revise the plan from the assessment instead of defending the first draft"
+    ],
+    "forbidden_behavior": [
+      "skip plan assessment without saying why",
+      "treat a plan as ready merely because it has many sections",
+      "ignore user feedback opportunities before broad work"
+    ]
+
   }
 ]

@@ -15,6 +15,11 @@ Create the smallest plan that makes the work safe. Treat planning itself as a co
 
 Avoid duplicate planning artifacts. If a Coding Agent Work Contract already captures objective, scope, orientation evidence, plan, evidence targets, stop conditions, and gaps, use it as the Tier 1 plan artifact. For Tier 2/3, extend or embed that contract in the plan contract rather than creating an unrelated second plan.
 
+
+## Uberassess plan-assessment loop
+
+For substantial, ambiguous, or user-facing plans, use `uberassess` to assess the draft plan as a `plan_artifact` before treating the plan as implementation-ready. This may be an inline assessment, a separate packet, or a documented skipped step for tiny deterministic work. The assessment should check user intent fit, missing clarifications, research sufficiency, alternatives/deletion options, risk-to-evidence strength, and whether the plan should be approved, revised, researched further, converted to eval/watch, or rejected. Revise `uberplan` from that assessment instead of defending the first draft.
+
 ## Pre-planning research / assessment boundary
 
 Users may start with `uberplan`; they do not need to know whether `uberassess` should come first. When the request starts from a source, X/Twitter post, bookmark, vague idea, implementation question, alternatives/state-of-the-art question, or "boil the ocean" research request, `uberplan` must enact the assessment boundary itself: consume an existing `uberassess` packet, run a bounded `uberassess` phase before planning, or explicitly mark the plan as a non-readiness spike with the missing assessment as a blocker.
@@ -56,29 +61,30 @@ Return or create a plan contract with:
 2. User expectation / surprise assessment: what the user likely expects from the request and known preferences, what planned choices may surprise them, what assumptions need confirmation, and how the final handoff will prove no material mismatch
 3. tier and why it is not overkill
 4. clarified objective, scope, assumptions, and non-goals
-5. pre-planning research / assessment boundary: whether `uberassess` is needed, consumed, deferred, or blocking, with research coverage and recommendation state
-6. a checkable Product / PRD checklist for Tier 2/3 work, so workers can mark requirements, non-goals, acceptance targets, and deferred items without inventing a second artifact
-7. a detailed task map / implementation graph with stable task IDs, dependencies, owners, write scopes, done conditions, evidence, critical path, and a Mermaid diagram for Tier 2/3 work
-8. verifiable subgoals with acceptance evidence plus quantitative metrics, scores, or qualitative rubrics; every subgoal must say what proves it is done
-9. a parallelization plan that separates parallelizable slices from serial blockers, names disjoint write scopes, and states batching/max-concurrency policy; planning may identify parallel work even when subagents are not authorized
-10. a testing adaptation gate: stop before or at five consecutive clear failures of the same test command/failure family, run RCA, revise this plan, then continue under `ubergoal`
-11. affected repos/files and protected-file constraints
-12. codebase exploration / pheromone trails when context risk is material
-13. architecture options when the design is non-obvious
-14. activated/skipped review lanes and blocker authority
-15. deterministic harness responsibilities vs adaptive model policy
-16. for agentic-system plans, a thin harness / fat agent rubric: deterministic harness owns contracts, state, tools, permissions, traces, and evals; agents own ambiguous interpretation, decomposition, recovery, synthesis, and tool choice inside the harness
-17. for agentic-system plans, an Agent execution proof ladder: Codex subagent proof, skill/tool/context iteration rule, OpenClaw or target-runtime parity proof, and two successful target-runtime proofs before readiness
-18. for agentic-system plans, a source-convention check for approved/local/public Codex and OpenClaude/Claude Code conventions; use conventions, not copied proprietary/leaked code
-19. source authority, side-effect, approval, rollback, and adoption-state policy when relevant
-20. target architecture/file-tree plan plus repository topology/package-seam plan for any new, moved, or meaningfully reorganized code files, including the executable gate that will catch drift
-21. code-health/dead-code tool plan for Tier 2/3 work and for refactors/deletions/new modules, using repo-local tools first and language-appropriate tools such as `vulture`, `ruff`, `pyright`/`mypy`, `knip`, `ts-prune`, `depcheck`, `eslint`, `tsc`, and `grep`/`git grep`; tool findings are candidates, not deletion authority
-22. Basic Spine First statement for product/rewrite/agentic-system work, or why not applicable
-23. risk-to-evidence map and acceptance rubric with testable goals across unit/regression, integration, acceptance, e2e or simulation, and eval/replay evidence; use real bugs/content when available
-24. decision/tradeoff/surprise register covering issues, implementation choices, accepted tradeoffs, and anything likely to surprise a future agent or reviewer
-25. pre-presentation over-orchestration review that revises the plan before showing it
-26. plan acceptance gate before implementation: try to reject the plan against OpenClaw/agentic architecture, thin-harness/fat-agent policy, topology, dead-code, source-authority, and evidence requirements
-27. confidence verdict after trying to falsify the plan
+5. `uberassess` plan-assessment loop: whether the draft plan was assessed as a plan artifact, revised, deferred, or explicitly skipped
+6. pre-planning research / assessment boundary: whether source/idea research assessment is needed, consumed, deferred, or blocking, with research coverage and recommendation state
+7. a checkable Product / PRD checklist for Tier 2/3 work, so workers can mark requirements, non-goals, acceptance targets, and deferred items without inventing a second artifact
+8. a detailed task map / implementation graph with stable task IDs, dependencies, owners, write scopes, done conditions, evidence, critical path, and a Mermaid diagram for Tier 2/3 work
+9. verifiable subgoals with acceptance evidence plus quantitative metrics, scores, or qualitative rubrics; every subgoal must say what proves it is done
+10. a parallelization plan that separates parallelizable slices from serial blockers, names disjoint write scopes, and states batching/max-concurrency policy; planning may identify parallel work even when subagents are not authorized
+11. a testing adaptation gate: stop before or at five consecutive clear failures of the same test command/failure family, run RCA, revise this plan, then continue under `ubergoal`
+12. affected repos/files and protected-file constraints
+13. codebase exploration / pheromone trails when context risk is material
+14. architecture options when the design is non-obvious
+15. activated/skipped review lanes and blocker authority
+16. deterministic harness responsibilities vs adaptive model policy
+17. for agentic-system plans, a thin harness / fat agent rubric: deterministic harness owns contracts, state, tools, permissions, traces, and evals; agents own ambiguous interpretation, decomposition, recovery, synthesis, and tool choice inside the harness
+18. for agentic-system plans, an Agent execution proof ladder: Codex subagent proof, skill/tool/context iteration rule, OpenClaw or target-runtime parity proof, and two successful target-runtime proofs before readiness
+19. for agentic-system plans, a source-convention check for approved/local/public Codex and OpenClaude/Claude Code conventions; use conventions, not copied proprietary/leaked code
+20. source authority, side-effect, approval, rollback, and adoption-state policy when relevant
+21. target architecture/file-tree plan plus repository topology/package-seam plan for any new, moved, or meaningfully reorganized code files, including the executable gate that will catch drift
+22. code-health/dead-code tool plan for Tier 2/3 work and for refactors/deletions/new modules, using repo-local tools first and language-appropriate tools such as `vulture`, `ruff`, `pyright`/`mypy`, `knip`, `ts-prune`, `depcheck`, `eslint`, `tsc`, and `grep`/`git grep`; tool findings are candidates, not deletion authority
+23. Basic Spine First statement for product/rewrite/agentic-system work, or why not applicable
+24. risk-to-evidence map and acceptance rubric with testable goals across unit/regression, integration, acceptance, e2e or simulation, and eval/replay evidence; use real bugs/content when available
+25. decision/tradeoff/surprise register covering issues, implementation choices, accepted tradeoffs, and anything likely to surprise a future agent or reviewer
+26. pre-presentation over-orchestration review that revises the plan before showing it
+27. plan acceptance gate before implementation: try to reject the plan against OpenClaw/agentic architecture, thin-harness/fat-agent policy, topology, dead-code, source-authority, and evidence requirements
+28. confidence verdict after trying to falsify the plan
 
 Use `templates/plan-contract.md` for durable plans and `templates/confidence-gate.md` for the adversarial pre-launch check.
 
