@@ -49,5 +49,16 @@
       "inspect or explicitly defer local codebase/docs, primary docs, GitHub alternatives, practitioner discussion, and contradiction search",
       "return an adopt/watch/archive/reject/eval/needs-more-research recommendation before any uberplan handoff"
     ]
+  },
+  {
+    "id": "plan_artifact_assessment_critiques_plan_before_implementation",
+    "user_prompt": "Use uberassess to assess this uberplan draft before we implement it. Tell me whether it fits my intent, what it should ask me, and whether its research/evidence plan is strong enough.",
+    "expected_behavior": [
+      "treat the draft plan as source kind plan_artifact",
+      "assess intent fit, assumptions, clarifying questions, research/evidence gaps, and revision recommendation",
+      "choose approve as-is, revise, deeper assessment, eval/watch, or reject before implementation",
+      "keep Implementation before approval: no"
+    ]
+
   }
 ]

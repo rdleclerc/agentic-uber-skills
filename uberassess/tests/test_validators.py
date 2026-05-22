@@ -92,6 +92,7 @@ class PackageTests(unittest.TestCase):
         self.assertIn("arxiv_agent_system_requires_agent_advocate", ids)
         self.assertIn("hype_post_can_be_rejected", ids)
         self.assertIn("idea_seed_triggers_deep_research_assessment", ids)
+        self.assertIn("plan_artifact_assessment_critiques_plan_before_implementation", ids)
         for case in cases:
             self.assertIn("user_prompt", case)
             self.assertTrue(case.get("expected_behavior"))

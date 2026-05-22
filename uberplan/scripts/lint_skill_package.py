@@ -39,6 +39,7 @@ REQUIRED_PHRASES = [
     "five consecutive clear failures",
     "Pre-planning research / assessment boundary",
     "uberassess",
+    "plan-assessment loop",
 ]
 
 

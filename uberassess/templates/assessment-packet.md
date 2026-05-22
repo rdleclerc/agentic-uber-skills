@@ -15,7 +15,7 @@ User answers / assumptions used: <answers or assumptions>
 
 ## Source packet
 
-Source kind: <x_post/x_thread/article/github_repo/arxiv_paper/pdf/video/internal_artifact/idea_seed/implementation_question/open_research_question/mixed/unknown>
+Source kind: <x_post/x_thread/article/github_repo/arxiv_paper/pdf/video/internal_artifact/plan_artifact/idea_seed/implementation_question/open_research_question/mixed/unknown>
 Source URL: <url-or-id>
 Source title: <title-or-unknown>
 Source author: <author/repo/publisher-or-unknown>
@@ -72,6 +72,18 @@ Coverage claimed:
 
 Coverage not claimed:
 - <what was not checked or remains uncertain>
+
+## Plan artifact assessment
+
+Plan/artifact assessed: <plan path/title/inline summary or n/a>
+Intent fit: <high/medium/low/n/a + why>
+Plan assumptions found:
+- <assumption or n/a>
+Clarifications needed before plan adoption:
+- <question or n/a>
+Research/evidence gaps in the plan:
+- <gap or n/a>
+Plan revision recommendation: <approve as-is / revise then proceed / deeper assessment / eval-only / watch / reject / n/a>
 
 ## Key ideas and claims
 
