@@ -91,6 +91,7 @@ class PackageTests(unittest.TestCase):
         self.assertIn("github_repo_requires_benefit_cost_and_prior_art", ids)
         self.assertIn("arxiv_agent_system_requires_agent_advocate", ids)
         self.assertIn("hype_post_can_be_rejected", ids)
+        self.assertIn("idea_seed_triggers_deep_research_assessment", ids)
         for case in cases:
             self.assertIn("user_prompt", case)
             self.assertTrue(case.get("expected_behavior"))

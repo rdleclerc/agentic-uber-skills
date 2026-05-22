@@ -19,6 +19,7 @@ TIER_REQUIREMENTS = {
     + [
         "goal execution posture and delivery",
         "user expectation / surprise assessment",
+        "pre-planning research / assessment boundary",
         "testing adaptation gate",
         "cost/complexity check",
         "repository topology / package seam",
@@ -30,6 +31,7 @@ TIER_REQUIREMENTS = {
     + [
         "goal execution posture and delivery",
         "user expectation / surprise assessment",
+        "pre-planning research / assessment boundary",
         "product / prd checklist",
         "task map / implementation graph",
         "verifiable subgoals and metrics",
@@ -54,6 +56,7 @@ TIER_REQUIREMENTS = {
     + [
         "goal execution posture and delivery",
         "user expectation / surprise assessment",
+        "pre-planning research / assessment boundary",
         "product / prd checklist",
         "task map / implementation graph",
         "verifiable subgoals and metrics",
@@ -511,6 +514,41 @@ def validate_user_expectation_surprise(found: dict[str, str], tier: str, errors:
         errors.append("User expectation / surprise assessment must define a final handoff expectation check")
 
 
+def validate_preplanning_assessment_boundary(found: dict[str, str], tier: str, errors: list[str]) -> None:
+    if tier == "0":
+        return
+    section_name = "pre-planning research / assessment boundary"
+    section = found.get(section_name, "")
+    if not section:
+        return
+    if not section_has_substance(section):
+        errors.append("required section lacks completed substance: Pre-planning research / assessment boundary")
+        return
+    section_lower = normalize(section)
+    for label in [
+        "Assessment needed?",
+        "Uberassess packet path or inline packet reference",
+        "Assessment decision/recommendation consumed",
+        "Research question",
+        "Coverage claimed",
+        "Coverage not claimed / gaps",
+        "Approval state for planning",
+        "If no assessment exists, why planning may proceed anyway or why this is a blocker/spike",
+    ]:
+        require_field(section, label, errors)
+    for term in ["uberassess", "research", "coverage", "assessment", "approval"]:
+        if term not in section_lower:
+            errors.append(f"Pre-planning research / assessment boundary missing concept: {term}")
+    assessment_needed = require_field(section, "Assessment needed?", errors).lower()
+    if assessment_needed.startswith("yes"):
+        packet = require_field(section, "Uberassess packet path or inline packet reference", errors).lower()
+        decision = require_field(section, "Assessment decision/recommendation consumed", errors).lower()
+        if packet in {"n/a", "na", "none"} and "block" not in section_lower and "spike" not in section_lower:
+            errors.append("assessment-needed plan must cite an uberassess packet or explicitly mark the missing assessment as blocker/spike")
+        if decision in {"n/a", "na", "none"} and "block" not in section_lower and "spike" not in section_lower:
+            errors.append("assessment-needed plan must consume an assessment decision or explicitly mark the missing assessment as blocker/spike")
+
+
 def validate_target_file_tree(found: dict[str, str], lower: str, tier: str, errors: list[str]) -> None:
     if tier == "0":
         return
@@ -863,6 +901,7 @@ def main() -> int:
     validate_testing_adaptation_gate(found, args.tier or "1", errors)
     validate_goal_execution_posture(found, args.tier or "1", errors)
     validate_user_expectation_surprise(found, args.tier or "1", errors)
+    validate_preplanning_assessment_boundary(found, args.tier or "1", errors)
     validate_target_file_tree(found, lower, args.tier or "1", errors)
     validate_repository_topology(found, lower, args.tier or "1", errors)
     validate_code_health_dead_code_plan(found, lower, args.tier or "1", errors)

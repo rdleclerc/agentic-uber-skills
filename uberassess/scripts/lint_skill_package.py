@@ -29,6 +29,9 @@ REQUIRED_PHRASES = [
     "human counterfactual",
     "Hermes",
     "Do not create MCP servers",
+    "Deep Research Assessment",
+    "idea seed",
+    "source map",
 ]
 FORBIDDEN_SUFFIXES = {".pyc", ".pyo"}
 FORBIDDEN_DIRS = {"__pycache__", ".pytest_cache", ".mypy_cache"}

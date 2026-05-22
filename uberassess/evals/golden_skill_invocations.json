@@ -38,5 +38,15 @@
       "require source authority and project context freshness",
       "prefer smaller context/tool/eval fixes when adequate"
     ]
+  },
+  {
+    "id": "idea_seed_triggers_deep_research_assessment",
+    "user_prompt": "Use uberassess to boil the ocean on this rough implementation idea: should our planning skill research forums, GitHub alternatives, official docs, and the local codebase before it plans agentic workflow changes?",
+    "expected_behavior": [
+      "treat the input as an idea_seed or implementation_question, not as a missing URL",
+      "frame the research question and source/source-map coverage before synthesis",
+      "inspect or explicitly defer local codebase/docs, primary docs, GitHub alternatives, practitioner discussion, and contradiction search",
+      "return an adopt/watch/archive/reject/eval/needs-more-research recommendation before any uberplan handoff"
+    ]
   }
 ]

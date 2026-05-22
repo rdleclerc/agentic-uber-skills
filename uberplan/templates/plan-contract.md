@@ -41,6 +41,24 @@ Use this to avoid surprises, not to mind-read. Ground the assessment in the expl
 - Ask/flag-before-proceeding triggers:
 - Final handoff expectation check:
 
+## Pre-planning research / assessment boundary
+
+Use this whenever the request starts from a source, bookmark, vague idea, implementation question, alternatives/state-of-the-art question, or "boil the ocean" research request. `uberplan` should consume or request `uberassess` instead of silently becoming the research phase.
+
+- Assessment needed? yes/no, because:
+- Uberassess packet path or inline packet reference:
+- Assessment decision/recommendation consumed:
+- Research question:
+- Coverage claimed:
+- Coverage not claimed / gaps:
+- Local codebase/docs evidence:
+- Primary docs/specs evidence:
+- Alternatives/prior art evidence:
+- Forums/issues/practitioner evidence:
+- Contradiction/simpler-alternative evidence:
+- Approval state for planning:
+- If no assessment exists, why planning may proceed anyway or why this is a blocker/spike:
+
 ## Product / PRD checklist
 
 Use this as the checkable product requirements document for Tier 2/3 work. Keep it specific enough that coding agents can mark items complete without guessing.

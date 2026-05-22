@@ -1,12 +1,14 @@
 # Uberassess Assessment Packet
 
 Assessment tier: 3
+Assessment mode: deep research assessment
 Decision: Adopt now
 Suggested next step: ask approval then hand off to ubergoal
 Implementation before approval: no
 Confidence: medium
 Confidence scope: scoped to available source/context
 Known gaps: none
+Research question: Should this multi-agent failure paper change the Uber assessment packet and validator?
 
 ## Source packet
 
@@ -23,6 +25,50 @@ Media/transcript/OCR inspected: not applicable — PDF text extracted
 Retrieval limitations: none
 Source authority role: raw_source
 Privacy / secrets review: no secrets stored
+
+## Research frame and source map
+
+Seed / question restatement:
+- Determine whether the paper's agent/source-feedback conflict finding should become an Uber assessment contract.
+
+Research mode rationale:
+- Deep research assessment is warranted because the recommendation would change skill behavior for agentic systems.
+
+Research domains assumed:
+- Agent failure RCA, source authority, Uber skill packet validation.
+
+Search/source map:
+
+| Lane | Sources / queries / paths | Inspected? | Key finding | Gaps |
+|---|---|---:|---|---|
+| Seed/source capture | https://arxiv.org/abs/2600.00000 and appendix | yes | paper claims source/tool feedback conflicts cause failures | local incident fixture still needed |
+| Local codebase/docs | agentic architecture AGENTS and uberplan skill | yes | existing Agent Advocate rule exists but lacks this packet field | no full pack scan |
+| Primary docs/specs | paper benchmark appendix | yes | paper evidence supports failure pattern | not a local reproduction |
+| GitHub alternatives/prior art | paper code repo | yes | benchmark code reinforces source/tool conflict framing | no broad repo search |
+| Forums/issues/practitioner discussion | n/a | n/a | not needed for fixture-level skill change | practitioner anecdotes not inspected |
+| Papers/blogs/background | cited related work | yes | source-authority failures recur in literature | limited to paper refs |
+| Contradiction/simpler-alternative search | existing packet fields and validator | yes | one field is simpler than new subskill or MCP service | needs three-use review |
+
+Local codebase/docs inspected:
+- /Users/claw1/agentic-architecture-guide/AGENTS.md and /Users/claw1/agentic-uber-skills/uberplan/SKILL.md
+
+External primary docs inspected:
+- arXiv paper text and benchmark appendix.
+
+Alternatives/prior art inspected:
+- Paper code repo and existing Uber packet/validator pattern.
+
+Forums/issues/practitioner discussion inspected:
+- n/a — not needed for this bounded packet-field recommendation.
+
+Contradiction search performed:
+- yes — compared field addition against no-change, eval-only, and new-subskill alternatives.
+
+Coverage claimed:
+- Enough source, local context, and prior-art evidence to recommend a small skill/validator change.
+
+Coverage not claimed:
+- No live OpenClaw parity proof or broad practitioner survey.
 
 ## Key ideas and claims
 
@@ -52,6 +98,15 @@ Model inferences:
 
 Novelty / prior-art check:
 - Extends existing Agent Advocate rule with source-feedback conflict fixture.
+
+## Alternatives and adoption options
+
+| Option | Evidence / precedent | Project fit | Benefit | Cost / complexity | Risk | Verdict |
+|---|---|---|---|---|---|---|
+| Do nothing / archive | paper is not a local bug | low | avoids packet churn | none | recurring failure stays invisible | reject |
+| Note / watch / eval-only | existing eval trail | med | captures signal | low | no packet affordance improvement | watch only if approval denied |
+| Context/tool/skill fix | existing assessment packet | high | exposes source/tool conflict cheaply | low | one extra field may become boilerplate | adopt |
+| New machinery / implementation | no need | low | none beyond field | high | overbuilt harness | reject |
 
 ## Project relevance matrix
 
