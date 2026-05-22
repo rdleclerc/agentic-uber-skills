@@ -23,6 +23,21 @@ In scope: one skill prompt, one agent brief template, validator fixture updates.
 - Ask/flag-before-proceeding triggers: ask or flag before adding new skills, CI, broad eval infrastructure, external writes, commits, pushes, or overlapping worker write scopes.
 - Final handoff expectation check: final acceptance must compare the expected durable handoff contract against actual files, tests, gaps, and any surprising implementation choices.
 
+## Pre-planning research / assessment boundary
+- Assessment needed? no, because this plan is grounded in an already-known local recurring failure and does not start from an external source, vague idea, or alternatives research question.
+- Uberassess packet path or inline packet reference: n/a; no separate assessment packet is required for this contained local failure fix.
+- Assessment decision/recommendation consumed: n/a; the approved recommendation is the user's explicit request to plan the handoff contract fix.
+- Research question: How should the known multi-agent overwrite failure be turned into a small checkable planning contract?
+- Coverage claimed: local skill-package prompt, template, validator, fixture, and eval-seed planning coverage only.
+- Coverage not claimed / gaps: no broad forum/GitHub/official-docs alternatives research and no fresh-agent behavioral replay.
+- Local codebase/docs evidence: existing uberplan skill, agent brief template, validator tests, and golden eval patterns.
+- Primary docs/specs evidence: repo-local OpenClaw/agentic architecture rules already read by the executor; no external primary docs needed.
+- Alternatives/prior art evidence: local validator/eval pattern compared with prompt-only and full harness alternatives.
+- Forums/issues/practitioner evidence: not applicable because the failure is local and already observed.
+- Contradiction/simpler-alternative evidence: one-line prompt warning rejected as too weak; full eval harness deferred as too costly.
+- Approval state for planning: approved to plan only; implementation still follows the plan evidence gates.
+- If no assessment exists, why planning may proceed anyway or why this is a blocker/spike: planning may proceed because the source is a concrete local failure, not an unresearched adoption question.
+
 ## Product / PRD checklist
 - User / operator problem: coding agents in a multi-agent handoff can overwrite each other or claim success without evidence.
 - Primary user-visible outcome: worker handoffs are clear enough that agents preserve file ownership and return evidence-backed findings.

@@ -1,12 +1,14 @@
 # Uberassess Assessment Packet
 
 Assessment tier: 1
+Assessment mode: source assessment
 Decision: Watch
 Suggested next step: save note and revisit after two more examples
 Implementation before approval: no
 Confidence: medium
 Confidence scope: scoped to available source/context
 Known gaps: none
+Research question: Should this X post become an Uber skill change now, or only a watch/eval note?
 
 ## Source packet
 
@@ -23,6 +25,50 @@ Media/transcript/OCR inspected: not applicable — no media
 Retrieval limitations: none
 Source authority role: candidate_signal
 Privacy / secrets review: no secrets stored
+
+## Research frame and source map
+
+Seed / question restatement:
+- Assess whether one X post about architecture linting should change the skill pack.
+
+Research mode rationale:
+- Quick source assessment is sufficient because this is a low-stakes single-source signal.
+
+Research domains assumed:
+- Uber skill validators and architecture constraints.
+
+Search/source map:
+
+| Lane | Sources / queries / paths | Inspected? | Key finding | Gaps |
+|---|---|---:|---|---|
+| Seed/source capture | https://x.com/example/status/1 | yes | candidate practice only | no corroborating repos |
+| Local codebase/docs | /Users/claw1/agentic-uber-skills/AGENTS.md | yes | existing validators already cover some constraints | no code scan beyond AGENTS |
+| Primary docs/specs | n/a | n/a | no external spec needed | n/a |
+| GitHub alternatives/prior art | n/a | n/a | not needed for Tier 1 watch | examples still needed |
+| Forums/issues/practitioner discussion | n/a | n/a | not needed for Tier 1 watch | no practitioner corroboration |
+| Papers/blogs/background | n/a | n/a | not needed | n/a |
+| Contradiction/simpler-alternative search | existing lint/eval pattern | yes | watch/eval is cheaper than implementation | no broader search |
+
+Local codebase/docs inspected:
+- /Users/claw1/agentic-uber-skills/AGENTS.md
+
+External primary docs inspected:
+- n/a — no primary external spec was needed for quick watch decision.
+
+Alternatives/prior art inspected:
+- Existing local lint/eval pattern only.
+
+Forums/issues/practitioner discussion inspected:
+- n/a — deferred until repeated signal.
+
+Contradiction search performed:
+- yes — compared against existing validator/eval machinery.
+
+Coverage claimed:
+- Single-source triage and local AGENTS context.
+
+Coverage not claimed:
+- No broad GitHub/forum/prior-art research.
 
 ## Key ideas and claims
 
@@ -52,6 +98,15 @@ Model inferences:
 
 Novelty / prior-art check:
 - Similar to existing skill validators.
+
+## Alternatives and adoption options
+
+| Option | Evidence / precedent | Project fit | Benefit | Cost / complexity | Risk | Verdict |
+|---|---|---|---|---|---|---|
+| Do nothing / archive | single candidate post | low | avoids churn | none | miss a useful pattern | watch |
+| Note / watch / eval-only | existing eval seed practice | high | preserves signal cheaply | low | weak if never revisited | watch |
+| Context/tool/skill fix | existing validators | med | could improve contracts | medium | premature rule bloat | reject now |
+| New machinery / implementation | none | low | unclear | high | overbuild | reject |
 
 ## Project relevance matrix
 

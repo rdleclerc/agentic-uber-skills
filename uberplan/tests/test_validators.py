@@ -120,6 +120,15 @@ class PlanValidatorTests(unittest.TestCase):
             plan.write_text(text[:start] + text[end:])
             self.assertFails(str(PLAN), str(plan), "--tier", "2", "--agent-behavior")
 
+    def test_tier2_requires_preplanning_research_boundary(self) -> None:
+        text = (FIX / "valid" / "tier2_agent_plan.md").read_text()
+        start = text.index("## Pre-planning research / assessment boundary")
+        end = text.index("## Product / PRD checklist")
+        with tempfile.TemporaryDirectory() as tmp:
+            plan = Path(tmp) / "missing_preplanning_research.md"
+            plan.write_text(text[:start] + text[end:])
+            self.assertFails(str(PLAN), str(plan), "--tier", "2", "--agent-behavior")
+
     def test_code_plan_requires_target_file_tree(self) -> None:
         text = (FIX / "valid" / "tier2_agent_plan.md").read_text()
         start = text.index("## Target architecture / file tree")
@@ -248,6 +257,7 @@ class PackageTests(unittest.TestCase):
         self.assertIn("plan_self_reviews_over_orchestration_before_presentation", ids)
         self.assertIn("repeated_testing_failures_require_rca_replan", ids)
         self.assertIn("plan_requires_user_expectation_surprise_assessment", ids)
+        self.assertIn("plan_requires_uberassess_for_research_originated_work", ids)
         for case in cases:
             self.assertIn("user_prompt", case)
             self.assertIn("expected_tier", case)

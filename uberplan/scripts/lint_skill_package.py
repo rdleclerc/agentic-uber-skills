@@ -37,6 +37,8 @@ REQUIRED_PHRASES = [
     "User expectation / surprise assessment",
     "over-orchestration",
     "five consecutive clear failures",
+    "Pre-planning research / assessment boundary",
+    "uberassess",
 ]
 
 

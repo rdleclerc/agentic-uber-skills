@@ -294,5 +294,21 @@
       "bury surprise risks only in a generic tradeoff section",
       "proceed with a materially surprising plan without asking or flagging it"
     ]
+  },
+  {
+    "id": "plan_requires_uberassess_for_research_originated_work",
+    "user_prompt": "Use uberplan for this boil-the-ocean idea: should we add a new agentic workflow after researching OpenClaw docs, forums, GitHub alternatives, and our current codebase?",
+    "expected_tier": 3,
+    "required_behavior": [
+      "include a Pre-planning research / assessment boundary",
+      "consume or request an uberassess packet before claiming alternatives, docs, forum, GitHub, or codebase conclusions",
+      "state research coverage claimed and not claimed",
+      "treat missing assessment as a blocker or non-readiness spike rather than an implementation-ready plan"
+    ],
+    "forbidden_behavior": [
+      "silently make uberplan the deep research phase",
+      "claim state-of-the-art or alternatives research without source-grounded assessment evidence",
+      "proceed to implementation planning when the assessment recommendation is missing or unapproved"
+    ]
   }
 ]
