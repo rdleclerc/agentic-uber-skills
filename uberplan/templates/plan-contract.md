@@ -43,10 +43,10 @@ Use this to avoid surprises, not to mind-read. Ground the assessment in the expl
 
 ## Pre-planning research / assessment boundary
 
-Use this whenever the request starts from a source, bookmark, vague idea, implementation question, alternatives/state-of-the-art question, or "boil the ocean" research request. `uberplan` should consume or request `uberassess` instead of silently becoming the research phase.
+Use this whenever the request starts from a source, bookmark, vague idea, implementation question, alternatives/state-of-the-art question, or "boil the ocean" research request. Users may start with `uberplan`; `uberplan` should enact the `uberassess` boundary by consuming an existing packet, running an in-plan assessment phase, or explicitly marking the missing assessment as a blocker/spike.
 
 - Assessment needed? yes/no, because:
-- Uberassess packet path or inline packet reference:
+- Uberassess packet path, inline packet reference, or in-plan assessment summary:
 - Assessment decision/recommendation consumed:
 - Research question:
 - Coverage claimed:
@@ -56,6 +56,7 @@ Use this whenever the request starts from a source, bookmark, vague idea, implem
 - Alternatives/prior art evidence:
 - Forums/issues/practitioner evidence:
 - Contradiction/simpler-alternative evidence:
+- Clarification needed before broad assessment? yes/no, question(s) or assumptions:
 - Approval state for planning:
 - If no assessment exists, why planning may proceed anyway or why this is a blocker/spike:
 

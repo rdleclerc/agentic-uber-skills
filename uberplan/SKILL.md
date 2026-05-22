@@ -17,13 +17,13 @@ Avoid duplicate planning artifacts. If a Coding Agent Work Contract already capt
 
 ## Pre-planning research / assessment boundary
 
-When the request starts from a source, X/Twitter post, bookmark, vague idea, implementation question, alternatives/state-of-the-art question, or "boil the ocean" research request, do not let `uberplan` silently become the research phase. First consume an existing `uberassess` packet, run a bounded `uberassess` assessment, or explicitly mark the plan as a non-readiness spike with the missing assessment as a blocker.
+Users may start with `uberplan`; they do not need to know whether `uberassess` should come first. When the request starts from a source, X/Twitter post, bookmark, vague idea, implementation question, alternatives/state-of-the-art question, or "boil the ocean" research request, `uberplan` must enact the assessment boundary itself: consume an existing `uberassess` packet, run a bounded `uberassess` phase before planning, or explicitly mark the plan as a non-readiness spike with the missing assessment as a blocker.
 
-`uberplan` may do orientation needed to scope the plan, but it should not claim project direction, architecture fit, alternatives, forum/practitioner evidence, GitHub prior art, or official-doc conclusions unless those came from a source-grounded assessment or are clearly labeled as assumptions/gaps. Planning starts after the recommendation boundary: adopt/watch/archive/reject/eval/needs-more-research/hand off.
+`uberplan` may do orientation needed to scope the plan, but it should not claim project direction, architecture fit, alternatives, forum/practitioner evidence, GitHub prior art, or official-doc conclusions unless those came from a source-grounded assessment or are clearly labeled as assumptions/gaps. Planning starts after the recommendation boundary: adopt/watch/archive/reject/eval/needs-more-research/hand off. If the assessment needs user clarification before broad research, pause for the targeted `uberassess` questions or record assumptions/gaps before proceeding.
 
 For deep-research-originated work, include in the plan:
 
-- the `uberassess` packet path or inline summary, or why it is not available
+- the `uberassess` packet path, inline summary, or in-plan assessment-phase summary, or why it is not available
 - research question and coverage claimed/not claimed
 - local codebase/docs, primary docs, alternatives, practitioner evidence, and contradiction-search status
 - what recommendation was approved for planning

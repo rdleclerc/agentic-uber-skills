@@ -301,7 +301,8 @@
     "expected_tier": 3,
     "required_behavior": [
       "include a Pre-planning research / assessment boundary",
-      "consume or request an uberassess packet before claiming alternatives, docs, forum, GitHub, or codebase conclusions",
+      "let the user start with uberplan while uberplan enacts the uberassess boundary itself",
+      "consume an existing uberassess packet, run an in-plan assessment phase, or mark the missing assessment as blocker/spike before claiming alternatives, docs, forum, GitHub, or codebase conclusions",
       "state research coverage claimed and not claimed",
       "treat missing assessment as a blocker or non-readiness spike rather than an implementation-ready plan"
     ],
