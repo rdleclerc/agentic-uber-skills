@@ -37,6 +37,8 @@ REQUIRED_PHRASES = [
     "User expectation / surprise assessment",
     "over-orchestration",
     "five consecutive clear failures",
+    "RCA-driven scope expansion",
+    "child/sub-`uberplan` appendix",
 ]
 
 

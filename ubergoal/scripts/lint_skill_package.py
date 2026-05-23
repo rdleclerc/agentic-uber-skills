@@ -42,7 +42,9 @@ REQUIRED_PHRASES = [
     "$uberassess",
     "benefit is **clearly much greater than**",
     "five consecutive failures",
+    "material unexpected test failures",
     "user expectation / surprise assessment",
+    "Skills invoked summary",
 ]
 FORBIDDEN_PHRASES = [
     "Do not create a platform goal merely because this skill is active",

@@ -4,6 +4,7 @@ import json
 import shutil
 import subprocess
 import sys
+import tempfile
 import unittest
 from pathlib import Path
 
@@ -40,7 +41,7 @@ class ThinWrapperTests(unittest.TestCase):
         self.assertIn("policy-adherence", text)
         self.assertIn("OpenClaw/agentic architecture", text)
         self.assertIn("no solo self-certification", text)
-        self.assertIn("Skills used summary", text)
+        self.assertIn("Skills invoked summary", text)
         self.assertIn("Uber run receipt", text)
         self.assertIn("five consecutive failures", text)
         self.assertIn("user expectation / surprise assessment", text)
@@ -60,8 +61,8 @@ class ThinWrapperTests(unittest.TestCase):
         text = (ROOT / "templates" / "goal-ledger.md").read_text()
         self.assertIn("## Uber run receipt", text)
         self.assertIn("## User expectation / surprise assessment", text)
-        self.assertIn("## Skills used summary", text)
-        for skill in ["ubergoal", "uberassess", "uberplan", "uberaccept", "ubersimplify", "uberskillevolver", "ubershow", "deep-rca", "skill-creator"]:
+        self.assertIn("## Skills invoked summary", text)
+        for skill in ["ubergoal", "uberassess", "uberplan", "uberaccept", "ubersimplify", "uberskillevolver", "ubershow", "deep-rca", "uber-skill-creator"]:
             self.assertIn(skill, text)
 
     def test_uber_run_receipt_validator(self) -> None:
@@ -70,10 +71,24 @@ class ThinWrapperTests(unittest.TestCase):
         self.assertEqual(valid.returncode, 0, valid.stderr + valid.stdout)
         missing = run_cmd(str(RECEIPT), str(ROOT / "tests" / "fixtures" / "invalid" / "uber_run_receipt_missing_skill.md"))
         self.assertNotEqual(missing.returncode, 0)
-        self.assertIn("skills used table missing skill", missing.stderr)
+        self.assertIn("skills invoked table missing skill", missing.stderr)
         failed_gate = run_cmd(str(RECEIPT), str(ROOT / "tests" / "fixtures" / "invalid" / "uber_run_receipt_failed_gate.md"))
         self.assertNotEqual(failed_gate.returncode, 0)
         self.assertIn("expected gate did not pass", failed_gate.stderr)
+
+    def test_uber_run_receipt_validator_accepts_legacy_skill_labels(self) -> None:
+        text = (ROOT / "tests" / "fixtures" / "valid" / "uber_run_receipt.md").read_text()
+        legacy = (
+            text.replace("## Skills invoked", "## Skills used")
+            .replace("RCA-driven testing adaptation", "Repeated-test-failure adaptation")
+            .replace("Skills invoked summary", "Skills used summary")
+            .replace("uber-skill-creator", "skill-creator")
+        )
+        with tempfile.TemporaryDirectory() as tmp:
+            path = Path(tmp) / "legacy_uber_run_receipt.md"
+            path.write_text(legacy)
+            result = run_cmd(str(RECEIPT), str(path))
+            self.assertEqual(result.returncode, 0, result.stderr + result.stdout)
 
     def test_golden_eval_schema(self) -> None:
         cases = json.loads((ROOT / "evals" / "golden_skill_invocations.json").read_text())
@@ -90,6 +105,7 @@ class ThinWrapperTests(unittest.TestCase):
         self.assertIn("final_handoff_reports_skills_used", ids)
         self.assertIn("uber_run_receipt_enables_skill_evolution", ids)
         self.assertIn("repeated_test_failures_trigger_rca_replan", ids)
+        self.assertIn("unexpected_test_failure_triggers_rca_scope_append", ids)
         self.assertIn("user_expectation_surprise_gate", ids)
         route_case = next(case for case in cases if case["id"] == "routes_simplification_to_ubersimplify")
         self.assertTrue(any("ubersimplify" in item for item in route_case.get("expected_behavior", [])))

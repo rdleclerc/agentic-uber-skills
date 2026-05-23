@@ -34,12 +34,14 @@ AGENTS_REQUIRED_PHRASES = [
     "Local Codex install target: `/Users/claw1/.codex/skills/<skill>`",
     "Codex adapter metadata should expose every pack skill",
     "Do not commit, tag, push, or publish without explicit user authorization",
+    "child/sub-`uberplan` appendix",
 ]
 README_REQUIRED_PHRASES = [
     "Agent-facing source authority lives in [AGENTS.md](AGENTS.md)",
     "invoke `$ubergoal` as the implicit lifecycle router",
     "`$deep-rca` is the general incident/debugging/root-cause utility",
     "`$ubershow`",
+    "skills invoked",
 ]
 ROADMAP_REQUIRED_PHRASES = [
     "`ubergoal` is the only implicit/default Uber lifecycle router",
@@ -49,6 +51,7 @@ ROADMAP_REQUIRED_PHRASES = [
     "Build a small pack-level harness before creating a standalone `ubereval` skill",
     "Uberassess dogfooding",
     "Ubershow dogfooding",
+    "RCA-driven testing adaptation",
 ]
 
 

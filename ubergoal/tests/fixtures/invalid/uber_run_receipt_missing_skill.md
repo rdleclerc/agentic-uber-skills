@@ -9,9 +9,9 @@
 - Outcome: success
 - Source branch/commit: session/test abc123
 
-## Skills used
+## Skills invoked
 
-| Skill | Used? yes/no/n/a | Evidence / artifact | Why used or skipped | Gap? |
+| Skill | Invoked? yes/no/n/a | Evidence / artifact | Why invoked, skipped, consulted-only, or n/a | Gap? |
 |---|---|---|---|---|
 | ubergoal | yes | ledger.md | lifecycle wrapper | none |
 | uberplan | yes | plan.md | plan/work contract | none |

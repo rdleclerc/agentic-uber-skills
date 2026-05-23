@@ -80,9 +80,13 @@ flowchart TD
 
 - Failure streak threshold: stop before or at five consecutive clear failures of the same test command or failure family.
 - Systematic failure signal: repeated validator or unittest failures with the same missing contract, stack trace, or assertion across attempts.
+- Material unexpected failure trigger: a new failing test or validator result proves the plan's scope is wrong, not merely incomplete.
 - Stop action: stop the patch/test loop, preserve the failing command output, and mark the goal ledger as blocked on RCA.
 - RCA artifact: run `deep-rca` and record the RCA ladder in the goal ledger or plan appendix.
 - Plan revision path: revise this `uberplan` contract with the new hypothesis, changed task map, and evidence gate before editing again.
+- RCA-driven scope decision: scope expansion only if the RCA names a missing invariant that the current scope cannot enforce; otherwise record no scope change.
+- Child/sub-uberplan appendix: create a focused child/sub-uberplan appendix for any scope expansion, scope correction, or blocker.
+- Parent plan append/merge actions: append the child plan into the parent task map, risk register, and evidence gates before resuming.
 - Resume rule: continue under the same `ubergoal` only after the revised plan names the failure class and next test evidence.
 
 ## Tier decision
@@ -324,7 +328,7 @@ Only used if user explicitly authorizes subagents.
 | Task map | Stable task IDs, dependencies, owners, write scopes, done conditions, evidence, and Mermaid graph are present | Task map / implementation graph | 3 |
 | Verifiable subgoals | Subgoals have observable evidence and metrics/rubrics | Verifiable subgoals and metrics | 3 |
 | Parallelization | Critical path, parallel slices, serial blockers, disjoint write scopes, batching, and integration order are explicit | Parallelization plan | 3 |
-| Testing adaptation | Five repeated clear failures stop the loop, trigger RCA, revise the plan, and resume under the same goal | Testing adaptation gate | 3 |
+| Testing adaptation | Five repeated clear failures or material unexpected failures stop the loop, trigger RCA, revise the plan, append/merge child scope changes, and resume under the same goal | Testing adaptation gate | 3 |
 | User expectation / surprise assessment | Likely user expectations, evidence, possible surprises, assumptions, ask/flag triggers, and final handoff checks are explicit | User expectation / surprise assessment | 3 |
 | Thin harness / fat agent | Deterministic code enforces contract shape while adaptive agent reasoning owns planning judgment; monolith drift blocked | Thin harness / fat agent design rubric | 3 |
 | Source-convention check | Codex and OpenClaude / Claude Code convention source boundary is explicit; no leaked/proprietary code copied | Source-convention check | 3 |

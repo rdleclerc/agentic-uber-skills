@@ -270,12 +270,35 @@
       "include a Testing adaptation gate",
       "stop before or at five consecutive clear failures of the same test command or failure family",
       "route diagnosis to deep-rca before further patching",
-      "revise the task map hypothesis and evidence gates before resuming under ubergoal"
+      "revise the task map hypothesis and evidence gates before resuming under ubergoal",
+      "append or merge any child/sub-uberplan scope expansion scope correction or blocker into the parent plan"
     ],
     "forbidden_behavior": [
       "continue a patch/test loop past five repeated clear failures",
       "treat the fifth failure as just more test output",
       "resume implementation without a revised plan"
+    ]
+  },
+  {
+    "id": "unexpected_testing_failure_requires_child_plan_append",
+    "user_prompt": "Use uberplan to revise this goal: a new integration test exposed an unexpected state-machine problem outside the current task map, and the RCA says the parent plan scope is now wrong.",
+    "expected_tier": 2,
+    "required_lanes": [
+      "Agent Advocate / Agent Failure RCA",
+      "Quality/Eval Strategist"
+    ],
+    "required_behavior": [
+      "treat the material unexpected failure as a stop condition even before five repeats",
+      "route diagnosis to deep-rca before choosing a durable fix",
+      "create a focused child/sub-uberplan appendix from the RCA result",
+      "append or merge the child plan into the parent task map risks and evidence gates",
+      "label the parent-plan change as scope expansion scope correction or blocker",
+      "resume only after the parent plan names the new hypothesis evidence gate and cost justification"
+    ],
+    "forbidden_behavior": [
+      "patch around the unexpected failure without RCA",
+      "leave the child plan disconnected from the parent uberplan",
+      "broaden scope without labeling the scope decision and added evidence gate"
     ]
   },
   {

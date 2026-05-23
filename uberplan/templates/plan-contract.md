@@ -104,9 +104,13 @@ Use this during implementation/testing so clear systematic failures revise the g
 
 - Failure streak threshold: stop before or at five consecutive clear failures of the same test command/failure family.
 - Systematic failure signal:
+- Material unexpected failure trigger:
 - Stop action:
 - RCA artifact:
 - Plan revision path:
+- RCA-driven scope decision: no scope change / scope expansion / scope correction / blocker:
+- Child/sub-uberplan appendix:
+- Parent plan append/merge actions:
 - Resume rule:
 
 ## Tier decision
@@ -372,7 +376,7 @@ Score only relevant dimensions. Use 0 = blocker, 1 = weak/unresolved, 2 = accept
 | Task map | Coding tasks have stable IDs, dependencies, owners, write scopes, done conditions, evidence, and Mermaid graph | Task map / implementation graph |  |
 | Verifiable subgoals | Objective is decomposed into observable subgoals with evidence and metrics/rubrics | Verifiable subgoals and metrics |  |
 | Parallelization | Critical path, parallelizable slices, serial blockers, disjoint write scopes, batching, and integration order are explicit | Parallelization plan |  |
-| Testing adaptation | Repeated clear failures stop the loop, trigger RCA, revise the plan, and resume under the goal lifecycle | Testing adaptation gate |  |
+| Testing adaptation | Repeated clear failures or material unexpected failures stop the loop, trigger RCA, revise the plan, append/merge any child plan scope changes, and resume under the goal lifecycle | Testing adaptation gate |  |
 | Goal execution posture | Plan is framed as a long-running goal with thread highlights, checkpoint cadence, and durable `.md` artifact | Goal execution posture and delivery |  |
 | User expectation / surprise assessment | The plan states likely user expectations, evidence for them, possible surprising actions, assumptions to verify, and final handoff checks | User expectation / surprise assessment |  |
 | Agent execution proof ladder | Codex subagent proof, skill/tool/context iteration, and OpenClaw or target-runtime double proof are explicit where relevant | Agent execution proof ladder or explicit non-applicability |  |

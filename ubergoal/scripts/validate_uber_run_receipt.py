@@ -14,7 +14,7 @@ from pathlib import Path
 
 REQUIRED_SECTIONS = [
     "run metadata",
-    "skills used",
+    "skills invoked",
     "artifacts",
     "gates",
     "fresh-agent replay",
@@ -30,19 +30,29 @@ REQUIRED_SKILLS = [
     "uberskillevolver",
     "ubershow",
     "deep-rca",
-    "skill-creator",
+    "uber-skill-creator",
 ]
 REQUIRED_GATES = [
     "goal created/bound or explicitly skipped",
     "uberplan or work-contract planning",
     "user expectation / surprise assessment",
     "plan acceptance / thin-harness check",
-    "repeated-test-failure adaptation",
+    "rca-driven testing adaptation",
     "uberaccept final proof",
     "policy-adherence / openclaw architecture check",
-    "skills used summary",
+    "skills invoked summary",
     "uberskillevolver learning decision",
 ]
+SECTION_ALIASES = {
+    "skills invoked": {"skills invoked", "skills used"},
+}
+SKILL_ALIASES = {
+    "uber-skill-creator": {"uber-skill-creator", "skill-creator"},
+}
+GATE_ALIASES = {
+    "rca-driven testing adaptation": {"rca-driven testing adaptation", "repeated-test-failure adaptation"},
+    "skills invoked summary": {"skills invoked summary", "skills used summary"},
+}
 PLACEHOLDERS = {"", " ", "todo", "tbd", "yes/no", "yes/no/n/a", "pass/fail/n/a"}
 
 
@@ -61,6 +71,21 @@ def sections(markdown: str) -> dict[str, str]:
         elif current:
             out[current].append(line)
     return {key: "\n".join(value).strip() for key, value in out.items()}
+
+
+def section_aliases(section: str) -> set[str]:
+    return SECTION_ALIASES.get(section, {section})
+
+
+def find_section(found: dict[str, str], section: str) -> str:
+    for alias in section_aliases(section):
+        if alias in found:
+            return found[alias]
+    return ""
+
+
+def value_aliases(value: str, aliases: dict[str, set[str]]) -> set[str]:
+    return aliases.get(value, {value})
 
 
 def table_rows(section: str) -> list[list[str]]:
@@ -96,7 +121,7 @@ def validate(path: Path, allow_template: bool = False) -> list[str]:
     found = sections(text)
     errors: list[str] = []
     for section in REQUIRED_SECTIONS:
-        if section not in found:
+        if not find_section(found, section):
             errors.append(f"missing required section: {section}")
     if allow_template:
         return errors
@@ -107,20 +132,20 @@ def validate(path: Path, allow_template: bool = False) -> list[str]:
     for label in ["Run slug", "Date/time", "Project/repo", "Tier", "Owner/session", "Outcome"]:
         require_field(metadata, label, errors)
 
-    skill_rows = table_rows(found["skills used"])
+    skill_rows = table_rows(find_section(found, "skills invoked"))
     skill_names = {normalize(row[0]) for row in skill_rows if row}
     for skill in REQUIRED_SKILLS:
-        if skill not in skill_names:
-            errors.append(f"skills used table missing skill: {skill}")
+        if skill_names.isdisjoint(value_aliases(skill, SKILL_ALIASES)):
+            errors.append(f"skills invoked table missing skill: {skill}")
     for row in skill_rows:
         if len(row) < 5:
-            errors.append(f"skills used row has too few cells: {' | '.join(row)}")
+            errors.append(f"skills invoked row has too few cells: {' | '.join(row)}")
             continue
         used = normalize(row[1])
         evidence = normalize(row[2])
         reason = normalize(row[3])
         if used not in {"yes", "no", "n/a", "na", "not applicable"}:
-            errors.append(f"skill {row[0]} has invalid Used? value: {row[1]}")
+            errors.append(f"skill {row[0]} has invalid Invoked? value: {row[1]}")
         if evidence in PLACEHOLDERS:
             errors.append(f"skill {row[0]} missing evidence/artifact entry")
         if reason in PLACEHOLDERS:
@@ -136,7 +161,7 @@ def validate(path: Path, allow_template: bool = False) -> list[str]:
     gate_rows = table_rows(found["gates"])
     gate_names = {normalize(row[0]) for row in gate_rows if row}
     for gate in REQUIRED_GATES:
-        if gate not in gate_names:
+        if gate_names.isdisjoint(value_aliases(gate, GATE_ALIASES)):
             errors.append(f"gates table missing gate: {gate}")
     for row in gate_rows:
         if len(row) >= 4:

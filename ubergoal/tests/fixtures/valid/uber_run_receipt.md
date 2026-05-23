@@ -9,9 +9,9 @@
 - Outcome: success
 - Source branch/commit: session/test abc123
 
-## Skills used
+## Skills invoked
 
-| Skill | Used? yes/no/n/a | Evidence / artifact | Why used or skipped | Gap? |
+| Skill | Invoked? yes/no/n/a | Evidence / artifact | Why invoked, skipped, consulted-only, or n/a | Gap? |
 |---|---|---|---|---|
 | ubergoal | yes | ledger.md | lifecycle wrapper | none |
 | uberassess | n/a | n/a | no external source | none |
@@ -21,7 +21,7 @@
 | uberskillevolver | yes | learning.md | post-run learning | none |
 | ubershow | no | n/a | short text enough | none |
 | deep-rca | n/a | n/a | no incident/RCA | none |
-| skill-creator | n/a | n/a | no skill authoring | none |
+| uber-skill-creator | n/a | n/a | no skill authoring | none |
 
 ## Artifacts
 
@@ -42,10 +42,10 @@
 | Uberplan or work-contract planning | yes | plan.md | pass | none |
 | User expectation / surprise assessment | yes | plan.md and final handoff | pass | none |
 | Plan acceptance / thin-harness check | yes | plan.md | pass | none |
-| Repeated-test-failure adaptation | yes | ledger.md | pass | no repeated clear failures; gate documented |
+| RCA-driven testing adaptation | yes | ledger.md | pass | no repeated clear failures or unexpected scope changes; gate documented |
 | Uberaccept final proof | yes | acceptance.md | pass | none |
 | Policy-adherence / OpenClaw architecture check | yes | acceptance.md | pass | none |
-| Skills used summary | yes | ledger.md | pass | none |
+| Skills invoked summary | yes | ledger.md | pass | none |
 | Uberskillevolver learning decision | yes | learning.md | pass | none |
 
 ## Fresh-agent replay
@@ -61,7 +61,7 @@
 - Did the skills change behavior versus generic planning? yes
 - Did the run avoid fat-harness / deterministic-monolith drift? yes
 - Did the run produce enough evidence for `uberskillevolver`? yes
-- Verdict rationale: receipt names skills, artifacts, gates, replay, and learning handoff.
+- Verdict rationale: receipt names invoked skills, artifacts, gates, replay, and learning handoff.
 
 ## Uberskillevolver handoff
 - Learning record path: learning.md

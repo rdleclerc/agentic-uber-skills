@@ -247,6 +247,7 @@ class PackageTests(unittest.TestCase):
         self.assertIn("agentic_plan_requires_codex_to_openclaw_proof_ladder", ids)
         self.assertIn("plan_self_reviews_over_orchestration_before_presentation", ids)
         self.assertIn("repeated_testing_failures_require_rca_replan", ids)
+        self.assertIn("unexpected_testing_failure_requires_child_plan_append", ids)
         self.assertIn("plan_requires_user_expectation_surprise_assessment", ids)
         for case in cases:
             self.assertIn("user_prompt", case)

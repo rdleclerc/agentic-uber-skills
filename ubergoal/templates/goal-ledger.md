@@ -39,8 +39,11 @@
 - Current repeated-failure streak:
 - Failure family / command:
 - Stop threshold: stop before or at five consecutive clear failures of the same command/failure family.
+- Material unexpected failure trigger:
 - RCA status: not-needed | pending | complete
-- Plan revision path:
+- RCA-driven scope decision: no scope change | scope expansion | scope correction | blocker
+- Child/sub-uberplan appendix:
+- Parent plan append/merge actions:
 - Resume condition:
 
 ## Decisions
@@ -49,11 +52,11 @@
 |---|---|---|
 |  |  |  |
 
-## Skills used summary
+## Skills invoked summary
 
-Record the custom skills actually used so the final handoff proves the run used the created Uber skill system instead of generic planning.
+Record the custom skills actually invoked so the final handoff proves the run used the created Uber skill system instead of generic planning. `Invoked?` means the skill instructions were intentionally loaded/followed; `no` can still mean consulted-only source reading, and should say so.
 
-| Skill | Used? | Where / artifact | Why used or skipped | Gap? |
+| Skill | Invoked? yes/no/n/a | Where / artifact | Why invoked, skipped, consulted-only, or n/a | Gap? |
 |---|---|---|---|---|
 | ubergoal | yes |  | lifecycle wrapper / goal ledger |  |
 | uberassess | yes/no |  | source assessment only when applicable |  |
@@ -63,7 +66,7 @@ Record the custom skills actually used so the final handoff proves the run used 
 | uberskillevolver | yes/no |  | post-run learning when applicable |  |
 | ubershow | yes/no |  | visual artifact when useful |  |
 | deep-rca | yes/no |  | class-level RCA when applicable |  |
-| skill-creator | yes/no |  | skill creation/update when applicable |  |
+| uber-skill-creator | yes/no |  | skill creation/update when applicable |  |
 
 ## Tests/evals/audits
 

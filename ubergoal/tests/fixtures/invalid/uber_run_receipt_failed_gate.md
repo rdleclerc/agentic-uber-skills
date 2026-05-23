@@ -9,9 +9,9 @@
 - Outcome: partial
 - Source branch/commit: session/test abc123
 
-## Skills used
+## Skills invoked
 
-| Skill | Used? yes/no/n/a | Evidence / artifact | Why used or skipped | Gap? |
+| Skill | Invoked? yes/no/n/a | Evidence / artifact | Why invoked, skipped, consulted-only, or n/a | Gap? |
 |---|---|---|---|---|
 | ubergoal | yes | ledger.md | lifecycle wrapper | none |
 | uberassess | n/a | n/a | no external source | none |
@@ -21,7 +21,7 @@
 | uberskillevolver | no | missing | not run | learning gap |
 | ubershow | no | n/a | short text enough | none |
 | deep-rca | n/a | n/a | no incident/RCA | none |
-| skill-creator | n/a | n/a | no skill authoring | none |
+| uber-skill-creator | n/a | n/a | no skill authoring | none |
 
 ## Artifacts
 | Artifact | Path / URL / commit | Required? | Present? | Notes |

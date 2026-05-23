@@ -11,9 +11,11 @@ Use this as the thin tracing artifact for an `ubergoal` run. It is not an orches
 - Outcome: success | partial | failed | aborted
 - Source branch/commit:
 
-## Skills used
+## Skills invoked
 
-| Skill | Used? yes/no/n/a | Evidence / artifact | Why used or skipped | Gap? |
+`Invoked?` means the skill instructions were intentionally loaded/followed. Use `no` for consulted-only source reading and explain that distinction instead of quietly omitting a relevant skill.
+
+| Skill | Invoked? yes/no/n/a | Evidence / artifact | Why invoked, skipped, consulted-only, or n/a | Gap? |
 |---|---|---|---|---|
 | ubergoal | yes |  | lifecycle wrapper |  |
 | uberassess | yes/no/n/a |  | source assessment only when applicable |  |
@@ -23,7 +25,7 @@ Use this as the thin tracing artifact for an `ubergoal` run. It is not an orches
 | uberskillevolver | yes/no/n/a |  | post-run learning |  |
 | ubershow | yes/no/n/a |  | visual artifact if useful |  |
 | deep-rca | yes/no/n/a |  | class-level RCA if applicable |  |
-| skill-creator | yes/no/n/a |  | skill creation/update if applicable |  |
+| uber-skill-creator | yes/no/n/a |  | skill creation/update if applicable |  |
 
 ## Artifacts
 
@@ -44,10 +46,10 @@ Use this as the thin tracing artifact for an `ubergoal` run. It is not an orches
 | Uberplan or work-contract planning |  |  |  |  |
 | User expectation / surprise assessment |  |  |  |  |
 | Plan acceptance / thin-harness check |  |  |  |  |
-| Repeated-test-failure adaptation |  |  |  |  |
+| RCA-driven testing adaptation |  |  |  |  |
 | Uberaccept final proof |  |  |  |  |
 | Policy-adherence / OpenClaw architecture check |  |  |  |  |
-| Skills used summary |  |  |  |  |
+| Skills invoked summary |  |  |  |  |
 | Uberskillevolver learning decision |  |  |  |  |
 
 ## Fresh-agent replay

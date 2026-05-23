@@ -46,7 +46,7 @@ Return or create a plan contract with:
 6. a detailed task map / implementation graph with stable task IDs, dependencies, owners, write scopes, done conditions, evidence, critical path, and a Mermaid diagram for Tier 2/3 work
 7. verifiable subgoals with acceptance evidence plus quantitative metrics, scores, or qualitative rubrics; every subgoal must say what proves it is done
 8. a parallelization plan that separates parallelizable slices from serial blockers, names disjoint write scopes, and states batching/max-concurrency policy; planning may identify parallel work even when subagents are not authorized
-9. a testing adaptation gate: stop before or at five consecutive clear failures of the same test command/failure family, run RCA, revise this plan, then continue under `ubergoal`
+9. a testing adaptation and RCA-driven scope gate: stop before or at five consecutive clear failures of the same test command/failure family, or immediately for a material unexpected failure that invalidates the plan; run RCA; when RCA changes scope, create a focused child/sub-`uberplan` appendix and append or merge it into the parent plan as `scope expansion`, `scope correction`, or `blocker`; then continue under `ubergoal` only after the merged plan names the new hypothesis and evidence gate
 10. affected repos/files and protected-file constraints
 11. codebase exploration / pheromone trails when context risk is material
 12. architecture options when the design is non-obvious
@@ -100,6 +100,10 @@ Always map the critical path before suggesting parallel work. If the repo is com
 Even when subagents are not authorized or available, the plan should still identify which tasks are parallelizable in principle, which tasks are serial blockers, and which write scopes must remain disjoint. This helps future coding agents batch safely without guessing.
 
 Do not spawn multiple agents over the same context. Parallelism pays when it reduces context overload or wall-clock time with disjoint work, not when it creates shallow duplicate summaries.
+
+## RCA-driven scope expansion
+
+Use this when testing exposes a key, unexpected problem that makes the current plan wrong, not merely incomplete. First preserve the failing command/output and run `deep-rca` to name the missing invariant. Then create a focused child/sub-`uberplan` appendix for the RCA result. The parent plan remains the source of truth: append or merge the child plan into the parent task map, evidence gates, risks, and decision register, labeling the change as `scope expansion`, `scope correction`, or `blocker`. Resume only after the parent plan says what changed, which new tasks/evidence were added, and why the added scope is worth its cost.
 
 ### Runtime thread caps
 

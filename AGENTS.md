@@ -29,7 +29,7 @@ Read in this order:
 - `uberplan` produces a long-running goal execution plan, not an `uberslice` or default 20-minute slice. It may define checkpoints, phases, or bounded work packages, but those serve the larger goal. Return thread highlights and a durable `.md` plan file.
 - `uberplan` and `ubergoal` must include a user expectation / surprise assessment for Tier 1+ or otherwise material work: infer likely expectations from the explicit request, known preferences, repo instructions, and evidence; name planned or actual choices that may surprise the user; ask or flag before proceeding when a mismatch could matter.
 - For OpenClaw/agentic-system plans, use the proof ladder: first prove a Codex subagent with the right skills/tools/context can execute the activity; if it cannot, improve the skill/tool/context contract. Then prove the OpenClaw or target runtime reaches parity; if it fails, iterate the same contracts until parity is proven twice.
-- During testing, do not push through systematic failures. Stop before or at five consecutive clear failures of the same command/failure family, run `deep-rca`, revise with `uberplan`, then continue under the same `ubergoal`.
+- During testing, do not push through systematic failures or material unexpected failures that invalidate the plan. Stop before or at five consecutive clear failures of the same command/failure family, run `deep-rca`, and if the RCA changes scope, create a focused child/sub-`uberplan` appendix. Append or merge that child plan into the parent `uberplan` as a `scope expansion`, `scope correction`, or `blocker`, update the ledger/receipt, then continue under the same `ubergoal` only after the merged plan names the new hypothesis and evidence gate.
 
 ## RCA source authority
 

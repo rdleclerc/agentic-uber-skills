@@ -4,8 +4,8 @@ This roadmap keeps the skill pack evolving without turning it into bureaucracy. 
 
 ## Current architecture
 
-- `ubergoal` — goal-owning lifecycle wrapper: create/bind the platform goal, classify, run Tier 2+ specialist review boards, route, ledger, user expectation/surprise assessment, final policy-adherence acceptance, tradeoff/surprise reporting, learning.
-- `uberplan` — rigorous planning for long-running goal execution: thread highlights plus durable `.md` plan contracts, user expectation/surprise assessment, review lanes, verifiable subgoals, Mermaid task graphs, target file trees, parallelization maps, Codex-subagent to OpenClaw/target-runtime proof ladders, repeated-test-failure adaptation gates, code-health/dead-code plans, Agent Advocate RCA, first-principles simplifier, pre-presentation over-orchestration review, confidence gate.
+- `ubergoal` — goal-owning lifecycle wrapper: create/bind the platform goal, classify, run Tier 2+ specialist review boards, route, ledger, user expectation/surprise assessment, RCA-driven test-failure adaptation, final policy-adherence acceptance, tradeoff/surprise and skills-invoked reporting, learning.
+- `uberplan` — rigorous planning for long-running goal execution: thread highlights plus durable `.md` plan contracts, user expectation/surprise assessment, review lanes, verifiable subgoals, Mermaid task graphs, target file trees, parallelization maps, Codex-subagent to OpenClaw/target-runtime proof ladders, RCA-driven testing adaptation and child-plan scope append gates, code-health/dead-code plans, Agent Advocate RCA, first-principles simplifier, pre-presentation over-orchestration review, confidence gate.
 - `uberaccept` — adversarial final proof: evidence audit, expected-vs-actual user surprise delta, architecture drift, Agent Advocate final check, completion recommendation.
 - `uberskillevolver` — post-run learning loop: learning records, lesson candidates, promotion batches, anti-bloat gate.
 - `deep-rca` — class-level root cause analysis before patches.

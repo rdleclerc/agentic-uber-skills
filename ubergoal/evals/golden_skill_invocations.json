@@ -105,8 +105,8 @@
     "id": "final_handoff_reports_skills_used",
     "user_prompt": "Use ubergoal to complete this work and tell me which Uber skills you actually used so I can verify we used our created skill system.",
     "expected_behavior": [
-      "include a Skills used summary in the ledger or final handoff",
-      "list ubergoal uberassess uberplan uberaccept ubersimplify uberskillevolver ubershow deep-rca and skill-creator as used skipped or not applicable",
+      "include a Skills invoked summary in the ledger or final handoff",
+      "list ubergoal uberassess uberplan uberaccept ubersimplify uberskillevolver ubershow deep-rca and uber-skill-creator as invoked skipped consulted-only or not applicable",
       "name where each used skill's artifact or evidence lives",
       "explain why applicable skills were skipped instead of silently omitting them",
       "do not claim completion with only generic planning language"
@@ -117,8 +117,8 @@
     "user_prompt": "Use ubergoal on a Tier 2 skill workflow and leave enough tracing for uberskillevolver to decide what should change later.",
     "expected_behavior": [
       "create or update an Uber run receipt rather than relying on prose memory",
-      "record skills used skipped and not applicable with artifact evidence",
-      "record plan acceptance uberaccept policy-adherence and skills-used gates",
+      "record skills invoked skipped consulted-only and not applicable with artifact evidence",
+      "record plan acceptance uberaccept policy-adherence and skills-invoked gates",
       "include fresh-agent replay mode or explicitly record the replay gap",
       "handoff concrete receipt evidence to uberskillevolver",
       "avoid building a hidden telemetry or orchestration monolith"
@@ -132,7 +132,20 @@
       "capture the failing command output and failure family in the goal ledger or receipt",
       "route class-level diagnosis to deep-rca",
       "revise the plan through uberplan before continuing implementation",
+      "append or merge any child-plan scope expansion, scope correction, or blocker into the parent plan",
       "resume under the same ubergoal after the revised plan names the changed hypothesis and evidence gate"
+    ]
+  },
+  {
+    "id": "unexpected_test_failure_triggers_rca_scope_append",
+    "user_prompt": "Use ubergoal on this implementation. A new integration test exposed an unexpected architecture problem that the current plan never covered, so don't just patch around it.",
+    "expected_behavior": [
+      "stop the normal implementation loop immediately for the material unexpected failure",
+      "capture the failing command output and why it invalidates the current plan",
+      "route class-level diagnosis to deep-rca",
+      "create a focused child/sub-uberplan appendix when the RCA changes scope",
+      "append or merge the child plan into the parent uberplan as a scope expansion scope correction or blocker",
+      "resume under the same ubergoal only after the merged plan names the new hypothesis evidence gate and cost justification"
     ]
   },
   {
