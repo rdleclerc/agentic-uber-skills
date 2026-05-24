@@ -742,7 +742,7 @@ def validate_testing_adaptation_gate(found: dict[str, str], tier: str, errors: l
         require_field(section, label, errors)
     if "five" not in section_lower and "5" not in section_lower:
         errors.append("Testing adaptation gate must stop before or at five consecutive clear failures")
-    for term in ["clear", "failure", "test", "rca", "deep-rca", "uberplan", "ubergoal", "resume", "unexpected", "scope", "append"]:
+    for term in ["clear", "failure", "test", "rca", "uberrca", "uberplan", "ubergoal", "resume", "unexpected", "scope", "append"]:
         if term not in section_lower:
             errors.append(f"Testing adaptation gate missing concept: {term}")
 

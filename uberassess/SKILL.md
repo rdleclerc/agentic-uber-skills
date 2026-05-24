@@ -1,17 +1,17 @@
 ---
 name: uberassess
-description: "Do not auto-trigger from task similarity. Use only when explicitly asked to assess a source/research signal for possible adoption or routed by ubergoal: X/Twitter posts, bookmarked links, articles, GitHub repos, arXiv/papers, videos, Hermes/bookmark signals, or internal artifacts. Produces a source-grounded recommendation packet, not implementation."
+description: "Do not auto-trigger from task similarity. Use only when explicitly asked to assess or deeply research a source, plan artifact, idea seed, open research question, or implementation question for possible adoption, or routed by ubergoal: X/Twitter posts, bookmarked links, articles, GitHub repos, arXiv/papers, videos, Hermes/bookmark signals, internal artifacts, draft plans, planning packets, scraps of ideas, alternatives research, and codebase/docs/forum/GitHub reconnaissance. Produces a source-grounded recommendation packet, not implementation."
 ---
 
 # Uberassess
 
 ## Core rule
 
-`uberassess` turns external signals into **source-grounded recommendations**. It does not implement, mutate project state, or launch work without explicit approval.
+`uberassess` turns external signals, plan artifacts, idea seeds, and implementation questions into **source-grounded recommendations**. It owns pre-planning research: clarify what question is really being asked, inspect enough outside and local evidence to avoid stale guesses, and recommend adopt/watch/archive/reject/eval/plan. It does not implement, mutate project state, or launch work without explicit approval.
 
 Use the lightest tier that can answer: **is this idea worth adopting, watching, archiving, rejecting, or turning into an eval seed?** Most interesting sources should not become implementation plans.
 
-Direct-use only when explicitly named, when the user explicitly asks to assess/evaluate a source or artifact for adoption, or when routed by `ubergoal`.
+Direct-use only when explicitly named, when the user explicitly asks to assess/evaluate/research a source, plan, artifact, idea, or implementation question for adoption, or when routed by `ubergoal`.
 
 ## Relationship to Ubergoal
 
@@ -25,31 +25,69 @@ Direct-use only when explicitly named, when the user explicitly asks to assess/e
 | Tier | Use for | Output |
 |---|---|---|
 | 0 | Quick triage of low-stakes links | save / ignore / needs deeper assessment |
-| 1 | Normal source assessment | `templates/assessment-packet.md` |
-| 2 | Important idea likely to affect systems | packet + project context freshness + benefit >> cost + eval seed |
+| 1 | Normal source, plan, or contained idea assessment | `templates/assessment-packet.md` |
+| 2 | Important idea/question likely to affect systems, architecture, skills, tools, or project direction | packet + research frame/source map + project context freshness + alternatives/prior art + benefit >> cost + eval seed |
 | 3 | Likely code/skill/workflow/agentic-system change | Tier 2 + Agent Advocate RCA + `$ubergoal` handoff + evidence plan |
 
 Escalate only for concrete risk. Do not spend Tier 3 effort on every bookmark.
 
 ## Procedure
 
-1. **Resolve the source.** Capture raw source handles before summarizing. Use source-specific tools/skills when available, e.g. X bookmark/Type0 resolvers, GitHub tooling, arXiv/PDF extraction, web fetch/browser, or transcript/OCR sidecars. Record failures and uninspected media.
-2. **Create a Source Packet.** Use `templates/source-packet.md` or embed its fields in the assessment packet. Separate raw source, linked sources, retrieval limits, synthesis, and uncertainty.
-3. **Check project context.** Inspect the relevant project/source-of-truth paths/cards/docs enough to avoid stale or duplicate recommendations. Use local adapter references when present (for example Type0/Gaia/Soho/Hermes on Rob's machine), but do not force unrelated local projects into portable assessments. Record context freshness and gaps.
-4. **Extract ideas and claims.** Distinguish author claims from your inferences. Record evidence quality and contradiction risk.
-5. **Run benefit >> cost.** Ask what to delete or simplify first. Prefer notes, eval seeds, or tool/context fixes over new machinery unless benefit is clearly much greater than hidden cost.
-6. **Run Agent Advocate when agent systems are involved.** Ask the human counterfactual: would a competent human with the same context/tools have made the error? If not, identify the missing context, source authority, tool feedback, memory, affordance, or approval boundary.
-7. **Decide.** Choose Adopt now, Watch, Archive, Reject, Needs more research, or Convert to eval only.
-8. **Set approval boundary.** State `Implementation before approval: no`. If approved, provide a compact `$ubergoal` handoff and evidence plan.
-9. **Leave a learning trail.** For accepted/rejected high-signal assessments, note how outcome should feed `$uberskillevolver` or Hermes later.
+0. **Frame the assessment question.** Restate the seed in one sentence, identify whether this is source-first, plan-artifact, idea-first, implementation-question, or mixed, and name the research mode: quick source assessment or Deep Research Assessment. If the input is vague, define the smallest useful question instead of asking the user to over-specify.
+1. **Clarify before broad research when it matters.** Ask one to three targeted questions when the answer would materially change research direction, source lanes, cost, privacy/side-effect boundaries, or adoption criteria. Do not send a generic questionnaire. If the ambiguity is low-risk or the user asked for speed, state assumptions and proceed; record unanswered clarifications as coverage gaps.
+2. **Resolve the source or seed.** Capture raw source handles before summarizing. For source-first work, use source-specific tools/skills when available, e.g. X bookmark/Type0 resolvers, GitHub tooling, arXiv/PDF extraction, web fetch/browser, or transcript/OCR sidecars. For plan-artifact work, capture the draft plan as the raw source and label it `plan_artifact`. For idea-first work, record the user's wording as the raw seed and label it `idea_seed`, `implementation_question`, or `open_research_question`. Record failures and uninspected media.
+3. **Create a Source Packet.** Use `templates/source-packet.md` or embed its fields in the assessment packet. Separate raw source/seed, linked sources, retrieval limits, synthesis, and uncertainty.
+4. **Build the research map.** For Deep Research Assessment, intentionally choose lanes: local codebase/source-of-truth, primary docs/specs, GitHub alternatives/prior art, issues/forums/practitioner discussion, papers/blogs where relevant, and contradiction search. State coverage claimed and not claimed; never imply exhaustive research when only a slice was inspected.
+5. **Check project context.** Inspect the relevant project/source-of-truth paths/cards/docs enough to avoid stale or duplicate recommendations. Use local adapter references when present (for example Type0/Gaia/Soho/Hermes on Rob's machine), but do not force unrelated local projects into portable assessments. Record context freshness and gaps.
+6. **Extract ideas and claims.** Distinguish user/source/author claims from your inferences. Record evidence quality, contradiction risk, local fit, and what is actually actionable.
+7. **Compare alternatives.** For implementation questions and architecture/tool ideas, produce an alternatives/prior-art matrix. Include the "do nothing / note / eval-only / improve context or skill" option alongside new machinery.
+8. **Run benefit >> cost.** Ask what to delete or simplify first. Prefer notes, eval seeds, or tool/context fixes over new machinery unless benefit is clearly much greater than hidden cost.
+9. **Run Agent Advocate when agent systems are involved.** Ask the human counterfactual: would a competent human with the same context/tools have made the error? If not, identify the missing context, source authority, tool feedback, memory, affordance, or approval boundary.
+10. **Decide.** Choose Adopt now, Watch, Archive, Reject, Needs more research, or Convert to eval only.
+11. **Set approval boundary.** State `Implementation before approval: no`. If approved, provide a compact `$ubergoal`/`$uberplan` handoff and evidence plan.
+12. **Leave a learning trail.** For accepted/rejected high-signal assessments, note how outcome should feed `$uberskillevolver` or Hermes later.
+
+## Deep Research Assessment mode
+
+Use this mode when the user says "boil the ocean," asks for deep research, requests alternatives or state-of-the-art, gives only a scrap of an idea, or asks an implementation/architecture question before planning. The job is not to gather every possible source; it is to make the research boundary honest and broad enough that a later plan is not built on vibes.
+
+Minimum lanes to consider:
+
+- **Seed/source capture** — exact user wording, source URL, linked artifacts, raw media/transcripts, and retrieval limits.
+- **Question framing and clarification** — what decision this assessment must support, what would be overreach, and what targeted user feedback would materially improve the research.
+- **Local project context** — current codebase, skills, docs, tests, policies, and duplicate/prior attempts.
+- **Primary docs/specs** — official docs and source-of-truth references such as OpenClaw docs when relevant.
+- **Alternatives/prior art** — GitHub repos, libraries, patterns, architecture options, and why they do or do not transfer.
+- **Practitioner evidence** — issues, discussions, forums, postmortems, or threads that reveal real pain and edge cases.
+- **Contradiction search** — evidence the idea is stale, solved, unsafe, too expensive, or better handled by deletion/simplification.
+- **Adoption fit** — whether the output should be a memory note, watch item, eval seed, rejected idea, or `$ubergoal`/`$uberplan` handoff.
+
+Stop research when additional sources are unlikely to change the recommendation, the coverage gap itself is the recommendation, or approval is needed for paid/private/side-effecting access.
+
+## Plan Artifact Assessment mode
+
+Use this mode when the user asks `uberassess` to assess a plan, or when `uberplan` needs a review of a draft plan before hardening or implementation. Treat the plan as the source artifact: assess whether it matches the user's intent, asks the right clarifying questions, has enough research coverage, names assumptions and gaps honestly, maps risks to evidence, and deserves adoption, revision, or rejection.
+
+A plan assessment should usually answer:
+
+- **Intent fit** — does the plan solve the user's actual problem, or did it drift into a nearby process?
+- **Clarification need** — what one to three questions would materially improve the plan before broad work?
+- **Research sufficiency** — does the plan need source/code/docs/forum/GitHub research before implementation?
+- **Alternatives and deletion** — what simpler/no-build/eval-only route should be considered?
+- **Evidence and adoption** — what proof is required before the plan can move to implementation?
+- **Revision decision** — approve as-is, revise then proceed, run deeper assessment, convert to eval/watch, or reject.
 
 ## Output contract
 
 For Tier 1+, produce an assessment packet with:
 
 - source URL/type and raw capture status
+- assessment mode, research question, and clarification checkpoint
+- for plan artifacts: intent fit, assumptions, evidence gaps, and revision decision
+- research/source map with coverage claimed and not claimed
 - linked sources/media inspected and retrieval limitations
 - key ideas, author claims, and model inferences
+- alternatives/prior-art matrix when implementation or architecture choices are implicated
 - project relevance matrix and project context freshness
 - source authority, uncertainty, contradictions, and freshness
 - benefit >> complexity cost analysis and simpler alternatives
@@ -74,3 +112,4 @@ Do not create MCP servers, scrapers, vector indexes, scheduled automation, model
 - `references/project-routing.md` — routing destinations and non-goals.
 - `references/hermes-and-approval.md` — Hermes/read-only and approval policy.
 - `scripts/validate_assessment_packet.py` — packet validator.
+- `evals/golden_skill_invocations.json` — trigger/non-trigger examples for routing changes; load only when tuning assessment triggers.

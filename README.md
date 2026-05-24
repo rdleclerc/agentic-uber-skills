@@ -4,13 +4,13 @@ A platform-neutral skill pack for agentic coding workflows. These are portable `
 
 The pack is not tied to Claude or Codex. Some skills include optional adapter notes for specific runtimes, such as Codex goals, but the core workflows are general agentic engineering protocols.
 
-Agent-facing source authority lives in [AGENTS.md](AGENTS.md). The default routing rule is: invoke `$ubergoal` as the implicit lifecycle router; invoke utility skills like `$deep-rca` and `$ubershow` directly when their specific trigger applies; invoke phase skills directly only when explicitly named or when `$ubergoal` routes to them. Codex sessions should expose every skill in this pack; phase-skill descriptions intentionally say not to auto-trigger from task similarity, which prevents ceremony creep from broad descriptions without hiding the skills from direct use.
+Agent-facing source authority lives in [AGENTS.md](AGENTS.md). The default routing rule is: invoke `$ubergoal` as the implicit lifecycle router; invoke utility skills like `$uberrca` and `$ubershow` directly when their specific trigger applies; invoke phase skills directly only when explicitly named or when `$ubergoal` routes to them. Codex sessions should expose every skill in this pack; phase-skill descriptions intentionally say not to auto-trigger from task similarity, which prevents ceremony creep from broad descriptions without hiding the skills from direct use.
 
 ## Skills
 
 | Skill | What it does |
 |-------|-------------|
-| [deep-rca](deep-rca/) | Utility skill for general class-level root cause analysis before patches; Agent Advocate remains the agent-behavior RCA lens inside Uber planning/acceptance |
+| [uberrca](uberrca/) | Utility skill for general class-level root cause analysis before patches; Agent Advocate remains the agent-behavior RCA lens inside Uber planning/acceptance |
 | [uber-skill-creator](uber-skill-creator/) | Portable Uber skill authoring guide for Codex, Claude, and SKILL.md-compatible agents, with legacy alias migration support, read-only skill-quality reports, eval-driven iteration, HTML review reports, and trigger-description tuning |
 | [ubergoal](ubergoal/) | Thin lifecycle wrapper for substantial agentic coding workflows: classify, route, launch goals, assess user expectation/surprise risk, adapt on repeated or material unexpected test failures, enforce final policy-adherence acceptance, report tradeoffs/surprises and skills invoked, learn |
 | [uberplan](uberplan/) | Rigorous lean planning for long-running goals with thread highlights plus a `.md` plan file, user expectation/surprise assessment, review lanes, verifiable subgoals, Mermaid task graphs, Codex-to-OpenClaw proof ladders, RCA-driven testing adaptation and scope append gates, confidence gates, and benefit >> cost pressure |
@@ -36,7 +36,7 @@ Copy or symlink the skill directories into your agent runtime's local skill dire
 ```bash
 # Example: install the Uber family into a generic local skill dir
 mkdir -p ~/.agent/skills
-for s in deep-rca uber-skill-creator ubergoal uberplan uberaccept uberskillevolver ubersimplify uberassess ubershow; do
+for s in uberrca uber-skill-creator ubergoal uberplan uberaccept uberskillevolver ubersimplify uberassess ubershow; do
   rm -rf "$HOME/.agent/skills/$s"
   ln -s "$PWD/$s" "$HOME/.agent/skills/$s"
 done
@@ -46,19 +46,19 @@ done
 
 ```bash
 mkdir -p ~/.codex/skills
-for s in deep-rca uber-skill-creator ubergoal uberplan uberaccept uberskillevolver ubersimplify uberassess ubershow; do
+for s in uberrca uber-skill-creator ubergoal uberplan uberaccept uberskillevolver ubersimplify uberassess ubershow; do
   rm -rf "$HOME/.codex/skills/$s"
   ln -s "$PWD/$s" "$HOME/.codex/skills/$s"
 done
 ```
 
-Invoke the wrapper with `$ubergoal` by default. Call `$deep-rca` for general RCA, call `$ubershow` when a browser-first visual decision surface will materially improve understanding, and call phase skills directly only when you explicitly want `$uberplan`, `$uberaccept`, `$uberskillevolver`, `$ubersimplify`, or `$uberassess`.
+Invoke the wrapper with `$ubergoal` by default. Call `$uberrca` for general RCA, call `$ubershow` when a browser-first visual decision surface will materially improve understanding, and call phase skills directly only when you explicitly want `$uberplan`, `$uberaccept`, `$uberskillevolver`, `$ubersimplify`, or `$uberassess`.
 
 ### Claude Code-compatible install
 
 ```bash
 mkdir -p ~/.claude/skills
-for s in deep-rca uber-skill-creator ubergoal uberplan uberaccept uberskillevolver ubersimplify uberassess ubershow; do
+for s in uberrca uber-skill-creator ubergoal uberplan uberaccept uberskillevolver ubersimplify uberassess ubershow; do
   rm -rf "$HOME/.claude/skills/$s"
   cp -R "$PWD/$s" "$HOME/.claude/skills/$s"
 done
@@ -75,9 +75,9 @@ The goal is progressive disclosure: load the skill metadata first, then the `SKI
 
 ## RCA authority
 
-- `$deep-rca` is the general incident/debugging/root-cause utility.
+- `$uberrca` is the general incident/debugging/root-cause utility.
 - Agent Advocate is the agent-behavior-specific RCA lens inside `$uberplan`, `$uberaccept`, and `$ubersimplify`.
-- If both apply, use the `deep-rca` ladder for depth and the Agent Advocate human-counterfactual lens for agent-specific context/tool/source/feedback failures.
+- If both apply, use the `uberrca` ladder for depth and the Agent Advocate human-counterfactual lens for agent-specific context/tool/source/feedback failures.
 
 ## Roadmap and cross-machine learning
 
@@ -89,7 +89,7 @@ Keep raw learning records local/private. Commit only sanitized learning packets 
 
 ## Utility skills and deprecated aliases
 
-Not every directory in this pack is an Uber lifecycle phase. `uber-skill-creator`, `deep-rca`, and `ubershow` are bundled utilities used by the Uber workflow ecosystem. `uber-skill-creator` is the canonical creator/migration skill for general portable SKILL.md skills. Older local installs named `skill-creator` or `skill-creator-pro` should redirect to `uber-skill-creator` for general skills, or to `openclaw-agentic-skill-creator` for OpenClaw/Gaia/Type0/Soho-specific skills; do not keep parallel creator implementations with overlapping trigger descriptions.
+Not every directory in this pack is an Uber lifecycle phase. `uber-skill-creator`, `uberrca`, and `ubershow` are bundled utilities used by the Uber workflow ecosystem. `uber-skill-creator` is the canonical creator/migration skill for general portable SKILL.md skills. Older local installs named `skill-creator` or `skill-creator-pro` should redirect to `uber-skill-creator` for general skills, or to `openclaw-agentic-skill-creator` for OpenClaw/Gaia/Type0/Soho-specific skills; do not keep parallel creator implementations with overlapping trigger descriptions.
 
 ## Update
 

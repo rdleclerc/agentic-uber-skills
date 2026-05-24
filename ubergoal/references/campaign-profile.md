@@ -126,7 +126,7 @@ FOR item_plan IN approved_plan_queue ORDERED BY dependencies:
         execute child under ubergoal/worker scope
         run tests/evals/proofs named by child OOC
         IF repeated/material unexpected failure:
-            stop, run deep-rca, revise with uberplan, merge scope change, update ledger
+            stop, run uberrca, revise with uberplan, merge scope change, update ledger
         run child acceptance
         record terminal state operational | blocked | re_scoped_with_approval
         write receipts/<item-or-child>.md

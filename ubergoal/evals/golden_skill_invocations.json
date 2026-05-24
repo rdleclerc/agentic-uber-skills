@@ -106,7 +106,7 @@
     "user_prompt": "Use ubergoal to complete this work and tell me which Uber skills you actually used so I can verify we used our created skill system.",
     "expected_behavior": [
       "include a Skills invoked summary in the ledger or final handoff",
-      "list ubergoal uberassess uberplan uberaccept ubersimplify uberskillevolver ubershow deep-rca and uber-skill-creator as invoked skipped consulted-only or not applicable",
+      "list ubergoal uberassess uberplan uberaccept ubersimplify uberskillevolver ubershow uberrca and uber-skill-creator as invoked skipped consulted-only or not applicable",
       "name where each used skill's artifact or evidence lives",
       "explain why applicable skills were skipped instead of silently omitting them",
       "do not claim completion with only generic planning language"
@@ -130,7 +130,7 @@
     "expected_behavior": [
       "stop the normal patch/test loop at or before five consecutive clear failures",
       "capture the failing command output and failure family in the goal ledger or receipt",
-      "route class-level diagnosis to deep-rca",
+      "route class-level diagnosis to uberrca",
       "revise the plan through uberplan before continuing implementation",
       "append or merge any child-plan scope expansion, scope correction, or blocker into the parent plan",
       "resume under the same ubergoal after the revised plan names the changed hypothesis and evidence gate"
@@ -142,7 +142,7 @@
     "expected_behavior": [
       "stop the normal implementation loop immediately for the material unexpected failure",
       "capture the failing command output and why it invalidates the current plan",
-      "route class-level diagnosis to deep-rca",
+      "route class-level diagnosis to uberrca",
       "create a focused child/sub-uberplan appendix when the RCA changes scope",
       "append or merge the child plan into the parent uberplan as a scope expansion scope correction or blocker",
       "resume under the same ubergoal only after the merged plan names the new hypothesis evidence gate and cost justification"

@@ -1,7 +1,7 @@
 [
   {
     "id": "repeated_agent_patch_requires_class_rca",
-    "user_prompt": "Use deep-rca to figure out why this coding agent keeps fixing the same Slack routing bug with one-off keyword checks.",
+    "user_prompt": "Use uberrca to figure out why this coding agent keeps fixing the same Slack routing bug with one-off keyword checks.",
     "should_trigger": true,
     "required_behavior": [
       "build an RCA ladder from symptom to class-level cause",
@@ -41,7 +41,7 @@
   },
   {
     "id": "single_parse_error_needs_scope_check",
-    "user_prompt": "This JSON parser failed once on malformed input. Do we need deep RCA before patching?",
+    "user_prompt": "This JSON parser failed once on malformed input. Do we need UberRCA before patching?",
     "should_trigger": true,
     "required_behavior": [
       "check whether the failure is a one-off malformed input or a repeated/systemic failure class",

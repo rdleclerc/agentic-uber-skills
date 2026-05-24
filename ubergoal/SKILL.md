@@ -21,7 +21,7 @@ Use the lightest tier that makes the work safe. Add process only when benefit is
 | Complexity/modularity/dead-code campaign | `$ubersimplify` |
 | Source/research/internal-artifact assessment before adoption | `$uberassess` |
 | Post-run learning for skills/prompts/workflows/agentic systems | `$uberskillevolver` |
-| Repeated or material unexpected test failures | stop, run `$deep-rca`, revise via `$uberplan`, append/merge child scope change, continue under same goal |
+| Repeated or material unexpected test failures | stop, run `$uberrca`, revise via `$uberplan`, append/merge child scope change, continue under same goal |
 | Refactor campaign / HOT-file audit | load `references/refactor-campaign-profile.md` |
 | `ubercampaign`, product campaign, multi-feature/feature-list/plan-tree campaign, “assess then plan then execute all items” | load `references/campaign-profile.md` |
 | Tier 3 agentic/runtime/production-replacement expensive proof, burn-in, soak, canary expansion, or final proof | route to `$uberplan` with `templates/tier3-expensive-proof-plan-tree.md` and validator before launch |
@@ -40,12 +40,13 @@ Tier 0 can use an inline note. Tier 1 uses the work contract unless risk require
 ## Lifecycle
 
 1. **Classify tier.** Choose the lowest safe Tier 0/1/2/3.
-2. **Plan.** Start Tier 1+ with a **user expectation / surprise assessment**. Use inline note, work contract, or `$uberplan` by tier/risk. Agentic-system plans bias toward thin deterministic harnesses around capable agents.
-3. **Create or bind the goal.** If no goal exists and the user explicitly invoked `ubergoal`, call `create_goal` before substantial planning/execution. Bind existing goals; skip only for explicit no-goal/lightweight mode, no goal facility, or non-`ubergoal` work.
-4. **Review and execute.** Main agent owns integration. Explicit `ubergoal` authorizes bounded Tier 2+ specialist review-board agents/lenses unless the user says no/lightweight. Workers mutate files only with disjoint write scopes.
-5. **Adapt on test failure.** Stop before or at **five consecutive failures** of the same command/family, or immediately for material unexpected test failures. Capture evidence, run `$deep-rca`, revise with `$uberplan`, append/merge scope expansion/correction/blocker, update ledger/receipt, continue under same goal.
-6. **Ledger/receipt.** For long work, maintain `templates/goal-ledger.md` and the **Uber run receipt** in `templates/uber-run-receipt.md`, including the **Skills invoked summary**.
-7. **Assess/simplify/accept/learn.** Route source due diligence to `$uberassess`; complexity campaigns to `$ubersimplify`; final proof to `$uberaccept`; Tier 2/3 skill/prompt/workflow/agentic lessons to `$uberskillevolver`.
+2. **Frame enough to make the goal non-vague.** Before creating a platform goal, do the minimum clarification needed to name the outcome, rough scope, non-goals, likely tier, and what “done” could mean. This is not full planning and must not become implementation.
+3. **Create or bind the goal before robust planning/execution.** If no goal exists and the user explicitly invoked `ubergoal`, call `create_goal` once the compact objective is specific enough. The goal may explicitly be “produce a robust plan, then execute it after the acceptance gate”; this preserves `ubergoal`’s purpose of preventing shallow plans while avoiding vague goal launch.
+4. **Plan.** Start Tier 1+ with a **user expectation / surprise assessment**. Use inline note, work contract, or `$uberplan` by tier/risk. Agentic-system plans bias toward thin deterministic harnesses around capable agents. Do not execute until the plan or work contract names verification and stop conditions.
+5. **Review and execute.** Main agent owns integration. Explicit `ubergoal` authorizes bounded Tier 2+ specialist review-board agents/lenses unless the user says no/lightweight. Workers mutate files only with disjoint write scopes.
+6. **Adapt on test failure.** Stop before or at **five consecutive failures** of the same command/family, or immediately for material unexpected test failures. Capture evidence, run `$uberrca`, revise with `$uberplan`, append/merge scope expansion/correction/blocker, update ledger/receipt, continue under same goal.
+7. **Ledger/receipt.** For long work, maintain `templates/goal-ledger.md` and the **Uber run receipt** in `templates/uber-run-receipt.md`, including the **Skills invoked summary**.
+8. **Assess/simplify/accept/learn.** Route source due diligence to `$uberassess`; complexity campaigns to `$ubersimplify`; final proof to `$uberaccept`; Tier 2/3 skill/prompt/workflow/agentic lessons to `$uberskillevolver`.
 
 ## Tier selection
 
@@ -72,7 +73,7 @@ Before recommending `xhigh`, run the deletion-first pass: can the task be split 
 
 `ubergoal` is a superset of the platform goal primitive. The platform goal is the durable execution spine; the wrapper adds tiering, routing, subskills, agents, acceptance, and learning.
 
-When launching, keep the objective compact: destination, objective/scope, non-goals, tier, plan path/summary, expectation/surprise risks, preserve constraints, verification gates, allowed subagent/audit shape, done/stop conditions, approval boundaries, operational outcome contract, per-child terminal states, and success metric. Validate objective text with `scripts/validate_goal_objective.py --target-chars 3400 --strict-target`. Do not set a token budget unless the user explicitly gives one.
+When launching, keep the objective compact: destination, objective/scope, non-goals, tier, plan path/summary, expectation/surprise risks, preserve constraints, verification gates, allowed subagent/audit shape, done/stop conditions, approval boundaries, operational outcome contract, per-child terminal states, and success metric. The platform goal is not the entire plan; it is the durable North Star that survives the robust `$uberplan` phase and later execution. Validate objective text with `scripts/validate_goal_objective.py --target-chars 3400 --strict-target`. Do not set a token budget unless the user explicitly gives one.
 
 ## Execution coordination
 

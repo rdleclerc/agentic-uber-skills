@@ -37,7 +37,7 @@ Use this as the thin tracing artifact for an `ubergoal` run. It is not an orches
 | ubersimplify | yes/no/n/a |  | complexity/dead-code/modularity |  |
 | uberskillevolver | yes/no/n/a |  | post-run learning |  |
 | ubershow | yes/no/n/a |  | visual artifact if useful |  |
-| deep-rca | yes/no/n/a |  | class-level RCA if applicable |  |
+| uberrca | yes/no/n/a |  | class-level RCA if applicable |  |
 | uber-skill-creator | yes/no/n/a |  | skill creation/update if applicable |  |
 
 ## Artifacts

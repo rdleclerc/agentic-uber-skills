@@ -19,7 +19,7 @@ Read in this order:
 - `$ubergoal` is the only default/implicit Uber lifecycle router.
 - All skills in this pack must be installed and exposed to Codex sessions. Exposure is not trigger authority.
 - Phase skills are explicit or wrapper-invoked: `$uberplan`, `$uberaccept`, `$uberskillevolver`, `$ubersimplify`, and `$uberassess` should not trigger merely because a task resembles their domain. Their descriptions and OpenAI adapter prompts should say "Do not auto-trigger from task similarity" so runtime skill routers do not confuse examples with permission.
-- `$deep-rca` is a utility skill, not an Uber lifecycle phase. Use it directly for general incidents, debugging, postmortems, repeated bugs, and class-level root-cause analysis.
+- `$uberrca` is a utility skill, not an Uber lifecycle phase. Use it directly for general incidents, debugging, postmortems, repeated bugs, and class-level root-cause analysis.
 - `ubershow` = visual communication utility, not an Uber lifecycle phase. Use it when a browser-first static artifact will materially improve decision speed or comprehension; generated HTML is a view, and copy/paste receipts are the decision registration path.
 - `uber-skill-creator` = bundled utility for creating, updating, evaluating, and migrating portable SKILL.md skills. Legacy local installs named `skill-creator` or `skill-creator-pro` should redirect to `uber-skill-creator` for general portable skills, or to `openclaw-agentic-skill-creator` for OpenClaw/Gaia/Type0/Soho-specific skills.
 - `uberassess` = source-to-recommendation due diligence. It assesses X/GitHub/arXiv/articles/videos/Hermes signals for adoption; it does not implement or mutate without approval, and approved build work routes to `ubergoal`/`uberplan`.
@@ -29,13 +29,13 @@ Read in this order:
 - `uberplan` produces a long-running goal execution plan, not an `uberslice` or default 20-minute slice. It may define checkpoints, phases, or bounded work packages, but those serve the larger goal. Return thread highlights and a durable `.md` plan file.
 - `uberplan` and `ubergoal` must include a user expectation / surprise assessment for Tier 1+ or otherwise material work: infer likely expectations from the explicit request, known preferences, repo instructions, and evidence; name planned or actual choices that may surprise the user; ask or flag before proceeding when a mismatch could matter.
 - For OpenClaw/agentic-system plans, use the proof ladder: first prove a Codex subagent with the right skills/tools/context can execute the activity; if it cannot, improve the skill/tool/context contract. Then prove the OpenClaw or target runtime reaches parity; if it fails, iterate the same contracts until parity is proven twice.
-- During testing, do not push through systematic failures or material unexpected failures that invalidate the plan. Stop before or at five consecutive clear failures of the same command/failure family, run `deep-rca`, and if the RCA changes scope, create a focused child/sub-`uberplan` appendix. Append or merge that child plan into the parent `uberplan` as a `scope expansion`, `scope correction`, or `blocker`, update the ledger/receipt, then continue under the same `ubergoal` only after the merged plan names the new hypothesis and evidence gate.
+- During testing, do not push through systematic failures or material unexpected failures that invalidate the plan. Stop before or at five consecutive clear failures of the same command/failure family, run `uberrca`, and if the RCA changes scope, create a focused child/sub-`uberplan` appendix. Append or merge that child plan into the parent `uberplan` as a `scope expansion`, `scope correction`, or `blocker`, update the ledger/receipt, then continue under the same `ubergoal` only after the merged plan names the new hypothesis and evidence gate.
 
 ## RCA source authority
 
-- `deep-rca` = general incident/root-cause authority. It supplies the RCA ladder, self-challenge loop, depth floor, and class-level invariant discipline.
+- `uberrca` = general incident/root-cause authority. It supplies the RCA ladder, self-challenge loop, depth floor, and class-level invariant discipline.
 - Agent Advocate = agent-behavior-specific RCA lens inside `uberplan`, `uberaccept`, and `ubersimplify`. It asks what the agent saw, whether a competent human would have made the same error, and which context/tool/source/memory/feedback/affordance gap caused the human-parity failure.
-- If both apply, use the `deep-rca` ladder for depth and the Agent Advocate lens for agent-specific evidence. Neither can waive the other's required evidence when both scopes are active.
+- If both apply, use the `uberrca` ladder for depth and the Agent Advocate lens for agent-specific evidence. Neither can waive the other's required evidence when both scopes are active.
 - Never accept “the model made a bad judgment” as root cause until the failed deterministic guard, context/source authority, tool contract, eval, memory, or feedback loop is named.
 
 ## Edit rules

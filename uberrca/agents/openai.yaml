@@ -1,0 +1,6 @@
+interface:
+  display_name: "UberRCA"
+  short_description: "Uber RCA for class-level root cause analysis"
+  default_prompt: "Use $uberrca when investigating incidents, repeated bugs, stuck loops, repeated clear test failures, agentic-system failures, suspicious edge cases, or when a proposed fix may only address a proximate cause. Build an evidence-backed RCA ladder, run the self-challenge loop, stop at the deepest actionable invariant, and map durable fixes to the lowest enforceable layer before proposing non-mitigation patches."
+policy:
+  allow_implicit_invocation: true

@@ -9,7 +9,7 @@ import sys
 
 DEFAULT_ROOT = Path(__file__).resolve().parents[1]
 PACK_SKILLS = [
-    "deep-rca",
+    "uberrca",
     "uber-skill-creator",
     "ubergoal",
     "uberplan",
@@ -20,7 +20,7 @@ PACK_SKILLS = [
     "ubershow",
 ]
 UBER_PHASE_SKILLS = ["uberplan", "uberaccept", "uberskillevolver", "ubersimplify", "uberassess"]
-UTILITY_IMPLICIT_SKILLS = ["deep-rca", "uber-skill-creator", "ubershow"]
+UTILITY_IMPLICIT_SKILLS = ["uberrca", "uber-skill-creator", "ubershow"]
 ROOT_REQUIRED_FILES = ["AGENTS.md", "CLAUDE.md", "README.md", "ROADMAP.md"]
 AGENTS_REQUIRED_PHRASES = [
     "$ubergoal` is the only default/implicit Uber lifecycle router",
@@ -28,7 +28,7 @@ AGENTS_REQUIRED_PHRASES = [
     "Phase skills are explicit or wrapper-invoked",
     "uberassess` = source-to-recommendation due diligence",
     "ubershow` = visual communication utility",
-    "deep-rca` = general incident/root-cause authority",
+    "uberrca` = general incident/root-cause authority",
     "Agent Advocate = agent-behavior-specific RCA lens",
     "Source repo: `/Users/claw1/agentic-uber-skills`",
     "Local Codex install target: `/Users/claw1/.codex/skills/<skill>`",
@@ -39,7 +39,7 @@ AGENTS_REQUIRED_PHRASES = [
 README_REQUIRED_PHRASES = [
     "Agent-facing source authority lives in [AGENTS.md](AGENTS.md)",
     "invoke `$ubergoal` as the implicit lifecycle router",
-    "`$deep-rca` is the general incident/debugging/root-cause utility",
+    "`$uberrca` is the general incident/debugging/root-cause utility",
     "`$ubershow`",
     "skills invoked",
 ]
@@ -115,18 +115,18 @@ def main() -> int:
             if "only when explicitly invoked or routed by $ubergoal" not in meta:
                 errors.append(f"{skill} metadata must state explicit-or-routed invocation")
 
-    deep = read(root / "deep-rca" / "SKILL.md")
-    deep_meta = read(root / "deep-rca" / "agents" / "openai.yaml")
-    deep_evals = root / "deep-rca" / "evals" / "golden_skill_invocations.json"
-    deep_lint = root / "deep-rca" / "scripts" / "lint_skill_package.py"
+    deep = read(root / "uberrca" / "SKILL.md")
+    deep_meta = read(root / "uberrca" / "agents" / "openai.yaml")
+    deep_evals = root / "uberrca" / "evals" / "golden_skill_invocations.json"
+    deep_lint = root / "uberrca" / "scripts" / "lint_skill_package.py"
     if "self-challenge loop" not in deep or "lowest enforceable layer" not in deep:
-        errors.append("deep-rca must keep RCA depth and durable-fix doctrine")
-    if "$deep-rca" not in deep_meta or "proximate cause" not in deep_meta:
-        errors.append("deep-rca metadata must describe proximate-cause RCA trigger")
+        errors.append("uberrca must keep RCA depth and durable-fix doctrine")
+    if "$uberrca" not in deep_meta or "proximate cause" not in deep_meta:
+        errors.append("uberrca metadata must describe proximate-cause RCA trigger")
     if not deep_evals.exists() or not deep_lint.exists():
-        errors.append("deep-rca must keep golden evals and package lint")
-    if (root / "deep-rca" / "README.md").exists():
-        errors.append("deep-rca must not carry package-local README.md")
+        errors.append("uberrca must keep golden evals and package lint")
+    if (root / "uberrca" / "README.md").exists():
+        errors.append("uberrca must not carry package-local README.md")
 
     agents = read(root / "AGENTS.md")
     for phrase in AGENTS_REQUIRED_PHRASES:

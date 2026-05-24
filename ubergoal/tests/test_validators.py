@@ -47,7 +47,7 @@ class ThinWrapperTests(unittest.TestCase):
         self.assertIn("ubercampaign", text)
         self.assertIn("references/campaign-profile.md", text)
         self.assertIn("user expectation / surprise assessment", text)
-        self.assertIn("$deep-rca", text)
+        self.assertIn("$uberrca", text)
         self.assertNotIn("## Planning review board", text)
 
     def test_monolith_files_are_absent(self) -> None:
@@ -64,7 +64,7 @@ class ThinWrapperTests(unittest.TestCase):
         self.assertIn("## Uber run receipt", text)
         self.assertIn("## User expectation / surprise assessment", text)
         self.assertIn("## Skills invoked summary", text)
-        for skill in ["ubergoal", "uberassess", "uberplan", "uberaccept", "ubersimplify", "uberskillevolver", "ubershow", "deep-rca", "uber-skill-creator"]:
+        for skill in ["ubergoal", "uberassess", "uberplan", "uberaccept", "ubersimplify", "uberskillevolver", "ubershow", "uberrca", "uber-skill-creator"]:
             self.assertIn(skill, text)
 
     def test_uber_run_receipt_validator(self) -> None:

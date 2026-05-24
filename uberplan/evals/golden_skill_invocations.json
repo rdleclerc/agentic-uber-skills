@@ -269,7 +269,7 @@
     "required_behavior": [
       "include a Testing adaptation gate",
       "stop before or at five consecutive clear failures of the same test command or failure family",
-      "route diagnosis to deep-rca before further patching",
+      "route diagnosis to uberrca before further patching",
       "revise the task map hypothesis and evidence gates before resuming under ubergoal",
       "append or merge any child/sub-uberplan scope expansion scope correction or blocker into the parent plan"
     ],
@@ -289,7 +289,7 @@
     ],
     "required_behavior": [
       "treat the material unexpected failure as a stop condition even before five repeats",
-      "route diagnosis to deep-rca before choosing a durable fix",
+      "route diagnosis to uberrca before choosing a durable fix",
       "create a focused child/sub-uberplan appendix from the RCA result",
       "append or merge the child plan into the parent task map risks and evidence gates",
       "label the parent-plan change as scope expansion scope correction or blocker",

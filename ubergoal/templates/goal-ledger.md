@@ -110,7 +110,7 @@ Record the custom skills actually invoked so the final handoff proves the run us
 | ubersimplify | yes/no |  | complexity/dead-code/modularity audit when applicable |  |
 | uberskillevolver | yes/no |  | post-run learning when applicable |  |
 | ubershow | yes/no |  | visual artifact when useful |  |
-| deep-rca | yes/no |  | class-level RCA when applicable |  |
+| uberrca | yes/no |  | class-level RCA when applicable |  |
 | uber-skill-creator | yes/no |  | skill creation/update when applicable |  |
 
 ## Tests/evals/audits

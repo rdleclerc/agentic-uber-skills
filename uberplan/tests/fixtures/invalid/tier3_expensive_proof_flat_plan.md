@@ -107,7 +107,7 @@ flowchart TD
 - Systematic failure signal: repeated validator or unittest failures with the same missing contract, stack trace, or assertion across attempts.
 - Material unexpected failure trigger: a new failing test or validator result proves the plan's scope is wrong, not merely incomplete.
 - Stop action: stop the patch/test loop, preserve the failing command output, and mark the goal ledger as blocked on RCA.
-- RCA artifact: run `deep-rca` and record the RCA ladder in the goal ledger or plan appendix.
+- RCA artifact: run `uberrca` and record the RCA ladder in the goal ledger or plan appendix.
 - Plan revision path: revise this `uberplan` contract with the new hypothesis, changed task map, and evidence gate before editing again.
 - RCA-driven scope decision: scope expansion only if the RCA names a missing invariant that the current scope cannot enforce; otherwise record no scope change.
 - Child/sub-uberplan appendix: create a focused child/sub-uberplan appendix for any scope expansion, scope correction, or blocker.

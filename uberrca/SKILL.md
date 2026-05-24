@@ -1,9 +1,9 @@
 ---
-name: deep-rca
+name: uberrca
 description: Force deep, class-level root cause analysis before patches. Use when asked why/how an incident happened, to do RCA/postmortem/debugging, to investigate stuck loops, production/workflow/agentic-system failures, repeated bugs, suspicious edge cases, or when the user challenges whether a patch addresses the underlying issue rather than a proximate cause.
 ---
 
-# Deep RCA
+# UberRCA
 
 Do not stop at the first plausible cause. Do not stop when you can see a fix. Stop when you can name the absent invariant whose enforcement would make the entire failure class impossible.
 
@@ -116,6 +116,10 @@ Human attention is for infrastructure impossibility or genuine policy ambiguity 
 - **Durable fix plan** — mapped to the lowest enforceable layer
 - **Tests/evals/monitors** that would have caught this before the user did
 - **Confidence and unknowns** — do not overclaim
+
+## Package resources
+
+Use `scripts/lint_skill_package.py` when changing this skill package. Use `evals/golden_skill_invocations.json` only when tuning trigger behavior or checking trigger/non-trigger coverage; do not load evals during ordinary RCA.
 
 ## Bug log template
 

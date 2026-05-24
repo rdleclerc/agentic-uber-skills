@@ -30,7 +30,7 @@ REQUIRED_SKILLS = [
     "ubersimplify",
     "uberskillevolver",
     "ubershow",
-    "deep-rca",
+    "uberrca",
     "uber-skill-creator",
 ]
 REQUIRED_GATES = [

@@ -20,7 +20,7 @@
 | ubersimplify | no | receipt note | no deletion campaign | none |
 | uberskillevolver | no | missing | not run | learning gap |
 | ubershow | no | n/a | short text enough | none |
-| deep-rca | n/a | n/a | no incident/RCA | none |
+| uberrca | n/a | n/a | no incident/RCA | none |
 | uber-skill-creator | n/a | n/a | no skill authoring | none |
 
 ## Artifacts

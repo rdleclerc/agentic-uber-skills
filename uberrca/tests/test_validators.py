@@ -16,7 +16,7 @@ def run_cmd(*args: str) -> subprocess.CompletedProcess[str]:
     return subprocess.run([sys.executable, *args], cwd=ROOT, text=True, capture_output=True)
 
 
-class DeepRcaPackageTests(unittest.TestCase):
+class UberRcaPackageTests(unittest.TestCase):
     def test_package_lint_passes(self) -> None:
         for cache in ROOT.rglob("__pycache__"):
             shutil.rmtree(cache)
@@ -26,7 +26,7 @@ class DeepRcaPackageTests(unittest.TestCase):
     def test_metadata_declares_implicit_utility_trigger(self) -> None:
         meta = (ROOT / "agents" / "openai.yaml").read_text()
         self.assertIn("allow_implicit_invocation: true", meta)
-        self.assertIn("$deep-rca", meta)
+        self.assertIn("$uberrca", meta)
         self.assertIn("proximate cause", meta)
 
     def test_golden_eval_schema_and_trigger_mix(self) -> None:
@@ -44,7 +44,7 @@ class DeepRcaPackageTests(unittest.TestCase):
 
     def test_lint_rejects_auxiliary_readme(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
-            copy = Path(tmp) / "deep-rca"
+            copy = Path(tmp) / "uberrca"
             shutil.copytree(ROOT, copy)
             (copy / "README.md").write_text("# duplicate docs\n")
             result = subprocess.run([sys.executable, str(copy / "scripts" / "lint_skill_package.py"), str(copy)], text=True, capture_output=True)

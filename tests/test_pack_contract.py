@@ -79,18 +79,18 @@ class PackContractTests(unittest.TestCase):
 
     def test_root_agent_contract_declares_rca_authority(self) -> None:
         text = (ROOT / "AGENTS.md").read_text()
-        self.assertIn("deep-rca` = general incident/root-cause authority", text)
+        self.assertIn("uberrca` = general incident/root-cause authority", text)
         self.assertIn("Agent Advocate = agent-behavior-specific RCA lens", text)
-        self.assertIn("use the `deep-rca` ladder for depth", text)
+        self.assertIn("use the `uberrca` ladder for depth", text)
 
-    def test_deep_rca_is_hardened_as_codex_utility_skill(self) -> None:
-        self.assertFalse((ROOT / "deep-rca" / "README.md").exists())
-        self.assertTrue((ROOT / "deep-rca" / "agents" / "openai.yaml").exists())
-        self.assertTrue((ROOT / "deep-rca" / "evals" / "golden_skill_invocations.json").exists())
-        self.assertTrue((ROOT / "deep-rca" / "scripts" / "lint_skill_package.py").exists())
-        meta = (ROOT / "deep-rca" / "agents" / "openai.yaml").read_text()
+    def test_uber_rca_is_hardened_as_codex_utility_skill(self) -> None:
+        self.assertFalse((ROOT / "uberrca" / "README.md").exists())
+        self.assertTrue((ROOT / "uberrca" / "agents" / "openai.yaml").exists())
+        self.assertTrue((ROOT / "uberrca" / "evals" / "golden_skill_invocations.json").exists())
+        self.assertTrue((ROOT / "uberrca" / "scripts" / "lint_skill_package.py").exists())
+        meta = (ROOT / "uberrca" / "agents" / "openai.yaml").read_text()
         self.assertIn("allow_implicit_invocation: true", meta)
-        self.assertIn("$deep-rca", meta)
+        self.assertIn("$uberrca", meta)
 
     def test_uber_skill_creator_is_canonical_and_legacy_aliases_are_deprecated(self) -> None:
         body = (ROOT / "uber-skill-creator" / "SKILL.md").read_text()
@@ -108,7 +108,7 @@ class PackContractTests(unittest.TestCase):
 
     def test_install_docs_include_full_pack(self) -> None:
         text = (ROOT / "README.md").read_text()
-        loop = "for s in deep-rca uber-skill-creator ubergoal uberplan uberaccept uberskillevolver ubersimplify uberassess ubershow; do"
+        loop = "for s in uberrca uber-skill-creator ubergoal uberplan uberaccept uberskillevolver ubersimplify uberassess ubershow; do"
         self.assertEqual(text.count(loop), 3)
 
     def test_operational_outcome_completion_claim_contract_is_pack_wide(self) -> None:

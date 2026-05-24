@@ -148,3 +148,12 @@ If rendering a screenshot:
 ## First-principles simplifier
 
 Before spending time on a visual artifact, ask: “Can the same decision be made with a five-line answer or a simple table?” If yes, skip `ubershow` and answer normally.
+
+
+## Helpful resources
+
+- `templates/` — copy the smallest matching HTML template when a visual artifact is justified.
+- `snippets/` — reusable CSS/JS snippets for self-contained artifacts; load only when editing templates or artifacts.
+- `schemas/decision-board.schema.json` — optional structured input check for decision boards.
+- `scripts/lint_skill_package.py` — package/template lint; run after changing this skill.
+- `evals/golden_skill_invocations.json` — trigger examples; load only when tuning invocation behavior.

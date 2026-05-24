@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Lint the deep-rca skill package."""
+"""Lint the uberrca skill package."""
 from __future__ import annotations
 
 import argparse
@@ -7,7 +7,7 @@ import json
 import sys
 from pathlib import Path
 
-SKILL_NAME = "deep-rca"
+SKILL_NAME = "uberrca"
 REQUIRED_FILES = [
     "SKILL.md",
     "agents/openai.yaml",
@@ -25,7 +25,7 @@ REQUIRED_SKILL_PHRASES = [
 ]
 REQUIRED_META_PHRASES = [
     "allow_implicit_invocation: true",
-    "$deep-rca",
+    "$uberrca",
     "proximate cause",
 ]
 FORBIDDEN_FILES = ["README.md"]

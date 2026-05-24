@@ -8,7 +8,7 @@ This roadmap keeps the skill pack evolving without turning it into bureaucracy. 
 - `uberplan` — rigorous planning for long-running goal execution: thread highlights plus durable `.md` plan contracts, user expectation/surprise assessment, review lanes, verifiable subgoals, Mermaid task graphs, target file trees, parallelization maps, Codex-subagent to OpenClaw/target-runtime proof ladders, RCA-driven testing adaptation and child-plan scope append gates, code-health/dead-code plans, Agent Advocate RCA, first-principles simplifier, pre-presentation over-orchestration review, confidence gate.
 - `uberaccept` — adversarial final proof: evidence audit, expected-vs-actual user surprise delta, architecture drift, Agent Advocate final check, completion recommendation.
 - `uberskillevolver` — post-run learning loop: learning records, lesson candidates, promotion batches, anti-bloat gate.
-- `deep-rca` — class-level root cause analysis before patches.
+- `uberrca` — class-level root cause analysis before patches.
 - `ubersimplify` — opt-in complexity/modularity/dead-code simplification with timestamped trails and proof gates; Audit/Plan are current default, Patch mode remains conservative/experimental until dogfooded on real codebases.
 - `uberassess` = source-to-recommendation due diligence — explicit assessment for X/GitHub/arXiv/articles/videos/Hermes signals before adoption; produces packets, not implementation.
 - `ubershow` — browser-first visual communication utility for decision boards, implementation plans, maps, timelines, questionnaires, and visual briefs; produces generated HTML views with copyable decision receipts, not source-of-truth records.
@@ -20,7 +20,7 @@ This roadmap keeps the skill pack evolving without turning it into bureaucracy. 
 - Phase skills are explicit or wrapper-invoked to prevent ceremony creep; descriptions/prompts say not to auto-trigger from task similarity, while Codex adapter metadata still exposes every skill in the pack.
 - `skill-creator` and `skill-creator-pro` are legacy local alias names, not parallel canonical creator skills. Redirect them to `uber-skill-creator` for portable SKILL.md work, or `openclaw-agentic-skill-creator` for OpenClaw/Gaia/Type0/Soho-specific skills.
 - `uberassess` is explicit or routed by `ubergoal` for source/artifact assessment only. Its portable validator requires completed project rows but does not hardcode Rob-local project names; local adapter references may provide Type0/Gaia/Soho/Hermes defaults.
-- `deep-rca` is the general incident RCA utility. Agent Advocate is the agent-behavior RCA lens inside planning/acceptance/simplification. If both apply, use the `deep-rca` ladder plus Agent Advocate human-counterfactual evidence.
+- `uberrca` is the general incident RCA utility. Agent Advocate is the agent-behavior RCA lens inside planning/acceptance/simplification. If both apply, use the `uberrca` ladder plus Agent Advocate human-counterfactual evidence.
 - `ubershow` is a utility skill, not a lifecycle phase. It may be used when the user needs visual compression; source authority stays in Markdown/session logs/ADRs and decisions register via pasted receipts.
 - Pack-level drift tests should enforce routing metadata, root agent contracts, install consistency, and RCA authority wording.
 
