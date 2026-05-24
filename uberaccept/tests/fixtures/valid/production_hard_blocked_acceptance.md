@@ -1,7 +1,7 @@
 # Final Acceptance Report
 
 ## Implementation summary
-Hardened validators, metadata, templates, package lint, and golden eval fixtures for the skill package.
+Accepted a domain-neutral production implementation goal with child blockers and safe-predecessor work classification.
 
 ## Files changed
 - SKILL.md
@@ -19,6 +19,8 @@ Hardened validators, metadata, templates, package lint, and golden eval fixtures
 | Planning review board | 3 | planning review findings reconciled in plan | none |
 | User expectation / surprise delta | 3 | expected local skill-package hardening compared against actual files, tests, and deferred fresh-agent gap | none |
 | Claim-language / operational outcome | 3 | Claim-state ledger distinguishes operational local package proof from live/adopted/runtime claims | none |
+| Production implementation blocker gate | 3 | production implementation blocker gate inspected active blockers, hard-blocked-after-safe-action-exhaustion children, and runnable safe next action counts | none |
+| Safe-work exhaustion adversarial review | 3 | blocked children inspected for plausible safe next actions and no runnable safe action remains before completion | none |
 | Runtime agent topology | 3 | standard_6_2 policy recorded; no depth-3 escalation; child-agent depth policy checked | none |
 | Cost/complexity | 3 | one Agent Advocate pass and validator fixture added; fresh-agent harness deferred | none |
 | Agent Advocate / Agent RCA | 3 | failed invariant fixed, human counterfactual answered, human-parity fix added, and recurrence fixture present | none |
@@ -64,6 +66,39 @@ Hardened validators, metadata, templates, package lint, and golden eval fixtures
 - Restore proof / blocker: not applicable; no escalation was applied.
 - Child-agent depth policy: L2 workers do not spawn further in standard mode.
 - Topology acceptance verdict: pass; no silent depth/thread increase.
+
+## Production implementation blocker gate
+
+- Production implementation goal? yes, this is a long-running production implementation goal with external/irreversible stop points.
+- Upfront approval packet status: approval packet recorded in `approvals/packet.md`; external/irreversible categories reviewed before unattended execution.
+- Required child count: 3
+- Operational or user-rescoped child count: 1
+- Hard-blocked-after-safe-action-exhaustion child count: 2
+- Active blocked child count: 0
+- Runnable safe next action count: 0
+- Safe autonomous predecessor work exhausted? yes, evidence ledger shows all safe predecessor validations, dry-runs, and local checks complete before the remaining external approvals.
+- Parent completion allowed? yes, all required children are operational or hard-blocked-after-safe-action-exhaustion and runnable safe next action count = 0.
+- Next safe action if parent completion is not allowed: none; no runnable safe next actions remain, only external owner approvals.
+
+| Child ID | Required? | Classification: operational / re_scoped_with_approval / hard_blocked_after_safe_action_exhaustion / active_blocked | Runnable safe next actions? | Safe predecessor exhaustion evidence | Exact external/unsafe blocker | Next unblock owner/action |
+|---|---|---|---|---|---|---|
+| C1 | yes | operational | no | safe predecessor work complete | none | none |
+| C2 | yes | hard_blocked_after_safe_action_exhaustion | no | exhausted safe predecessor checks and dry-runs | external approval required before irreversible migration | operator approves migration |
+| C3 | yes | hard_blocked_after_safe_action_exhaustion | no | exhausted validation, dry-run, and local rollback rehearsal | credential owner approval required before external provider cutover | credential owner grants approval |
+
+## Safe-work exhaustion adversarial review
+
+- Review scope applies? yes, production implementation blockers are being accepted as hard-blocked-after-safe-action-exhaustion.
+- Blocked children inspected: C2 and C3.
+- Plausible safe next actions enumerated? yes, validation, dry-run, rollback rehearsal, local audit, and credential-free inspection were considered for each blocked child.
+- Any runnable safe next action found? no, every plausible safe action is exhausted or would cross an external/unsafe boundary.
+- If runnable safe action found, parent completion blocked? n/a, no runnable safe action remains.
+- Reviewer conclusion: safe action exhaustion is visible for each blocked child; no runnable safe next action remains before the external owner approvals.
+
+| Blocked child | Plausible safe next action considered | Evidence action is exhausted / not safe / not applicable | Reviewer verdict: exhausted / not safe / none / runnable_safe_action_remains | Follow-up / owner |
+|---|---|---|---|---|
+| C2 | safe validation and dry-run action | exhausted in local evidence ledger; remaining migration is external/irreversible | exhausted | operator approval |
+| C3 | safe validation, dry-run, rollback rehearsal, and local audit action | exhausted; remaining provider cutover requires credential owner approval | exhausted | credential owner approval |
 
 ## Claim-state ledger
 

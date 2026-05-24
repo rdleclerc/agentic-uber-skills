@@ -1,26 +1,13 @@
 # Uber Run Receipt
 
 ## Run metadata
-- Run slug: sample-uber-run
-- Date/time: 2026-05-19T13:30:00-07:00
+- Run slug: missing-terminal
+- Date/time: 2026-05-23T09:00:00-07:00
 - Project/repo: /tmp/example
-- Tier: 2
+- Tier: 3
 - Owner/session: test-session
 - Outcome: success
 - Source branch/commit: session/test abc123
-
-## Runtime agent topology
-
-- Config source / observed source: local Codex config `/Users/claw1/.codex/config.toml`
-- Topology mode: standard_6_2
-- Current `max_threads`: 6
-- Current `max_depth`: 2
-- Role shape: L0 root orchestrator -> L1 workstream orchestrator -> L2 worker/reviewer
-- Depth-3 escalation needed? no, standard depth-2 proof is sufficient
-- User approval evidence for depth/thread escalation: not applicable; no escalation requested
-- Restore target after campaign: standard default already 6/2
-- Restore proof / blocker: not applicable; no escalation was applied
-- Child-agent depth policy: L2 workers do not spawn further in standard mode
 
 ## Skills invoked
 
@@ -51,9 +38,9 @@
 
 | Plan or child ID | Intended operational outcome | Terminal state: operational / blocked / re_scoped_with_approval | Evidence | Remaining gap |
 |---|---|---|---|---|
-| plan.md | local package hardening is implemented and validated | operational | target-system validator, unit/regression, package lint, and acceptance evidence | none |
+| child-1 | live capability | done | test log | none |
 
-- Proof-only, shadow-only, local-safe-proof, or shared-spine evidence claimed as operational? no, evidence is the scoped local target-system package proof.
+- Proof-only, shadow-only, local-safe-proof, or shared-spine evidence claimed as operational? no.
 
 ## Gates
 
@@ -61,9 +48,9 @@
 |---|---|---|---|---|
 | Goal created/bound or explicitly skipped | yes | ledger.md | pass | none |
 | Uberplan or work-contract planning | yes | plan.md | pass | none |
-| User expectation / surprise assessment | yes | plan.md and final handoff | pass | none |
+| User expectation / surprise assessment | yes | plan.md | pass | none |
 | Plan acceptance / thin-harness check | yes | plan.md | pass | none |
-| RCA-driven testing adaptation | yes | ledger.md | pass | no repeated clear failures or unexpected scope changes; gate documented |
+| RCA-driven testing adaptation | yes | ledger.md | pass | none |
 | Operational outcome / child terminal states | yes | receipt row above | pass | none |
 | Uberaccept final proof | yes | acceptance.md | pass | none |
 | Policy-adherence / OpenClaw architecture check | yes | acceptance.md | pass | none |
@@ -72,7 +59,7 @@
 
 ## Fresh-agent replay
 - Replay mode: dry-run
-- Replay prompt / fixture: tests/fixtures/valid/uber_run_receipt.md
+- Replay prompt / fixture: tests/fixtures/invalid/uber_run_receipt_missing_child_terminal_states.md
 - Fresh-agent or reviewer identity: validator fixture
 - Result: pass
 - Missing affordances: none
@@ -87,8 +74,8 @@
 
 ## Uberskillevolver handoff
 - Learning record path: learning.md
-- Candidate lessons: L1 run receipt is useful
+- Candidate lessons: missing terminal state
 - Promote now: validator fixture
-- Defer: automated telemetry
+- Defer: none
 - No-change rationale: no heavy orchestration
 - Safe to commit? yes

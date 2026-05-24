@@ -19,6 +19,7 @@ TIER_REQUIREMENTS = {
     + [
         "goal execution posture and delivery",
         "user expectation / surprise assessment",
+        "definition of done / operational outcome contract",
         "testing adaptation gate",
         "cost/complexity check",
         "repository topology / package seam",
@@ -30,10 +31,12 @@ TIER_REQUIREMENTS = {
     + [
         "goal execution posture and delivery",
         "user expectation / surprise assessment",
+        "definition of done / operational outcome contract",
         "product / prd checklist",
         "task map / implementation graph",
         "verifiable subgoals and metrics",
         "parallelization plan",
+        "runtime agent topology / codex depth-thread policy",
         "testing adaptation gate",
         "cost/complexity check",
         "first-principles simplifier / complexity auditor",
@@ -54,10 +57,12 @@ TIER_REQUIREMENTS = {
     + [
         "goal execution posture and delivery",
         "user expectation / surprise assessment",
+        "definition of done / operational outcome contract",
         "product / prd checklist",
         "task map / implementation graph",
         "verifiable subgoals and metrics",
         "parallelization plan",
+        "runtime agent topology / codex depth-thread policy",
         "testing adaptation gate",
         "cost/complexity check",
         "first-principles simplifier / complexity auditor",
@@ -104,10 +109,17 @@ RUBRIC_DIMENSIONS = [
     "task map",
     "verifiable subgoals",
     "parallelization",
+    "runtime agent topology",
+    "tier 3 expensive-proof preflight",
+    "burn-in vs final proof",
+    "phase-boundary contract fuzz",
     "testing adaptation",
     "goal execution posture",
     "user expectation",
     "surprise assessment",
+    "operational outcome",
+    "recursive pseudocode",
+    "plan tree artifact layout",
     "agent execution proof ladder",
     "thin harness / fat agent",
     "source-convention check",
@@ -318,12 +330,168 @@ AGENTIC_SYSTEM_TERMS = [
 ]
 
 
+EXPENSIVE_PROOF_STRONG_TERMS = [
+    "expensive-proof",
+    "expensive proof",
+    "replacement proof",
+    "production replacement",
+    "runtime replacement",
+    "burn-in",
+    "burn in",
+    "final proof",
+    "giant run",
+    "long-run proof",
+    "long run proof",
+    "true e2e",
+    "true-e2e",
+    "end-to-end replacement",
+]
+
+EXPENSIVE_PROOF_CONTEXT_TERMS = [
+    "agentic runtime",
+    "agentic-system runtime",
+    "runtime",
+    "production",
+    "replacement",
+    "e2e",
+    "end-to-end",
+]
+
+EXPENSIVE_PROOF_ACTION_TERMS = [
+    "proof",
+    "burn",
+    "burn-in",
+    "final",
+    "canary",
+    "soak",
+    "p10",
+    "p20",
+    "hours",
+    "expensive",
+]
+
+PRODUCTION_IMPLEMENTATION_TERMS = [
+    "production implementation",
+    "production/runtime",
+    "runtime implementation",
+    "unattended production",
+    "long-running production",
+    "long-running implementation goal",
+    "external/irreversible",
+    "external or irreversible",
+    "unsafe/irreversible",
+    "unsafe or irreversible",
+    "irreversible stop",
+    "external stop",
+    "safe predecessor",
+    "runnable safe next action",
+]
+
+
 def has_semantic_pattern_scope(text: str) -> bool:
     return any(term in text for term in SEMANTIC_PATTERN_SCOPE_TERMS)
 
 
 def has_agentic_system_scope(text: str) -> bool:
     return any(term in text for term in AGENTIC_SYSTEM_TERMS)
+
+
+def has_tier3_expensive_proof_scope(found: dict[str, str], tier: str) -> bool:
+    if tier != "3":
+        return False
+    scan_sections = [
+        "objective",
+        "scope",
+        "goal execution posture and delivery",
+        "definition of done / operational outcome contract",
+        "product / prd checklist",
+        "task map / implementation graph",
+        "verifiable subgoals and metrics",
+        "parallelization plan",
+        "testing adaptation gate",
+        "tier decision",
+        "risk-to-evidence map",
+        "pre-launch confidence gate",
+    ]
+    text = normalize("\n".join(found.get(section, "") for section in scan_sections))
+    if any(term in text for term in EXPENSIVE_PROOF_STRONG_TERMS):
+        return True
+    sentenceish_units = re.split(r"[.\n;|]+", text)
+    return any(
+        any(context in unit for context in EXPENSIVE_PROOF_CONTEXT_TERMS)
+        and any(action in unit for action in EXPENSIVE_PROOF_ACTION_TERMS)
+        for unit in sentenceish_units
+    )
+
+
+def has_production_implementation_scope(found: dict[str, str]) -> bool:
+    scan_sections = [
+        "objective",
+        "scope",
+        "goal execution posture and delivery",
+        "definition of done / operational outcome contract",
+        "product / prd checklist",
+        "task map / implementation graph",
+        "verifiable subgoals and metrics",
+        "parallelization plan",
+        "user expectation / surprise assessment",
+        "risk-to-evidence map",
+        "pre-launch confidence gate",
+    ]
+    text = normalize("\n".join(found.get(section, "") for section in scan_sections))
+    return any(term in text for term in PRODUCTION_IMPLEMENTATION_TERMS)
+
+
+def validate_unattended_production_approval_plan(found: dict[str, str], required: bool, errors: list[str]) -> None:
+    section_name = "unattended production/runtime approval and safe-predecessor plan"
+    section = found.get(section_name, "")
+    if not required:
+        return
+    if not section:
+        errors.append("production/runtime implementation scope requires Unattended production/runtime approval and safe-predecessor plan section")
+        return
+    if not section_has_substance(section):
+        errors.append("required section lacks completed substance: Unattended production/runtime approval and safe-predecessor plan")
+        return
+    labels = [
+        "Production/runtime implementation goal?",
+        "Expected unattended window / operator absence",
+        "Upfront approval packet path/status",
+        "External/irreversible action categories considered",
+        "Safe autonomous predecessor work decomposition",
+        "Exact stop-before-external-action rule",
+        "Active blocker definition",
+        "Hard blocker after exhaustion definition",
+        "Parent completion rule",
+        "If no upfront approval needed, why",
+    ]
+    values = {label: require_field(section, label, errors) for label in labels}
+    applies = values["Production/runtime implementation goal?"].lower().startswith("yes")
+    if not applies:
+        return
+    approval = normalize(values["Upfront approval packet path/status"])
+    if approval in {"none", "n/a", "not needed", "not applicable"}:
+        errors.append("production/runtime implementation plans need an upfront approval packet path/status or explicit already-approved evidence")
+    categories = normalize(values["External/irreversible action categories considered"])
+    if not any(term in categories for term in ["external", "irreversible", "unsafe", "approval", "credential", "spend", "destructive"]):
+        errors.append("upfront approval packet must consider external/irreversible/unsafe action categories")
+    decomposition = normalize(values["Safe autonomous predecessor work decomposition"])
+    if "safe" not in decomposition or "predecessor" not in decomposition:
+        errors.append("safe predecessor decomposition must explicitly name safe predecessor work")
+    stop_rule = normalize(values["Exact stop-before-external-action rule"])
+    if not any(term in stop_rule for term in ["stop", "pause", "block", "ask"]):
+        errors.append("stop-before-external-action rule must include stop/pause/block/ask behavior")
+    if not any(term in stop_rule for term in ["external", "irreversible", "unsafe"]):
+        errors.append("stop-before-external-action rule must name the external/irreversible/unsafe boundary")
+    active = normalize(values["Active blocker definition"])
+    if "runnable safe next action" not in active:
+        errors.append("active blocker definition must mention runnable safe next action")
+    hard = normalize(values["Hard blocker after exhaustion definition"])
+    if "exhaust" not in hard or not any(term in hard for term in ["external", "irreversible", "unsafe", "approval"]):
+        errors.append("hard blocker definition must require safe-action exhaustion and exact external/unsafe blocker")
+    completion = normalize(values["Parent completion rule"])
+    if "runnable safe next action" not in completion or "0" not in completion:
+        errors.append("parent completion rule must require runnable safe next action count = 0")
 
 
 def validate_prd_checklist(found: dict[str, str], tier: str, errors: list[str]) -> None:
@@ -422,6 +590,132 @@ def validate_parallelization_plan(found: dict[str, str], tier: str, errors: list
         errors.append("Parallelization plan must state what happens if subagents are not authorized or unavailable")
 
 
+def validate_runtime_agent_topology(found: dict[str, str], required: bool, errors: list[str]) -> None:
+    section_name = "runtime agent topology / codex depth-thread policy"
+    section = found.get(section_name, "")
+    if not required:
+        return
+    if not section:
+        errors.append("agentic/campaign scope requires Runtime agent topology / Codex depth-thread policy section")
+        return
+    if not section_has_substance(section):
+        errors.append("required section lacks completed substance: Runtime agent topology / Codex depth-thread policy")
+        return
+    section_lower = normalize(section)
+    if "not applicable because" in section_lower:
+        errors.append("Runtime agent topology cannot be marked not applicable for agentic/campaign scope")
+        return
+    for label in [
+        "Config source / observed source",
+        "Standard campaign preset",
+        "Current or planned `max_threads`",
+        "Current or planned `max_depth`",
+        "Role shape",
+        "Does this plan need depth 3?",
+        "If depth 3 is needed, prompt text and approval record path",
+        "Deep-campaign preset",
+        "Wider-campaign preset and separate approval rule",
+        "Restore-to-default rule",
+        "Child-agent depth policy",
+    ]:
+        require_field(section, label, errors)
+    for term in ["max_threads", "max_depth", "6", "2", "8", "3", "approval", "restore", "l0", "l1", "l2"]:
+        if term not in section_lower:
+            errors.append(f"Runtime agent topology / Codex depth-thread policy missing concept: {term}")
+
+
+def _field_text(section: str, label: str, errors: list[str]) -> str:
+    return normalize(require_field(section, label, errors))
+
+
+def validate_tier3_expensive_proof_preflight(found: dict[str, str], required: bool, errors: list[str]) -> None:
+    section_name = "tier 3 expensive-proof plan-tree preflight"
+    section = found.get(section_name, "")
+    if not required:
+        return
+    if not section:
+        errors.append(
+            "Tier 3 expensive-proof/replacement/runtime proof scope requires Tier 3 expensive-proof plan-tree preflight section"
+        )
+        return
+    if not section_has_substance(section):
+        errors.append("required section lacks completed substance: Tier 3 expensive-proof plan-tree preflight")
+        return
+
+    section_lower = normalize(section)
+    labels = [
+        "Scope trigger / expensive-proof classification",
+        "Risk/failure-class inventory",
+        "Observability / telemetry preflight",
+        "Phase-boundary / contract-fuzz preflight",
+        "Burn-in proof plan",
+        "Final-proof separation",
+        "Stop/replan rules",
+        "Child-plan/status-ledger structure",
+        "Flat-plan exception?",
+        "If flat-plan exception, recorded approval and validator-bypass reason",
+    ]
+    values = {label: _field_text(section, label, errors) for label in labels}
+
+    for term in ["tier 3", "expensive", "proof"]:
+        if term not in values["Scope trigger / expensive-proof classification"]:
+            errors.append(f"expensive-proof classification must explicitly mention: {term}")
+
+    risk_rows = table_meaningful_rows(values["Risk/failure-class inventory"] + "\n" + section)
+    risk_text = values["Risk/failure-class inventory"]
+    if "failure" not in risk_text or "risk" not in risk_text:
+        errors.append("Risk/failure-class inventory must name risks and failure classes")
+    if len(risk_rows) < 3 and len(re.findall(r"(?:^|[,;])\s*[^,;]+failure", risk_text)) < 3:
+        errors.append("Risk/failure-class inventory needs at least three concrete failure-class rows/items")
+
+    obs = values["Observability / telemetry preflight"]
+    if not any(term in obs for term in ["telemetry", "observability", "trace", "log", "metric", "receipt"]):
+        errors.append("Observability / telemetry preflight must name trace/log/metric/receipt evidence")
+    if not any(term in obs for term in ["preflight", "before", "dry-run", "smoke"]):
+        errors.append("Observability / telemetry preflight must be checked before burn-in/final proof")
+
+    fuzz = values["Phase-boundary / contract-fuzz preflight"]
+    for term in ["phase", "contract"]:
+        if term not in fuzz:
+            errors.append(f"Phase-boundary / contract-fuzz preflight missing: {term}")
+    if not any(term in fuzz for term in ["fuzz", "negative", "adversarial", "malformed", "truncation", "boundary"]):
+        errors.append("Phase-boundary / contract-fuzz preflight must include fuzz/negative/adversarial boundary coverage")
+
+    burn = values["Burn-in proof plan"]
+    final = values["Final-proof separation"]
+    if not any(term in burn for term in ["burn-in", "burn in", "canary", "soak", "pilot"]):
+        errors.append("Burn-in proof plan must name burn-in/canary/soak/pilot evidence")
+    if "final" not in final or "proof" not in final:
+        errors.append("Final-proof separation must explicitly name final proof")
+    if not any(term in final for term in ["separate", "after", "distinct", "not the same", "not reuse"]):
+        errors.append("Final-proof separation must state burn-in and final proof are distinct gates")
+
+    stop = values["Stop/replan rules"]
+    if not any(term in stop for term in ["stop", "abort", "pause"]):
+        errors.append("Stop/replan rules must include an explicit stop/abort/pause action")
+    if not any(term in stop for term in ["replan", "revise", "child plan", "subplan", "rca"]):
+        errors.append("Stop/replan rules must include replan/revise/child-plan/RCA action")
+
+    child = values["Child-plan/status-ledger structure"]
+    exception = values["Flat-plan exception?"]
+    exception_reason = values["If flat-plan exception, recorded approval and validator-bypass reason"]
+    exception_yes = exception.startswith("yes")
+    if exception_yes:
+        if not any(term in exception_reason for term in ["approval", "approved", "bypass"]):
+            errors.append("Flat-plan exception requires recorded approval and validator-bypass reason")
+        if "benefit >> cost" not in exception_reason:
+            errors.append("Flat-plan exception must justify benefit >> cost")
+    else:
+        for term in ["child", "status", "ledger"]:
+            if term not in child:
+                errors.append(f"Child-plan/status-ledger structure missing: {term}")
+        if any(term in child for term in ["not applicable", "none", "no child", "flat"]):
+            errors.append("Tier 3 expensive-proof scope cannot omit child-plan/status-ledger structure without a flat-plan exception")
+
+    if "type0" in section_lower and "general" not in section_lower and "example" not in section_lower:
+        errors.append("Tier 3 expensive-proof preflight must be general, not hardcoded to Type0")
+
+
 def validate_testing_adaptation_gate(found: dict[str, str], tier: str, errors: list[str]) -> None:
     if tier == "0":
         return
@@ -513,6 +807,188 @@ def validate_user_expectation_surprise(found: dict[str, str], tier: str, errors:
         errors.append("User expectation / surprise assessment must say what to ask or flag before proceeding")
     if "final" not in section_lower and "handoff" not in section_lower:
         errors.append("User expectation / surprise assessment must define a final handoff expectation check")
+
+
+def validate_operational_outcome_contract(found: dict[str, str], tier: str, errors: list[str]) -> None:
+    if tier == "0":
+        return
+    section_name = "definition of done / operational outcome contract"
+    section = found.get(section_name, "")
+    if not section:
+        return
+    if not section_has_substance(section):
+        errors.append("required section lacks completed substance: Definition of Done / Operational Outcome Contract")
+        return
+    section_lower = normalize(section)
+    for label in [
+        "Intended operational outcome",
+        "What counts as implemented/operational for this plan",
+        "Real-system or target-system wiring required",
+        "Tests/evals/live or target-runtime proof required",
+        "What does NOT count as implementation",
+        "Allowed terminal states",
+        "Blocked terminal-state rule",
+        "Re-scoped terminal-state rule",
+    ]:
+        require_field(section, label, errors)
+    for term in [
+        "operational",
+        "blocked",
+        "re_scoped_with_approval",
+        "proof",
+        "implementation",
+        "readiness gate",
+        "shadow-only",
+    ]:
+        if term not in section_lower:
+            errors.append(f"Definition of Done / Operational Outcome Contract missing concept: {term}")
+    terminal_states = require_field(section, "Allowed terminal states", errors).lower()
+    for state in ["operational", "blocked", "re_scoped_with_approval"]:
+        if state not in terminal_states:
+            errors.append(f"Allowed terminal states must include: {state}")
+    operational_claim = require_field(section, "What counts as implemented/operational for this plan", errors).lower()
+    not_done = require_field(section, "What does NOT count as implementation", errors).lower()
+    proof_only_terms = [
+        "readiness gate",
+        "safe adoption spine",
+        "registry",
+        "plan-only",
+        "eval fixture",
+        "local proof",
+        "shadow-only",
+        "shared parent proof",
+        "shared spine",
+    ]
+    if any(term in operational_claim for term in proof_only_terms) and not any(term in not_done for term in proof_only_terms):
+        errors.append("Operational outcome contract must not count proof-only/shared-spine artifacts as operational without excluding them in NOT DONE criteria")
+
+
+HIERARCHICAL_SCOPE_TERMS = [
+    "child plan",
+    "child plans",
+    "subplan",
+    "subplans",
+    "sub-plan",
+    "sub-plans",
+    "plan tree",
+    "multi-item goal",
+    "multiple operational outcomes",
+    "parent goal",
+    "execute all plans",
+    "execute all child",
+    "plans that generate plans",
+    "recursive",
+    "soho ten-plan",
+    "ten-plan",
+]
+
+
+def has_hierarchical_scope(found: dict[str, str]) -> bool:
+    scan_sections = [
+        "objective",
+        "scope",
+        "goal execution posture and delivery",
+        "definition of done / operational outcome contract",
+        "product / prd checklist",
+        "task map / implementation graph",
+        "verifiable subgoals and metrics",
+        "parallelization plan",
+        "multi-agent plan",
+        "risk-to-evidence map",
+    ]
+    scan_text = normalize("\n".join(found.get(section, "") for section in scan_sections))
+    return any(term in scan_text for term in HIERARCHICAL_SCOPE_TERMS)
+
+
+def validate_recursive_pseudocode(found: dict[str, str], required: bool, errors: list[str]) -> None:
+    section_name = "recursive / hierarchical execution pseudocode"
+    section = found.get(section_name, "")
+    if not required:
+        return
+    if not section:
+        errors.append("hierarchical plan scope requires Recursive / Hierarchical Execution Pseudocode section")
+        return
+    if not section_has_substance(section):
+        errors.append("required section lacks completed substance: Recursive / Hierarchical Execution Pseudocode")
+        return
+    section_lower = normalize(section)
+    if "```text" not in section_lower:
+        errors.append("Recursive / Hierarchical Execution Pseudocode must include a fenced text pseudocode block")
+    for term in [
+        "child",
+        "parent",
+        "terminal_state",
+        "operational",
+        "blocked",
+        "re_scoped_with_approval",
+        "proof",
+        "shared_parent_spine",
+    ]:
+        if term not in section_lower:
+            errors.append(f"Recursive / Hierarchical Execution Pseudocode missing concept: {term}")
+    for label in [
+        "Hierarchy applies?",
+        "Max depth / child-count budget before asking or blocking",
+        "Child status table required?",
+    ]:
+        require_field(section, label, errors)
+    rows = table_meaningful_rows(section)
+    has_child_state_table = False
+    for row in rows:
+        row_blob = normalize(" ".join(row))
+        if "operational" in row_blob and "blocked" in row_blob and "re_scoped_with_approval" in row_blob:
+            has_child_state_table = True
+            break
+        if len(row) >= 4 and any(term in row_blob for term in ["child", "plan"]) and "terminal" in row_blob:
+            has_child_state_table = True
+            break
+    field_value = require_field(section, "Child status table required?", errors).lower()
+    if field_value.startswith("yes") and not has_child_state_table:
+        errors.append("Recursive / Hierarchical Execution Pseudocode must include a child terminal-state table when required")
+
+
+def validate_plan_tree_layout(found: dict[str, str], required: bool, errors: list[str]) -> None:
+    section_name = "plan tree artifact layout"
+    section = found.get(section_name, "")
+    if not required:
+        return
+    if not section:
+        errors.append("hierarchical plan scope requires Plan Tree Artifact Layout section")
+        return
+    if not section_has_substance(section):
+        errors.append("required section lacks completed substance: Plan Tree Artifact Layout")
+        return
+    section_lower = normalize(section)
+    for term in ["root", "index", "status ledger", "child", "receipt", "final acceptance", "shared proof"]:
+        if term not in section_lower:
+            errors.append(f"Plan Tree Artifact Layout missing concept: {term}")
+    for label in [
+        "Plan tree required?",
+        "Root index path",
+        "Status ledger path",
+        "Child plans directory",
+        "Receipts directory",
+        "Final acceptance receipt path",
+        "Split trigger met?",
+        "Parent/shared proof cannot substitute for child proof?",
+    ]:
+        require_field(section, label, errors)
+    path_blob = " ".join(
+        require_field(section, label, errors).lower()
+        for label in [
+            "Root index path",
+            "Status ledger path",
+            "Child plans directory",
+            "Receipts directory",
+            "Final acceptance receipt path",
+        ]
+    )
+    for required_path_term in ["index", "status", "ledger", "children", "receipts", "acceptance"]:
+        if required_path_term not in path_blob:
+            errors.append(f"Plan Tree Artifact Layout paths must include: {required_path_term}")
+    rows = table_meaningful_rows(section)
+    if not rows:
+        errors.append("Plan Tree Artifact Layout needs at least one child plan row")
 
 
 def validate_target_file_tree(found: dict[str, str], lower: str, tier: str, errors: list[str]) -> None:
@@ -867,6 +1343,14 @@ def main() -> int:
     validate_testing_adaptation_gate(found, args.tier or "1", errors)
     validate_goal_execution_posture(found, args.tier or "1", errors)
     validate_user_expectation_surprise(found, args.tier or "1", errors)
+    validate_operational_outcome_contract(found, args.tier or "1", errors)
+    hierarchical_scope = args.tier != "0" and has_hierarchical_scope(found)
+    validate_recursive_pseudocode(found, hierarchical_scope, errors)
+    validate_plan_tree_layout(found, hierarchical_scope, errors)
+    production_implementation_scope = args.tier != "0" and has_production_implementation_scope(found)
+    validate_unattended_production_approval_plan(found, production_implementation_scope, errors)
+    expensive_proof_scope = has_tier3_expensive_proof_scope(found, args.tier or "1")
+    validate_tier3_expensive_proof_preflight(found, expensive_proof_scope, errors)
     validate_target_file_tree(found, lower, args.tier or "1", errors)
     validate_repository_topology(found, lower, args.tier or "1", errors)
     validate_code_health_dead_code_plan(found, lower, args.tier or "1", errors)
@@ -917,9 +1401,11 @@ def main() -> int:
         found.get("affected surfaces", ""),
         found.get("architecture classification", ""),
         found.get("deterministic harness vs adaptive policy", ""),
+        found.get("parallelization plan", ""),
     ]))
     behavior_scope = args.agent_behavior or (args.tier != "0" and any(term in behavior_scan_text for term in behavior_terms))
     agentic_system_scope = args.tier != "0" and (behavior_scope or has_agentic_system_scope(behavior_scan_text))
+    validate_runtime_agent_topology(found, agentic_system_scope or hierarchical_scope, errors)
     validate_thin_harness_rubric(found, agentic_system_scope, errors)
     validate_agent_execution_proof_ladder(found, agentic_system_scope, errors)
     validate_source_convention_check(found, agentic_system_scope, errors)
@@ -965,6 +1451,20 @@ def main() -> int:
             errors.append("acceptance rubric must include target file tree when plan indicates new/moved code, refactors, or package seams")
         if "dead code" not in rubric_lower:
             errors.append("acceptance rubric must include dead-code/code-health evidence when plan indicates code/refactor/topology scope")
+    if args.tier != "0":
+        rubric_lower = normalize(rubric)
+        if "operational outcome" not in rubric_lower:
+            errors.append("acceptance rubric must include operational outcome / Definition of Done evidence for substantial plans")
+        if hierarchical_scope and "recursive" not in rubric_lower:
+            errors.append("acceptance rubric must include recursive pseudocode / child terminal-state evidence for hierarchical plans")
+        if hierarchical_scope and "plan tree artifact layout" not in rubric_lower:
+            errors.append("acceptance rubric must include plan tree artifact layout evidence for hierarchical plans")
+        if expensive_proof_scope and "tier 3 expensive-proof preflight" not in rubric_lower:
+            errors.append("acceptance rubric must include Tier 3 expensive-proof preflight evidence")
+        if expensive_proof_scope and "burn-in" not in rubric_lower:
+            errors.append("acceptance rubric must include burn-in vs final proof evidence")
+        if production_implementation_scope and "production implementation blocker gate" not in rubric_lower:
+            errors.append("acceptance rubric must include production implementation blocker gate evidence")
 
     if args.tier != "0":
         cost = found.get("cost/complexity check", "")

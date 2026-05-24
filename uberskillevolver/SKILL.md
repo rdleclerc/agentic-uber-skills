@@ -78,6 +78,24 @@ Before changing a skill, answer:
 If evidence is weak or benefit is not clearly much greater than cost, defer or record `no change`.
 
 
+## Regression lessons from completion-claim failures
+
+Promote severe completion-claim failures into evals, templates, validators, or examples when they can recur. In particular, treat this as a high-value regression class: a parent `ubergoal` claims all child plans complete because a shared safe proof spine, readiness gate, registry, local proof, or shadow-only proof passed, while one or more child plans have not reached their intended operational outcome.
+
+Also promote production/runtime implementation goal failures where a parent closes because every child has a status, but one or more `blocked` children still have runnable safe next actions. The expected fix class is an active-vs-hard blocker invariant: `active_blocked` remains active work, while `hard_blocked_after_safe_action_exhaustion` requires safe predecessor exhaustion and an exact external/unsafe/irreversible blocker.
+
+When the failure is semantic safe-work exhaustion rather than only missing fields, prefer a visible `uberaccept` adversarial review over a hidden deterministic judge: list blocked children, enumerate plausible safe next actions, and block completion if any remain runnable.
+
+If the failure involved one giant plan file causing shallow inner-loop treatment, consider promoting `uberplan`'s Plan Tree Artifact Layout: root index, child files, status ledger, receipts, and final acceptance.
+
+If the failure involved Tier 3 agentic/runtime/replacement expensive proof, burn-in, soak, canary expansion, or final-proof burn, promote a scoped preflight template/validator/eval when it can catch the next shallow flat-plan launch. Require risk/failure inventory, observability/telemetry, phase-boundary contract-fuzz, burn-in/final separation, stop/replan rules, and child/status ledger unless a human-approved bypass is recorded.
+
+The smallest durable fix should usually be a plan/acceptance template field, mechanical validator, or negative fixture. Do not solve this by adding a hidden runtime controller or semantic judge inside the skill package.
+
+## Runtime topology lessons
+
+For campaign/subagent runs, record whether the configured depth/thread budget matched the work shape. Preserve the distinction between plan depth and spawned-agent depth. Promote a lesson only when evidence shows the default `max_threads=6`, `max_depth=2` or explicit deep-campaign `8/3` escalation caused or prevented a real failure. Never promote a silent thread/depth increase; durable changes must keep approval, ledger, and restore rules visible.
+
 ## Cross-machine learning
 
 When this skill pack is used on multiple machines, combine learnings through Git, not hidden memory. Keep raw records local/private. Share only sanitized packets in `learning/inbox/<machine-id>/...`, then periodically review the inbox and promote repeated/high-value lessons into skill changes, evals, validators, templates, or deletions.

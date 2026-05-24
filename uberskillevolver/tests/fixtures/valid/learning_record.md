@@ -36,10 +36,28 @@
 - Parallelism that saved time: none.
 - Coordination overhead: low.
 
+
+## Runtime topology lesson
+- Runtime topology in effect: standard local policy `max_threads=6`, `max_depth=2`; no deep-campaign mode used.
+- Did plan depth differ from spawned-agent depth?: yes; plan depth can be represented in files without increasing spawned-agent depth.
+- Did the run need depth/thread escalation?: no; depth/thread escalation was not needed.
+- Approval and ledger evidence for escalation: not applicable; no escalation.
+- Restore-to-default evidence: restore not needed because the run stayed at default 6/2.
+- Lesson for future campaigns: keep plan depth and spawned-agent depth distinct; ask before depth-3 escalation.
+
 ## Lesson candidates
 | ID | Lesson | Evidence | Decision: promote/defer/delete/no-change | Reason |
 |---|---|---|---|---|
 | L1 | Add validator fixture discipline | test failure | promote | repeated risk |
+
+## Completion-claim regression check
+
+- Did any parent goal claim child plans complete from a shared safe proof spine, readiness gate, registry, local proof, or shadow-only proof? no; no shared safe proof spine or child-plan completion claim was in scope.
+- If yes, child plans affected: none.
+- Operational Outcome Contract gap: none for this run; future runs should compare claimed state to the contract.
+- Eval/template/validator candidate: no-change for this run; promote only when evidence shows claim blur.
+- If giant-plan shallow execution contributed, should `uberplan` Plan Tree Artifact Layout be promoted? no; giant-plan shallow execution did not occur in this fixture.
+- Anti-bloat verdict for any durable fix: no new harness; keep this as a lightweight learning check unless failures recur.
 
 ## Promotion decision
 - Promote now: L1 as validator fixture guidance.

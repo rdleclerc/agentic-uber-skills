@@ -46,6 +46,51 @@
 - Parent plan append/merge actions:
 - Resume condition:
 
+## Operational outcome / child terminal states
+
+Allowed terminal states: `operational`, `blocked`, `re_scoped_with_approval`. Parent goals with children remain incomplete until every child has a terminal state. Shared parent proof does not complete children unless each child explicitly scoped that proof as its final outcome.
+
+For production/runtime implementation goals, distinguish `active_blocked` from `hard_blocked_after_safe_action_exhaustion`. A blocked child with runnable safe next actions remains active work and cannot count toward parent completion. A hard blocker requires safe autonomous predecessor work exhausted, exact external/unsafe/irreversible blocker, and next unblock owner/action.
+
+- Plan tree root index path, if used:
+- Plan tree status ledger path, if used:
+
+| Child ID | Child plan path | Intended operational outcome | Terminal state | Proof / blocker / re-scope evidence | Remaining gap |
+|---|---|---|---|---|---|
+|  |  |  |  |  |  |
+
+## Production implementation blocker gate
+
+Complete only for production/runtime implementation goals, long unattended production goals, or external/unsafe/irreversible stop points; otherwise record not applicable.
+
+- Production implementation goal? yes/no, why:
+- Upfront approval packet status:
+- Required child count:
+- Operational or user-rescoped child count:
+- Hard-blocked-after-safe-action-exhaustion child count:
+- Active blocked child count:
+- Runnable safe next action count:
+- Safe autonomous predecessor work exhausted? yes/no/n/a, evidence:
+- Parent completion allowed? yes/no, why:
+- Next safe action if parent completion is not allowed:
+
+| Child ID | Required? | Classification: operational / re_scoped_with_approval / hard_blocked_after_safe_action_exhaustion / active_blocked | Runnable safe next actions? | Safe predecessor exhaustion evidence | Exact external/unsafe blocker | Next unblock owner/action |
+|---|---|---|---|---|---|---|
+|  |  |  |  |  |  |  |
+
+## Runtime agent topology
+
+- Config source / observed source:
+- Topology mode: standard_6_2 | deep_8_3 | wide_10_3 | custom | n/a
+- Current `max_threads`:
+- Current `max_depth`:
+- Role shape:
+- Depth-3 escalation needed? yes/no, why:
+- User approval evidence for depth/thread escalation:
+- Restore target after campaign:
+- Restore proof / blocker:
+- Child-agent depth policy:
+
 ## Decisions
 
 | Decision | Reason | Date |

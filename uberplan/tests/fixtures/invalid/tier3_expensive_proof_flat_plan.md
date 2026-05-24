@@ -1,10 +1,10 @@
 # Plan Contract
 
 ## Objective
-Improve a multi-agent handoff prompt so workers stop overwriting each other and return evidence-backed findings.
+Launch a Tier 3 true E2E production replacement proof for an agentic runtime by sending one flat plan directly into a giant p10 final proof run after a small canary.
 
 ## Scope
-In scope: one skill prompt, one agent brief template, validator fixture updates. Out of scope: live runtime changes, commits, pushes, or production writes.
+In scope: one flat plan that launches a long-run agentic runtime burn-in and final proof over production-replacement evidence. Out of scope: child plan files, status ledgers, and contract-fuzz preflights.
 
 ## Goal execution posture and delivery
 - Markdown plan file path: `plans/2026-05-21-multi-agent-handoff-contract.md`
@@ -115,7 +115,7 @@ flowchart TD
 - Resume rule: continue under the same `ubergoal` only after the revised plan names the failure class and next test evidence.
 
 ## Tier decision
-- Tier: 2
+- Tier: 3
 - Why this tier is sufficient: agent behavior changes are meaningful but contained to one skill package.
 - Why this tier is not overkill: Architecture Steward plus Agent Advocate catch symptom-patch and guide-drift risks without launching a full implementation swarm.
 - Concrete risks that justify this tier: multi-agent ownership ambiguity, prompt/tool mismatch, and insufficient acceptance evidence.

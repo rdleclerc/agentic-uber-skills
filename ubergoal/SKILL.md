@@ -9,145 +9,98 @@ description: "Use when an agent needs the goal-owning lifecycle wrapper for subs
 
 `ubergoal` is the **thin lifecycle wrapper**, goal owner, and bounded review-board coordinator for the Uber skill family. In runtimes with a platform goal object, explicit `ubergoal` use means create or bind that goal first, then route to focused subskills and specialist agents instead of carrying all planning and acceptance machinery itself.
 
-Use the lightest tier that makes the work safe. Treat process as cost. Add agents, review lanes, validators, evals, templates, or subskills only when benefit is **clearly much greater than** total downstream cost.
+Use the lightest tier that makes the work safe. Add process only when benefit is **clearly much greater than** total downstream cost.
 
 ## Routing table
 
 | Need | Use |
 |---|---|
 | Rigorous planning, review-board lanes, codebase exploration, confidence gate | `$uberplan` |
-| Implementation/execution coordination | main coding agent orchestrates; Tier 2+ uses bounded specialist review-board subagents when available |
-| Final acceptance, policy-adherence audit, architecture drift, dead-code/test/eval proof, surprise/tradeoff report | `$uberaccept` |
-| Complexity/modularity/dead-code simplification campaign with timestamped trail | `$ubersimplify` |
-| Assess source/research signal/internal artifact before adoption | `$uberassess` |
+| Execution coordination | main coding agent; Tier 2+ uses bounded specialist review-board agents/lenses when available |
+| Final acceptance, policy-adherence, architecture drift, dead-code/test/eval proof, surprises | `$uberaccept` |
+| Complexity/modularity/dead-code campaign | `$ubersimplify` |
+| Source/research/internal-artifact assessment before adoption | `$uberassess` |
 | Post-run learning for skills/prompts/workflows/agentic systems | `$uberskillevolver` |
-| User expectation / surprise assessment for a goal or final handoff | assess in `ubergoal`, detail in `$uberplan`, verify in `$uberaccept` |
-| Repeated or material unexpected test failures | stop, run `$deep-rca`, revise via `$uberplan`, append/merge any child-plan scope change, then continue under the same `ubergoal` |
-| Codex/platform goal ownership, compact objective, goal ledger | `ubergoal` resources |
+| Repeated or material unexpected test failures | stop, run `$deep-rca`, revise via `$uberplan`, append/merge child scope change, continue under same goal |
+| Refactor campaign / HOT-file audit | load `references/refactor-campaign-profile.md` |
+| `ubercampaign`, product campaign, multi-feature/feature-list/plan-tree campaign, “assess then plan then execute all items” | load `references/campaign-profile.md` |
+| Tier 3 agentic/runtime/production-replacement expensive proof, burn-in, soak, canary expansion, or final proof | route to `$uberplan` with `templates/tier3-expensive-proof-plan-tree.md` and validator before launch |
 
-Deferred until real usage proves benefit >> cost: `ubercode`, `ubergit`, `ubereval`, `uberui`, and standalone specialist-lane skills. Use lanes inside `uberplan`/`uberaccept` first.
-
-## Named profiles
-
-When the user says **refactor campaign**, **codebase health campaign**, **nightly refactor**, **HOT-file audit**, or similar, do not ask them to restate the long checklist. Load and follow `references/refactor-campaign-profile.md`.
-
-The refactor-campaign profile includes a tight generated HTML report plus project-local refactor history so recurring runs can build on prior attention maps and no-change decisions.
-
-That profile stays inside `ubergoal` until repeated real runs prove a standalone `uberrefactor` skill would make the common path smaller, faster, or safer.
+Deferred until real usage proves benefit >> cost: `ubercode`, `ubergit`, `ubereval`, `uberui`, and standalone specialist-lane skills.
 
 ## Coding-agent work contract
 
-For Tier 1+ coding, prompt, skill, workflow, or agentic-system implementation work, use the generalized Coding Agent Work Contract before editing unless the task is tiny and deterministic:
+For Tier 1+ coding, prompt, skill, workflow, or agentic-system implementation, use the Coding Agent Work Contract unless the task is tiny and deterministic:
 
 - Guide: `/Users/claw1/agentic-architecture-guide/docs/coding-agent-work-contract.md`
 - Template: `/Users/claw1/agentic-architecture-guide/.agentic/coding_agent_work_contract_template.md`
 
-The work contract is the lightweight task-start artifact for objective, scope, orientation evidence, plan, evidence matrix, stop conditions, and learning trail. It should stay compact; do not create a second bureaucracy around it.
-
-Artifact precedence:
-
-- **Tier 0:** concise inline note only.
-- **Tier 1:** the Coding Agent Work Contract is the plan artifact unless a concrete risk requires a fuller `uberplan` contract.
-- **Tier 2/3:** `uberplan` may extend the Coding Agent Work Contract, but should not create a disconnected second plan with duplicate objective/scope/evidence sections. The `uberplan` contract should be a checkable PRD with a detailed Mermaid task map, testable acceptance goals, and, for agentic systems, a thin harness / fat agent rubric plus source-convention check.
+Tier 0 can use an inline note. Tier 1 uses the work contract unless risk requires `uberplan`. Tier 2/3 may extend it inside `uberplan`, but must avoid a duplicate objective/scope/evidence bureaucracy.
 
 ## Lifecycle
 
-1. **Classify tier.** Use Tier 0/1/2/3 and choose the lowest safe tier.
-2. **Plan.** For Tier 1+, start with a user expectation / surprise assessment: what the user likely expects, what may surprise them, and what needs asking or flagging before proceeding. For Tier 1, use the Coding Agent Work Contract unless risk demands more. For Tier 2/3, invoke or follow `$uberplan` and embed/extend the work contract. For Tier 0, use a concise plan/test note. Agentic-system plans must bias toward thin deterministic harnesses around capable agents, not deterministic monoliths that absorb agent judgment.
-3. **Create or bind the goal.** In Codex or any runtime with a platform goal object, explicit `ubergoal` use launches a compact goal by default for Tier 1+ work and for any task where the user explicitly names `ubergoal`. If a goal already exists, bind the work to it instead of creating a duplicate. Skip goal creation only when the user explicitly asks for no goal/lightweight mode, the runtime has no goal facility, or the task is not actually being handled through `ubergoal`.
-4. **Run the review board and execute.** Keep the main agent as orchestrator. Explicit `ubergoal` use authorizes bounded specialist review-board agents for Tier 2+ work unless the user says no agents/lightweight mode. Use implementation workers only when write scopes are disjoint.
-5. **Adapt on systematic or unexpected test failure.** If a test set has clear repeated failures, stop before or at five consecutive failures of the same command/failure family; if a material unexpected failure invalidates the plan, stop immediately. Capture evidence, run `$deep-rca`, revise with `$uberplan`, append/merge any child-plan `scope expansion`, `scope correction`, or `blocker` into the parent plan, update the ledger/receipt, then continue under the same `ubergoal`.
-6. **Ledger/receipt.** For long work, maintain `templates/goal-ledger.md` plus the lightweight `templates/uber-run-receipt.md`, including the Skills invoked summary so final handoff proves which custom skills were actually invoked, consulted-only, skipped, or not applicable.
-7. **Assess sources/artifacts when needed.** Route source-to-recommendation due diligence to `$uberassess`; do not let assessment become implementation before approval.
-8. **Simplify when needed.** Invoke or follow `$ubersimplify` for opt-in complexity/dead-code/modularity campaigns; default to Audit mode unless patching is explicitly authorized.
-9. **Accept.** Invoke or follow `$uberaccept` before claiming completion or calling `update_goal(status="complete")`; acceptance must check implementation against the `uberplan`, OpenClaw/agentic architecture, thin-harness/fat-agent policy, evidence gaps, and surprising tradeoffs/choices.
-10. **Learn.** For Tier 2/3 skill, prompt, workflow, multi-agent protocol, or agentic-system changes, invoke `$uberskillevolver` after acceptance.
+1. **Classify tier.** Choose the lowest safe Tier 0/1/2/3.
+2. **Plan.** Start Tier 1+ with a **user expectation / surprise assessment**. Use inline note, work contract, or `$uberplan` by tier/risk. Agentic-system plans bias toward thin deterministic harnesses around capable agents.
+3. **Create or bind the goal.** If no goal exists and the user explicitly invoked `ubergoal`, call `create_goal` before substantial planning/execution. Bind existing goals; skip only for explicit no-goal/lightweight mode, no goal facility, or non-`ubergoal` work.
+4. **Review and execute.** Main agent owns integration. Explicit `ubergoal` authorizes bounded Tier 2+ specialist review-board agents/lenses unless the user says no/lightweight. Workers mutate files only with disjoint write scopes.
+5. **Adapt on test failure.** Stop before or at **five consecutive failures** of the same command/family, or immediately for material unexpected test failures. Capture evidence, run `$deep-rca`, revise with `$uberplan`, append/merge scope expansion/correction/blocker, update ledger/receipt, continue under same goal.
+6. **Ledger/receipt.** For long work, maintain `templates/goal-ledger.md` and the **Uber run receipt** in `templates/uber-run-receipt.md`, including the **Skills invoked summary**.
+7. **Assess/simplify/accept/learn.** Route source due diligence to `$uberassess`; complexity campaigns to `$ubersimplify`; final proof to `$uberaccept`; Tier 2/3 skill/prompt/workflow/agentic lessons to `$uberskillevolver`.
 
 ## Tier selection
 
 | Tier | Use for | Wrapper behavior |
 |---|---|---|
-| Tier 0 | Small isolated deterministic edits | if `ubergoal` was explicitly invoked in a goal-capable runtime, create/bind the smallest goal; otherwise no goal, no subagents, short plan/tests |
-| Tier 1 | Long but contained work | create/bind goal, `$uberplan` light plan, optional ledger, `$uberaccept` final proof |
-| Tier 2 | Medium/high-risk work where a solo coding agent is likely to miss context, overfit a patch, mishandle dirty state, or misjudge acceptance | create/bind goal, `$uberplan` audited plan, 2-3 specialist review-board agents/lenses by default, evidence rubric, `$uberaccept`, optional learning loop |
-| Tier 3 | Cross-repo, agentic-system, production/runtime, major refactor/deletion, prompt/skill/eval, concurrency/security, complex UI | create/bind goal, full `$uberplan`, batched review board plus disjoint implementation workers when useful, carefully bounded execution/audits, `$uberaccept`, `$uberskillevolver` if skill/workflow/agentic lessons exist |
+| Tier 0 | Small isolated deterministic edits | smallest goal if explicitly invoked in a goal-capable runtime; otherwise short plan/tests |
+| Tier 1 | Long but contained work | create/bind goal, light `$uberplan` or work contract, optional ledger, `$uberaccept` |
+| Tier 2 | Medium/high-risk work where solo coding may miss context, dirty state, or acceptance | create/bind goal, audited plan, 2-3 specialist review-board agents/lenses by default, evidence rubric, `$uberaccept`, optional learning |
+| Tier 3 | Cross-repo, agentic-system, production/runtime, major refactor/deletion, prompt/skill/eval, concurrency/security, complex UI | full `$uberplan`, batched board/workers when useful, audits, `$uberaccept`, `$uberskillevolver` |
 
-If uncertain, choose the lower tier unless a concrete risk requires escalation.
+If uncertain, choose the lower tier unless concrete risk requires escalation.
 
 ## Implementation effort recommendation
 
-When returning a plan for implementation, recommend a model reasoning-effort level. This is a recommendation, not a permission to expand scope:
-
 | Effort | Use when | Avoid when |
 |---|---|---|
-| `medium` | Tier 0/1 work; localized deterministic patches; clear tests; low ambiguity; no live side effects | user is asking for architecture reset, agentic-system changes, or unresolved root-cause analysis |
-| `high` | Tier 1/2 work with judgment, repo navigation, user-visible behavior, non-trivial tests/evals, or moderate uncertainty | the task is tiny, deterministic, or the extra reasoning would mostly add process |
-| `xhigh` | Tier 3 work; cross-repo or runtime-impacting changes; prompt/skill/eval changes; major refactor/deletion; concurrency/security/privacy; repeated failures where hidden assumptions must be challenged | the work can be reduced to a smaller `medium`/`high` slice that preserves a working product spine |
+| `medium` | Tier 0/1, localized deterministic patches, clear tests, low ambiguity | architecture reset, agentic-system change, unresolved RCA |
+| `high` | Tier 1/2 with judgment, repo navigation, user-visible behavior, non-trivial tests/evals, uncertainty | tiny deterministic work |
+| `xhigh` | Tier 3, cross-repo/runtime impact, prompt/skill/eval changes, major refactor/deletion, concurrency/security/privacy, repeated hidden-assumption failures | when a smaller `medium`/`high` slice preserves safety/progress |
 
-Before recommending `xhigh`, run the deletion-first pass: can the task be split so the next implementation slice stays `high` or `medium` while preserving safety and visible progress? If yes, recommend the smaller slice instead of escalating the whole plan.
+Before recommending `xhigh`, run the deletion-first pass: can the task be split while preserving the spine?
 
 ## Goal ownership
 
-`ubergoal` is a superset of the platform goal primitive. The goal object is the durable execution spine; the Uber wrapper adds tiering, routing, subskills, agents, acceptance, and learning.
+`ubergoal` is a superset of the platform goal primitive. The platform goal is the durable execution spine; the wrapper adds tiering, routing, subskills, agents, acceptance, and learning.
 
-When running in Codex:
-
-- If no goal exists and the user explicitly invoked `ubergoal`, call `create_goal` before substantial planning or execution.
-- If a goal already exists, keep using it and update the goal ledger/status around it rather than creating a duplicate.
-- If the user explicitly asks for no goal/lightweight mode, record that as the reason for skipping goal creation.
-- If the runtime lacks a goal facility, continue with a local goal ledger and say that no platform goal object is available.
-
-When launching, keep the goal objective compact. Include:
-
-- destination and starting point
-- objective/scope and out-of-scope boundaries
-- tier and plan artifact path/summary
-- user expectation/surprise risks to ask or flag
-- preserve/non-regression constraints
-- verification gates and required evidence
-- allowed subagent/audit shape, if useful
-- done/stop conditions and approval boundaries
-- success metric
-
-Validate objective text with `scripts/validate_goal_objective.py --target-chars 3400 --strict-target`. Do not set a goal token budget unless the user explicitly gives one.
+When launching, keep the objective compact: destination, objective/scope, non-goals, tier, plan path/summary, expectation/surprise risks, preserve constraints, verification gates, allowed subagent/audit shape, done/stop conditions, approval boundaries, operational outcome contract, per-child terminal states, and success metric. Validate objective text with `scripts/validate_goal_objective.py --target-chars 3400 --strict-target`. Do not set a token budget unless the user explicitly gives one.
 
 ## Execution coordination
 
-### Runtime thread caps
+Treat subagent/session limits as hard policy. In Codex, prefer the configured/reportable `[agents]` limits. Standard campaign preset is `max_threads=6`, `max_depth=2`: L0 root orchestrator → L1 workstream orchestrator → L2 worker/reviewer. If a campaign appears to need L0→L1→L2→L3, prompt before temporary deep-campaign mode (`max_threads=8`, `max_depth=3`), record approval, and restore `6/2` afterward unless the user says to keep it. `10/3` needs separate explicit approval. Never silently raise thread/depth limits or confuse plan depth with spawned-agent depth.
 
-Treat active subagent/session limits as a platform policy constraint, not an agent judgment call. In Codex, assume a maximum of 4 active spawned subagents at once unless the platform explicitly reports a higher cap in the current run.
+Tier 2 is valuable because it changes the decision shape: the orchestrator receives independent specialist context, not just more solo thinking. For Tier 2, launch 2-3 bounded review lanes when supported. Default lanes: Codebase/State Scout, Architecture/Contract Steward, and Quality/Eval/Hygiene Auditor. Choose fewer only when risk is narrower.
 
-For Tier 3 or other wide review-board work:
+Review-board agents inspect, challenge, and recommend; they do not mutate unless assigned disjoint worker scope. Keep write sets disjoint, do not delegate the immediate critical-path blocker, require evidence-backed outputs, serialize overlapping work, update `templates/goal-ledger.md`, and stop/replan after repeated or material unexpected failures. Ask before destructive/external side effects unless already approved.
 
-- batch lanes in priority order instead of trying to spawn the whole board at once
-- close completed agents before opening queued lanes
-- if spawning fails because of a thread/session limit, record the cap hit in the ledger and rerun that lane later or perform it locally
-- never count a failed spawn, unavailable lane, or queued lane as completed review evidence
-- keep the main agent responsible for integration and the immediate critical path
+## Operational parent/child execution
 
-When implementation begins:
+For multiple plans or an `uberplan` plan tree, execute the root index/status-ledger/child-file layout and keep a child-by-child ledger. Each child records runtime topology, intended outcome, proof/blocker/re-scope evidence, remaining gap, and terminal state: `operational`, `blocked`, or `re_scoped_with_approval`. Recurse for subplans. Do not merge children into one shared proof layer; safe proof spines, registries, readiness gates, plans, local proofs, or shadow-only proofs do not complete children unless explicitly scoped as final outcome.
 
-- Tier 2 is valuable because it changes the decision shape: the orchestrator does not just think harder; it receives independent feedback from specialist context lenses.
-- For Tier 2, launch 2-3 bounded review lanes when the runtime supports subagents. Default lanes are Codebase/State Scout, Architecture/Contract Steward, and Quality/Eval/Hygiene Auditor; choose fewer only when the risk is clearly narrower.
-- Review-board agents inspect, challenge, and recommend. They do not mutate files unless explicitly assigned a disjoint worker write scope.
-- If subagents are unavailable or the thread cap is hit, run the same specialist lenses sequentially in the main thread and report the degraded execution mode.
-- keep write sets disjoint if using workers
-- do not delegate the immediate critical-path blocker
-- require evidence-backed outputs, not generic approval
-- serialize overlapping work
-- update `templates/goal-ledger.md` after major checkpoints
-- stop and replan after clear repeated or material unexpected test failures instead of pushing through five consecutive failures
-- stop and ask before destructive/external side effects unless already approved
+For production/runtime implementation goals, split blocked children into `active_blocked` and `hard_blocked_after_safe_action_exhaustion`. If a blocked child has runnable safe next actions, keep the parent active and continue safe autonomous predecessor work. Parent completion is allowed only when every required child is operational, user-rescoped with approval, or hard-blocked after safe-action exhaustion, with active blocked count = 0 and runnable safe next action count = 0.
+
+For Tier 3 expensive-proof/replacement/runtime proof campaigns, do not proceed from one flat plan into burn-in or final proof. Require the `uberplan` expensive-proof preflight validator, child/status-ledger structure, and burn-in vs final-proof separation, or a recorded user-approved flat-plan bypass.
 
 ## Completion rule
 
-Do not call `update_goal(status="complete")` until `$uberaccept` says the objective is achieved, no required work remains, policy-adherence has been checked against the plan and OpenClaw/agentic architecture, expected-vs-actual user surprise has been checked, issues/tradeoffs/surprising implementation choices are reported, and every touched repo is locally committed, reverted, intentionally stashed, or explicitly user-approved as uncommitted. For Tier 2/3, use specialist review-board agents/lenses for this final policy check when available and allowed; no solo self-certification. Final handoff must include `git status --short --branch`, a Skills invoked summary with used/consulted/skipped/not-applicable status, and an Uber run receipt validated when feasible.
+Do not call `update_goal(status="complete")` until `$uberaccept` says the objective is achieved, no required work remains, policy-adherence has been checked against the plan and OpenClaw/agentic architecture, expected-vs-actual surprise has been checked, tradeoffs/surprises are reported, and every touched repo is committed, reverted, intentionally stashed, or explicitly approved as uncommitted.
 
-For “100% confident” prompts, use the scoped meaning: 100% confident within the stated scope after trying to disprove the plan/work and finding no material unresolved blocker.
+For Tier 2/3, use specialist review-board agents/lenses for the final policy check when available; no solo self-certification. Final handoff must include `git status --short --branch`, Skills invoked summary, and a validated Uber run receipt when feasible. For “100% confident,” mean scoped confidence after trying to disprove the work and finding no material unresolved blocker.
 
 ## Helpful resources
 
-- `templates/goal-ledger.md` — compact long-running goal state.
-- `references/goal-objective.md` — compact goal objective guidance.
-- `references/refactor-campaign-profile.md` — reusable HOT-file/refactor campaign profile.
-- `scripts/validate_goal_objective.py` — objective length validator.
+- `templates/goal-ledger.md` — compact long-running state.
+- `templates/uber-run-receipt.md` — final skill/evidence receipt.
+- `references/goal-objective.md` — compact objective guidance.
+- `references/refactor-campaign-profile.md` — reusable refactor campaign profile.
+- `references/campaign-profile.md` — `ubercampaign` multi-item assessment → plan-tree → execution profile.
+- `scripts/validate_goal_objective.py`, `scripts/validate_uber_run_receipt.py` — deterministic checks.

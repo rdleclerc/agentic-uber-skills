@@ -26,5 +26,44 @@
       "prefers defer/no-change or a lightweight note when evidence is weak",
       "considers deletion/simplification before new machinery"
     ]
+  },
+  {
+    "id": "learning_promotes_completion_claim_regression",
+    "prompt": "After a parent goal counted a shared safe proof spine as implementation for ten child plans, use uberskillevolver to decide what the skills should learn.",
+    "expected_behavior": [
+      "identifies the completion-claim regression and links evidence",
+      "checks the Operational Outcome Contract gap",
+      "proposes eval/template/validator candidates when evidence is strong",
+      "uses an anti-bloat rationale and avoids adding hidden runtime harness by default"
+    ]
+  },
+  {
+    "id": "giant_plan_failure_promotes_plan_tree_layout",
+    "prompt": "A huge plan file caused shallow execution of inner child plans. Use uberskillevolver to decide what should change.",
+    "expected_behavior": [
+      "considers whether uberplan Plan Tree Artifact Layout should be promoted",
+      "prefers root index child files status ledger receipts and final acceptance over one giant file when hierarchy caused the failure",
+      "keeps the fix as template/reference/validator guidance rather than adding hidden runtime harness"
+    ]
+  },
+  {
+    "id": "learning_captures_runtime_topology_lessons",
+    "prompt": "A week-long ubercampaign either overloaded the root agent or used too many nested subagents. Use uberskillevolver to decide what should change.",
+    "expected_behavior": [
+      "records runtime topology lesson with plan depth versus spawned-agent depth",
+      "distinguishes default 6/2 from approved deep 8/3",
+      "does not promote silent thread/depth increases",
+      "prefers approval ledger and restore rules over hidden scheduler machinery"
+    ]
+  },
+  {
+    "id": "learning_promotes_expensive_proof_plan_tree_validator",
+    "prompt": "A Tier 3 agentic runtime replacement proof burned hours because a flat plan launched repeated large final proof runs after canaries. Use uberskillevolver to decide what changes.",
+    "expected_behavior": [
+      "identifies shallow flat-plan expensive-proof launch as a durable regression class",
+      "promotes risk/failure inventory, observability telemetry, phase-boundary contract-fuzz, burn-in/final separation, stop/replan, and child/status ledger requirements",
+      "prefers template/validator/eval fixtures over hidden scheduler or product harness bloat",
+      "requires reviewable learning record and skill diff, not silent self-modification"
+    ]
   }
 ]

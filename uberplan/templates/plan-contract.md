@@ -41,6 +41,97 @@ Use this to avoid surprises, not to mind-read. Ground the assessment in the expl
 - Ask/flag-before-proceeding triggers:
 - Final handoff expectation check:
 
+## Definition of Done / Operational Outcome Contract
+
+Use this for Tier 1+ substantial plans. Be explicit about what counts as implementation and what remains proof-only.
+
+- Intended operational outcome:
+- What counts as implemented/operational for this plan:
+- Real-system or target-system wiring required:
+- Tests/evals/live or target-runtime proof required:
+- What does NOT count as implementation: readiness gate / safe adoption spine / registry / plan / eval fixture / local proof / shadow-only proof / shared parent proof unless explicitly scoped as final outcome:
+- Allowed terminal states: operational | blocked | re_scoped_with_approval
+- Blocked terminal-state rule: exact blocker, evidence, next unblock action, owner/prerequisite:
+- Re-scoped terminal-state rule: user approval evidence and original outcome recorded as deferred/not done:
+
+## Recursive / Hierarchical Execution Pseudocode
+
+Required when this plan has child plans, subplans, a plan tree, multiple operational outcomes, or “execute all plans” semantics. For non-hierarchical plans, say why not applicable.
+
+```text
+for each child_plan in plan.children:
+  execute child_plan until terminal_state is operational, blocked, or re_scoped_with_approval
+  if child_plan creates subplans:
+    register subplans and recurse with the same terminal-state rules
+  reject operational completion from readiness_gate_only, registry_only, plan_only, eval_fixture_only, local_safe_proof_only, shadow_only_proof, or shared_parent_spine_only unless explicitly scoped as final outcome
+  record child intended outcome, terminal_state, proof/blocker/re-scope evidence, and remaining gap
+
+parent may proceed to uberaccept only when every child has a valid terminal_state
+for production/runtime implementation goals:
+  treat blocked children with runnable_safe_next_actions > 0 as active_blocked
+  continue safe predecessor work until runnable_safe_next_actions == 0
+  count hard_blocked_after_safe_action_exhaustion only when the exact external/unsafe/irreversible blocker remains
+```
+
+- Hierarchy applies? yes/no, because:
+- Max depth / child-count budget before asking or blocking:
+- Child status table required? yes/no, because:
+
+| Child plan ID | Intended operational outcome | Terminal state: operational / blocked / re_scoped_with_approval | Evidence / blocker / re-scope approval |
+|---|---|---|---|
+|  |  |  |  |
+
+## Plan Tree Artifact Layout
+
+Required when the plan has child plans, subplans, a plan tree, or more than five child operational outcomes. Use `references/plan-tree-artifact-layout.md` as the canonical layout. For non-hierarchical plans, say why not applicable.
+
+- Plan tree required? yes/no, because:
+- Root index path:
+- Status ledger path:
+- Child plans directory:
+- Receipts directory:
+- Final acceptance receipt path:
+- Split trigger met? yes/no, because:
+- Parent/shared proof cannot substitute for child proof? yes/no, explain:
+
+| Child ID | Child plan path | Intended operational outcome | Dependency / owner | Receipt path |
+|---|---|---|---|---|
+|  |  |  |  |  |
+
+## Unattended production/runtime approval and safe-predecessor plan
+
+Required for production/runtime implementation goals, long unattended production goals, or plans with external/unsafe/irreversible stop points. For non-production/non-runtime work, say why not applicable. Block only the exact external/unsafe/irreversible step; keep executing safe autonomous predecessor work.
+
+- Production/runtime implementation goal? yes/no, why:
+- Expected unattended window / operator absence:
+- Upfront approval packet path/status:
+- External/irreversible action categories considered:
+- Safe autonomous predecessor work decomposition:
+- Exact stop-before-external-action rule:
+- Active blocker definition: a blocked child with runnable safe next actions remains active work:
+- Hard blocker after exhaustion definition: safe predecessor work exhausted and only exact external/unsafe/irreversible prerequisite remains:
+- Parent completion rule: all required children operational, user-rescoped, or hard-blocked-after-safe-action-exhaustion AND active blocked count = 0 AND runnable safe next action count = 0:
+- If no upfront approval needed, why:
+
+| Child / phase | Safe predecessor work to do before stop | Exact external/unsafe/irreversible boundary | Approval or owner needed | Status |
+|---|---|---|---|---|
+|  |  |  |  |  |
+
+## Tier 3 expensive-proof plan-tree preflight
+
+Required for Tier 3 agentic/runtime/production-replacement/expensive-proof work before any long burn-in, soak, canary expansion, or final proof. Prefer `templates/tier3-expensive-proof-plan-tree.md` for detailed guidance.
+
+- Scope trigger / expensive-proof classification:
+- Risk/failure-class inventory:
+- Observability / telemetry preflight:
+- Phase-boundary / contract-fuzz preflight:
+- Burn-in proof plan:
+- Final-proof separation:
+- Stop/replan rules:
+- Child-plan/status-ledger structure:
+- Flat-plan exception? no/yes, because:
+- If flat-plan exception, recorded approval and validator-bypass reason:
+
 ## Product / PRD checklist
 
 Use this as the checkable product requirements document for Tier 2/3 work. Keep it specific enough that coding agents can mark items complete without guessing.
@@ -97,6 +188,22 @@ Plan the work graph even if the current runtime or user does not authorize subag
 - Max concurrency / batching policy:
 - Integration order:
 - If subagents are not authorized or unavailable:
+
+## Runtime agent topology / Codex depth-thread policy
+
+Required for multi-agent, subagent, campaign, or plan-tree work. Distinguish plan-file recursion depth from spawned-agent depth.
+
+- Config source / observed source:
+- Standard campaign preset:
+- Current or planned `max_threads`:
+- Current or planned `max_depth`:
+- Role shape:
+- Does this plan need depth 3? yes/no, why:
+- If depth 3 is needed, prompt text and approval record path:
+- Deep-campaign preset:
+- Wider-campaign preset and separate approval rule:
+- Restore-to-default rule:
+- Child-agent depth policy:
 
 ## Testing adaptation gate
 
@@ -372,10 +479,15 @@ Score only relevant dimensions. Use 0 = blocker, 1 = weak/unresolved, 2 = accept
 | Agent RCA | Agent behavior fixes name why the agent erred and the failed invariant/tool/context/source/eval layer | Agent Advocate report or explicit non-applicability |  |
 | Agent boundary contract | Model-output boundaries have shape, authority, isolation, failure, observability, and replay/eval evidence | Agent Boundary Contract section or explicit non-applicability |  |
 | Regex / keyword semantics | Regex/keyword uses are classified; natural-language semantic authority is prohibited unless explicitly approved with eval/replay and rollback | Regex / keyword semantic gate |  |
+| Operational outcome | Definition of done, non-implementation examples, terminal states, and proof requirements are explicit | Definition of Done / Operational Outcome Contract |  |
+| Recursive pseudocode | Hierarchical plans include child-loop pseudocode, terminal-state rules, and parent completion criteria | Recursive / Hierarchical Execution Pseudocode or explicit non-applicability |  |
+| Plan tree artifact layout | Hierarchical plans split root index, child files, status ledger, receipts, and final acceptance instead of one giant file | Plan Tree Artifact Layout or explicit non-applicability |  |
+| Production implementation blocker gate | Long unattended production/runtime goals include upfront approvals, safe-predecessor decomposition, active-vs-hard blocker rules, and no runnable safe next actions at completion | Unattended production/runtime approval and safe-predecessor plan or explicit non-applicability |  |
 | PRD checklist | Requirements, non-goals, acceptance targets, and deferred items are checkable | Product / PRD checklist |  |
 | Task map | Coding tasks have stable IDs, dependencies, owners, write scopes, done conditions, evidence, and Mermaid graph | Task map / implementation graph |  |
 | Verifiable subgoals | Objective is decomposed into observable subgoals with evidence and metrics/rubrics | Verifiable subgoals and metrics |  |
 | Parallelization | Critical path, parallelizable slices, serial blockers, disjoint write scopes, batching, and integration order are explicit | Parallelization plan |  |
+| Runtime agent topology | Codex/thread depth policy distinguishes plan recursion from spawned-agent depth, records depth-3 approval/restore rules, and names child-agent depth policy | Runtime agent topology / Codex depth-thread policy |  |
 | Testing adaptation | Repeated clear failures or material unexpected failures stop the loop, trigger RCA, revise the plan, append/merge any child plan scope changes, and resume under the goal lifecycle | Testing adaptation gate |  |
 | Goal execution posture | Plan is framed as a long-running goal with thread highlights, checkpoint cadence, and durable `.md` artifact | Goal execution posture and delivery |  |
 | User expectation / surprise assessment | The plan states likely user expectations, evidence for them, possible surprising actions, assumptions to verify, and final handoff checks | User expectation / surprise assessment |  |

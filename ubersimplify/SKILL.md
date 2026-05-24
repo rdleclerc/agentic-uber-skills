@@ -56,6 +56,8 @@ Good modularity simplifies by reducing concepts, eliminating duplicate truths, c
 
 Bad modularity is theater: wrapper chains, god modules, vague helpers, premature abstraction, or splitting cohesive code just to create files.
 
+For skill/plan compression, use `uber-skill-creator`'s lossless compression profile: delete duplicated prose and move detail to references before microcopy edits; preserve validator labels, trigger phrases, and safety gates.
+
 ## Test-confidence policy
 
 | Confidence | Allowed action |

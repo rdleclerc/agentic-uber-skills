@@ -17,6 +17,24 @@ For product/rewrite/agentic-system work, final acceptance must name the minimum 
 
 For Type0, default spine: real feed/tip/wire input → normalized signal → admission decision → lane/story assignment → story processing → fact-check/publish/reject guard → traceable result.
 
+## Claim-language and operational outcome audit
+
+Final acceptance must prevent claim blur. Check every use of: `implemented`, `operational`, `live`, `adopted`, `tested`, `ready`, `wired`, `proof-only`, `blocked`, and `shadow-only`.
+
+If a report claims `implemented`, `operational`, `live`, or `adopted`, require evidence that the work reached the plan's Operational Outcome Contract: real/target-system wiring, appropriate tests/evals, and live or target-runtime proof unless the plan explicitly scoped a local artifact as the final outcome.
+
+Reject completion when the evidence is only a readiness gate, safe adoption spine, registry, plan, eval fixture, local safe proof, shadow-only proof, or shared parent proof spine, unless the plan explicitly named that as the final outcome. For multi-child goals, require a child-by-child terminal-state table before parent completion.
+
+For production/runtime implementation goals, reject parent completion when any child is `active_blocked` or has runnable safe next actions. Only count a blocked child as terminal when it is `hard_blocked_after_safe_action_exhaustion`: safe autonomous predecessor work is exhausted, the remaining stop point is exact/external/unsafe/irreversible, and the next unblock owner/action is recorded.
+
+Also run a **Safe-work exhaustion adversarial review** for production/runtime implementation goals: list every blocked child, enumerate plausible safe next actions the agent could still perform, and block completion if any safe action remains runnable. This review is the semantic oversight layer; deterministic validators only enforce that the review is visible and internally consistent.
+
+If `uberplan` used a Plan Tree Artifact Layout, final acceptance must inspect the root index, status ledger, child receipts, and final acceptance receipt; a single parent summary is not sufficient proof.
+
+For Codex campaign/subagent work, final acceptance must inspect runtime topology: configured/reported `max_threads`, `max_depth`, role shape, depth-3 approval evidence, restore target/proof, and child-agent depth policy. Reject “operational campaign” claims that silently raised thread/depth limits or omit the topology ledger.
+
+For Tier 3 agentic/runtime/production-replacement expensive proofs, final acceptance must inspect the expensive-proof plan validator result, risk/failure inventory, observability/telemetry preflight, phase-boundary/contract-fuzz preflight, burn-in vs final-proof separation, stop/replan evidence, and child/status ledger. Reject flat-plan readiness unless the report names a recorded approval and validator-bypass reason.
+
 ## Output contract
 
 Produce a final acceptance report that names every relevant layer explicitly:
@@ -24,7 +42,11 @@ Produce a final acceptance report that names every relevant layer explicitly:
 1. implementation summary and files changed
 2. rubric scores with evidence and residual gaps
 3. commands/artifacts proving unit, regression, integration, UI/browser, eval, security/privacy, concurrency/idempotency, architecture, repository-topology/dependency boundaries, dead-code, rollback, and observability layers as applicable
-4. planning-board reconciliation
+4. Claim-state ledger: claim language, Operational Outcome Contract evidence, and child terminal states for multi-child goals
+5. Production implementation blocker gate: active blockers vs hard blockers, runnable safe next actions, safe-predecessor exhaustion, and parent completion rule
+5a. Safe-work exhaustion adversarial review: blocked children inspected for plausible safe next actions before parent completion
+4a. Tier 3 expensive-proof acceptance when the work involved burn-in, soak, canary expansion, replacement proof, or final proof
+5. planning-board reconciliation
 5. user expectation / surprise delta: what the user likely expected, what was actually implemented, what changed, what may surprise them, and whether any mismatch needs explicit approval
 6. Agent Advocate final check for agentic work or agent failures
 7. Architecture Steward final check
@@ -60,6 +82,7 @@ Only recommend completion when:
 
 - no material blocker remains
 - required evidence is present or explicitly accepted as a residual gap by the user
+- any claim of implemented/operational/live/adopted is backed by the plan's Operational Outcome Contract, not merely proof-only or shadow-only evidence
 - repeated clear failures of the same test command/failure family did not exceed five attempts without an RCA, `uberplan` revision, and resumed `ubergoal` evidence
 - expected-vs-actual user surprise was checked, and any material mismatch is either fixed or explicitly flagged for user approval
 - product/rewrite/agentic-system spine proof is green, or the scope is explicitly limited to a spine-check fix/non-readiness spike accepted by the user

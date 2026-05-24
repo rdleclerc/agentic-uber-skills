@@ -39,6 +39,8 @@ REQUIRED_PHRASES = [
     "five consecutive clear failures",
     "RCA-driven scope expansion",
     "child/sub-`uberplan` appendix",
+    "max_threads=6",
+    "max_depth=2",
 ]
 
 

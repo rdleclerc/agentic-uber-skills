@@ -1,10 +1,10 @@
 # Uber Run Receipt
 
 ## Run metadata
-- Run slug: sample-uber-run
+- Run slug: production-blocker-receipt
 - Date/time: 2026-05-19T13:30:00-07:00
-- Project/repo: /tmp/example
-- Tier: 2
+- Project/repo: /tmp/domain-neutral-production-example
+- Tier: 3
 - Owner/session: test-session
 - Outcome: success
 - Source branch/commit: session/test abc123
@@ -51,9 +51,28 @@
 
 | Plan or child ID | Intended operational outcome | Terminal state: operational / blocked / re_scoped_with_approval | Evidence | Remaining gap |
 |---|---|---|---|---|
-| plan.md | local package hardening is implemented and validated | operational | target-system validator, unit/regression, package lint, and acceptance evidence | none |
+| C1 | production implementation child is operational | operational | target-system validator, unit/regression, and acceptance evidence | none |
+| C2 | production implementation child awaits external approval after safe predecessor exhaustion | blocked | safe predecessor validation and dry-runs complete | external approval before irreversible migration |
 
 - Proof-only, shadow-only, local-safe-proof, or shared-spine evidence claimed as operational? no, evidence is the scoped local target-system package proof.
+
+## Production implementation blocker gate
+
+- Production implementation goal? yes, long-running production implementation goal with external/irreversible stop points.
+- Upfront approval packet status: approvals/packet.md records external/irreversible stop points.
+- Required child count: 2
+- Operational or user-rescoped child count: 1
+- Hard-blocked-after-safe-action-exhaustion child count: 1
+- Active blocked child count: 0
+- Runnable safe next action count: 0
+- Safe autonomous predecessor work exhausted? yes, safe validation, dry-run, and rollback rehearsal are complete before external approval.
+- Parent completion allowed? yes, all required children are operational or hard-blocked-after-safe-action-exhaustion and runnable safe next action count = 0.
+- Next safe action if parent completion is not allowed: none; only external owner approval remains.
+
+| Child ID | Required? | Classification: operational / re_scoped_with_approval / hard_blocked_after_safe_action_exhaustion / active_blocked | Runnable safe next actions? | Safe predecessor exhaustion evidence | Exact external/unsafe blocker | Next unblock owner/action |
+|---|---|---|---|---|---|---|
+| C1 | yes | operational | no | exhausted local checks | none | none |
+| C2 | yes | hard_blocked_after_safe_action_exhaustion | no | exhausted safe predecessor dry-runs | external approval before irreversible migration | operator approval |
 
 ## Gates
 

@@ -158,5 +158,82 @@
       "record expectation/surprise risks in the ledger or receipt",
       "verify expected-vs-actual user surprise before final completion through uberaccept"
     ]
+  },
+  {
+    "id": "parent_completion_requires_child_terminal_states",
+    "user_prompt": "Use ubergoal to execute ten child plans. A shared safe proof spine passed, but several children are only shadow-tested or blocked.",
+    "expected_behavior": [
+      "maintain a child-by-child operational outcome ledger",
+      "require each child to record terminal state operational blocked or re_scoped_with_approval",
+      "do not mark the parent complete from one shared proof layer",
+      "route parent acceptance to uberaccept only after child terminal states and proof/blocker/re-scope evidence are recorded"
+    ]
+  },
+  {
+    "id": "executes_uberplan_plan_tree_layout",
+    "user_prompt": "Use ubergoal to execute this uberplan plan tree with a root index, child plans, status ledger, and receipts.",
+    "expected_behavior": [
+      "treats the root index and status ledger as the execution map",
+      "executes child plan files deeply rather than relying on one parent summary",
+      "records child terminal states and receipt paths before parent acceptance",
+      "does not substitute shared parent proof for child operational proof"
+    ]
+  },
+  {
+    "id": "multi_feature_campaign_uses_campaign_profile",
+    "user_prompt": "Run this as an ubercampaign: assess this multi-feature list, deeply plan each adopted feature, then execute the plans with terminal-state receipts.",
+    "expected_behavior": [
+      "loads references/campaign-profile.md",
+      "treats ubercampaign as a named ubergoal profile rather than a standalone skill",
+      "runs root and per-item uberassess before planning implementation",
+      "uses uberplan plan-tree files for adopted items with Operational Outcome Contracts and recursive pseudocode",
+      "executes approved plans child-by-child and records operational, blocked, or re_scoped_with_approval terminal states",
+      "prevents the parent goal from completing from one shared proof layer"
+    ],
+    "forbidden_behavior": [
+      "implements feature items during assessment before approval",
+      "collapses all child features into one giant plan file without per-child status",
+      "claims the parent campaign complete while any adopted child lacks a terminal state"
+    ]
+  },
+  {
+    "id": "campaign_depth3_prompts_for_escalation",
+    "user_prompt": "Run this as an ubercampaign. It likely needs L0 feature-area orchestrators, L1 subfeature orchestrators, and L2 terminal workers, so do not let the root agent get overloaded.",
+    "expected_behavior": [
+      "loads references/campaign-profile.md",
+      "states standard Codex campaign topology as max_threads=6 and max_depth=2",
+      "distinguishes plan-file depth from spawned-agent depth",
+      "prompts before temporary deep-campaign mode max_threads=8 max_depth=3",
+      "records approval and restore-to-6/2 requirement in the campaign ledger"
+    ],
+    "forbidden_behavior": [
+      "silently raises max_depth or max_threads",
+      "defaults to max_depth=3 without user approval",
+      "lets L2 workers spawn further in standard mode"
+    ]
+  },
+  {
+    "id": "goal_routes_tier3_expensive_proof_to_plan_tree_validator",
+    "user_prompt": "Use ubergoal for a Tier 3 agentic runtime production replacement proof. First canary, then final proof, but prevent one flat plan from burning a week.",
+    "expected_behavior": [
+      "classifies as Tier 3 expensive-proof work",
+      "routes to uberplan with the Tier 3 expensive-proof plan-tree template and validator before launch",
+      "requires burn-in and final proof separation plus child/status ledger",
+      "does not proceed from one flat plan unless a user-approved bypass is recorded",
+      "routes final proof to uberaccept and post-run learning to uberskillevolver"
+    ],
+    "forbidden_behavior": [
+      "launches burn-in/final proof from one flat plan without validator output"
+    ]
+  },
+  {
+    "id": "production_goal_active_blocker_keeps_parent_active",
+    "user_prompt": "Execute a production implementation goal where all child plans have statuses but one blocked child still has safe work to run.",
+    "expected_behavior": [
+      "Keep the parent ubergoal active instead of complete while runnable safe next actions remain.",
+      "Classify the child as active_blocked, not terminal hard blocked.",
+      "Continue safe autonomous predecessor work before stopping for external or irreversible approval.",
+      "Only accept hard_blocked_after_safe_action_exhaustion with exact blocker, evidence, and next unblock action."
+    ]
   }
 ]

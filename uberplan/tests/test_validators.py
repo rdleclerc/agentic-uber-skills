@@ -93,6 +93,71 @@ class PlanValidatorTests(unittest.TestCase):
             plan.write_text(text[:start] + text[end:])
             self.assertFails(str(PLAN), str(plan), "--tier", "2", "--agent-behavior")
 
+    def test_agentic_plan_requires_runtime_agent_topology(self) -> None:
+        text = (FIX / "valid" / "tier2_agent_plan.md").read_text()
+        start = text.index("## Runtime agent topology / Codex depth-thread policy")
+        end = text.index("## Testing adaptation gate")
+        with tempfile.TemporaryDirectory() as tmp:
+            plan = Path(tmp) / "missing_runtime_agent_topology.md"
+            plan.write_text(text[:start] + text[end:])
+            self.assertFails(str(PLAN), str(plan), "--tier", "2", "--agent-behavior")
+
+    def test_tier3_expensive_proof_rejects_flat_plan(self) -> None:
+        result = run_cmd(str(PLAN), str(FIX / "invalid" / "tier3_expensive_proof_flat_plan.md"), "--tier", "3", "--agent-behavior")
+        self.assertNotEqual(result.returncode, 0, "unexpected pass\n" + result.stdout)
+        self.assertIn("expensive-proof", result.stderr)
+
+    def test_tier3_expensive_proof_plan_tree_passes(self) -> None:
+        self.assertPasses(
+            str(PLAN),
+            str(FIX / "valid" / "tier3_expensive_proof_plan_tree.md"),
+            "--tier",
+            "3",
+            "--agent-behavior",
+        )
+
+    def test_production_runtime_goal_requires_upfront_approval_and_safe_predecessors(self) -> None:
+        text = (FIX / "valid" / "tier2_agent_plan.md").read_text()
+        text = text.replace(
+            "Improve a multi-agent handoff prompt",
+            "Improve a production implementation goal with external/irreversible stop points",
+            1,
+        )
+        with tempfile.TemporaryDirectory() as tmp:
+            plan = Path(tmp) / "production_missing_approval_packet.md"
+            plan.write_text(text)
+            result = run_cmd(str(PLAN), str(plan), "--tier", "2", "--agent-behavior")
+            self.assertNotEqual(result.returncode, 0, "unexpected pass\n" + result.stdout)
+            self.assertIn("safe-predecessor", result.stderr)
+
+            section = """## Unattended production/runtime approval and safe-predecessor plan
+
+- Production/runtime implementation goal? yes, this is a long-running production implementation goal with external/irreversible stop points.
+- Expected unattended window / operator absence: one unattended work session before operator review.
+- Upfront approval packet path/status: `approvals/packet.md` records allowed external/irreversible actions and stop points.
+- External/irreversible action categories considered: external approvals, unsafe irreversible migration, credential owner approval, spend/destructive boundaries.
+- Safe autonomous predecessor work decomposition: do safe predecessor validation, dry-run, rollback rehearsal, and local evidence collection before external stop.
+- Exact stop-before-external-action rule: stop and ask before any external, unsafe, or irreversible action.
+- Active blocker definition: active_blocked means a blocked child still has runnable safe next action work.
+- Hard blocker after exhaustion definition: hard blocker requires safe predecessor work exhausted and exact external/unsafe approval blocker remains.
+- Parent completion rule: parent completion requires runnable safe next action count = 0, active blocked count = 0, and all children operational, user-rescoped, or hard-blocked-after-exhaustion.
+- If no upfront approval needed, why: not applicable; upfront approval packet is required and recorded.
+
+| Child / phase | Safe predecessor work to do before stop | Exact external/unsafe/irreversible boundary | Approval or owner needed | Status |
+|---|---|---|---|---|
+| C1 | safe predecessor validation and dry-run | external irreversible cutover | operator approval | planned |
+
+"""
+            insertion = text.index("## Product / PRD checklist")
+            valid = text[:insertion] + section + text[insertion:]
+            valid = valid.replace(
+                "| Operational outcome | Definition of done, non-implementation examples, terminal states, and proof requirements are explicit | Definition of Done / Operational Outcome Contract | 3 |",
+                "| Operational outcome | Definition of done, non-implementation examples, terminal states, and proof requirements are explicit | Definition of Done / Operational Outcome Contract | 3 |\n| Production implementation blocker gate | Long unattended production/runtime goals include upfront approvals, safe-predecessor work, active-vs-hard blockers, and no runnable safe next actions at completion | Unattended production/runtime approval and safe-predecessor plan | 3 |",
+            )
+            valid_plan = Path(tmp) / "production_with_approval_packet.md"
+            valid_plan.write_text(valid)
+            self.assertPasses(str(PLAN), str(valid_plan), "--tier", "2", "--agent-behavior")
+
     def test_tier2_requires_testing_adaptation_gate(self) -> None:
         text = (FIX / "valid" / "tier2_agent_plan.md").read_text()
         start = text.index("## Testing adaptation gate")
@@ -118,6 +183,152 @@ class PlanValidatorTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as tmp:
             plan = Path(tmp) / "missing_user_expectation.md"
             plan.write_text(text[:start] + text[end:])
+            self.assertFails(str(PLAN), str(plan), "--tier", "2", "--agent-behavior")
+
+    def test_tier2_requires_operational_outcome_contract(self) -> None:
+        text = (FIX / "valid" / "tier2_agent_plan.md").read_text()
+        start = text.index("## Definition of Done / Operational Outcome Contract")
+        end = text.index("## Product / PRD checklist")
+        with tempfile.TemporaryDirectory() as tmp:
+            plan = Path(tmp) / "missing_operational_outcome.md"
+            plan.write_text(text[:start] + text[end:])
+            self.assertFails(str(PLAN), str(plan), "--tier", "2", "--agent-behavior")
+
+    def test_hierarchical_plan_requires_recursive_pseudocode(self) -> None:
+        text = (FIX / "valid" / "tier2_agent_plan.md").read_text()
+        text = text.replace(
+            "Improve a multi-agent handoff prompt",
+            "Improve a multi-agent handoff prompt and execute all child plans in a parent goal",
+            1,
+        )
+        with tempfile.TemporaryDirectory() as tmp:
+            plan = Path(tmp) / "hierarchical_missing_pseudocode.md"
+            plan.write_text(text)
+            self.assertFails(str(PLAN), str(plan), "--tier", "2", "--agent-behavior")
+
+            recursive = """## Recursive / Hierarchical Execution Pseudocode
+
+```text
+for each child_plan in parent.children:
+  execute child_plan until terminal_state is operational, blocked, or re_scoped_with_approval
+  reject shared_parent_spine proof as operational unless the child explicitly scoped it as the final outcome
+  record child proof, blocker, or re-scope evidence before parent completion
+```
+
+- Hierarchy applies? yes, because this parent goal executes all child plans.
+- Max depth / child-count budget before asking or blocking: one parent level and ten child plans before asking.
+- Child status table required? yes, because parent completion depends on child terminal_state evidence.
+
+| Child plan ID | Intended outcome | Terminal state: operational / blocked / re_scoped_with_approval | Evidence / blocker / re-scope approval |
+|---|---|---|---|
+| C1 | prompt contract operational | operational | validator and acceptance evidence |
+
+## Plan Tree Artifact Layout
+
+- Plan tree required? yes, because this parent goal executes all child plans.
+- Root index path: plans/parent-goal/index.md
+- Status ledger path: plans/parent-goal/status-ledger.md
+- Child plans directory: plans/parent-goal/children/
+- Receipts directory: plans/parent-goal/receipts/
+- Final acceptance receipt path: plans/parent-goal/receipts/final-acceptance.md
+- Split trigger met? yes, because child operational outcomes need separate proof.
+- Parent/shared proof cannot substitute for child proof? yes, child receipts are required.
+
+| Child ID | Child plan path | Intended operational outcome | Dependency / owner | Receipt path |
+|---|---|---|---|---|
+| C1 | plans/parent-goal/children/C1-prompt-contract.md | prompt contract operational | parent / prompt owner | plans/parent-goal/receipts/C1-acceptance.md |
+
+"""
+            insertion = text.index("## Product / PRD checklist")
+            text_with_recursive = text[:insertion] + recursive + text[insertion:]
+            text_with_recursive = text_with_recursive.replace(
+                "| Operational outcome | Definition of done, non-implementation examples, terminal states, and proof requirements are explicit | Definition of Done / Operational Outcome Contract | 3 |",
+                "| Operational outcome | Definition of done, non-implementation examples, terminal states, and proof requirements are explicit | Definition of Done / Operational Outcome Contract | 3 |\n| Recursive pseudocode | Hierarchical child plans include loop pseudocode, terminal-state rules, and parent completion criteria | Recursive / Hierarchical Execution Pseudocode | 3 |\n| Plan tree artifact layout | Hierarchical plans split root index, child files, status ledger, receipts, and final acceptance | Plan Tree Artifact Layout | 3 |",
+            )
+            valid_plan = Path(tmp) / "hierarchical_with_pseudocode.md"
+            valid_plan.write_text(text_with_recursive)
+            self.assertPasses(str(PLAN), str(valid_plan), "--tier", "2", "--agent-behavior")
+
+    def test_hierarchical_plan_requires_plan_tree_layout(self) -> None:
+        text = (FIX / "valid" / "tier2_agent_plan.md").read_text()
+        text = text.replace(
+            "Improve a multi-agent handoff prompt",
+            "Improve a multi-agent handoff prompt and execute all child plans in a parent goal",
+            1,
+        )
+        recursive = """## Recursive / Hierarchical Execution Pseudocode
+
+```text
+for each child_plan in parent.children:
+  execute child_plan until terminal_state is operational, blocked, or re_scoped_with_approval
+  reject shared_parent_spine proof as operational unless the child explicitly scoped it as the final outcome
+  record child proof, blocker, or re-scope evidence before parent completion
+```
+
+- Hierarchy applies? yes, because this parent goal executes all child plans.
+- Max depth / child-count budget before asking or blocking: one parent level and ten child plans before asking.
+- Child status table required? yes, because parent completion depends on child terminal_state evidence.
+
+| Child plan ID | Intended outcome | Terminal state: operational / blocked / re_scoped_with_approval | Evidence / blocker / re-scope approval |
+|---|---|---|---|
+| C1 | prompt contract operational | operational | validator and acceptance evidence |
+
+"""
+        insertion = text.index("## Product / PRD checklist")
+        text = text[:insertion] + recursive + text[insertion:]
+        text = text.replace(
+            "| Operational outcome | Definition of done, non-implementation examples, terminal states, and proof requirements are explicit | Definition of Done / Operational Outcome Contract | 3 |",
+            "| Operational outcome | Definition of done, non-implementation examples, terminal states, and proof requirements are explicit | Definition of Done / Operational Outcome Contract | 3 |\n| Recursive pseudocode | Hierarchical child plans include loop pseudocode, terminal-state rules, and parent completion criteria | Recursive / Hierarchical Execution Pseudocode | 3 |",
+        )
+        with tempfile.TemporaryDirectory() as tmp:
+            plan = Path(tmp) / "hierarchical_missing_plan_tree.md"
+            plan.write_text(text)
+            self.assertFails(str(PLAN), str(plan), "--tier", "2", "--agent-behavior")
+
+    def test_operational_contract_rejects_proof_only_as_done(self) -> None:
+        text = (FIX / "valid" / "tier2_agent_plan.md").read_text()
+        text = text.replace(
+            "- What counts as implemented/operational for this plan: source files are changed in the intended package, validator tests pass, and the final acceptance report names residual fresh-agent replay gaps.",
+            "- What counts as implemented/operational for this plan: a shared spine local proof and eval fixture are enough to call the parent operational.",
+        ).replace(
+            "- What does NOT count as implementation: readiness gate / safe adoption spine / registry / plan / eval fixture / local proof / shadow-only proof / shared parent proof unless explicitly scoped as final outcome: a plan-only note or eval seed without validator/template changes does not satisfy this plan.",
+            "- What does NOT count as implementation: unrelated prose-only wishes.",
+        )
+        with tempfile.TemporaryDirectory() as tmp:
+            plan = Path(tmp) / "proof_only_operational_outcome.md"
+            plan.write_text(text)
+            self.assertFails(str(PLAN), str(plan), "--tier", "2", "--agent-behavior")
+
+    def test_hierarchical_pseudocode_requires_child_terminal_table(self) -> None:
+        text = (FIX / "valid" / "tier2_agent_plan.md").read_text()
+        text = text.replace(
+            "Improve a multi-agent handoff prompt",
+            "Improve a multi-agent handoff prompt and execute all child plans in a parent goal",
+            1,
+        )
+        recursive = """## Recursive / Hierarchical Execution Pseudocode
+
+```text
+for each child_plan in parent.children:
+  execute child_plan until terminal_state is operational, blocked, or re_scoped_with_approval
+  reject shared_parent_spine proof as operational unless the child explicitly scoped it as the final outcome
+  record child proof, blocker, or re-scope evidence before parent completion
+```
+
+- Hierarchy applies? yes, because this parent goal executes all child plans.
+- Max depth / child-count budget before asking or blocking: one parent level and ten child plans before asking.
+- Child status table required? yes, because parent completion depends on child terminal_state evidence.
+
+"""
+        insertion = text.index("## Product / PRD checklist")
+        text = text[:insertion] + recursive + text[insertion:]
+        text = text.replace(
+            "| Operational outcome | Definition of done, non-implementation examples, terminal states, and proof requirements are explicit | Definition of Done / Operational Outcome Contract | 3 |",
+            "| Operational outcome | Definition of done, non-implementation examples, terminal states, and proof requirements are explicit | Definition of Done / Operational Outcome Contract | 3 |\n| Recursive pseudocode | Hierarchical child plans include loop pseudocode, terminal-state rules, and parent completion criteria | Recursive / Hierarchical Execution Pseudocode | 3 |",
+        )
+        with tempfile.TemporaryDirectory() as tmp:
+            plan = Path(tmp) / "hierarchical_missing_child_table.md"
+            plan.write_text(text)
             self.assertFails(str(PLAN), str(plan), "--tier", "2", "--agent-behavior")
 
     def test_code_plan_requires_target_file_tree(self) -> None:
@@ -249,6 +460,12 @@ class PackageTests(unittest.TestCase):
         self.assertIn("repeated_testing_failures_require_rca_replan", ids)
         self.assertIn("unexpected_testing_failure_requires_child_plan_append", ids)
         self.assertIn("plan_requires_user_expectation_surprise_assessment", ids)
+        self.assertIn("plan_requires_operational_outcome_contract", ids)
+        self.assertIn("hierarchical_plan_requires_recursive_pseudocode", ids)
+        self.assertIn("hierarchical_plan_requires_plan_tree_artifact_layout", ids)
+        self.assertIn("plan_records_runtime_agent_topology", ids)
+        self.assertIn("tier3_expensive_proof_requires_plan_tree_preflight", ids)
+        self.assertIn("production_runtime_goal_requires_approval_packet_and_safe_predecessors", ids)
         for case in cases:
             self.assertIn("user_prompt", case)
             self.assertIn("expected_tier", case)
@@ -261,6 +478,8 @@ class PackageTests(unittest.TestCase):
             "templates/exploration-trail.md",
             "templates/first-principles-simplifier-report.md",
             "templates/plan-contract.md",
+            "templates/tier3-expensive-proof-plan-tree.md",
+            "references/plan-tree-artifact-layout.md",
         ]:
             self.assertTrue((ROOT / rel).exists(), rel)
 

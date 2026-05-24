@@ -14,11 +14,14 @@ REQUIRED_FILES = [
     "agents/openai.yaml",
     "references/openai_yaml.md",
     "references/eval_driven_skill_creation.md",
+    "references/lossless-skill-compression-profile.md",
+    "references/skill-creation-workflow.md",
     "scripts/init_skill.py",
     "scripts/quick_validate.py",
     "scripts/generate_openai_yaml.py",
     "scripts/generate_eval_report.py",
     "scripts/evaluate_skill_quality.py",
+    "scripts/estimate_lossless_compression.py",
 ]
 REQUIRED_PHRASES = [
     "portable",

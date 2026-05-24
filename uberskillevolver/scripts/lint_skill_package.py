@@ -27,6 +27,7 @@ REQUIRED_SKILL_PHRASES = [
     "Agent Advocate",
     "Relationship to Ubergoal",
     "Cross-machine learning",
+    "Runtime topology lessons",
 ]
 
 

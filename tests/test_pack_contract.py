@@ -66,6 +66,8 @@ class PackContractTests(unittest.TestCase):
         self.assertIn("Codebase/State Scout, Architecture/Contract Steward, and Quality/Eval/Hygiene Auditor", body)
         self.assertIn("specialist review-board agents", meta)
         self.assertIn("run specialist review-board agents or lenses for Tier 2+ work", evals)
+        self.assertIn("ubercampaign", body)
+        self.assertIn("campaign-profile", body)
 
     def test_utility_skills_have_task_specific_invocation_policy(self) -> None:
         text = (ROOT / "ubershow" / "agents" / "openai.yaml").read_text()
@@ -108,6 +110,39 @@ class PackContractTests(unittest.TestCase):
         text = (ROOT / "README.md").read_text()
         loop = "for s in deep-rca uber-skill-creator ubergoal uberplan uberaccept uberskillevolver ubersimplify uberassess ubershow; do"
         self.assertEqual(text.count(loop), 3)
+
+    def test_operational_outcome_completion_claim_contract_is_pack_wide(self) -> None:
+        plan_template = (ROOT / "uberplan" / "templates" / "plan-contract.md").read_text()
+        expensive_template = (ROOT / "uberplan" / "templates" / "tier3-expensive-proof-plan-tree.md").read_text()
+        goal_receipt = (ROOT / "ubergoal" / "templates" / "uber-run-receipt.md").read_text()
+        accept_template = (ROOT / "uberaccept" / "templates" / "final-acceptance.md").read_text()
+        learning_template = (ROOT / "uberskillevolver" / "templates" / "post-run-learning.md").read_text()
+        plan_tree_reference = (ROOT / "uberplan" / "references" / "plan-tree-artifact-layout.md").read_text()
+        self.assertIn("Definition of Done / Operational Outcome Contract", plan_template)
+        self.assertIn("Recursive / Hierarchical Execution Pseudocode", plan_template)
+        self.assertIn("Plan Tree Artifact Layout", plan_template)
+        self.assertIn("plans/<goal-slug>/", plan_tree_reference)
+        self.assertIn("Operational outcome / terminal-state summary", goal_receipt)
+        self.assertIn("Claim-state ledger", accept_template)
+        self.assertIn("shared safe proof spine", learning_template)
+        self.assertIn("Runtime agent topology / Codex depth-thread policy", plan_template)
+        self.assertIn("Runtime agent topology", goal_receipt)
+        self.assertIn("Runtime agent topology acceptance", accept_template)
+        self.assertIn("Runtime topology lesson", learning_template)
+        self.assertIn("max_threads=6", (ROOT / "ubergoal" / "references" / "campaign-profile.md").read_text())
+        self.assertIn("Tier 3 expensive-proof plan-tree preflight", plan_template)
+        self.assertIn("Phase-boundary / contract-fuzz preflight", expensive_template)
+        self.assertIn("Burn-in proof plan", expensive_template)
+        self.assertIn("Final-proof separation", expensive_template)
+        self.assertIn("Tier 3 expensive-proof acceptance", accept_template)
+        self.assertIn("Unattended production/runtime approval and safe-predecessor plan", plan_template)
+        self.assertIn("Production implementation blocker gate", goal_receipt)
+        self.assertIn("Production implementation blocker gate", accept_template)
+        self.assertIn("Safe-work exhaustion adversarial review", accept_template)
+        self.assertIn("active_blocked", (ROOT / "ubergoal" / "SKILL.md").read_text())
+        self.assertIn("hard_blocked_after_safe_action_exhaustion", (ROOT / "uberaccept" / "SKILL.md").read_text())
+        self.assertIn("plausible safe next actions", (ROOT / "uberaccept" / "SKILL.md").read_text())
+        self.assertIn("runnable safe next actions", learning_template)
 
 
 if __name__ == "__main__":

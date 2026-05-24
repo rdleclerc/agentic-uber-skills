@@ -11,6 +11,19 @@ Use this as the thin tracing artifact for an `ubergoal` run. It is not an orches
 - Outcome: success | partial | failed | aborted
 - Source branch/commit:
 
+## Runtime agent topology
+
+- Config source / observed source:
+- Topology mode: standard_6_2 | deep_8_3 | wide_10_3 | custom | n/a
+- Current `max_threads`:
+- Current `max_depth`:
+- Role shape:
+- Depth-3 escalation needed? yes/no/n/a, why:
+- User approval evidence for depth/thread escalation:
+- Restore target after campaign:
+- Restore proof / blocker:
+- Child-agent depth policy:
+
 ## Skills invoked
 
 `Invoked?` means the skill instructions were intentionally loaded/followed. Use `no` for consulted-only source reading and explain that distinction instead of quietly omitting a relevant skill.
@@ -38,6 +51,33 @@ Use this as the thin tracing artifact for an `ubergoal` run. It is not an orches
 | Diff / commit / PR |  | yes/no | yes/no |  |
 | Learning record |  | yes/no | yes/no |  |
 
+## Operational outcome / terminal-state summary
+
+| Plan or child ID | Intended operational outcome | Terminal state: operational / blocked / re_scoped_with_approval | Evidence | Remaining gap |
+|---|---|---|---|---|
+|  |  |  |  |  |
+
+- Proof-only, shadow-only, local-safe-proof, or shared-spine evidence claimed as operational? yes/no, explain:
+
+## Production implementation blocker gate
+
+Required for production/runtime implementation goals, long unattended production goals, or goals with external/unsafe/irreversible stop points; otherwise state why it is not applicable. A blocked child with runnable safe next actions is active work, not completion.
+
+- Production implementation goal? yes/no, why:
+- Upfront approval packet status:
+- Required child count:
+- Operational or user-rescoped child count:
+- Hard-blocked-after-safe-action-exhaustion child count:
+- Active blocked child count:
+- Runnable safe next action count:
+- Safe autonomous predecessor work exhausted? yes/no/n/a, evidence:
+- Parent completion allowed? yes/no, why:
+- Next safe action if parent completion is not allowed:
+
+| Child ID | Required? | Classification: operational / re_scoped_with_approval / hard_blocked_after_safe_action_exhaustion / active_blocked | Runnable safe next actions? | Safe predecessor exhaustion evidence | Exact external/unsafe blocker | Next unblock owner/action |
+|---|---|---|---|---|---|---|
+|  |  |  |  |  |  |  |
+
 ## Gates
 
 | Gate | Expected for this tier? | Evidence | Result: pass/fail/n/a | Gap / owner |
@@ -47,6 +87,7 @@ Use this as the thin tracing artifact for an `ubergoal` run. It is not an orches
 | User expectation / surprise assessment |  |  |  |  |
 | Plan acceptance / thin-harness check |  |  |  |  |
 | RCA-driven testing adaptation |  |  |  |  |
+| Operational outcome / child terminal states |  |  |  |  |
 | Uberaccept final proof |  |  |  |  |
 | Policy-adherence / OpenClaw architecture check |  |  |  |  |
 | Skills invoked summary |  |  |  |  |

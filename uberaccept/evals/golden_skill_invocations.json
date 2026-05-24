@@ -91,5 +91,78 @@
       "recommend completion without checking expected versus actual outcome",
       "hide surprising implementation choices only in a generic summary"
     ]
+  },
+  {
+    "id": "acceptance_rejects_shared_safe_spine_completion",
+    "user_prompt": "Use uberaccept on a parent goal that says all ten child plans are complete because a shared safe proof spine, registry, and shadow-only local proof passed.",
+    "required_behavior": [
+      "reject completion or mark a material blocker when shared proof spine is counted as child implementation",
+      "require a Claim-state ledger with child-by-child terminal states",
+      "distinguish operational live adopted tested proof-only shadow-only and blocked claim language",
+      "state that readiness gates registries eval fixtures and local proofs are not implementation unless scoped as final outcome"
+    ],
+    "forbidden_behavior": [
+      "accept parent completion from one shared proof layer",
+      "blur proof-only or shadow-only evidence into operational/live/adopted claims"
+    ]
+  },
+  {
+    "id": "acceptance_reads_plan_tree_child_receipts",
+    "user_prompt": "Use uberaccept on a parent goal with an uberplan plan tree. The parent summary says done, but child receipts are separate files.",
+    "required_behavior": [
+      "inspect the root index status ledger child plans receipts and final acceptance receipt when a plan tree exists",
+      "reject parent completion if child receipts or terminal states are missing",
+      "avoid accepting a single parent summary as proof for child operational outcomes"
+    ],
+    "forbidden_behavior": [
+      "accept the parent summary without child receipt evidence"
+    ]
+  },
+  {
+    "id": "acceptance_rejects_missing_runtime_topology",
+    "user_prompt": "Use uberaccept on a Codex subagent campaign. The report says operational but does not mention max_depth, max_threads, depth-3 approval, or restore proof.",
+    "required_behavior": [
+      "requires Runtime agent topology acceptance for campaign or subagent work",
+      "checks max_threads max_depth role shape and child-agent depth policy",
+      "rejects silent depth-3/thread escalation or missing restore evidence"
+    ],
+    "forbidden_behavior": [
+      "accepts operational campaign claims without topology proof"
+    ]
+  },
+  {
+    "id": "acceptance_rejects_flat_expensive_proof",
+    "user_prompt": "Use uberaccept on a Tier 3 agentic runtime replacement proof. The report says a canary passed and the final proof is ready, but it used one flat plan and has no validator output, child ledger, contract-fuzz preflight, or burn-in/final separation.",
+    "required_behavior": [
+      "requires Tier 3 expensive-proof acceptance evidence",
+      "checks the plan validator result and risk/failure inventory",
+      "requires observability/telemetry and phase-boundary contract-fuzz preflight evidence",
+      "verifies burn-in and final proof are separate gates",
+      "rejects flat-plan readiness without child/status ledger or approved bypass"
+    ],
+    "forbidden_behavior": [
+      "accepts final proof readiness from one flat plan and canary summary only"
+    ]
+  },
+  {
+    "id": "acceptance_rejects_production_active_blocker_completion",
+    "user_prompt": "Run final acceptance for a production implementation goal where every child has a status, but one blocked child still has runnable safe predecessor work.",
+    "required_behavior": [
+      "Invoke uberaccept final acceptance, not generic done language.",
+      "Require the Production implementation blocker gate.",
+      "Reject parent completion while any child is active_blocked or runnable safe next action count is greater than 0.",
+      "Allow hard_blocked_after_safe_action_exhaustion only with safe-predecessor exhaustion evidence and an exact external/unsafe blocker."
+    ]
+  },
+  {
+    "id": "acceptance_requires_safe_work_exhaustion_adversarial_review",
+    "user_prompt": "Run final acceptance for a production implementation goal with blocked children. Make sure blocked children are really exhausted, not merely statused.",
+    "required_behavior": [
+      "Invoke uberaccept final acceptance for production/runtime implementation work.",
+      "Include a Safe-work exhaustion adversarial review section.",
+      "List every blocked child and enumerate plausible safe next actions.",
+      "Block parent completion if any plausible safe next action remains runnable.",
+      "Treat the deterministic validator as a shape/contradiction check, not a semantic judge."
+    ]
   }
 ]

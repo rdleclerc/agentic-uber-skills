@@ -41,12 +41,31 @@ List concrete evidence: plan files, diffs, commits, logs, tests, evals, traces, 
 - Parallelism that saved time:
 - Coordination overhead:
 
+## Runtime topology lesson
+- Runtime topology in effect:
+- Did plan depth differ from spawned-agent depth?:
+- Did the run need depth/thread escalation?:
+- Approval and ledger evidence for escalation:
+- Restore-to-default evidence:
+- Lesson for future campaigns:
+
 ## Lesson candidates
 For each candidate, link to or summarize a `lesson-candidate.md` record.
 
 | ID | Lesson | Evidence | Decision: promote/defer/delete/no-change | Reason |
 |---|---|---|---|---|
 | L1 |  |  |  |  |
+
+## Completion-claim regression check
+
+- Did any parent goal claim child plans complete from a shared safe proof spine, readiness gate, registry, local proof, or shadow-only proof?
+- Did any production/runtime parent goal close while a blocked child still had runnable safe next actions, instead of remaining `active_blocked` until safe predecessor work was exhausted?
+- Did final acceptance include a Safe-work exhaustion adversarial review that enumerated plausible safe next actions for each blocked child?
+- If yes, child plans affected:
+- Operational Outcome Contract gap:
+- Eval/template/validator candidate:
+- If giant-plan shallow execution contributed, should `uberplan` Plan Tree Artifact Layout be promoted? yes/no, why:
+- Anti-bloat verdict for any durable fix:
 
 ## Promotion decision
 - Promote now:

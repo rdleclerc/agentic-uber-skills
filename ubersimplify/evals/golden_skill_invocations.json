@@ -75,5 +75,19 @@
     "forbidden_behavior": [
       "edits files without authorization"
     ]
+  },
+  {
+    "id": "lossless_skill_plan_compression_audit",
+    "user_prompt": "Use ubersimplify to make these skills and generated plans more terse but lossless, and estimate token savings first.",
+    "expected_behavior": [
+      "uses the uber-skill-creator lossless compression profile before editing",
+      "separates safe whitespace savings from advisory microcopy/reference-extraction candidates",
+      "preserves trigger phrases, validator labels, safety gates, DoD/OOC, terminal states, and receipt requirements",
+      "applies the same compression guidance to large generated plan artifacts without collapsing child-plan substance into one giant file"
+    ],
+    "forbidden_behavior": [
+      "rewrites protected trigger, validator, safety, or plan-contract language solely for token savings",
+      "treats do not to don't contractions as automatically safe in protected text"
+    ]
   }
 ]

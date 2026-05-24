@@ -14,7 +14,9 @@ REQUIRED_SECTIONS = [
     "What failed or surprised us",
     "Agent Advocate / human counterfactual",
     "Complexity and speed economics",
+    "Runtime topology lesson",
     "Lesson candidates",
+    "Completion-claim regression check",
     "Promotion decision",
     "Privacy and redaction",
     "Validation / follow-up",
@@ -68,6 +70,22 @@ def validate(path: Path) -> list[str]:
     privacy = section_body(text, "Privacy and redaction").lower()
     if "safe to commit" not in privacy:
         errors.append("Privacy and redaction must state whether the record is safe to commit")
+
+    regression = section_body(text, "Completion-claim regression check")
+    if len(non_placeholder_lines(regression)) < 3:
+        errors.append("Completion-claim regression check must contain concrete evidence or no-change rationale")
+    regression_lower = regression.lower()
+    for phrase in ["shared safe proof spine", "operational outcome contract", "eval/template/validator", "anti-bloat"]:
+        if phrase not in regression_lower:
+            errors.append(f"Completion-claim regression check missing: {phrase}")
+
+    topology = section_body(text, "Runtime topology lesson")
+    if len(non_placeholder_lines(topology)) < 3:
+        errors.append("Runtime topology lesson must contain concrete topology evidence or no-change rationale")
+    topology_lower = topology.lower()
+    for phrase in ["plan depth", "spawned-agent depth", "depth/thread", "restore"]:
+        if phrase not in topology_lower:
+            errors.append(f"Runtime topology lesson missing: {phrase}")
 
     return errors
 

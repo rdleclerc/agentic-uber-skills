@@ -1,10 +1,10 @@
 # Plan Contract
 
 ## Objective
-Improve a multi-agent handoff prompt so workers stop overwriting each other and return evidence-backed findings.
+Harden a Tier 3 agentic runtime production replacement proof with child plan files before burn-in and final proof.
 
 ## Scope
-In scope: one skill prompt, one agent brief template, validator fixture updates. Out of scope: live runtime changes, commits, pushes, or production writes.
+In scope: risk/failure inventory, observability preflight, phase-boundary contract-fuzz preflight, child status ledger, burn-in proof, and separate final proof for a production replacement run. Out of scope: launching the final proof before burn-in passes.
 
 ## Goal execution posture and delivery
 - Markdown plan file path: `plans/2026-05-21-multi-agent-handoff-contract.md`
@@ -32,6 +32,61 @@ In scope: one skill prompt, one agent brief template, validator fixture updates.
 - Allowed terminal states: operational | blocked | re_scoped_with_approval
 - Blocked terminal-state rule: record exact blocker, evidence, next unblock action, and owner/prerequisite.
 - Re-scoped terminal-state rule: record user approval evidence and original outcome as deferred/not done.
+
+## Recursive / Hierarchical Execution Pseudocode
+
+```text
+for each child_plan in expensive_proof.children:
+  execute child_plan until terminal_state is operational, blocked, or re_scoped_with_approval
+  if child_plan creates subplans:
+    recurse with the same terminal_state rules and preserve proof before parent return
+  reject shared_parent_spine proof as operational unless the child explicitly scoped it as final outcome
+  record child intended outcome, terminal_state, proof/blocker/re-scope evidence, and remaining gap
+
+parent may launch final proof only when all preflight and burn-in children are operational
+```
+
+- Hierarchy applies? yes, because the expensive proof has observability, contract-fuzz, burn-in, and final-proof child gates.
+- Max depth / child-count budget before asking or blocking: two plan-file levels and four child plans before asking.
+- Child status table required? yes, because parent completion depends on child terminal_state evidence.
+
+| Child plan ID | Intended operational outcome | Terminal state: operational / blocked / re_scoped_with_approval | Evidence / blocker / re-scope approval |
+|---|---|---|---|
+| C1 | observability preflight operational | operational | telemetry smoke receipt |
+| C2 | contract-fuzz preflight operational | operational | malformed/truncated boundary fixture receipts |
+| C3 | burn-in proof operational | operational | canary/burn-in verifier receipt |
+| C4 | final proof not launched until gates pass | blocked | waits on C1-C3 if any child blocks |
+
+## Plan Tree Artifact Layout
+
+- Plan tree required? yes, because the expensive proof has separate preflight, burn-in, and final proof operational outcomes.
+- Root index path: plans/expensive-proof/index.md
+- Status ledger path: plans/expensive-proof/status-ledger.md
+- Child plans directory: plans/expensive-proof/children/
+- Receipts directory: plans/expensive-proof/receipts/
+- Final acceptance receipt path: plans/expensive-proof/receipts/final-acceptance.md
+- Split trigger met? yes, because launch safety depends on multiple child operational outcomes.
+- Parent/shared proof cannot substitute for child proof? yes, child receipts are required before final proof.
+
+| Child ID | Child plan path | Intended operational outcome | Dependency / owner | Receipt path |
+|---|---|---|---|---|
+| C1 | plans/expensive-proof/children/C1-observability.md | observability/telemetry preflight operational | root / observer | plans/expensive-proof/receipts/C1.md |
+| C2 | plans/expensive-proof/children/C2-contract-fuzz.md | phase-boundary contract-fuzz preflight operational | C1 / contract owner | plans/expensive-proof/receipts/C2.md |
+| C3 | plans/expensive-proof/children/C3-burn-in.md | burn-in proof operational | C1, C2 / proof owner | plans/expensive-proof/receipts/C3.md |
+| C4 | plans/expensive-proof/children/C4-final-proof.md | final proof launched only after burn-in passes | C1-C3 / final proof owner | plans/expensive-proof/receipts/C4.md |
+
+## Tier 3 expensive-proof plan-tree preflight
+
+- Scope trigger / expensive-proof classification: Tier 3 expensive proof for an agentic runtime production replacement proof with burn-in and final proof.
+- Risk/failure-class inventory: risk failure class F1 receipt recovery failure; risk failure class F2 phase-boundary contract truncation failure; risk failure class F3 telemetry blind spot failure; risk failure class F4 patch-and-relaunch loop failure.
+- Observability / telemetry preflight: preflight smoke checks traces, logs, metrics, receipts, and failure summaries before burn-in or final proof.
+- Phase-boundary / contract-fuzz preflight: phase boundary contract fuzz uses malformed, truncated, missing-field, timeout, and adversarial negative cases for every model/tool boundary.
+- Burn-in proof plan: burn-in canary/soak is small, has a pass threshold and stop threshold, and produces verifier receipts before final proof.
+- Final-proof separation: final proof is a distinct gate after burn-in; burn-in artifacts are not reused as final proof and the final run starts only after revalidation.
+- Stop/replan rules: stop on a new failure class or repeated same-family failures, run RCA, create a child plan/subplan, revise the ledger, and only then relaunch.
+- Child-plan/status-ledger structure: child plans C1-C4 and the status ledger track observability, contract fuzz, burn-in, and final-proof terminal states.
+- Flat-plan exception? no, because child/status ledger structure is required for this expensive proof.
+- If flat-plan exception, recorded approval and validator-bypass reason: not applicable; no bypass requested and benefit >> cost favors the plan tree.
 
 ## Product / PRD checklist
 - User / operator problem: coding agents in a multi-agent handoff can overwrite each other or claim success without evidence.
@@ -115,7 +170,7 @@ flowchart TD
 - Resume rule: continue under the same `ubergoal` only after the revised plan names the failure class and next test evidence.
 
 ## Tier decision
-- Tier: 2
+- Tier: 3
 - Why this tier is sufficient: agent behavior changes are meaningful but contained to one skill package.
 - Why this tier is not overkill: Architecture Steward plus Agent Advocate catch symptom-patch and guide-drift risks without launching a full implementation swarm.
 - Concrete risks that justify this tier: multi-agent ownership ambiguity, prompt/tool mismatch, and insufficient acceptance evidence.
@@ -357,6 +412,10 @@ Only used if user explicitly authorizes subagents.
 | Testing adaptation | Five repeated clear failures or material unexpected failures stop the loop, trigger RCA, revise the plan, append/merge child scope changes, and resume under the same goal | Testing adaptation gate | 3 |
 | User expectation / surprise assessment | Likely user expectations, evidence, possible surprises, assumptions, ask/flag triggers, and final handoff checks are explicit | User expectation / surprise assessment | 3 |
 | Operational outcome | Definition of done, non-implementation examples, terminal states, and proof requirements are explicit | Definition of Done / Operational Outcome Contract | 3 |
+| Recursive pseudocode | Hierarchical child plans include loop pseudocode, terminal-state rules, and parent completion criteria | Recursive / Hierarchical Execution Pseudocode | 3 |
+| Plan tree artifact layout | Hierarchical plans split root index, child files, status ledger, receipts, and final acceptance | Plan Tree Artifact Layout | 3 |
+| Tier 3 expensive-proof preflight | Risk/failure inventory, observability telemetry, phase-boundary contract fuzz, stop/replan, and child status ledger are complete | Tier 3 expensive-proof plan-tree preflight | 3 |
+| Burn-in vs final proof | Burn-in and final proof are distinct gates with no artifact reuse | Tier 3 expensive-proof plan-tree preflight | 3 |
 | Thin harness / fat agent | Deterministic code enforces contract shape while adaptive agent reasoning owns planning judgment; monolith drift blocked | Thin harness / fat agent design rubric | 3 |
 | Source-convention check | Codex and OpenClaude / Claude Code convention source boundary is explicit; no leaked/proprietary code copied | Source-convention check | 3 |
 | Architecture | Guide sections applied and harness/policy split respected | Architecture Steward report | 3 |

@@ -1,26 +1,13 @@
 # Uber Run Receipt
 
 ## Run metadata
-- Run slug: sample-uber-run
+- Run slug: sample-ubercampaign-run
 - Date/time: 2026-05-19T13:30:00-07:00
-- Project/repo: /tmp/example
+- Project/repo: /tmp/example — ubercampaign plan-tree campaign with subagents
 - Tier: 2
 - Owner/session: test-session
 - Outcome: success
 - Source branch/commit: session/test abc123
-
-## Runtime agent topology
-
-- Config source / observed source: local Codex config `/Users/claw1/.codex/config.toml`
-- Topology mode: standard_6_2
-- Current `max_threads`: 6
-- Current `max_depth`: 2
-- Role shape: L0 root orchestrator -> L1 workstream orchestrator -> L2 worker/reviewer
-- Depth-3 escalation needed? no, standard depth-2 proof is sufficient
-- User approval evidence for depth/thread escalation: not applicable; no escalation requested
-- Restore target after campaign: standard default already 6/2
-- Restore proof / blocker: not applicable; no escalation was applied
-- Child-agent depth policy: L2 workers do not spawn further in standard mode
 
 ## Skills invoked
 

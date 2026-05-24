@@ -12,6 +12,7 @@ ROOT = Path(__file__).resolve().parents[1]
 LINT = ROOT / "scripts" / "lint_skill_package.py"
 REPORT = ROOT / "scripts" / "generate_eval_report.py"
 QUALITY = ROOT / "scripts" / "evaluate_skill_quality.py"
+COMPRESSION = ROOT / "scripts" / "estimate_lossless_compression.py"
 
 
 def run_cmd(*args: str) -> subprocess.CompletedProcess[str]:
@@ -191,6 +192,53 @@ Do not publish without approval. Verify with tests and evidence.
 
         self.assertIn("# Skill Quality Report", result.stdout)
         self.assertIn("Overlap candidates", result.stdout)
+
+    def test_lossless_compression_estimator_separates_safe_and_advisory(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            skill = root / "sample-skill"
+            skill.mkdir()
+            (skill / "SKILL.md").write_text(
+                """---
+name: sample-skill
+description: Do not change this trigger description during compression.
+---
+
+# Sample Skill
+
+
+Do not auto-trigger from task similarity.
+Do not edit live systems without approval.
+
+
+
+Do not claim completion without evidence.
+"""
+            )
+
+            result = run_cmd(str(COMPRESSION), str(root), "--format", "json")
+            self.assertEqual(result.returncode, 0, result.stderr + result.stdout)
+            data = json.loads(result.stdout)
+
+        [record] = data["files"]
+        self.assertGreater(record["safe_whitespace_tokens_saved"], 0)
+        self.assertEqual(record["advisory_do_not_to_dont_occurrences"], 2)
+        self.assertGreater(record["advisory_do_not_to_dont_tokens_saved"], 0)
+        self.assertEqual(data["advisory_repeated_line_tokens_saved"], 0)
+
+    def test_lossless_compression_estimator_accepts_plan_directory(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            (root / "root-plan.md").write_text(
+                "# Root plan\n\n\n## Definition of Done / Operational Outcome Contract\nDo not drop this contract.\n"
+            )
+            (root / "child-plan.md").write_text("# Child plan\n\nImplementation details.\n")
+            result = run_cmd(str(COMPRESSION), str(root), "--format", "json")
+            self.assertEqual(result.returncode, 0, result.stderr + result.stdout)
+            data = json.loads(result.stdout)
+
+        paths = {Path(record["path"]).name for record in data["files"]}
+        self.assertEqual(paths, {"root-plan.md", "child-plan.md"})
 
 
 if __name__ == "__main__":

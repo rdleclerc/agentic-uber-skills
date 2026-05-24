@@ -67,6 +67,95 @@ class AcceptanceValidatorTests(unittest.TestCase):
             report.write_text(text[:start] + text[end:])
             self.assertFails(str(ACCEPT), str(report), "--agent-behavior")
 
+    def test_acceptance_requires_claim_state_ledger(self) -> None:
+        text = (FIX / "valid" / "final_acceptance.md").read_text()
+        start = text.index("## Claim-state ledger")
+        end = text.index("## Planning review reconciliation")
+        with tempfile.TemporaryDirectory() as tmp:
+            report = Path(tmp) / "missing_claim_state_ledger.md"
+            report.write_text(text[:start] + text[end:])
+            self.assertFails(str(ACCEPT), str(report), "--agent-behavior")
+
+    def test_agent_behavior_requires_runtime_agent_topology_acceptance(self) -> None:
+        text = (FIX / "valid" / "final_acceptance.md").read_text()
+        start = text.index("## Runtime agent topology acceptance")
+        end = text.index("## Claim-state ledger")
+        with tempfile.TemporaryDirectory() as tmp:
+            report = Path(tmp) / "missing_runtime_topology_acceptance.md"
+            report.write_text(text[:start] + text[end:])
+            self.assertFails(str(ACCEPT), str(report), "--agent-behavior")
+
+    def test_expensive_proof_requires_acceptance_section(self) -> None:
+        text = (FIX / "valid" / "final_acceptance.md").read_text()
+        text = text.replace(
+            "## Implementation summary",
+            "## Implementation summary\n\nThis Tier 3 expensive-proof production replacement proof is ready for final proof.",
+            1,
+        )
+        with tempfile.TemporaryDirectory() as tmp:
+            report = Path(tmp) / "missing_expensive_proof_acceptance.md"
+            report.write_text(text)
+            result = run_cmd(str(ACCEPT), str(report), "--agent-behavior")
+            self.assertNotEqual(result.returncode, 0, "unexpected pass\n" + result.stdout)
+            self.assertIn("expensive-proof", result.stderr)
+
+    def test_expensive_proof_acceptance_section_passes(self) -> None:
+        text = (FIX / "valid" / "final_acceptance.md").read_text()
+        text = text.replace(
+            "## Implementation summary",
+            "## Implementation summary\n\nThis Tier 3 expensive-proof production replacement proof passed the burn-in gate and final proof acceptance checks.",
+            1,
+        )
+        text = text.replace(
+            "| Runtime agent topology | 3 | standard_6_2 policy recorded; no depth-3 escalation; child-agent depth policy checked | none |",
+            "| Runtime agent topology | 3 | standard_6_2 policy recorded; no depth-3 escalation; child-agent depth policy checked | none |\n| Tier 3 expensive-proof | 3 | validator result, risk inventory, observability telemetry, phase-boundary contract-fuzz, burn-in/final proof separation, stop/replan, and child status ledger inspected | none |",
+        )
+        section = """## Tier 3 expensive-proof acceptance
+
+- Expensive-proof scope applies? yes, Tier 3 expensive-proof production replacement final proof.
+- Plan validator command/result: `validate_plan_contract.py plan.md --tier 3 --agent-behavior` passed.
+- Risk/failure-class inventory inspected: risk inventory covers receipt failure, contract boundary failure, telemetry blind spot failure.
+- Observability / telemetry preflight evidence: observability telemetry preflight passed with trace/log/metric/receipt smoke evidence.
+- Phase-boundary / contract-fuzz preflight evidence: phase-boundary contract-fuzz preflight passed malformed/truncated/missing-field negative fixtures.
+- Burn-in vs final-proof separation evidence: burn-in and final proof were separate gates; burn-in artifacts were not reused as final proof.
+- Stop/replan evidence: stop and replan rules were inspected and RCA child-plan path was used for failures.
+- Child-plan/status-ledger evidence: child plan status ledger lists observability, contract-fuzz, burn-in, and final-proof children.
+- Flat-plan exception / bypass approval: no bypass; child/status ledger evidence exists.
+- Expensive-proof acceptance verdict: pass/accept within scope.
+
+"""
+        insertion = text.index("## Claim-state ledger")
+        text = text[:insertion] + section + text[insertion:]
+        with tempfile.TemporaryDirectory() as tmp:
+            report = Path(tmp) / "expensive_proof_acceptance.md"
+            report.write_text(text)
+            self.assertPasses(str(ACCEPT), str(report), "--agent-behavior")
+
+    def test_acceptance_rejects_shared_spine_parent_completion(self) -> None:
+        result = run_cmd(str(ACCEPT), str(FIX / "invalid" / "shared_spine_parent_completion_acceptance.md"), "--agent-behavior")
+        self.assertNotEqual(result.returncode, 0, "unexpected pass\n" + result.stdout)
+        self.assertIn("proof-only/shared-spine", result.stderr)
+
+    def test_production_active_blocker_rejects_parent_completion(self) -> None:
+        result = run_cmd(str(ACCEPT), str(FIX / "invalid" / "production_active_blocker_acceptance.md"), "--agent-behavior")
+        self.assertNotEqual(result.returncode, 0, "unexpected pass\n" + result.stdout)
+        self.assertIn("runnable safe next actions", result.stderr)
+        self.assertIn("Safe-work exhaustion", result.stderr)
+
+    def test_production_hard_blocked_after_exhaustion_passes(self) -> None:
+        self.assertPasses(str(ACCEPT), str(FIX / "valid" / "production_hard_blocked_acceptance.md"), "--agent-behavior")
+
+    def test_production_completion_requires_safe_work_exhaustion_review(self) -> None:
+        text = (FIX / "valid" / "production_hard_blocked_acceptance.md").read_text()
+        start = text.index("## Safe-work exhaustion adversarial review")
+        end = text.index("## Claim-state ledger")
+        with tempfile.TemporaryDirectory() as tmp:
+            report = Path(tmp) / "missing_safe_work_exhaustion_review.md"
+            report.write_text(text[:start] + text[end:])
+            result = run_cmd(str(ACCEPT), str(report), "--agent-behavior")
+            self.assertNotEqual(result.returncode, 0, "unexpected pass\n" + result.stdout)
+            self.assertIn("Safe-work exhaustion adversarial review", result.stderr)
+
     def test_existing_file_acceptance_can_mark_topology_not_applicable(self) -> None:
         text = (FIX / "valid" / "final_acceptance.md").read_text()
         text = text.replace(
@@ -128,6 +217,12 @@ class PackageTests(unittest.TestCase):
         self.assertIn("agent_boundary_contract_acceptance_blocks_generic_reliability", ids)
         self.assertIn("semantic_regex_gate_acceptance_blocks_keyword_router", ids)
         self.assertIn("final_acceptance_checks_user_expectation_delta", ids)
+        self.assertIn("acceptance_rejects_shared_safe_spine_completion", ids)
+        self.assertIn("acceptance_reads_plan_tree_child_receipts", ids)
+        self.assertIn("acceptance_rejects_missing_runtime_topology", ids)
+        self.assertIn("acceptance_rejects_flat_expensive_proof", ids)
+        self.assertIn("acceptance_rejects_production_active_blocker_completion", ids)
+        self.assertIn("acceptance_requires_safe_work_exhaustion_adversarial_review", ids)
         for case in cases:
             self.assertIn("user_prompt", case)
             self.assertTrue(case.get("required_behavior"))
