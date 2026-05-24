@@ -144,6 +144,38 @@ class PackContractTests(unittest.TestCase):
         self.assertIn("plausible safe next actions", (ROOT / "uberaccept" / "SKILL.md").read_text())
         self.assertIn("runnable safe next actions", learning_template)
 
+    def test_intent_driven_verification_fast_path_is_pack_wide(self) -> None:
+        goal = (ROOT / "ubergoal" / "SKILL.md").read_text()
+        plan = (ROOT / "uberplan" / "SKILL.md").read_text()
+        plan_template = (ROOT / "uberplan" / "templates" / "plan-contract.md").read_text()
+        accept = (ROOT / "uberaccept" / "SKILL.md").read_text()
+        accept_template = (ROOT / "uberaccept" / "templates" / "final-acceptance.md").read_text()
+        learning = (ROOT / "uberskillevolver" / "SKILL.md").read_text()
+        learning_template = (ROOT / "uberskillevolver" / "templates" / "post-run-learning.md").read_text()
+        metadata = "\n".join(
+            (ROOT / skill / "agents" / "openai.yaml").read_text()
+            for skill in ["ubergoal", "uberplan", "uberaccept", "uberskillevolver"]
+        )
+
+        self.assertIn("Micro-intent fast path", goal)
+        self.assertIn("2-3 sentences of scope / intent", goal)
+        self.assertIn("Do not use the fast path to bypass tests", goal)
+        self.assertIn("Micro-intent / spec-first fast path", plan)
+        self.assertIn("spec review catches missing requirements", plan)
+        self.assertIn("Micro-intent / Intent Review Fast Path", plan_template)
+        self.assertIn("Spec review vs code review split", plan_template)
+        self.assertIn("Acceptance-criteria verification", accept)
+        self.assertIn("block completion on any `fail`", accept)
+        self.assertIn("Acceptance criteria verification", accept_template)
+        self.assertIn("Spec/intent review vs code review split checked?", accept_template)
+        self.assertIn("Slop register", learning)
+        self.assertIn("plausible-but-wrong logic", learning)
+        self.assertIn("Slop register decision", learning_template)
+        self.assertIn("Why this is not hidden semantic authority", learning_template)
+        self.assertIn("micro-intent", metadata)
+        self.assertIn("acceptance criterion", metadata)
+        self.assertIn("slop register", metadata)
+
 
 if __name__ == "__main__":
     unittest.main()

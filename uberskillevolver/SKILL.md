@@ -31,7 +31,8 @@ For a learning pass, produce:
 2. candidate lessons with promote/defer/delete/no-change decisions
 3. proposed durable changes, if any
 4. required evals/validators before changing a skill
-5. explicit anti-bloat verdict: why benefit >> cost, or why no change is better
+5. slop-register promote/defer/no-change decision when repeated AI-code failure patterns appear
+6. explicit anti-bloat verdict: why benefit >> cost, or why no change is better
 
 ## Storage policy
 
@@ -62,6 +63,14 @@ Do not store secrets, credentials, private customer data, full copyrighted sourc
 6. **Patch only with authorization.** Apply skill changes only when the current task authorizes edits; otherwise produce a change plan.
 7. **Validate.** Run quick validation, package lint, unit tests, and any behavior/eval checks relevant to the changed skill.
 8. **Close the loop.** Record what changed, what was deliberately not changed, and what future run would falsify the decision.
+
+## Slop register
+
+For recurring AI-generated-code failures, maintain a lightweight **slop register** entry instead of only adding more review prose. A register item records the concrete pattern the agent keeps getting wrong, where it appears, how to prevent it in prompts/skills/context, and what deterministic check or CI candidate might catch it later.
+
+Good slop-register candidates include plausible-but-wrong logic, over-engineering, convention blindness, hallucinated or deprecated APIs, defensive overreach such as swallowed errors, and cargo-cult patterns like irrelevant retry/circuit-breaker code. Promote a register item only when the failure is repeated or severe enough that benefit >> cost. One-off issues can remain a learning note.
+
+Use the register as feedback, not as hidden semantic authority: feed patterns back into micro-intent/spec review, skill wording, examples, evals, or mechanical CI checks. Do not create broad keyword blockers or a deterministic judge for natural-language intent.
 
 ## Promotion gate
 

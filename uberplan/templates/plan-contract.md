@@ -18,6 +18,21 @@ State the concrete outcome and why it matters.
 
 -
 
+## Micro-intent / Intent Review Fast Path
+
+Use this section to keep Tier 0/1 AI-assisted work lightweight. For Tier 2/3 or risky work, record why the fast path is insufficient and continue with the full plan.
+
+- Micro-intent applies? yes/no, because:
+- Scope / intent in 2-3 sentences:
+- Explicit out-of-scope:
+- Intent/spec review required before implementation? yes/no, because:
+- Escalation trigger to full work contract or `uberplan`:
+- Spec review vs code review split: spec review catches missing requirements/scope/design before code; code review catches repo conventions/naming/module seams/integration/maintainability after code:
+
+| Acceptance criterion | Verification evidence / command | Status: planned / pass / fail / partial |
+|---|---|---|
+|  |  |  |
+
 ## Goal execution posture and delivery
 
 Use this plan as a long-running goal contract unless the user explicitly asked for a compact slice. Thread highlights are the short in-chat version; this `.md` file is the durable source of truth.
@@ -472,6 +487,7 @@ Score only relevant dimensions. Use 0 = blocker, 1 = weak/unresolved, 2 = accept
 | Dimension | Pass condition | Required evidence | Score |
 |---|---|---|---|
 | Scope clarity | In/out/non-scope and assumptions are explicit | plan contract |  |
+| Micro-intent / acceptance criteria | Tier 0/1 fast path captures scope, acceptance criteria, out-of-scope, verification, and escalation trigger; higher-risk work explains why full planning applies | Micro-intent / Intent Review Fast Path section or explicit non-applicability |  |
 | Planning review | Relevant agent-advocate/loophole/simplifier/codebase/platform/quality lanes ran or were explicitly skipped | Planning Review Board verdict |  |
 | Cost/complexity | The plan uses the smallest guardrails that address named failure classes and benefit >> cost | Cost/complexity check |  |
 | First-principles simplification | Requirements and added machinery were challenged; deletion/simplification was considered | Simplifier report |  |

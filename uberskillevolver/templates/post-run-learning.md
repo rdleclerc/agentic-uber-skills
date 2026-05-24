@@ -56,6 +56,18 @@ For each candidate, link to or summarize a `lesson-candidate.md` record.
 |---|---|---|---|---|
 | L1 |  |  |  |  |
 
+## Slop register decision
+
+Use this only for repeated or severe AI-generated-code failure patterns; otherwise record `not needed` to avoid bloat.
+
+- Slop-register entry needed? yes/no, why:
+- Pattern class: plausible-wrong-logic / over-engineering / convention-blindness / hallucinated-or-deprecated-API / defensive-overreach / cargo-cult-pattern / other:
+- Concrete evidence:
+- Prevention feedback for prompts/skills/context:
+- Candidate deterministic check or CI guard, if mechanical:
+- Why this is not hidden semantic authority:
+- Revert/delete condition:
+
 ## Completion-claim regression check
 
 - Did any parent goal claim child plans complete from a shared safe proof spine, readiness gate, registry, local proof, or shadow-only proof?
