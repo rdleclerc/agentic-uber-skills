@@ -36,6 +36,48 @@ class PackContractTests(unittest.TestCase):
                 self.assertIn("Do not auto-trigger from task similarity", body, skill)
                 self.assertIn("do not auto-trigger from task similarity", meta, skill)
 
+
+    def test_optional_claude_adversary_contract_is_explicit_and_bounded(self) -> None:
+        reference = (ROOT / "references" / "claude-adversary.md").read_text()
+        for phrase in [
+            "Do **not** invoke the Claude adversary from task similarity",
+            "A prompt without an explicit Claude-adversary phrase should not mention adversary invocation",
+            "Codex remains owner and reconciler",
+            "Skill bodies intentionally inline the key rules",
+            "Non-trigger example: `use uberassess on this plan` should run ordinary `uberassess` without Claude adversary language",
+            "Default to one Claude challenge round",
+            "first two challenges must name distinct layers",
+            "No material impact",
+            "must not count as independent acceptance evidence",
+            "Scope-boundary rejections must state what evidence, approval, or changed scope would bring the challenge in scope",
+            "Material edits to challenged sections make the relevant challenge stale",
+            "Ship: yes/no, one sentence",
+        ]:
+            self.assertIn(phrase, reference)
+
+        expected_questions = {
+            "ubergoal": ["Load-bearing goal?", "Skip test.", "Testable decomposition."],
+            "uberplan": ["Most likely execution failure.", "Missing affordance.", "Linear 80/50 alternative."],
+            "uberassess": ["Source-lane sufficiency.", "Actionability boundary.", "90-day falsifier."],
+            "uberrca": ["Falsification experiment.", "Competing cause.", "Model-blame audit."],
+            "uberaccept": ["Receipt reproducibility.", "Scope/diff match.", "Inherited assumption."],
+        }
+        for skill, questions in expected_questions.items():
+            body = (ROOT / skill / "SKILL.md").read_text()
+            self.assertIn("## Optional Claude adversary", body, skill)
+            self.assertIn("explicitly asks for Claude review", body, skill)
+            self.assertIn("Do not invoke Claude from task similarity", body, skill)
+            self.assertIn("../references/claude-adversary.md", body, skill)
+            self.assertIn("references may not auto-load", body, skill)
+            self.assertIn("Default to one Claude challenge round", body, skill)
+            self.assertIn("first two challenges must use distinct causal layers", body, skill)
+            self.assertIn("`No material impact` is non-evidence: it proves a review ran, not that the artifact is acceptable", body, skill)
+            self.assertEqual(body.count("## Optional Claude adversary"), 1, skill)
+            for question in questions:
+                self.assertIn(question, body, skill)
+            if skill == "uberaccept":
+                self.assertIn("Ship: yes/no, one sentence", body, skill)
+
     def test_ubergoal_owns_platform_goal_by_default(self) -> None:
         body = (ROOT / "ubergoal" / "SKILL.md").read_text()
         meta = (ROOT / "ubergoal" / "agents" / "openai.yaml").read_text()

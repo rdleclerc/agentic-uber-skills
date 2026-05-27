@@ -117,6 +117,18 @@ Human attention is for infrastructure impossibility or genuine policy ambiguity 
 - **Tests/evals/monitors** that would have caught this before the user did
 - **Confidence and unknowns** — do not overclaim
 
+## Optional Claude adversary
+
+Use this only when the user explicitly asks for Claude review, e.g. `with Claude`, `Claude review`, `Claude debate`, or `Claude for 2 rounds`. Do not invoke Claude from task similarity or ordinary `uberrca` use. Codex remains RCA owner and reconciler; Claude is an adversarial reviewer, not a co-author, final authority, or acceptance substitute. If available, read `../references/claude-adversary.md`; keep the essentials here because references may not auto-load.
+
+Default to one Claude challenge round; run two or three only when requested or when material unresolved risk remains. Each Claude challenge must name a claim, causal layer, why it matters, falsifying/satisfying evidence, and minimum impact threshold. If more than one challenge is raised, the first two challenges must use distinct causal layers; a single-challenge round must say why only one challenge is material. Codex reconciliation must classify each challenge as `Accepted`, `Risk added`, `Rejected`, `Uncertain`, or `No material impact`; `No material impact` is non-evidence: it proves a review ran, not that the artifact is acceptable. Bind the ledger to the artifact version/section reviewed.
+
+For `uberrca`, ask exactly:
+
+1. **Falsification experiment.** Causal layer: root-cause evidence. What experiment would falsify the identified root cause, and has it been run? Evidence: command/log/replay or explicit gap. Minimum impact: run/add the experiment or mark RCA incomplete.
+2. **Competing cause.** Causal layer: alternatives. Name one alternative cause with equal explanatory power and state why it was ruled out. Evidence: contrasting observation. Minimum impact: add/rerun evidence or carry as uncertainty.
+3. **Model-blame audit.** Causal layer: systemic affordance. Is “the model just failed” anywhere in the causal chain? Evidence: identify withheld context/tool/feedback/source/invariant. Minimum impact: replace model blame with system cause or mark mitigation-only.
+
 ## Package resources
 
 Use `scripts/lint_skill_package.py` when changing this skill package. Use `evals/golden_skill_invocations.json` only when tuning trigger behavior or checking trigger/non-trigger coverage; do not load evals during ordinary RCA.
