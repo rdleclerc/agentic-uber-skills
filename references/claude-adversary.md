@@ -40,6 +40,23 @@ This is a source/context invariant, not a new harness, hidden judge, or orchestr
 
 Standing default review criteria: unless the operator explicitly overrides them, Claude should also challenge whether Codex is sticking to the operator-approved plan and preserving modularity, thin harness / fat skills/tools, and agentic affordance. Treat simpler alternatives as part of that check.
 
+## Gall's Law / Basic Spine First adversary
+
+When Claude reviews an assessment or plan before implementation, tell Claude to think bigger about the ultimate goal and first principles — not bigger about the architecture or harness. The review should find the smallest basic working system that can run end-to-end, then identify how to evolve it with evals.
+
+Ask:
+
+1. **Basic working spine.** What is the simplest end-to-end version that would work now? Does this plan get that working first, or is it building architecture before life?
+2. **Gall's Law.** Is this evolving from a simple working system, or designing a complex top-down system from scratch? If top-down, name the simpler working subsystem it should evolve from.
+3. **New angle.** What simpler, more modular, or more agentic angle did Codex miss? If none, explain why the current path is already the simplest working path.
+4. **Thin/fat split.** Is the harness thin and the skill/tool/agent fat — or is it the reverse? Where does the judgment live?
+5. **Agentic affordance.** Is the plan preserving agent judgment, tool choice, decomposition, and recovery, or replacing those with deterministic machinery because token cost feels uncomfortable?
+6. **Eval-driven evolution.** What eval proves the basic spine works now, and what evals must stay green as the system becomes more robust?
+7. **What success is not.** What would success NOT look like, including locally polished micro-feature work, placeholder progress, proof-only artifacts, or scaffolding that does not advance the operator's real goal?
+
+Verdict fields: `Basic spine`, `Gall's Law`, `agentic affordance`, `overengineering`, `eval-driven evolution`, and `smallest next move`.
+
+
 ## Challenge format
 
 Each Claude challenge should include:

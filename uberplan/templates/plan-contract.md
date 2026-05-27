@@ -16,6 +16,18 @@ Use this to keep plans and second reviewers anchored to the operator's controlli
 - Diff between original and proposed scope:
 - Scope fidelity verdict before implementation: pass / fail / uncertain:
 
+## Gall's Law / Basic Spine First adversary
+
+- Think bigger about the ultimate goal and first principles, not bigger about architecture/harness:
+- Simplest basic working end-to-end spine:
+- Is this evolving from a simple working system, or designing a complex top-down system from scratch?:
+- Simpler/more modular/more agentic angle considered:
+- Thin harness / fat skill-tool-agent split; where judgment lives:
+- Eval that proves the basic spine works now:
+- Evals that must stay green as robustness increases:
+- What success is NOT:
+- Smallest next move:
+
 ## Scope
 
 ### In scope
