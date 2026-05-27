@@ -48,6 +48,7 @@ Produce a final acceptance report that names every relevant layer explicitly:
 4a. Tier 3 expensive-proof acceptance when the work involved burn-in, soak, canary expansion, replacement proof, or final proof
 5. planning-board reconciliation
 5. user expectation / surprise delta: what the user likely expected, what was actually implemented, what changed, what may surprise them, and whether any mismatch needs explicit approval
+5a. scope fidelity: compare operator original instruction, agent-interpreted scope, proposed narrowed scope, explicit deferrals/non-goals, approval evidence, and actual diff/evidence; unapproved narrowing blocks completion
 6. Agent Advocate final check for agentic work or agent failures
 7. Architecture Steward final check
 8. first-principles simplification and cost/complexity verdict, including any Basic Spine First veto
@@ -85,6 +86,7 @@ Only recommend completion when:
 - any claim of implemented/operational/live/adopted is backed by the plan's Operational Outcome Contract, not merely proof-only or shadow-only evidence
 - repeated clear failures of the same test command/failure family did not exceed five attempts without an RCA, `uberplan` revision, and resumed `ubergoal` evidence
 - expected-vs-actual user surprise was checked, and any material mismatch is either fixed or explicitly flagged for user approval
+- scope fidelity was checked against the operator-original instruction, and any narrowed scope is either operator-approved, marked deferred/not done, or blocks completion
 - product/rewrite/agentic-system spine proof is green, or the scope is explicitly limited to a spine-check fix/non-readiness spike accepted by the user
 - any repo-local topology/dependency gate relevant to changed code files was run, or its absence is named as a blocker/gap
 - score 0/1 rows are absent
@@ -105,6 +107,8 @@ For Tier 2/3 skill, prompt, workflow, multi-agent protocol, or agentic-system ch
 Use this only when the user explicitly asks for Claude review, e.g. `with Claude`, `Claude review`, `Claude debate`, or `Claude for 2 rounds`. Do not invoke Claude from task similarity or ordinary `uberaccept` use. Codex remains acceptance owner and reconciler; Claude is an adversarial reviewer, not a co-author, final authority, or acceptance substitute. If available, read `../references/claude-adversary.md`; keep the essentials here because references may not auto-load.
 
 Default to one Claude challenge round; run two or three only when requested or when material unresolved risk remains. Each Claude challenge must name a claim, causal layer, why it matters, falsifying/satisfying evidence, and minimum impact threshold. If more than one challenge is raised, the first two challenges must use distinct causal layers; a single-challenge round must say why only one challenge is material. Codex reconciliation must classify each challenge as `Accepted`, `Risk added`, `Rejected`, `Uncertain`, or `No material impact`; `No material impact` is non-evidence: it proves a review ran, not that the artifact is acceptable. Bind the ledger to the artifact version/section reviewed.
+
+Before the skill-specific questions, include the Scope Fidelity Packet from `../references/claude-adversary.md` and require the reviewer to answer `Original-scope satisfaction`, `Narrowing approval`, and `Scope fidelity verdict` against the operator-original instruction. A reviewer must not assess only Codex's summary or proposed scope. Also require Claude to challenge whether Codex is sticking to the operator-approved plan and preserving modularity, thin harness / fat skills/tools, and agentic affordance unless the user explicitly overrides those defaults.
 
 For `uberaccept`, ask exactly:
 

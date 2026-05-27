@@ -4,6 +4,18 @@
 
 State the concrete outcome and why it matters.
 
+## Scope Fidelity Ledger
+
+Use this to keep plans and second reviewers anchored to the operator's controlling instruction rather than the agent's compressed summary.
+
+- Operator original instruction, verbatim or exact artifact path:
+- Agent interpreted scope:
+- Proposed narrowed scope, if any:
+- Explicit deferrals / non-goals:
+- Approval evidence for each narrowing or deferral:
+- Diff between original and proposed scope:
+- Scope fidelity verdict before implementation: pass / fail / uncertain:
+
 ## Scope
 
 ### In scope
