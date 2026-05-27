@@ -13,6 +13,16 @@ Clarification checkpoint: <asked / assumptions-only / not needed + why>
 Clarifying questions asked: <questions or n/a>
 User answers / assumptions used: <answers or assumptions>
 
+## Scope fidelity for plan/artifact assessments
+
+- Operator original instruction, verbatim or exact artifact path: <required when assessing a plan/proposed scope>
+- Agent interpreted scope: <summary or n/a>
+- Proposed narrowed scope: <summary or none>
+- Explicit deferrals / non-goals: <list or none>
+- Approval evidence for narrowing/deferrals: <evidence or none>
+- Diff between original and proposed scope: <added/removed/narrowed/deferred obligations>
+- Scope fidelity verdict: <pass/fail/uncertain/n/a + why>
+
 ## Source packet
 
 Source kind: <x_post/x_thread/article/github_repo/arxiv_paper/pdf/video/internal_artifact/plan_artifact/idea_seed/implementation_question/open_research_question/mixed/unknown>

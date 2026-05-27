@@ -66,7 +66,7 @@ Stop research when additional sources are unlikely to change the recommendation,
 
 ## Plan Artifact Assessment mode
 
-Use this mode when the user asks `uberassess` to assess a plan, or when `uberplan` needs a review of a draft plan before hardening or implementation. Treat the plan as the source artifact: assess whether it matches the user's intent, asks the right clarifying questions, has enough research coverage, names assumptions and gaps honestly, maps risks to evidence, and deserves adoption, revision, or rejection.
+Use this mode when the user asks `uberassess` to assess a plan, or when `uberplan` needs a review of a draft plan before hardening or implementation. Treat the plan as the source artifact, but also capture the operator original instruction verbatim or by exact artifact path when available. Assess whether the plan matches the operator-original intent, asks the right clarifying questions, has enough research coverage, names assumptions and gaps honestly, maps risks to evidence, and deserves adoption, revision, or rejection. Do not assess only the plan author's summary.
 
 A plan assessment should usually answer:
 
@@ -83,7 +83,7 @@ For Tier 1+, produce an assessment packet with:
 
 - source URL/type and raw capture status
 - assessment mode, research question, and clarification checkpoint
-- for plan artifacts: intent fit, assumptions, evidence gaps, and revision decision
+- for plan artifacts: intent fit against the operator-original instruction, agent-interpreted scope, proposed narrowed scope, explicit deferrals/non-goals, approval evidence, evidence gaps, scope fidelity verdict, and revision decision
 - research/source map with coverage claimed and not claimed
 - linked sources/media inspected and retrieval limitations
 - key ideas, author claims, and model inferences
@@ -108,6 +108,8 @@ Do not create MCP servers, scrapers, vector indexes, scheduled automation, model
 Use this only when the user explicitly asks for Claude review, e.g. `with Claude`, `Claude review`, `Claude debate`, or `Claude for 2 rounds`. Do not invoke Claude from task similarity or ordinary `uberassess` use. Codex remains assessment owner and reconciler; Claude is an adversarial reviewer, not a co-author, final authority, or acceptance substitute. If available, read `../references/claude-adversary.md`; keep the essentials here because references may not auto-load.
 
 Default to one Claude challenge round; run two or three only when requested or when material unresolved risk remains. Each Claude challenge must name a claim, causal layer, why it matters, falsifying/satisfying evidence, and minimum impact threshold. If more than one challenge is raised, the first two challenges must use distinct causal layers; a single-challenge round must say why only one challenge is material. Codex reconciliation must classify each challenge as `Accepted`, `Risk added`, `Rejected`, `Uncertain`, or `No material impact`; `No material impact` is non-evidence: it proves a review ran, not that the artifact is acceptable. Bind the ledger to the artifact version/section reviewed.
+
+Before the skill-specific questions, include the Scope Fidelity Packet from `../references/claude-adversary.md` and require the reviewer to answer `Original-scope satisfaction`, `Narrowing approval`, and `Scope fidelity verdict` against the operator-original instruction. A reviewer must not assess only Codex's summary or proposed scope. Also require Claude to challenge whether Codex is sticking to the operator-approved plan and preserving modularity, thin harness / fat skills/tools, and agentic affordance unless the user explicitly overrides those defaults.
 
 For `uberassess`, ask exactly:
 

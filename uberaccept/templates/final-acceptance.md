@@ -7,6 +7,17 @@
 
 -
 
+## Scope fidelity
+
+- Operator original instruction, verbatim or exact artifact path:
+- Agent interpreted scope:
+- Proposed narrowed scope, if any:
+- Explicit deferrals / non-goals:
+- Approval evidence for each narrowing or deferral:
+- Diff between original and actual delivered scope:
+- Scope fidelity verdict: pass / fail / uncertain:
+- If narrowed, was it operator-approved? yes/no/n/a, evidence:
+
 ## Rubric scores
 
 Use 0 = blocker, 1 = weak/unresolved, 2 = acceptable with named residual risk, 3 = strong evidence.
@@ -14,6 +25,7 @@ Use 0 = blocker, 1 = weak/unresolved, 2 = acceptable with named residual risk, 3
 | Dimension | Score | Evidence | Residual gap |
 |---|---:|---|---|
 | Scope clarity |  |  |  |
+| Scope fidelity against operator-original instruction |  | Operator original instruction, proposed scope, deferrals, approval evidence, and actual diff compared |  |
 | Planning review board |  | board findings reconciled |  |
 | User expectation / surprise delta |  | expected user outcome compared against actual implementation and gaps |  |
 | Claim-language / operational outcome |  | implemented/operational/live/adopted/proof-only/blocked/shadow-only language checked against the Operational Outcome Contract |  |

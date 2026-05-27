@@ -17,6 +17,29 @@ Do **not** invoke the Claude adversary from task similarity, from a generic need
 - If Claude is unavailable, continue without inventing a fake review and record the missing proof as a gap.
 - Do not add a hidden reviewer loop, cron, persistent debate state, semantic judge, or orchestration harness.
 
+## Scope fidelity packet
+
+For any Claude/second-review round that judges a goal, plan, assessment, acceptance, or proposed scope, the reviewer prompt must include a **Scope Fidelity Packet** before the agent's summary. Do not let the reviewer assess only the agent's lossy restatement.
+
+Required packet fields:
+
+1. **Operator original instruction, verbatim** — exact controlling prompt/instruction, or an exact artifact path when too long/sensitive. Do not replace it with an agent summary.
+2. **Agent interpreted scope** — what the agent believes the work means.
+3. **Proposed narrowed scope** — any smaller slice the agent proposes to do now.
+4. **Explicit deferrals/non-goals** — obligations not being done now.
+5. **Approval evidence** — whether the operator explicitly approved each narrowing or deferral.
+6. **Diff between original and proposed scope** — added, removed, narrowed, or deferred obligations.
+
+The reviewer must answer:
+
+- **Original-scope satisfaction:** Does the proposed scope satisfy the operator-original instruction?
+- **Narrowing approval:** If scope is narrowed, was that narrowing explicitly operator-approved? Cite evidence.
+- **Scope fidelity verdict:** `pass`, `fail`, or `uncertain`. `fail` blocks plan acceptance, final sign-off, or ship recommendation unless the operator explicitly approves the narrower scope; `uncertain` requires clarification or a named residual gap.
+
+This is a source/context invariant, not a new harness, hidden judge, or orchestration loop. It preserves agentic affordance by giving reviewers the controlling source text and asking them to reason against it.
+
+Standing default review criteria: unless the operator explicitly overrides them, Claude should also challenge whether Codex is sticking to the operator-approved plan and preserving modularity, thin harness / fat skills/tools, and agentic affordance. Treat simpler alternatives as part of that check.
+
 ## Challenge format
 
 Each Claude challenge should include:

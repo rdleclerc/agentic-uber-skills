@@ -78,6 +78,13 @@ Before changing a skill, answer:
 If evidence is weak or benefit is not clearly much greater than cost, defer or record `no change`.
 
 
+
+## Regression lessons from scope-fidelity failures
+
+Promote severe scope-drift failures when an agent narrows, reframes, or defers the operator's original instruction and a second reviewer approves the narrowed frame because it saw only the agent's summary. The smallest durable fix should be a Scope Fidelity Packet, template field, reviewer prompt requirement, or regression fixture that forces comparison against the operator original instruction, verbatim. Do not solve this with a hidden semantic judge, persistent debate harness, or broad reviewer bureaucracy.
+
+A useful scope-fidelity learning record names: operator original instruction, agent-interpreted scope, proposed narrowed scope, explicit deferrals/non-goals, approval evidence, diff between original and proposed scope, reviewer scope-fidelity verdict, and what would have blocked the mistaken sign-off.
+
 ## Regression lessons from completion-claim failures
 
 Promote severe completion-claim failures into evals, templates, validators, or examples when they can recur. In particular, treat this as a high-value regression class: a parent `ubergoal` claims all child plans complete because a shared safe proof spine, readiness gate, registry, local proof, or shadow-only proof passed, while one or more child plans have not reached their intended operational outcome.

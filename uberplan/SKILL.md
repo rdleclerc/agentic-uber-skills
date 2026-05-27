@@ -60,6 +60,7 @@ Use `templates/plan-contract.md` for the durable plan. It must cover, as applica
 
 - goal posture, checkpoints, `.md` path, thread highlights, tier, objective, scope, assumptions, non-goals
 - **User expectation / surprise assessment** and final handoff proof against material mismatch
+- **Scope Fidelity Ledger**: operator original instruction, verbatim or exact artifact path; agent-interpreted scope; proposed narrowed scope; explicit deferrals/non-goals; approval evidence for narrowing; and diff between original and proposed scope
 - Definition of Done / Operational Outcome Contract, allowed terminal state, and non-implementation examples
 - Recursive / Hierarchical Execution Pseudocode plus Plan Tree Artifact Layout for child/subplans
 - Unattended production/runtime approval and safe-predecessor plan when production/runtime work could hit external/unsafe/irreversible steps
@@ -115,6 +116,8 @@ For agentic systems or fixes to agent mistakes, inspect what the agent experienc
 
 ## Plan acceptance and confidence gates
 
+Before implementation or launch, compare the plan against the operator-original instruction, not only the agent's summary. If the plan narrows scope, name the narrowing and require explicit operator approval or mark it as `re_scoped_with_approval`/deferred rather than done. Final plan review must include `Scope fidelity: pass/fail/uncertain`.
+
 Before implementation or launch, try to reject the plan against OpenClaw/agentic architecture, thin-harness/fat-agent policy, topology, dead-code, source-authority, side effects, and evidence. Then run the scoped verdict from `templates/confidence-gate.md`; do not say “100% confident” while a material blocker remains.
 
 ## Optional Claude adversary
@@ -122,6 +125,8 @@ Before implementation or launch, try to reject the plan against OpenClaw/agentic
 Use this only when the user explicitly asks for Claude review, e.g. `with Claude`, `Claude review`, `Claude debate`, or `Claude for 2 rounds`. Do not invoke Claude from task similarity or ordinary `uberplan` use. Codex remains plan owner and reconciler; Claude is an adversarial reviewer, not a co-author, final authority, or acceptance substitute. If available, read `../references/claude-adversary.md`; keep the essentials here because references may not auto-load.
 
 Default to one Claude challenge round; run two or three only when requested or when material unresolved risk remains. Each Claude challenge must name a claim, causal layer, why it matters, falsifying/satisfying evidence, and minimum impact threshold. If more than one challenge is raised, the first two challenges must use distinct causal layers; a single-challenge round must say why only one challenge is material. Codex reconciliation must classify each challenge as `Accepted`, `Risk added`, `Rejected`, `Uncertain`, or `No material impact`; `No material impact` is non-evidence: it proves a review ran, not that the artifact is acceptable. Bind the ledger to the artifact version/section reviewed.
+
+Before the skill-specific questions, include the Scope Fidelity Packet from `../references/claude-adversary.md` and require the reviewer to answer `Original-scope satisfaction`, `Narrowing approval`, and `Scope fidelity verdict` against the operator-original instruction. A reviewer must not assess only Codex's summary or proposed scope. Also require Claude to challenge whether Codex is sticking to the operator-approved plan and preserving modularity, thin harness / fat skills/tools, and agentic affordance unless the user explicitly overrides those defaults.
 
 For `uberplan`, ask exactly:
 

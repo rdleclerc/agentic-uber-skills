@@ -56,6 +56,16 @@ For each candidate, link to or summarize a `lesson-candidate.md` record.
 |---|---|---|---|---|
 | L1 |  |  |  |  |
 
+## Scope-fidelity regression check
+
+- Did the agent narrow, reframe, or defer the Operator original instruction?
+- Did any second reviewer see only the agent's summary instead of the Operator original instruction, verbatim or exact artifact path?
+- Did the reviewer answer whether the proposed scope satisfied the original instruction?
+- Approval evidence for narrowing/deferrals:
+- Scope fidelity verdict that should have been required:
+- Eval/template/validator candidate:
+- Anti-bloat verdict for any durable fix:
+
 ## Completion-claim regression check
 
 - Did any parent goal claim child plans complete from a shared safe proof spine, readiness gate, registry, local proof, or shadow-only proof?

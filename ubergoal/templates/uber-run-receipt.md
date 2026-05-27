@@ -11,6 +11,16 @@ Use this as the thin tracing artifact for an `ubergoal` run. It is not an orches
 - Outcome: success | partial | failed | aborted
 - Source branch/commit:
 
+## Scope fidelity
+
+- Operator original instruction, verbatim or exact artifact path:
+- Goal objective / agent interpreted scope:
+- Proposed narrowed scope, if any:
+- Explicit deferrals / non-goals:
+- Approval evidence for narrowing/deferrals:
+- Diff between original and goal scope:
+- Scope fidelity verdict: pass / fail / uncertain:
+
 ## Runtime agent topology
 
 - Config source / observed source:

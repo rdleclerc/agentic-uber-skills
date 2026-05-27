@@ -52,6 +52,17 @@ class PackContractTests(unittest.TestCase):
             "Scope-boundary rejections must state what evidence, approval, or changed scope would bring the challenge in scope",
             "Material edits to challenged sections make the relevant challenge stale",
             "Ship: yes/no, one sentence",
+            "Scope Fidelity Packet",
+            "Operator original instruction, verbatim",
+            "Agent interpreted scope",
+            "Proposed narrowed scope",
+            "Explicit deferrals/non-goals",
+            "Approval evidence",
+            "Diff between original and proposed scope",
+            "Scope fidelity verdict",
+            "Do not let the reviewer assess only the agent's lossy restatement",
+            "operator-approved plan",
+            "modularity, thin harness / fat skills/tools, and agentic affordance",
         ]:
             self.assertIn(phrase, reference)
 
@@ -77,6 +88,41 @@ class PackContractTests(unittest.TestCase):
                 self.assertIn(question, body, skill)
             if skill == "uberaccept":
                 self.assertIn("Ship: yes/no, one sentence", body, skill)
+
+    def test_scope_fidelity_contract_prevents_reviewer_scope_drift(self) -> None:
+        required_skill_phrases = [
+            "operator original instruction",
+            "agent-interpreted scope",
+            "proposed narrowed scope",
+            "explicit deferrals/non-goals",
+            "approval evidence",
+            "Scope fidelity",
+        ]
+        for skill in ["ubergoal", "uberplan", "uberassess", "uberaccept"]:
+            body = (ROOT / skill / "SKILL.md").read_text()
+            for phrase in required_skill_phrases:
+                self.assertIn(phrase, body, f"{skill}: {phrase}")
+            self.assertIn("must not assess only Codex's summary", body, skill)
+            self.assertIn("operator-approved plan", body, skill)
+            self.assertIn("modularity, thin harness / fat skills/tools, and agentic affordance", body, skill)
+
+        evolver = (ROOT / "uberskillevolver" / "SKILL.md").read_text()
+        self.assertIn("Regression lessons from scope-fidelity failures", evolver)
+        self.assertIn("operator original instruction", evolver)
+        self.assertIn("hidden semantic judge", evolver)
+
+        templates = {
+            "uberplan/templates/plan-contract.md": "Scope Fidelity Ledger",
+            "uberaccept/templates/final-acceptance.md": "Scope fidelity against operator-original instruction",
+            "uberassess/templates/assessment-packet.md": "Scope fidelity for plan/artifact assessments",
+            "ubergoal/templates/uber-run-receipt.md": "Scope fidelity",
+            "uberskillevolver/templates/post-run-learning.md": "Scope-fidelity regression check",
+        }
+        for rel, phrase in templates.items():
+            text = (ROOT / rel).read_text()
+            self.assertIn(phrase, text, rel)
+            self.assertIn("Operator original instruction", text, rel)
+            self.assertIn("Approval evidence", text, rel)
 
     def test_ubergoal_owns_platform_goal_by_default(self) -> None:
         body = (ROOT / "ubergoal" / "SKILL.md").read_text()
