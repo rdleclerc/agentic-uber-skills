@@ -100,6 +100,20 @@ When running in Codex, call `update_goal(status="complete")` only when the objec
 
 For Tier 2/3 skill, prompt, workflow, multi-agent protocol, or agentic-system changes, invoke or recommend `uberskillevolver` before final handoff. Capture what should become evals, validators, templates, deletions, or no change. Never allow silent self-modification.
 
+## Optional Claude adversary
+
+Use this only when the user explicitly asks for Claude review, e.g. `with Claude`, `Claude review`, `Claude debate`, or `Claude for 2 rounds`. Do not invoke Claude from task similarity or ordinary `uberaccept` use. Codex remains acceptance owner and reconciler; Claude is an adversarial reviewer, not a co-author, final authority, or acceptance substitute. If available, read `../references/claude-adversary.md`; keep the essentials here because references may not auto-load.
+
+Default to one Claude challenge round; run two or three only when requested or when material unresolved risk remains. Each Claude challenge must name a claim, causal layer, why it matters, falsifying/satisfying evidence, and minimum impact threshold. If more than one challenge is raised, the first two challenges must use distinct causal layers; a single-challenge round must say why only one challenge is material. Codex reconciliation must classify each challenge as `Accepted`, `Risk added`, `Rejected`, `Uncertain`, or `No material impact`; `No material impact` is non-evidence: it proves a review ran, not that the artifact is acceptable. Bind the ledger to the artifact version/section reviewed.
+
+For `uberaccept`, ask exactly:
+
+1. **Receipt reproducibility.** Causal layer: evidence. Are receipts reproducible by deterministic tool output, or are they model summaries? Evidence: command/log/diff path. Minimum impact: rerun or downgrade evidence.
+2. **Scope/diff match.** Causal layer: modularity/seams. Does the diff match stated scope? Name any out-of-scope change. Evidence: git diff/status. Minimum impact: revert, split, or explicitly re-scope.
+3. **Inherited assumption.** Causal layer: future-agent collision. What assumption does the next task inherit that could be wrong? Evidence: named downstream dependency. Minimum impact: document/test/rollback or block acceptance.
+
+Then answer the separate final gate: **Ship: yes/no, one sentence.** This ship gate is not one of the three Claude questions.
+
 ## Helpful resources
 
 - `templates/final-acceptance.md` — full acceptance report.

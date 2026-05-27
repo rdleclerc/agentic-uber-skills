@@ -97,6 +97,18 @@ Do not call `update_goal(status="complete")` until `$uberaccept` says the object
 
 For Tier 2/3, use specialist review-board agents/lenses for the final policy check when available; no solo self-certification. Final handoff must include `git status --short --branch`, Skills invoked summary, and a validated Uber run receipt when feasible. For “100% confident,” mean scoped confidence after trying to disprove the work and finding no material unresolved blocker.
 
+## Optional Claude adversary
+
+Use this only when the user explicitly asks for Claude review, e.g. `with Claude`, `Claude review`, `Claude debate`, or `Claude for 2 rounds`. Do not invoke Claude from task similarity or ordinary `ubergoal` use. Codex remains goal owner and reconciler; Claude is an adversarial reviewer, not a co-author, final authority, or acceptance substitute. If available, read `../references/claude-adversary.md`; keep the essentials here because references may not auto-load.
+
+Default to one Claude challenge round; run two or three only when requested or when material unresolved risk remains. Each Claude challenge must name a claim, causal layer, why it matters, falsifying/satisfying evidence, and minimum impact threshold. If more than one challenge is raised, the first two challenges must use distinct causal layers; a single-challenge round must say why only one challenge is material. Codex reconciliation must classify each challenge as `Accepted`, `Risk added`, `Rejected`, `Uncertain`, or `No material impact`; `No material impact` is non-evidence: it proves a review ran, not that the artifact is acceptable. Bind the ledger to the artifact version/section reviewed.
+
+For `ubergoal`, ask exactly:
+
+1. **Load-bearing goal?** Causal layer: scope/ownership. Is this goal actually load-bearing, or a routing artifact? Evidence: name what execution decision changes because the goal exists. Minimum impact: delete/narrow the goal or name the decision it controls.
+2. **Skip test.** Causal layer: deletion-first. What is lost if we skip the goal wrapper and execute directly? Evidence: list the lost safety/evidence boundary or admit none. Minimum impact: downgrade to ordinary task or add the missing boundary.
+3. **Testable decomposition.** Causal layer: operational evidence. Does this decompose into three or fewer testable sub-outcomes? Evidence: name each sub-outcome and proof. Minimum impact: split/re-scope if not testable.
+
 ## Helpful resources
 
 - `templates/goal-ledger.md` — compact long-running state.

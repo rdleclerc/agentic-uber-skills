@@ -103,6 +103,18 @@ Use `scripts/validate_assessment_packet.py` before treating a Tier 1+ packet as 
 
 Do not create MCP servers, scrapers, vector indexes, scheduled automation, model swaps, or new persistent state during assessment. Recommend them only after repeated usage proves a stable interface and benefit >> cost.
 
+## Optional Claude adversary
+
+Use this only when the user explicitly asks for Claude review, e.g. `with Claude`, `Claude review`, `Claude debate`, or `Claude for 2 rounds`. Do not invoke Claude from task similarity or ordinary `uberassess` use. Codex remains assessment owner and reconciler; Claude is an adversarial reviewer, not a co-author, final authority, or acceptance substitute. If available, read `../references/claude-adversary.md`; keep the essentials here because references may not auto-load.
+
+Default to one Claude challenge round; run two or three only when requested or when material unresolved risk remains. Each Claude challenge must name a claim, causal layer, why it matters, falsifying/satisfying evidence, and minimum impact threshold. If more than one challenge is raised, the first two challenges must use distinct causal layers; a single-challenge round must say why only one challenge is material. Codex reconciliation must classify each challenge as `Accepted`, `Risk added`, `Rejected`, `Uncertain`, or `No material impact`; `No material impact` is non-evidence: it proves a review ran, not that the artifact is acceptable. Bind the ledger to the artifact version/section reviewed.
+
+For `uberassess`, ask exactly:
+
+1. **Source-lane sufficiency.** Causal layer: source authority. Did assessment consult the relevant source lane, or stop at the first confirming source? Evidence: source map plus coverage gap. Minimum impact: inspect the missing lane or limit the claim.
+2. **Actionability boundary.** Causal layer: ownership/approval. Is the recommendation directly actionable by the agent, or does it require human escalation? Evidence: next action plus owner. Minimum impact: change decision to watch/archive/escalate if not actionable.
+3. **90-day falsifier.** Causal layer: freshness. What would change this recommendation in 90 days? Evidence: named trigger/source. Minimum impact: add watch trigger or reduce confidence.
+
 ## Helpful resources
 
 - `templates/assessment-packet.md` — canonical recommendation packet.
