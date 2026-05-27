@@ -63,6 +63,12 @@ class PackContractTests(unittest.TestCase):
             "Do not let the reviewer assess only the agent's lossy restatement",
             "operator-approved plan",
             "modularity, thin harness / fat skills/tools, and agentic affordance",
+            "Gall's Law / Basic Spine First adversary",
+            "think bigger about the ultimate goal and first principles",
+            "not bigger about the architecture or harness",
+            "Basic working spine",
+            "What would success NOT look like",
+            "smallest next move",
         ]:
             self.assertIn(phrase, reference)
 
@@ -123,6 +129,34 @@ class PackContractTests(unittest.TestCase):
             self.assertIn(phrase, text, rel)
             self.assertIn("Operator original instruction", text, rel)
             self.assertIn("Approval evidence", text, rel)
+
+
+    def test_galls_law_basic_spine_adversary_is_packaged_for_plan_review(self) -> None:
+        reference = (ROOT / "references" / "claude-adversary.md").read_text()
+        for phrase in [
+            "Gall's Law / Basic Spine First adversary",
+            "think bigger about the ultimate goal and first principles",
+            "not bigger about the architecture or harness",
+            "simplest end-to-end version that would work now",
+            "Is the harness thin and the skill/tool/agent fat",
+            "What would success NOT look like",
+            "eval proves the basic spine works now",
+            "smallest next move",
+        ]:
+            self.assertIn(phrase, reference)
+
+        plan = (ROOT / "uberplan" / "SKILL.md").read_text()
+        self.assertIn("require a Gall's Law / Basic Spine First review before implementation", plan)
+        self.assertIn("does not auto-invoke Claude by task similarity", plan)
+        self.assertIn("Locally polished micro-feature progress is not a substitute for a basic working spine", plan)
+
+        accept = (ROOT / "uberaccept" / "SKILL.md").read_text()
+        self.assertIn("locally polished micro-feature success that did not advance the basic working spine is a soft rejection signal", accept)
+        self.assertIn("complex top-down harness", accept)
+
+        template = (ROOT / "uberplan" / "templates" / "plan-contract.md").read_text()
+        self.assertIn("Gall's Law / Basic Spine First adversary", template)
+        self.assertIn("What success is NOT", template)
 
     def test_ubergoal_owns_platform_goal_by_default(self) -> None:
         body = (ROOT / "ubergoal" / "SKILL.md").read_text()
