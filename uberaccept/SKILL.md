@@ -37,6 +37,18 @@ For Codex campaign/subagent work, final acceptance must inspect runtime topology
 
 For Tier 3 agentic/runtime/production-replacement expensive proofs, final acceptance must inspect the expensive-proof plan validator result, risk/failure inventory, observability/telemetry preflight, phase-boundary/contract-fuzz preflight, burn-in vs final-proof separation, stop/replan evidence, and child/status ledger. Reject flat-plan readiness unless the report names a recorded approval and validator-bypass reason.
 
+## Acceptance-criteria verification
+
+When a task used a micro-intent, work contract, PRD, ticket, or `uberplan` with acceptance criteria, final acceptance must verify each criterion explicitly:
+
+- list every acceptance criterion
+- mark `pass`, `fail`, or `partial`
+- cite file paths, commands, artifacts, or a clear not-applicable reason
+- block completion on any `fail`
+- allow `partial` only with named residual risk and explicit user-accepted scope or follow-up owner
+
+This is not a replacement for the Operational Outcome Contract. Acceptance criteria prove the stated intent was checked; the Operational Outcome Contract proves the final state being claimed. For AI-generated code, also check whether spec/intent review caught design and scope issues before code, and whether code review still covered repo conventions, naming, module seams, integration details, and maintainability.
+
 ## Output contract
 
 Produce a final acceptance report that names every relevant layer explicitly:
@@ -44,19 +56,20 @@ Produce a final acceptance report that names every relevant layer explicitly:
 1. implementation summary and files changed
 2. rubric scores with evidence and residual gaps
 3. commands/artifacts proving unit, regression, integration, UI/browser, eval, security/privacy, concurrency/idempotency, architecture, repository-topology/dependency boundaries, dead-code, rollback, and observability layers as applicable
-4. Claim-state ledger: claim language, Operational Outcome Contract evidence, and child terminal states for multi-child goals
-5. Production implementation blocker gate: active blockers vs hard blockers, runnable safe next actions, safe-predecessor exhaustion, and parent completion rule
-5a. Safe-work exhaustion adversarial review: blocked children inspected for plausible safe next actions before parent completion
-4a. Tier 3 expensive-proof acceptance when the work involved burn-in, soak, canary expansion, replacement proof, or final proof
-5. planning-board reconciliation
-5. user expectation / surprise delta: what the user likely expected, what was actually implemented, what changed, what may surprise them, and whether any mismatch needs explicit approval
-5a. scope fidelity: compare operator original instruction, agent-interpreted scope, proposed narrowed scope, explicit deferrals/non-goals, approval evidence, and actual diff/evidence; unapproved narrowing blocks completion
-6. Agent Advocate final check for agentic work or agent failures
-7. Architecture Steward final check
-8. first-principles simplification and cost/complexity verdict, including any Basic Spine First veto
-9. adversarial acceptance check
-10. post-run learning decision for skill/workflow/agentic-system changes
-11. confidence verdict and completion recommendation
+4. Acceptance-criteria verification: criterion-by-criterion pass/fail/partial evidence
+5. Claim-state ledger: claim language, Operational Outcome Contract evidence, and child terminal states for multi-child goals
+6. Production implementation blocker gate: active blockers vs hard blockers, runnable safe next actions, safe-predecessor exhaustion, and parent completion rule
+7. Safe-work exhaustion adversarial review: blocked children inspected for plausible safe next actions before parent completion
+8. Tier 3 expensive-proof acceptance when the work involved burn-in, soak, canary expansion, replacement proof, or final proof
+9. planning-board reconciliation
+10. user expectation / surprise delta: what the user likely expected, what was actually implemented, what changed, what may surprise them, and whether any mismatch needs explicit approval
+11. scope fidelity: compare operator original instruction, agent-interpreted scope, proposed narrowed scope, explicit deferrals/non-goals, approval evidence, and actual diff/evidence; unapproved narrowing blocks completion
+12. Agent Advocate final check for agentic work or agent failures
+13. Architecture Steward final check
+14. first-principles simplification and cost/complexity verdict, including any Basic Spine First veto
+15. adversarial acceptance check
+16. post-run learning decision for skill/workflow/agentic-system changes
+17. confidence verdict and completion recommendation
 
 Use `templates/final-acceptance.md` and validate with `scripts/validate_acceptance_report.py` when producing durable artifacts.
 

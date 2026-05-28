@@ -26,6 +26,7 @@ Use 0 = blocker, 1 = weak/unresolved, 2 = acceptable with named residual risk, 3
 |---|---:|---|---|
 | Scope clarity |  |  |  |
 | Scope fidelity against operator-original instruction |  | Operator original instruction, proposed scope, deferrals, approval evidence, and actual diff compared |  |
+| Acceptance criteria verification |  | every micro-intent/work-contract/PRD/plan acceptance criterion mapped to pass/fail/partial with evidence |  |
 | Planning review board |  | board findings reconciled |  |
 | User expectation / surprise delta |  | expected user outcome compared against actual implementation and gaps |  |
 | Claim-language / operational outcome |  | implemented/operational/live/adopted/proof-only/blocked/shadow-only language checked against the Operational Outcome Contract |  |
@@ -55,6 +56,21 @@ Use 0 = blocker, 1 = weak/unresolved, 2 = acceptable with named residual risk, 3
 | Layer | Command/artifact | Result |
 |---|---|---|
 |  |  |  |
+
+## Acceptance criteria verification
+
+Required when the task used a micro-intent, work contract, PRD, ticket, or plan acceptance criteria. Otherwise state why not applicable.
+
+- Acceptance criteria source:
+- Any criteria omitted from verification? yes/no, explain:
+- Any failed criteria? yes/no, explain:
+- Any partial criteria? yes/no, residual risk and owner:
+- Spec/intent review vs code review split checked? yes/no, explain:
+- AC verification verdict:
+
+| Acceptance criterion | Status: pass / fail / partial / n/a | Evidence: file path, command, artifact, or reason | Residual risk / follow-up owner |
+|---|---|---|---|
+|  |  |  |  |
 
 ## Runtime agent topology acceptance
 
