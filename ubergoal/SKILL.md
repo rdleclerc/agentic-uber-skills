@@ -26,7 +26,7 @@ Use the lightest tier that makes the work safe. Add process only when benefit is
 | `ubercampaign`, product campaign, multi-feature/feature-list/plan-tree campaign, “assess then plan then execute all items” | load `references/campaign-profile.md` |
 | Tier 3 agentic/runtime/production-replacement expensive proof, burn-in, soak, canary expansion, or final proof | route to `$uberplan` with `templates/tier3-expensive-proof-plan-tree.md` and validator before launch |
 
-Deferred until real usage proves benefit >> cost: `ubercode`, `ubergit`, `ubereval`, `uberui`, and standalone specialist-lane skills.
+Deferred until real usage proves benefit >> cost: `ubercode`, `ubergit`, `ubereval`, `uberui`, and standalone specialist-lane skills. Do **not** create `ubertesting` as a workaround for missing proof discipline; keep testing/eval as an explicit lane until repeated real runs show extraction makes the common path smaller or safer.
 
 ## Coding-agent work contract
 
@@ -42,7 +42,7 @@ Tier 0 can use an inline note. Tier 1 uses the work contract unless risk require
 1. **Classify tier.** Choose the lowest safe Tier 0/1/2/3.
 2. **Frame enough to make the goal non-vague.** Before creating a platform goal, do the minimum clarification needed to name the outcome, rough scope, non-goals, likely tier, and what “done” could mean. This is not full planning and must not become implementation.
 3. **Create or bind the goal before robust planning/execution.** If no goal exists and the user explicitly invoked `ubergoal`, call `create_goal` once the compact objective is specific enough. The goal may explicitly be “produce a robust plan, then execute it after the acceptance gate”; this preserves `ubergoal`’s purpose of preventing shallow plans while avoiding vague goal launch.
-4. **Plan.** Start Tier 1+ with a **user expectation / surprise assessment**. Use inline note, work contract, or `$uberplan` by tier/risk. Agentic-system plans bias toward thin deterministic harnesses around capable agents. Do not execute until the plan or work contract names verification and stop conditions.
+4. **Plan.** Start Tier 1+ with a **user expectation / surprise assessment**. Use inline note, work contract, or `$uberplan` by tier/risk. Agentic-system plans bias toward thin deterministic harnesses around capable agents. Do not execute until the plan or work contract names verification, stop conditions, and a red/green proof ledger when the task changes code, skills, prompts, workflows, or agent behavior.
 5. **Review and execute.** Main agent owns integration. Explicit `ubergoal` authorizes bounded Tier 2+ specialist review-board agents/lenses unless the user says no/lightweight. Workers mutate files only with disjoint write scopes.
 6. **Adapt on test failure.** Stop before or at **five consecutive failures** of the same command/family, or immediately for material unexpected test failures. Capture evidence, run `$uberrca`, revise with `$uberplan`, append/merge scope expansion/correction/blocker, update ledger/receipt, continue under same goal.
 7. **Ledger/receipt.** For long work, maintain `templates/goal-ledger.md` and the **Uber run receipt** in `templates/uber-run-receipt.md`, including the **Skills invoked summary**.
@@ -79,7 +79,7 @@ When launching, keep the objective compact: destination, objective/scope, non-go
 
 Treat subagent/session limits as hard policy. In Codex, prefer the configured/reportable `[agents]` limits. Standard campaign preset is `max_threads=6`, `max_depth=2`: L0 root orchestrator → L1 workstream orchestrator → L2 worker/reviewer. If a campaign appears to need L0→L1→L2→L3, prompt before temporary deep-campaign mode (`max_threads=8`, `max_depth=3`), record approval, and restore `6/2` afterward unless the user says to keep it. `10/3` needs separate explicit approval. Never silently raise thread/depth limits or confuse plan depth with spawned-agent depth.
 
-Tier 2 is valuable because it changes the decision shape: the orchestrator receives independent specialist context, not just more solo thinking. For Tier 2, launch 2-3 bounded review lanes when supported. Default lanes: Codebase/State Scout, Architecture/Contract Steward, and Quality/Eval/Hygiene Auditor. Choose fewer only when risk is narrower.
+Tier 2 is valuable because it changes the decision shape: the orchestrator receives independent specialist context, not just more solo thinking. For Tier 2, launch 2-3 bounded review lanes when supported. Default lanes: Codebase/State Scout, Architecture/Contract Steward, and Black-box Tester / Quality-Eval Auditor. The black-box lane checks user-visible behavior, red/green proof, false-green risk, and skipped evidence layers before completion. Choose fewer only when risk is narrower.
 
 Review-board agents inspect, challenge, and recommend; they do not mutate unless assigned disjoint worker scope. Keep write sets disjoint, do not delegate the immediate critical-path blocker, require evidence-backed outputs, serialize overlapping work, update `templates/goal-ledger.md`, and stop/replan after repeated or material unexpected failures. Ask before destructive/external side effects unless already approved.
 
@@ -95,7 +95,7 @@ For Tier 3 expensive-proof/replacement/runtime proof campaigns, do not proceed f
 
 Do not call `update_goal(status="complete")` until `$uberaccept` says the objective is achieved, no required work remains, policy-adherence has been checked against the plan and OpenClaw/agentic architecture, expected-vs-actual surprise has been checked, tradeoffs/surprises are reported, and every touched repo is committed, reverted, intentionally stashed, or explicitly approved as uncommitted.
 
-For Tier 2/3, use specialist review-board agents/lenses for the final policy check when available; no solo self-certification. Final handoff must include `git status --short --branch`, Skills invoked summary, and a validated Uber run receipt when feasible. For “100% confident,” mean scoped confidence after trying to disprove the work and finding no material unresolved blocker.
+For Tier 2/3, use specialist review-board agents/lenses for the final policy check when available; no solo self-certification. The final policy check must include the Black-box Tester / Quality-Eval Auditor lens when user-visible behavior, tests, evals, prompts, skills, or agent workflows changed. Final handoff must include `git status --short --branch`, Skills invoked summary, and a validated Uber run receipt when feasible. For “100% confident,” mean scoped confidence after trying to disprove the work and finding no material unresolved blocker.
 
 ## Helpful resources
 

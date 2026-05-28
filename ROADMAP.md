@@ -27,9 +27,9 @@ This roadmap keeps the skill pack evolving without turning it into bureaucracy. 
 ## Near-term priorities
 
 1. **Fresh-agent behavioral evals**
-   - Build a small pack-level harness before creating a standalone `ubereval` skill.
+   - Build a small pack-level harness before creating a standalone `ubereval` skill; do not create `ubertesting` as a parallel alias.
    - Verify a fresh agent routes `ubergoal → uberplan → uberaccept → uberskillevolver` correctly.
-   - Turn golden eval seeds into an executable or semi-automated harness.
+   - Turn golden eval seeds into an executable or semi-automated harness, including false-green and missing-black-box-proof cases.
    - Test de-escalation: tiny tasks should not trigger the full machine.
 
 2. **Cross-machine learning loop**
@@ -70,9 +70,9 @@ Do not build these until real usage proves benefit >> cost:
 
 - `ubercode` — execution-wave orchestration.
 - `ubergit` / `ubership` — commit, PR, release, and GitHub-management workflows.
-- `ubereval` — dedicated eval design/execution workflow.
+- `ubereval` — dedicated eval design/execution workflow. `ubertesting` remains intentionally uncreated; testing stays a red/green proof ledger and Black-box Tester / Quality-Eval Auditor lane until repeated failures justify extraction.
 - `uberui` — UI/browser verification workflow, distinct from `ubershow` visual communication artifacts.
-- standalone specialist skills for Codebase Scout, Architecture Steward, Agent Advocate, Loophole Hunter, Quality/Eval Strategist.
+- standalone specialist skills for Codebase Scout, Architecture Steward, Agent Advocate, Loophole Hunter, Black-box Tester / Quality-Eval Auditor.
 
 Default: keep specialist roles as lanes/templates inside `uberplan` and `uberaccept` until repeated use proves a standalone skill would reduce context/cost or prevent failures.
 

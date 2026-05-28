@@ -248,7 +248,7 @@ uberplan/
 Skill, multi-agent/subagent system, cross-agent coordination layer, guardrail/human-review layer, eval/observability layer.
 
 ## Planning review board
-- Lanes activated: Architecture Steward, Agent Advocate, Loophole Hunter, Quality/Eval Strategist.
+- Lanes activated: Architecture Steward, Agent Advocate, Loophole Hunter, Black-box Tester / Quality-Eval Auditor.
 - Lanes skipped, and why: OpenClaw Platform Steward skipped because no OpenClaw runtime or Type0 files are touched.
 - Findings reconciled into this plan: added disjoint write-set rule, Agent Advocate human counterfactual, and validator fixtures.
 - Board verdict: allow confidence gate? yes

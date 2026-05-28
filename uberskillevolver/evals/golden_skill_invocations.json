@@ -65,5 +65,19 @@
       "prefers template/validator/eval fixtures over hidden scheduler or product harness bloat",
       "requires reviewable learning record and skill diff, not silent self-modification"
     ]
+  },
+  {
+    "id": "red_green_false_green_lesson_promotes_smallest_fix",
+    "prompt": "Use uberskillevolver after a run where green tests hid a missing user-visible proof layer. Decide what lesson to promote.",
+    "expected_behavior": [
+      "separates the false-green observation from the lesson candidate",
+      "prefers a red/green proof-ledger field, negative eval fixture, or Black-box Tester / Quality-Eval Auditor checklist item",
+      "requires repeated evidence before standalone ubereval extraction",
+      "does not create standalone ubertesting from one run"
+    ],
+    "forbidden_behavior": [
+      "silently modify skills without review",
+      "create a new testing skill without benefit >> cost evidence"
+    ]
   }
 ]

@@ -63,7 +63,7 @@ class PackContractTests(unittest.TestCase):
         self.assertIn("bounded review-board coordinator", body)
         self.assertIn("Tier 2 is valuable because it changes the decision shape", body)
         self.assertIn("launch 2-3 bounded review lanes", body)
-        self.assertIn("Codebase/State Scout, Architecture/Contract Steward, and Quality/Eval/Hygiene Auditor", body)
+        self.assertIn("Codebase/State Scout, Architecture/Contract Steward, and Black-box Tester / Quality-Eval Auditor", body)
         self.assertIn("specialist review-board agents", meta)
         self.assertIn("run specialist review-board agents or lenses for Tier 2+ work", evals)
         self.assertIn("ubercampaign", body)
@@ -143,6 +143,12 @@ class PackContractTests(unittest.TestCase):
         self.assertIn("hard_blocked_after_safe_action_exhaustion", (ROOT / "uberaccept" / "SKILL.md").read_text())
         self.assertIn("plausible safe next actions", (ROOT / "uberaccept" / "SKILL.md").read_text())
         self.assertIn("runnable safe next actions", learning_template)
+        self.assertIn("Red/green proof ledger", plan_template)
+        self.assertIn("Black-box Tester / Quality-Eval Auditor", plan_template)
+        self.assertIn("Red/green and black-box proof ledger audit", accept_template)
+        self.assertIn("Red/green / false-green lesson check", learning_template)
+        self.assertIn("false-green", (ROOT / "uberaccept" / "SKILL.md").read_text())
+        self.assertIn("ubertesting", (ROOT / "ROADMAP.md").read_text())
 
 
 if __name__ == "__main__":

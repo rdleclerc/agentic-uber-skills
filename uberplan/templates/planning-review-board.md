@@ -50,7 +50,7 @@ Use when work touches OpenClaw, Type0, runtime, gateway, launchd, orchestration,
 |---|---|---|
 |  |  |  |
 
-## Quality/Eval Strategist
+## Black-box Tester / Quality-Eval Auditor
 
 Map risks to evidence. Prefer real-world fixtures for judgment/model behavior.
 

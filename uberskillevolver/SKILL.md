@@ -75,7 +75,7 @@ Before changing a skill, answer:
 - What eval, validator, or example will catch regression?
 - What would make us revert this change?
 
-If evidence is weak or benefit is not clearly much greater than cost, defer or record `no change`.
+If evidence is weak or benefit is not clearly much greater than cost, defer or record `no change`. Do not promote a standalone `ubertesting` or `ubereval` skill from one bookmark batch or one annoying run; first prefer a red/green proof ledger, black-box quality/eval lane, negative fixture, or template field inside existing skills.
 
 
 ## Regression lessons from completion-claim failures
@@ -91,6 +91,12 @@ If the failure involved one giant plan file causing shallow inner-loop treatment
 If the failure involved Tier 3 agentic/runtime/replacement expensive proof, burn-in, soak, canary expansion, or final-proof burn, promote a scoped preflight template/validator/eval when it can catch the next shallow flat-plan launch. Require risk/failure inventory, observability/telemetry, phase-boundary contract-fuzz, burn-in/final separation, stop/replan rules, and child/status ledger unless a human-approved bypass is recorded.
 
 The smallest durable fix should usually be a plan/acceptance template field, mechanical validator, or negative fixture. Do not solve this by adding a hidden runtime controller or semantic judge inside the skill package.
+
+## Red/green and false-green lessons
+
+Promote lessons when a run claimed success from a green command that did not prove the actual user-visible, black-box, integration, eval, or target-system risk. The smallest durable fix should usually be one of: a red/green proof-ledger field, a negative eval fixture, a Black-box Tester / Quality-Eval Auditor checklist item, or clearer acceptance wording. Avoid solving false-green failures with a hidden judge or new standalone testing skill unless repeated real-project evidence shows extraction makes the common path smaller and safer.
+
+A useful red/green learning record names: baseline result, expected red/failing fixture when relevant, first green proof, black-box/user-visible proof, false-green risk, skipped evidence layers, and what would falsify the lesson.
 
 ## Runtime topology lessons
 
