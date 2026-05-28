@@ -16,6 +16,20 @@ Use this to keep plans and second reviewers anchored to the operator's controlli
 - Diff between original and proposed scope:
 - Scope fidelity verdict before implementation: pass / fail / uncertain:
 
+## Frame-independence / anti-roleplay check
+
+Use this when Claude or any second reviewer is asked to judge the plan before implementation. It prevents the reviewer from merely accepting Codex's role, terminology, or local frame.
+
+- Reviewer prompt begins with Operator original instruction, verbatim? yes/no:
+- If no, stop: review is invalid until fixed.
+- Role Codex is inviting the reviewer to play:
+- Reviewer accepts / modifies / refuses that role, and why:
+- What the Operator original instruction requires that Codex's summary might hide or narrow:
+- Three concrete reject conditions before any approval language:
+- Plain-language restatement of any new Codex terminology:
+- Rubber-stamp warning? Highly one-sided `Accepted`/`No material impact` ledger, yes/no:
+- Reduced-noise caveat recorded? Model review does not replace operator-defined observable success, direct prompt/diff spot-checks, deterministic tests, evals, or receipts:
+
 ## Gall's Law / Basic Spine First adversary
 
 - Think bigger about the ultimate goal and first principles, not bigger about architecture/harness:

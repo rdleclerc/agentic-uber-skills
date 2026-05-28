@@ -69,6 +69,14 @@ class PackContractTests(unittest.TestCase):
             "Basic working spine",
             "What would success NOT look like",
             "smallest next move",
+            "Frame-independence / anti-roleplay check",
+            "What role is Codex asking Claude to play",
+            "accept, modify, or refuse that role",
+            "Name three concrete outcomes that would make Claude reject",
+            "highly one-sided reconciliation ledger",
+            "rubber-stamp warning",
+            "reduced-noise, not zero-noise",
+            "operator-defined observable success criteria",
         ]:
             self.assertIn(phrase, reference)
 
@@ -89,6 +97,12 @@ class PackContractTests(unittest.TestCase):
             self.assertIn("Default to one Claude challenge round", body, skill)
             self.assertIn("first two challenges must use distinct causal layers", body, skill)
             self.assertIn("`No material impact` is non-evidence: it proves a review ran, not that the artifact is acceptable", body, skill)
+            self.assertIn("Frame-independence / anti-roleplay check", body, skill)
+            self.assertIn("Claude must stop and flag the review as invalid", body, skill)
+            self.assertIn("accepts, modifies, or refuses that role", body, skill)
+            self.assertIn("three concrete reject conditions", body, skill)
+            self.assertIn("rubber-stamp warnings, not proof of quality", body, skill)
+            self.assertIn("reduced-noise, not zero-noise", body, skill)
             self.assertEqual(body.count("## Optional Claude adversary"), 1, skill)
             for question in questions:
                 self.assertIn(question, body, skill)
@@ -111,11 +125,14 @@ class PackContractTests(unittest.TestCase):
             self.assertIn("must not assess only Codex's summary", body, skill)
             self.assertIn("operator-approved plan", body, skill)
             self.assertIn("modularity, thin harness / fat skills/tools, and agentic affordance", body, skill)
+            self.assertIn("Frame-independence / anti-roleplay check", body, skill)
 
         evolver = (ROOT / "uberskillevolver" / "SKILL.md").read_text()
         self.assertIn("Regression lessons from scope-fidelity failures", evolver)
         self.assertIn("operator original instruction", evolver)
         self.assertIn("hidden semantic judge", evolver)
+        self.assertIn("frame-adhesion failures", evolver)
+        self.assertIn("invited role named", evolver)
 
         templates = {
             "uberplan/templates/plan-contract.md": "Scope Fidelity Ledger",
@@ -129,6 +146,17 @@ class PackContractTests(unittest.TestCase):
             self.assertIn(phrase, text, rel)
             self.assertIn("Operator original instruction", text, rel)
             self.assertIn("Approval evidence", text, rel)
+
+        plan_template = (ROOT / "uberplan" / "templates" / "plan-contract.md").read_text()
+        self.assertIn("Frame-independence / anti-roleplay check", plan_template)
+        self.assertIn("Reviewer prompt begins with Operator original instruction, verbatim", plan_template)
+        self.assertIn("Three concrete reject conditions before any approval language", plan_template)
+        self.assertIn("Rubber-stamp warning", plan_template)
+        self.assertIn("Reduced-noise caveat", plan_template)
+
+        learning_template = (ROOT / "uberskillevolver" / "templates" / "post-run-learning.md").read_text()
+        self.assertIn("Frame-adhesion / anti-roleplay regression check", learning_template)
+        self.assertIn("three concrete reject conditions", learning_template)
 
 
     def test_galls_law_basic_spine_adversary_is_packaged_for_plan_review(self) -> None:
