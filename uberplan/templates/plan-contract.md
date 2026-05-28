@@ -4,16 +4,19 @@
 
 State the concrete outcome and why it matters.
 
-## Scope Fidelity Ledger
+## Scope fidelity
 
-Use this to keep plans and second reviewers anchored to the operator's controlling instruction rather than the agent's compressed summary.
+This is the Scope Fidelity Ledger. Keep plans and second reviewers anchored to `coordination/<task-slug>/scope.md`, not the agent's compressed summary.
 
-- Operator original instruction, verbatim or exact artifact path:
-- Agent interpreted scope:
-- Proposed narrowed scope, if any:
+- Scope artifact: `coordination/<task-slug>/scope.md`
+- Original scope: quote or link to `scope.md` Operator original instruction
+- Plan scope:
+- Narrowing? yes/no
+- Operator approved narrowing in: quote/link required if narrowed
+- Approval evidence for narrowing/deferral: quote/link or n/a
+- Explicit constraints and later user scope changes checked: yes/no
 - Explicit deferrals / non-goals:
-- Approval evidence for each narrowing or deferral:
-- Diff between original and proposed scope:
+- If narrowing is unapproved, plan status: invalid / blocked / ask operator
 - Scope fidelity verdict before implementation: pass / fail / uncertain:
 
 ## Frame-independence / anti-roleplay check
@@ -220,6 +223,28 @@ flowchart TD
 | T1 |  | none |  |  |  |  |
 | T2 |  | T1 |  |  |  |  |
 | T3 |  | T1 |  |  |  |  |
+
+## V0 plan premortem
+
+Required for Tier 2/3 after the first concrete plan/task map is drafted and before the confidence gate. Assume the V0 plan failed. The purpose is to revise the plan, not to generate a risk list that can be ignored.
+
+- V0 plan artifact/version reviewed:
+- Premortem reviewer: main agent / Claude / other adversarial reviewer:
+- If Claude/reviewer was requested or available, prompt/output path:
+- Assumed failure summary:
+- Most likely execution failure:
+- Missing affordance/context/tool/source:
+- Overengineering or code-bloat failure mode:
+- Files/modules/abstractions proposed:
+- What can be deleted, merged, avoided, or postponed:
+- Linear 80/50 alternative:
+- Required plan changes before implementation:
+- Accepted risks with rationale:
+- Premortem gate verdict: pass / block / replan:
+
+| Failure mode | Disposition: plan revision / accepted risk | Plan change or accepted-risk rationale | Status |
+|---|---|---|---|
+|  |  |  |  |
 
 ## Verifiable subgoals and metrics
 

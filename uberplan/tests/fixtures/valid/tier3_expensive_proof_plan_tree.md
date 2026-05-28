@@ -3,6 +3,19 @@
 ## Objective
 Harden a Tier 3 agentic runtime production replacement proof with child plan files before burn-in and final proof.
 
+
+## Scope fidelity
+
+- Scope artifact: `coordination/test-scope/scope.md`
+- Original scope: `coordination/test-scope/scope.md` original operator instruction.
+- Plan scope: maintain the skill-package behavior described in the objective.
+- Narrowing? no
+- Operator approved narrowing in: n/a
+- Explicit constraints and later user scope changes checked: yes
+- Explicit deferrals / non-goals: no unapproved deferrals.
+- If narrowing is unapproved, plan status: invalid / blocked / ask operator.
+- Scope fidelity verdict before implementation: pass
+
 ## Scope
 In scope: risk/failure inventory, observability preflight, phase-boundary contract-fuzz preflight, child status ledger, burn-in proof, and separate final proof for a production replacement run. Out of scope: launching the final proof before burn-in passes.
 
@@ -122,6 +135,28 @@ flowchart TD
 | T3 | Add deterministic harness validation without semantic regex authority | T1 | validator owner | scripts/validate_plan_contract.py, tests/fixtures | invalid plans fail and valid plan passes | unit/regression test output |
 | T4 | Preserve real bug as eval seed | T1 | eval owner | evals/golden_skill_invocations.json | recurring overwrite bug is captured as replayable fixture | eval schema test output |
 | T5 | Acceptance review and report | T2, T3, T4 | integrator | no new writes except report | all goals satisfy acceptance rubric | unittest, package lint, and acceptance summary |
+
+## V0 plan premortem
+
+- V0 plan artifact/version reviewed: v0 task map and implementation graph above.
+- Premortem reviewer: main agent running the required adversary failure questions; no separate reviewer for this fixture.
+- If Claude/reviewer was requested or available, prompt/output path: not requested for this fixture; no external prompt/output path.
+- Assumed failure summary: the plan fails by adding ownership ceremony that agents ignore or by overbuilding a coordination harness instead of fixing the contract.
+- Most likely execution failure: agents still edit shared files without disjoint write sets; mitigation is to revise the plan to require validator-backed ownership and return-contract evidence.
+- Missing affordance/context/tool/source: missing fixture-backed validator and agent brief contract; mitigation is to add them before implementation.
+- Overengineering or code-bloat failure mode: creating a new skill, router, or orchestration layer for ownership instead of a small template and validator contract.
+- Files/modules/abstractions proposed: no new top-level skill or harness; only existing `uberplan` skill text, template, validator, and targeted fixtures.
+- What can be deleted, merged, avoided, or postponed: avoid new orchestration, merge guidance into existing sections, postpone fresh-agent automated eval harness.
+- Linear 80/50 alternative: one ownership/evidence block plus one validator fixture gets most of the safety with much less surface area.
+- Required plan changes before implementation: keep the patch inside existing `uberplan` files and make the validator fixture fail before adding broader machinery.
+- Accepted risks with rationale: accepted risk that fresh-agent automated eval remains deferred because the structural validator catches the known recurrence cheaply.
+- Premortem gate verdict: pass; material blockers were converted into plan revision or accepted risk rows.
+
+| Failure mode | Disposition: plan revision / accepted risk | Plan change or accepted-risk rationale | Status |
+|---|---|---|---|
+| ownership ceremony ignored | plan revision | require validator-backed ownership evidence in the existing contract | revised |
+| overbuilt coordination harness | plan revision | avoid new skill/router/harness and patch existing template plus validator only | revised |
+| fresh-agent eval missing | accepted risk | defer automated eval harness because targeted fixture covers the known failure class | accepted |
 
 ## Verifiable subgoals and metrics
 

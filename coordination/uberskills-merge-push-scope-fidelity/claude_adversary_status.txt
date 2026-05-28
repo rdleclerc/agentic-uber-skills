@@ -1,0 +1,23 @@
+Claude adversarial review status: completed via Claude Code OAuth CLI.
+
+Correct CLI path:
+- /Users/claw1/.local/bin/claude -> /Users/claw1/.local/share/claude/versions/2.1.112
+
+Auth/use pattern:
+- Used Claude Code first-party/OAuth auth, not Anthropic API key auth.
+- Invocation stripped Anthropic/API env vars so the CLI used stored OAuth:
+  env -u ANTHROPIC_API_KEY -u ANTHROPIC_AUTH_TOKEN -u CLAUDE_API_KEY -u CLAUDE_CODE_API_KEY -u ANTHROPIC_BASE_URL /Users/claw1/.local/bin/claude --print --model sonnet --effort medium --permission-mode dontAsk --tools "" --no-session-persistence --output-format json
+
+Prompt/review artifacts:
+- Full scope-fidelity prompt: coordination/uberskills-merge-push-scope-fidelity/claude_adversary_prompt_complete.md
+- Scope-fidelity review output: coordination/uberskills-merge-push-scope-fidelity/claude_adversary_output_oauth_complete_20260528T104704-0700.md
+- V0 premortem prompt v1: coordination/uberskills-merge-push-scope-fidelity/claude_adversary_prompt_complete_v0_premortem.md
+- V0 premortem review v1: coordination/uberskills-merge-push-scope-fidelity/claude_adversary_output_oauth_v0_premortem_20260528T133457-0700.json
+- V0 premortem prompt v2 after first Claude fix: coordination/uberskills-merge-push-scope-fidelity/claude_adversary_prompt_complete_v0_premortem_v2.md
+- V0 premortem review v2: coordination/uberskills-merge-push-scope-fidelity/claude_adversary_output_oauth_v0_premortem_v2_20260528T133727-0700.json
+- Final delta prompt after accepted-risk-only fix: coordination/uberskills-merge-push-scope-fidelity/claude_adversary_prompt_v0_premortem_final_delta.md
+- Final delta review: coordination/uberskills-merge-push-scope-fidelity/claude_adversary_output_oauth_v0_premortem_final_delta_20260528T134021-0700.json
+
+Final verdict:
+- Claude found no remaining blocker.
+- Prior residuals were fixed: replan verdict is structurally allowed, accepted-risk-only dispositions are structurally allowed, and overengineering/code-bloat coverage is present.

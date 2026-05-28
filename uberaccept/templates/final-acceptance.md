@@ -7,16 +7,20 @@
 
 -
 
-## Scope fidelity
+## Scope fidelity verdict
 
-- Operator original instruction, verbatim or exact artifact path:
-- Agent interpreted scope:
-- Proposed narrowed scope, if any:
-- Explicit deferrals / non-goals:
-- Approval evidence for each narrowing or deferral:
-- Diff between original and actual delivered scope:
-- Scope fidelity verdict: pass / fail / uncertain:
-- If narrowed, was it operator-approved? yes/no/n/a, evidence:
+This section must appear before any `SHIP`, completion, ready, or goal-complete language. Quote or link the durable scope artifact, not only the plan summary.
+
+- Scope artifact: `coordination/<task-slug>/scope.md`
+- Original scope: quote or link to `scope.md` Operator original instruction
+- Implemented scope:
+- Does implemented scope satisfy original scope? yes/no/partial
+- Narrowing? yes/no
+- Operator approved narrowing in: quote/link required if narrowed
+- Approval evidence for narrowing/deferral: quote/link or n/a
+- Explicit constraints and later user scope changes checked: yes/no
+- Unapproved narrowing blocker? yes/no
+- Scope fidelity verdict: pass / fail / uncertain
 
 ## Rubric scores
 
