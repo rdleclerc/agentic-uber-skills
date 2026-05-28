@@ -66,6 +66,15 @@ For each candidate, link to or summarize a `lesson-candidate.md` record.
 - Eval/template/validator candidate:
 - Anti-bloat verdict for any durable fix:
 
+## Frame-adhesion / anti-roleplay regression check
+
+- Did the reviewer accept the role Codex invited it to play without naming or challenging that role?
+- Did the reviewer use Codex's terminology without a plain-language restatement tied to the Operator original instruction?
+- Were three concrete reject conditions stated before approval language?
+- Was a highly one-sided `Accepted`/`No material impact` ledger treated as proof rather than a rubber-stamp warning?
+- Was model review treated as reduced-noise rather than zero-noise, with human spot-checks or observable success criteria still named?
+- Smallest durable fix candidate: skill text / template field / eval fixture / no change:
+
 ## Completion-claim regression check
 
 - Did any parent goal claim child plans complete from a shared safe proof spine, readiness gate, registry, local proof, or shadow-only proof?

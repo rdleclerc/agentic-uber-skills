@@ -40,6 +40,22 @@ This is a source/context invariant, not a new harness, hidden judge, or orchestr
 
 Standing default review criteria: unless the operator explicitly overrides them, Claude should also challenge whether Codex is sticking to the operator-approved plan and preserving modularity, thin harness / fat skills/tools, and agentic affordance. Treat simpler alternatives as part of that check.
 
+## Frame-independence / anti-roleplay check
+
+Before Claude evaluates Codex's plan, RCA, assessment, reconciliation, or acceptance claim, require a short frame-independence pass. This is meant to prevent Claude from merely playing the role Codex assigned, adopting Codex's local jargon, or approving an argument-shaped process.
+
+Put the **Operator original instruction, verbatim** as the first field in the reviewer prompt. If it is missing, Claude must stop and flag the review as invalid instead of reviewing Codex's summary.
+
+Claude must answer these before any approval or ship language:
+
+1. **Invited role.** What role is Codex asking Claude to play, and should Claude accept, modify, or refuse that role?
+2. **Original-vs-summary gap.** What does the operator's original instruction require that Codex's summary, plan, or terminology might hide, narrow, or skip?
+3. **Reject conditions.** Name three concrete outcomes that would make Claude reject the plan/work before naming reasons to approve it.
+
+Plain-language rule: do not extend Codex's terminology until it has been restated in ordinary language and tied back to the operator's real goal. A highly one-sided reconciliation ledger with only `Accepted` or `No material impact` entries is a rubber-stamp warning, not proof of quality.
+
+Model adversary review is reduced-noise, not zero-noise. It does not replace operator-defined observable success criteria, direct prompt/diff spot-checks, deterministic tests, evals, or receipts.
+
 ## Gall's Law / Basic Spine First adversary
 
 When Claude reviews an assessment or plan before implementation, tell Claude to think bigger about the ultimate goal and first principles — not bigger about the architecture or harness. The review should find the smallest basic working system that can run end-to-end, then identify how to evolve it with evals.
