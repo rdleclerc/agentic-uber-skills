@@ -21,6 +21,8 @@ Check:
 - For model-output boundaries, did the plan prove shape, authority, isolation, failure semantics, observability, and replay/eval evidence rather than listing generic reliability words?
 - Are regexes, keyword lists, and string matchers limited to mechanical parsing or candidate signals, with no unapproved semantic authority over natural language?
 - Has the Loophole Hunter found any unresolved blockers?
+- For Tier 2/3, did the V0 plan premortem run after the first concrete plan, and did every material failure mode receive either a plan revision or explicit accepted-risk rationale?
+- Did the premortem challenge overengineering/code-bloat, proposed new files/modules/abstractions, what can be deleted/merged/avoided, and the 80/50 alternative?
 - Has the Simplifier found a smaller/elegant path that should replace this plan?
 - Has the Codebase Scout checked existing patterns/tests/claims when the repo is nontrivial?
 - Has the OpenClaw/Platform Steward checked local policy when OpenClaw/Type0/runtime is touched?

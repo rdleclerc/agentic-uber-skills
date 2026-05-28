@@ -31,6 +31,17 @@ class AcceptanceValidatorTests(unittest.TestCase):
     def test_valid_acceptance_passes(self) -> None:
         self.assertPasses(str(ACCEPT), str(FIX / "valid" / "final_acceptance.md"), "--agent-behavior")
 
+    def test_acceptance_requires_scope_fidelity_verdict(self) -> None:
+        text = (FIX / "valid" / "final_acceptance.md").read_text()
+        start = text.index("## Scope fidelity verdict")
+        end = text.index("## Rubric scores")
+        with tempfile.TemporaryDirectory() as tmp:
+            report = Path(tmp) / "missing_scope_fidelity_verdict.md"
+            report.write_text(text[:start] + text[end:])
+            result = run_cmd(str(ACCEPT), str(report), "--agent-behavior")
+            self.assertNotEqual(result.returncode, 0, "unexpected pass\n" + result.stdout)
+            self.assertIn("scope fidelity verdict", result.stderr)
+
     def test_blank_acceptance_fails(self) -> None:
         self.assertFails(str(ACCEPT), str(FIX / "invalid" / "blank_acceptance.md"), "--agent-behavior")
 

@@ -14,6 +14,7 @@ from pathlib import Path
 REQUIRED_SECTIONS = [
     "implementation summary",
     "files changed",
+    "scope fidelity verdict",
     "rubric scores",
     "commands and artifacts",
     "claim-state ledger",

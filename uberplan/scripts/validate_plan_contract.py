@@ -17,6 +17,7 @@ TIER_REQUIREMENTS = {
     "0": CORE_SECTIONS,
     "1": CORE_SECTIONS
     + [
+        "scope fidelity",
         "goal execution posture and delivery",
         "user expectation / surprise assessment",
         "definition of done / operational outcome contract",
@@ -29,11 +30,13 @@ TIER_REQUIREMENTS = {
     ],
     "2": CORE_SECTIONS
     + [
+        "scope fidelity",
         "goal execution posture and delivery",
         "user expectation / surprise assessment",
         "definition of done / operational outcome contract",
         "product / prd checklist",
         "task map / implementation graph",
+        "v0 plan premortem",
         "verifiable subgoals and metrics",
         "parallelization plan",
         "runtime agent topology / codex depth-thread policy",
@@ -55,11 +58,13 @@ TIER_REQUIREMENTS = {
     ],
     "3": CORE_SECTIONS
     + [
+        "scope fidelity",
         "goal execution posture and delivery",
         "user expectation / surprise assessment",
         "definition of done / operational outcome contract",
         "product / prd checklist",
         "task map / implementation graph",
+        "v0 plan premortem",
         "verifiable subgoals and metrics",
         "parallelization plan",
         "runtime agent topology / codex depth-thread policy",
@@ -204,7 +209,7 @@ def table_meaningful_rows(section: str) -> list[list[str]]:
         cells = [cell.strip() for cell in line.strip().strip("|").split("|")]
         if not cells or all(not cell or set(cell) <= {"-", ":"} for cell in cells):
             continue
-        headerish = {"surface", "dimension", "risk/failure mode", "agent role", "deterministic harness owns"}
+        headerish = {"surface", "dimension", "risk/failure mode", "failure mode", "agent role", "deterministic harness owns"}
         if cells[0].strip().lower() in headerish:
             continue
         if any(cell for cell in cells) and not all(cell in {"", " ", "-"} for cell in cells):
@@ -531,6 +536,44 @@ def validate_task_map(found: dict[str, str], tier: str, errors: list[str]) -> No
     for term in ["depend", "owner", "write", "evidence", "done"]:
         if term not in section_lower:
             errors.append(f"Task map / implementation graph missing concept: {term}")
+
+
+def validate_v0_plan_premortem(found: dict[str, str], tier: str, errors: list[str]) -> None:
+    if tier not in {"2", "3"}:
+        return
+    section_name = "v0 plan premortem"
+    section = found.get(section_name, "")
+    if not section:
+        return
+    if not section_has_substance(section):
+        errors.append("required section lacks completed substance: V0 plan premortem")
+        return
+    for label in [
+        "V0 plan artifact/version reviewed",
+        "Premortem reviewer",
+        "Assumed failure summary",
+        "Most likely execution failure",
+        "Missing affordance/context/tool/source",
+        "Overengineering or code-bloat failure mode",
+        "Files/modules/abstractions proposed",
+        "What can be deleted, merged, avoided, or postponed",
+        "Linear 80/50 alternative",
+        "Required plan changes before implementation",
+        "Accepted risks with rationale",
+        "Premortem gate verdict",
+    ]:
+        require_field(section, label, errors)
+
+    section_lower = normalize(section)
+    for term in ["overengineering", "code-bloat", "80/50"]:
+        if term not in section_lower:
+            errors.append(f"V0 plan premortem missing concept: {term}")
+    rows = table_meaningful_rows(section)
+    if not rows:
+        errors.append("V0 plan premortem needs at least one failure-disposition row")
+    disposition_cells = normalize(" ".join(row[1] for row in rows if len(row) > 1))
+    if rows and not any(term in disposition_cells for term in ["plan revision", "accepted risk", "accepted-risk"]):
+        errors.append("V0 plan premortem dispositions must be plan revision or accepted risk")
 
 
 
@@ -1338,6 +1381,7 @@ def main() -> int:
 
     validate_prd_checklist(found, args.tier or "1", errors)
     validate_task_map(found, args.tier or "1", errors)
+    validate_v0_plan_premortem(found, args.tier or "1", errors)
     validate_verifiable_subgoals(found, args.tier or "1", errors)
     validate_parallelization_plan(found, args.tier or "1", errors)
     validate_testing_adaptation_gate(found, args.tier or "1", errors)
