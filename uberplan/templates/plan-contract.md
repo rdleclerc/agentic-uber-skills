@@ -258,6 +258,17 @@ Required for multi-agent, subagent, campaign, or plan-tree work. Distinguish pla
 - Restore-to-default rule:
 - Child-agent depth policy:
 
+## Red/green proof ledger
+
+Required for code, skill, prompt, workflow, UI, or agent-behavior changes. For no-change assessment plans, say why not applicable.
+
+- Baseline command/result before change:
+- Expected red/failing fixture or regression before fix, if applicable:
+- First green proof after change:
+- Black-box/user-visible proof:
+- False-green risks checked:
+- Skipped evidence layers and why accepted/deferred:
+
 ## Testing adaptation gate
 
 Use this during implementation/testing so clear systematic failures revise the goal instead of becoming a brute-force loop.
@@ -498,7 +509,7 @@ Only fill this if the user explicitly authorized subagents/parallel work.
 | First-Principles Simplifier / Complexity Auditor | Aggressively delete, simplify, and require benefit >> cost for every addition | read plan/relevant files; no writes unless assigned | `first-principles-simplifier-report.md` | benefit >> cost or plan blocked |
 | Codebase Scout / Cartographer | Bring codebase-specific patterns, tests, and constraints into plan | read codebase/tests/claims | codebase map and hazards | no material codebase ignorance |
 | OpenClaw / Platform Steward | Bring OpenClaw/Type0/runtime/local-policy constraints when relevant | read local policy/docs only as needed | platform constraints and preflight needs | no policy/protected-file blockers |
-| Quality/Eval Strategist | Ensure risk-to-evidence map and rubric are real | read plan/tests/evals | evidence matrix | no material evidence gaps |
+| Black-box Tester / Quality-Eval Auditor | Ensure risk-to-evidence map, red/green ledger, black-box proof, and false-green checks are real | read plan/tests/evals/user-visible proof | evidence matrix and false-green notes | no material evidence gaps |
 
 ## Code-health / dead-code tool plan
 

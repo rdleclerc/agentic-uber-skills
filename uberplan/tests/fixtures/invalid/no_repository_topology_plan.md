@@ -21,7 +21,7 @@ In scope: one new Python module and one test. Out of scope: runtime deployment.
 - Machinery deferred because cost exceeds current benefit: no new service.
 
 ## Planning review board
-- Lanes activated: Architecture Steward, Agent Advocate, Quality/Eval Strategist.
+- Lanes activated: Architecture Steward, Agent Advocate, Black-box Tester / Quality-Eval Auditor.
 - Lanes skipped, and why: none.
 - Findings reconciled into this plan: add tests and keep code typed.
 - Board verdict: allow confidence gate? yes

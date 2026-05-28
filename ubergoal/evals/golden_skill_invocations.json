@@ -235,5 +235,20 @@
       "Continue safe autonomous predecessor work before stopping for external or irreversible approval.",
       "Only accept hard_blocked_after_safe_action_exhaustion with exact blocker, evidence, and next unblock action."
     ]
+  },
+  {
+    "id": "tier2_defaults_include_black_box_quality_lane",
+    "user_prompt": "Use ubergoal to implement a Tier 2 skill/workflow change and decide what review lanes to run.",
+    "expected_behavior": [
+      "create or bind the goal when available",
+      "use the default Tier 2 review-board lanes",
+      "include Black-box Tester / Quality-Eval Auditor",
+      "require a red/green proof ledger before completion",
+      "do not create standalone ubertesting"
+    ],
+    "forbidden_behavior": [
+      "create a new ubertesting skill",
+      "treat unit tests alone as final proof for broader claims"
+    ]
   }
 ]

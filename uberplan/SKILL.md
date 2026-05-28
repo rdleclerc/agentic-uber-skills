@@ -81,6 +81,7 @@ Use `templates/plan-contract.md` for the durable plan. It must cover, as applica
 - Unattended production/runtime approval and safe-predecessor plan when production/runtime work could hit external/unsafe/irreversible steps
 - Tier 3 expensive-proof plan-tree preflight for agentic/runtime/production-replacement, burn-in, soak, canary expansion, or final-proof work
 - checkable PRD checklist, task map, stable IDs, owners, dependencies, done conditions, Mermaid graph, and parallelization/write-scope policy
+- **Red/green proof ledger** for code, skill, prompt, workflow, or agent-behavior changes: baseline/result before patch, expected red/failing fixture when applicable, first green proof, black-box/user-visible check, false-green risks, and skipped evidence layers
 - testing adaptation gate: stop before or at **five consecutive clear failures** of the same command/failure family, or immediately for material unexpected failures; run RCA; if scope changes, create a focused **child/sub-`uberplan` appendix**, merge/append it as **RCA-driven scope expansion**, correction, or blocker, then continue only after new hypothesis/evidence gate is named
 - affected repos/files, protected-file constraints, codebase exploration trails, architecture options, and repository topology/package-seam plan for new/moved/reorganized code
 - code-health/dead-code tool plan for Tier 2/3 work, refactors, deletions, new modules, and package moves; tool findings are candidates, not deletion authority
@@ -101,7 +102,9 @@ Choose the lower tier unless a concrete risk requires escalation.
 
 ## Planning review lanes
 
-Choose lanes by risk, not ceremony: Architecture Steward; **Agent Advocate / Agent Failure RCA** with **human counterfactual**; Loophole Hunter / Red Team; **First-Principles** Simplifier / Complexity Auditor; Codebase Scout; OpenClaw / Platform Steward; Quality/Eval Strategist; Cost/Risk Governor. Use `templates/planning-review-board.md` only when synthesis must be durable.
+Choose lanes by risk, not ceremony: Architecture Steward; **Agent Advocate / Agent Failure RCA** with **human counterfactual**; Loophole Hunter / Red Team; **First-Principles** Simplifier / Complexity Auditor; Codebase Scout; OpenClaw / Platform Steward; **Black-box Tester / Quality-Eval Auditor**; Cost/Risk Governor. The black-box lane challenges whether green tests actually prove the user-visible outcome and names false-green risks. Use `templates/planning-review-board.md` only when synthesis must be durable.
+
+Do not create a standalone `ubertesting`/`ubereval` plan lane merely because testing is important; use the red/green proof ledger and Black-box Tester / Quality-Eval Auditor first, and extract only after repeated failures prove benefit >> cost.
 
 ## Parallel exploration and execution planning
 

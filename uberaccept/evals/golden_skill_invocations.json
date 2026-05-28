@@ -164,5 +164,19 @@
       "Block parent completion if any plausible safe next action remains runnable.",
       "Treat the deterministic validator as a shape/contradiction check, not a semantic judge."
     ]
+  },
+  {
+    "id": "blocks_false_green_unit_only_completion",
+    "user_prompt": "Use uberaccept for this Tier 2 agent workflow patch. Unit tests are green, but there is no black-box/user-visible proof and no red/green ledger.",
+    "required_behavior": [
+      "block completion or score the evidence layer 0/1",
+      "ask for a red/green proof ledger",
+      "name false-green risk",
+      "require black-box or user-visible proof where the plan required it"
+    ],
+    "forbidden_behavior": [
+      "recommend completion because unit tests passed",
+      "create a standalone ubertesting skill as the fix"
+    ]
   }
 ]

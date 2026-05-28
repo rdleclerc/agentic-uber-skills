@@ -61,7 +61,7 @@
     "expected_tier": 2,
     "required_lanes": [
       "Architecture Steward",
-      "Quality/Eval Strategist"
+      "Black-box Tester / Quality-Eval Auditor"
     ],
     "required_behavior": [
       "require a Repository topology / package seam section",
@@ -80,7 +80,7 @@
     "required_lanes": [
       "Architecture Steward",
       "Agent Advocate / Agent Failure RCA",
-      "Quality/Eval Strategist"
+      "Black-box Tester / Quality-Eval Auditor"
     ],
     "required_behavior": [
       "use an Agent Boundary Contract instead of a long generic bug checklist",
@@ -99,7 +99,7 @@
     "required_lanes": [
       "Architecture Steward",
       "Agent Advocate / Agent Failure RCA",
-      "Quality/Eval Strategist"
+      "Black-box Tester / Quality-Eval Auditor"
     ],
     "required_behavior": [
       "require the Regex / keyword semantic gate",
@@ -120,7 +120,7 @@
       "Architecture Steward",
       "Agent Advocate / Agent Failure RCA",
       "First-Principles Simplifier / Complexity Auditor",
-      "Quality/Eval Strategist"
+      "Black-box Tester / Quality-Eval Auditor"
     ],
     "required_behavior": [
       "produce a checkable Product / PRD checklist",
@@ -142,7 +142,7 @@
     "expected_tier": 3,
     "required_lanes": [
       "Architecture Steward",
-      "Quality/Eval Strategist"
+      "Black-box Tester / Quality-Eval Auditor"
     ],
     "required_behavior": [
       "produce verifiable subgoals with stable IDs",
@@ -192,7 +192,7 @@
     "expected_tier": 2,
     "required_lanes": [
       "First-Principles Simplifier / Complexity Auditor",
-      "Quality/Eval Strategist"
+      "Black-box Tester / Quality-Eval Auditor"
     ],
     "required_behavior": [
       "include a code-health dead-code tool plan with Python and TypeScript options such as vulture knip ruff tsc eslint grep or git grep",
@@ -226,7 +226,7 @@
     "required_lanes": [
       "Architecture Steward",
       "Agent Advocate / Agent Failure RCA",
-      "Quality/Eval Strategist"
+      "Black-box Tester / Quality-Eval Auditor"
     ],
     "required_behavior": [
       "include an Agent execution proof ladder",
@@ -264,7 +264,7 @@
     "expected_tier": 2,
     "required_lanes": [
       "Agent Advocate / Agent Failure RCA",
-      "Quality/Eval Strategist"
+      "Black-box Tester / Quality-Eval Auditor"
     ],
     "required_behavior": [
       "include a Testing adaptation gate",
@@ -285,7 +285,7 @@
     "expected_tier": 2,
     "required_lanes": [
       "Agent Advocate / Agent Failure RCA",
-      "Quality/Eval Strategist"
+      "Black-box Tester / Quality-Eval Auditor"
     ],
     "required_behavior": [
       "treat the material unexpected failure as a stop condition even before five repeats",
@@ -397,6 +397,26 @@
     "forbidden_behavior": [
       "treats any blocked child as terminal for parent completion without exhaustion evidence",
       "launches unattended external/irreversible work without upfront approval packet"
+    ]
+  },
+  {
+    "id": "plans_red_green_black_box_proof_without_new_skill",
+    "user_prompt": "Use uberplan for a prompt/skill change where the previous run had green unit tests but missed the black-box user-visible behavior.",
+    "expected_tier": 2,
+    "required_lanes": [
+      "Architecture Steward",
+      "Black-box Tester / Quality-Eval Auditor",
+      "First-Principles Simplifier / Complexity Auditor"
+    ],
+    "required_behavior": [
+      "include a red/green proof ledger",
+      "name false-green risks",
+      "require black-box or user-visible proof where relevant",
+      "defer standalone ubereval or ubertesting unless repeated failures justify extraction"
+    ],
+    "forbidden_behavior": [
+      "create a standalone ubertesting skill",
+      "treat unit tests as sufficient black-box evidence"
     ]
   }
 ]

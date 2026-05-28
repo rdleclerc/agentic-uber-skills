@@ -49,6 +49,12 @@ List concrete evidence: plan files, diffs, commits, logs, tests, evals, traces, 
 - Restore-to-default evidence:
 - Lesson for future campaigns:
 
+## Red/green / false-green lesson check
+
+- Did a green command fail to prove the real user-visible, black-box, integration, eval, or target-system risk?
+- Would a red/green proof-ledger field, negative fixture, or Black-box Tester / Quality-Eval Auditor checklist item prevent recurrence?
+- Is standalone `ubereval` extraction justified by repeated evidence, or is `no change` / existing-skill patch better?
+
 ## Lesson candidates
 For each candidate, link to or summarize a `lesson-candidate.md` record.
 

@@ -19,6 +19,12 @@ For Type0, default spine: real feed/tip/wire input → normalized signal → adm
 
 Gall's Law acceptance corollary: locally polished micro-feature success that did not advance the basic working spine is a soft rejection signal, not a pass. A complex top-down harness, proof-only scaffold, or placeholder artifact cannot be accepted as progress toward an agentic system unless the user explicitly scoped that artifact as the outcome.
 
+## Red/green and black-box proof audit
+
+For code, prompt, skill, workflow, UI, or agent-behavior changes, final acceptance must inspect a **red/green proof ledger**: baseline result before the change, expected red/failing fixture when applicable, first green proof, black-box or user-visible check, false-green risks, and skipped evidence layers. Unit tests or package validators alone do not prove operational readiness when the plan required integration, browser, eval, live-safe replay, or target-system evidence.
+
+If the ledger is missing, stale, or maps green checks to the wrong risk, score the relevant evidence layer 0/1 and do not recommend completion unless the user explicitly accepts the residual gap. Do not create a standalone `ubertesting` skill as a shortcut for this final audit; route recurring lessons to `uberskillevolver` and keep future `ubereval` extraction behind the roadmap promotion gate.
+
 ## Claim-language and operational outcome audit
 
 Final acceptance must prevent claim blur. Check every use of: `implemented`, `operational`, `live`, `adopted`, `tested`, `ready`, `wired`, `proof-only`, `blocked`, and `shadow-only`.
@@ -90,7 +96,7 @@ Do not hide missing evidence behind generic “checks passed.” If a layer is n
 - **First-Principles Simplifier**: ask what can be deleted or simplified now that the implementation exists; block complexity without benefit >> cost.
 - **Architecture Steward**: check implementation drift from plan, architecture-guide constraints, repository topology/package seams, source authority, harness/policy split, durable execution, adoption/rollback, budgets, and human approvals when relevant.
 - **Agent Advocate**: for multi-agent/agent-error work, confirm the upstream reason the agent erred is fixed and answer the human counterfactual.
-- **Quality/Eval audit**: map tests/evals/audits to risks, not to a generic checklist.
+- **Black-box Tester / Quality-Eval audit**: map tests/evals/audits to risks and user-visible behavior, not to a generic checklist; call out false-green evidence explicitly.
 
 ## Completion rules
 
@@ -98,6 +104,7 @@ Only recommend completion when:
 
 - no material blocker remains
 - required evidence is present or explicitly accepted as a residual gap by the user
+- red/green proof ledger and black-box/user-visible evidence match the plan's risk map where applicable; unit-green-only or validator-green-only claims are not enough for broader operational claims
 - any claim of implemented/operational/live/adopted is backed by the plan's Operational Outcome Contract, not merely proof-only or shadow-only evidence
 - repeated clear failures of the same test command/failure family did not exceed five attempts without an RCA, `uberplan` revision, and resumed `ubergoal` evidence
 - expected-vs-actual user surprise was checked, and any material mismatch is either fixed or explicitly flagged for user approval

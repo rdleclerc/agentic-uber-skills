@@ -72,6 +72,16 @@ Required when the task used a micro-intent, work contract, PRD, ticket, or plan 
 |---|---|---|---|
 |  |  |  |  |
 
+## Red/green and black-box proof ledger audit
+
+- Baseline command/result before change:
+- Expected red/failing fixture or regression before fix, if applicable:
+- First green proof after change:
+- Black-box/user-visible proof:
+- False-green risks checked:
+- Skipped evidence layers and accepted/deferred rationale:
+- Ledger verdict: pass / blocker / residual risk accepted by user
+
 ## Runtime agent topology acceptance
 
 Required for campaign, multi-agent, subagent, or plan-tree work; otherwise state why it is not applicable.
