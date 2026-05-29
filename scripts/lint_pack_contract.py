@@ -17,9 +17,10 @@ PACK_SKILLS = [
     "uberskillevolver",
     "ubersimplify",
     "uberassess",
+    "uberarchitect",
     "ubershow",
 ]
-UBER_PHASE_SKILLS = ["uberplan", "uberaccept", "uberskillevolver", "ubersimplify", "uberassess"]
+UBER_PHASE_SKILLS = ["uberplan", "uberaccept", "uberskillevolver", "ubersimplify", "uberassess", "uberarchitect"]
 UTILITY_IMPLICIT_SKILLS = ["uberrca", "uber-skill-creator", "ubershow"]
 ROOT_REQUIRED_FILES = ["AGENTS.md", "CLAUDE.md", "README.md", "ROADMAP.md"]
 AGENTS_REQUIRED_PHRASES = [
@@ -28,6 +29,7 @@ AGENTS_REQUIRED_PHRASES = [
     "Phase skills are explicit or wrapper-invoked",
     "uberassess` = source-to-recommendation due diligence",
     "ubershow` = visual communication utility",
+    "uberarchitect` = architecture stepback gate",
     "uberrca` = general incident/root-cause authority",
     "Agent Advocate = agent-behavior-specific RCA lens",
     "Source repo: `/Users/claw1/agentic-uber-skills`",
@@ -121,6 +123,8 @@ def main() -> int:
     deep_lint = root / "uberrca" / "scripts" / "lint_skill_package.py"
     if "self-challenge loop" not in deep or "lowest enforceable layer" not in deep:
         errors.append("uberrca must keep RCA depth and durable-fix doctrine")
+    if "$uberarchitect" not in deep or "Architecture stepback route" not in deep:
+        errors.append("uberrca must route system-shape RCA to uberarchitect")
     if "$uberrca" not in deep_meta or "proximate cause" not in deep_meta:
         errors.append("uberrca metadata must describe proximate-cause RCA trigger")
     if not deep_evals.exists() or not deep_lint.exists():

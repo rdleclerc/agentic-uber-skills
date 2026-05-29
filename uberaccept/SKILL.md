@@ -11,6 +11,11 @@ Try to prove the work is **not** ready. Accept only when material blockers are g
 
 `uberaccept` owns final proof in the Uber skill family. It does not write the initial plan; use `uberplan` for planning and `uberskillevolver` for post-run learning.
 
+
+## Architecture stepback acceptance blocker
+
+If the completed work claims to fix a system-scale concurrency, queue/worker, gateway, orchestration, workflow durability, backpressure, repeated-timeout, or symptom-patching failure, final acceptance must look for an `$uberarchitect` Architecture Stepback Packet or equivalent. Soft-reject completion when the evidence only proves local timeout/context/config patches and never answers the system class, normal industry architecture, current mismatch, smallest transition path, and proof gate.
+
 ## Basic Spine First acceptance blocker
 
 For product/rewrite/agentic-system work, final acceptance must name the minimum user-visible product spine, the canonical command or live-safe check that proves it, and the current result. If the result is `fail` or `not available`, do not recommend readiness for added architecture, abstractions, agents, contracts, routers, monitors, or eval frameworks. The only acceptable completion scope is a spine-check fix/creation or an explicitly user-accepted non-readiness spike. Core spine gaps are blockers, not residual risks.
