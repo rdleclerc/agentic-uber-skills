@@ -26,6 +26,7 @@ class PackContractTests(unittest.TestCase):
             "uberskillevolver": "allow_implicit_invocation: true",
             "ubersimplify": "allow_implicit_invocation: true",
             "uberassess": "allow_implicit_invocation: true",
+            "uberarchitect": "allow_implicit_invocation: true",
         }
         for skill, phrase in expected.items():
             text = (ROOT / skill / "agents" / "openai.yaml").read_text()
@@ -232,6 +233,10 @@ class PackContractTests(unittest.TestCase):
         self.assertIn("uberrca` = general incident/root-cause authority", text)
         self.assertIn("Agent Advocate = agent-behavior-specific RCA lens", text)
         self.assertIn("use the `uberrca` ladder for depth", text)
+        rca = (ROOT / "uberrca" / "SKILL.md").read_text()
+        self.assertIn("## Architecture stepback route", rca)
+        self.assertIn("$uberarchitect", rca)
+        self.assertIn("gateway stalls", rca)
 
     def test_uber_rca_is_hardened_as_codex_utility_skill(self) -> None:
         self.assertFalse((ROOT / "uberrca" / "README.md").exists())
@@ -258,7 +263,7 @@ class PackContractTests(unittest.TestCase):
 
     def test_install_docs_include_full_pack(self) -> None:
         text = (ROOT / "README.md").read_text()
-        loop = "for s in uberrca uber-skill-creator ubergoal uberplan uberaccept uberskillevolver ubersimplify uberassess ubershow; do"
+        loop = "for s in uberrca uber-skill-creator ubergoal uberplan uberaccept uberskillevolver ubersimplify uberassess uberarchitect ubershow; do"
         self.assertEqual(text.count(loop), 3)
 
     def test_operational_outcome_completion_claim_contract_is_pack_wide(self) -> None:
@@ -331,6 +336,39 @@ class PackContractTests(unittest.TestCase):
         self.assertIn("micro-intent", metadata)
         self.assertIn("acceptance criterion", metadata)
         self.assertIn("slop register", metadata)
+
+    def test_uberarchitect_stepback_gate_is_packaged(self) -> None:
+        body = (ROOT / "uberarchitect" / "SKILL.md").read_text()
+        meta = (ROOT / "uberarchitect" / "agents" / "openai.yaml").read_text()
+        template = (ROOT / "uberarchitect" / "templates" / "architecture-stepback-packet.md").read_text()
+        for phrase in [
+            "Architecture Stepback Packet",
+            "Plain-English diagnosis",
+            "System class",
+            "Normal industry architecture",
+            "Fresh-start architecture",
+            "Current mismatch",
+            "Symptom patches demoted",
+            "Smallest transition path",
+            "Proof gate",
+            "Human counterfactual",
+        ]:
+            self.assertIn(phrase, body)
+            self.assertIn(phrase.replace("Plain-English diagnosis", "Plain-English diagnosis"), template)
+        self.assertIn("Do not auto-trigger from task similarity", body)
+        self.assertIn("only when explicitly invoked or routed by $ubergoal", meta)
+        self.assertIn("producer → durable queue → bounded worker pool → durable state/results → backpressure", body)
+
+    def test_architecture_stepback_routes_are_present(self) -> None:
+        expected = {
+            "uberassess": "route to `$uberarchitect`",
+            "uberplan": "route to `$uberarchitect`",
+            "ubergoal": "route to `$uberarchitect`",
+            "uberaccept": "`$uberarchitect` Architecture Stepback Packet",
+        }
+        for skill, phrase in expected.items():
+            body = (ROOT / skill / "SKILL.md").read_text()
+            self.assertIn(phrase, body, skill)
 
 
 if __name__ == "__main__":

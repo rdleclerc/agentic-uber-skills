@@ -150,6 +150,11 @@ For plans that introduce new agentic behavior, new harness, new coordination lay
 
 Before implementation or launch, try to reject the plan against OpenClaw/agentic architecture, thin-harness/fat-agent policy, topology, dead-code, source-authority, side effects, and evidence. Then run the scoped verdict from `templates/confidence-gate.md`; do not say “100% confident” while a material blocker remains.
 
+
+## Architecture stepback gate
+
+For Tier 2/3 plans involving concurrency, scaling, queues, workers, long-running jobs, gateways, orchestration, workflow durability, backpressure, repeated timeouts, or suspected symptom-patching, route to `$uberarchitect` before the task map hardens. The plan must not proceed on local patches alone until it includes an Architecture Stepback Packet: system class, normal industry architecture, fresh-start architecture, current mismatch, symptom patches demoted, smallest transition path, proof gate, and human counterfactual.
+
 ## Optional Claude adversary
 
 Use this only when the user explicitly asks for Claude review, e.g. `with Claude`, `Claude review`, `Claude debate`, or `Claude for 2 rounds`. Do not invoke Claude from task similarity or ordinary `uberplan` use. Codex remains plan owner and reconciler; Claude is an adversarial reviewer, not a co-author, final authority, or acceptance substitute. If available, read `../references/claude-adversary.md`; keep the essentials here because references may not auto-load.

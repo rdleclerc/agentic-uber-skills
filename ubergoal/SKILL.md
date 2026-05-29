@@ -114,6 +114,11 @@ Do not call `update_goal(status="complete")` until `$uberaccept` says the object
 
 For Tier 2/3, use specialist review-board agents/lenses for the final policy check when available; no solo self-certification. The final policy check must include the Black-box Tester / Quality-Eval Auditor lens when user-visible behavior, tests, evals, prompts, skills, or agent workflows changed. Final handoff must include `git status --short --branch`, Skills invoked summary, and a validated Uber run receipt when feasible. For “100% confident,” mean scoped confidence after trying to disprove the work and finding no material unresolved blocker.
 
+
+## Architecture stepback route
+
+When the goal is Tier 2+ and the failure class may be architectural — concurrency, scale, queues/workers, long-running jobs, gateways, orchestration, workflow durability, backpressure, repeated timeouts, or repeated micro-patching — route to `$uberarchitect` before `$uberplan` locks implementation scope. Treat missing architecture stepback as a blocker for system-shape decisions, not as a nice-to-have review.
+
 ## Optional Claude adversary
 
 Use this only when the user explicitly asks for Claude review, e.g. `with Claude`, `Claude review`, `Claude debate`, or `Claude for 2 rounds`. Do not invoke Claude from task similarity or ordinary `ubergoal` use. Codex remains goal owner and reconciler; Claude is an adversarial reviewer, not a co-author, final authority, or acceptance substitute. If available, read `../references/claude-adversary.md`; keep the essentials here because references may not auto-load.

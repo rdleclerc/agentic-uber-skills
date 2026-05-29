@@ -103,6 +103,11 @@ Use `scripts/validate_assessment_packet.py` before treating a Tier 1+ packet as 
 
 Do not create MCP servers, scrapers, vector indexes, scheduled automation, model swaps, or new persistent state during assessment. Recommend them only after repeated usage proves a stable interface and benefit >> cost.
 
+
+## Architecture stepback route
+
+Before recommending implementation for a system-scale question involving concurrency, scaling, queues, workers, long-running jobs, gateway stalls, orchestration, workflow durability, backpressure, repeated timeouts, or a pattern of symptom patches, route to `$uberarchitect` or embed its Architecture Stepback Packet. The recommendation is incomplete until it names the system class, normal industry architecture, fresh-start architecture, current mismatch, symptom patches demoted, smallest transition path, proof gate, and human counterfactual.
+
 ## Optional Claude adversary
 
 Use this only when the user explicitly asks for Claude review, e.g. `with Claude`, `Claude review`, `Claude debate`, or `Claude for 2 rounds`. Do not invoke Claude from task similarity or ordinary `uberassess` use. Codex remains assessment owner and reconciler; Claude is an adversarial reviewer, not a co-author, final authority, or acceptance substitute. If available, read `../references/claude-adversary.md`; keep the essentials here because references may not auto-load.
