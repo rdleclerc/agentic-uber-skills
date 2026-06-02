@@ -1,6 +1,8 @@
 ---
 name: uberrca
 description: Force deep, class-level root cause analysis before patches. Use when asked why/how an incident happened, to do RCA/postmortem/debugging, to investigate stuck loops, production/workflow/agentic-system failures, repeated bugs, suspicious edge cases, or when the user challenges whether a patch addresses the underlying issue rather than a proximate cause.
+model: claude-opus-4-8
+effort: max
 ---
 
 # UberRCA

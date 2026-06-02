@@ -1,6 +1,8 @@
 ---
 name: uberskillevolver
 description: Do not auto-trigger from task similarity. Use only when explicitly named by the user or routed by ubergoal. Captures a lightweight, human-reviewed learning loop for skills, prompts, workflows, multi-agent coding protocols, or agentic-system playbooks after substantial or surprising runs.
+model: claude-opus-4-8
+effort: max
 ---
 
 # Uberskillevolver

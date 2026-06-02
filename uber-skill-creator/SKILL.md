@@ -1,6 +1,8 @@
 ---
 name: uber-skill-creator
 description: Portable guide for creating, updating, migrating, deprecating, and evaluating Uber-style SKILL.md skills for Codex, Claude, and compatible coding agents. Use when users want to create a new general skill, update an existing skill, audit an existing skill or skill pack with a read-only quality report, migrate or purge legacy local skill-creator or skill-creator-pro aliases, add scripts/references/assets, run eval-driven skill iteration, compare with-skill vs without-skill behavior, generate an HTML review report, or tune a skill description for better triggering. For OpenClaw/Gaia/Type0/Soho-specific skills, prefer openclaw-agentic-skill-creator.
+model: claude-opus-4-8
+effort: max
 metadata:
   short-description: Create or update an Uber skill
 ---

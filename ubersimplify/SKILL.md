@@ -1,6 +1,8 @@
 ---
 name: ubersimplify
 description: Do not auto-trigger from task similarity. Use only when explicitly named by the user or routed by ubergoal. Audits or carefully patches codebase complexity, dead code, duplicated policy, poor modularity, silent fallbacks, brittle hidden behavior, or agentic-system bloat with proof gates.
+model: claude-opus-4-8
+effort: max
 ---
 
 # Ubersimplify

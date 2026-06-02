@@ -37,7 +37,15 @@ def validate_skill(skill_path):
     except yaml.YAMLError as e:
         return False, f"Invalid YAML in frontmatter: {e}"
 
-    allowed_properties = {"name", "description", "license", "allowed-tools", "metadata"}
+    allowed_properties = {
+        "name",
+        "description",
+        "license",
+        "allowed-tools",
+        "metadata",
+        "model",
+        "effort",
+    }
 
     unexpected_keys = set(frontmatter.keys()) - allowed_properties
     if unexpected_keys:
@@ -87,6 +95,19 @@ def validate_skill(skill_path):
                 False,
                 f"Description is too long ({len(description)} characters). Maximum is 1024 characters.",
             )
+
+    model = frontmatter.get("model")
+    if model is not None and not isinstance(model, str):
+        return False, f"Model must be a string, got {type(model).__name__}"
+
+    effort = frontmatter.get("effort")
+    if effort is not None:
+        if not isinstance(effort, str):
+            return False, f"Effort must be a string, got {type(effort).__name__}"
+        allowed_efforts = {"low", "medium", "high", "xhigh", "max"}
+        if effort not in allowed_efforts:
+            allowed = ", ".join(sorted(allowed_efforts))
+            return False, f"Effort must be one of: {allowed}"
 
     return True, "Skill is valid!"
 

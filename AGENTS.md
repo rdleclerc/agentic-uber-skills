@@ -18,6 +18,7 @@ Read in this order:
 
 - `$ubergoal` is the only default/implicit Uber lifecycle router.
 - All skills in this pack must be installed and exposed to Codex sessions. Exposure is not trigger authority.
+- Claude Code skill frontmatter for every pack skill must keep `model: claude-opus-4-8` and `effort: max` so Uber-skill invocations default to Opus 4.8 max in every session.
 - Phase skills are explicit or wrapper-invoked: `$uberplan`, `$uberaccept`, `$uberskillevolver`, `$ubersimplify`, and `$uberassess` should not trigger merely because a task resembles their domain. Their descriptions and OpenAI adapter prompts should say "Do not auto-trigger from task similarity" so runtime skill routers do not confuse examples with permission.
 - `$uberrca` is a utility skill, not an Uber lifecycle phase. Use it directly for general incidents, debugging, postmortems, repeated bugs, and class-level root-cause analysis.
 - `ubershow` = visual communication utility, not an Uber lifecycle phase. Use it when a browser-first static artifact will materially improve decision speed or comprehension; generated HTML is a view, and copy/paste receipts are the decision registration path.
