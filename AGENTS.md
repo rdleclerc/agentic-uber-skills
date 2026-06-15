@@ -47,6 +47,19 @@ Read in this order:
 - Do not create another new `uber*` skill until repeated real-project use proves extraction makes the common path smaller, faster, or safer; `uberassess` is admitted because source-to-recommendation assessment is a repeated cross-project workflow with clear no-implementation safety boundaries, and `ubershow` is admitted because repeated coding sessions needed high-bandwidth visual decision surfaces without adding a server or UI framework.
 - Do not silently self-modify skills from learning records; learning packets are evidence, not authority.
 
+## Lazy Senior Dev preflight
+
+Before adding code, skill machinery, or another process layer, run the smallest useful simplification ladder:
+
+1. Can the requirement be narrowed or deleted?
+2. Does the standard library, platform, shell, database, browser, an existing repo helper, an installed dependency, or an existing skill/tool already do it?
+3. Can this be one line, one function, or one file instead of a new abstraction?
+4. Only then write the minimum code that works.
+
+Do not simplify away trust-boundary validation, data-loss protection, security,
+accessibility, source authority, side-effect proof, or explicitly requested
+behavior.
+
 ## Test commands
 
 Run the pack contract first after routing/docs changes:
