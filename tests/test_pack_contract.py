@@ -218,7 +218,34 @@ class PackContractTests(unittest.TestCase):
         self.assertIn("specialist review-board agents", meta)
         self.assertIn("run specialist review-board agents or lenses for Tier 2+ work", evals)
         self.assertIn("ubercampaign", body)
-        self.assertIn("campaign-profile", body)
+
+    def test_task_understanding_review_is_first_class(self) -> None:
+        required = [
+            "Task Understanding Review",
+            "real problem the operator wants solved",
+            "Which requirements are clear?",
+            "ambiguous, underspecified",
+            "most likely to misunderstand",
+            "execution plan",
+            "explicitly out of scope",
+            "evidence will prove this worked",
+            "misunderstanding-prevention step",
+        ]
+        for rel in ["ubergoal/SKILL.md", "uberplan/SKILL.md"]:
+            body = (ROOT / rel).read_text()
+            for phrase in required:
+                self.assertIn(phrase, body, rel)
+
+        template = (ROOT / "uberplan" / "templates" / "plan-contract.md").read_text()
+        for phrase in [
+            "Task Understanding Review required before implementation",
+            "Real problem the operator wants solved",
+            "Clear requirements",
+            "Ambiguities / underspecified requirements",
+            "Most likely misunderstanding if coding starts directly",
+            "Evidence that will prove this worked",
+        ]:
+            self.assertIn(phrase, template)
 
     def test_utility_skills_have_task_specific_invocation_policy(self) -> None:
         text = (ROOT / "ubershow" / "agents" / "openai.yaml").read_text()

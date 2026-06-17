@@ -59,13 +59,20 @@ Use this when Claude or any second reviewer is asked to judge the plan before im
 
 -
 
-## Micro-intent / Intent Review Fast Path
+## Micro-intent / Intent Review Fast Path with Task Understanding Review
 
 Use this section to keep Tier 0/1 AI-assisted work lightweight. For Tier 2/3 or risky work, record why the fast path is insufficient and continue with the full plan.
 
 - Micro-intent applies? yes/no, because:
+- Task Understanding Review required before implementation? yes/no, because:
+- Real problem the operator wants solved:
+- Clear requirements:
+- Ambiguities / underspecified requirements:
+- Most likely misunderstanding if coding starts directly:
+- Execution plan:
 - Scope / intent in 2-3 sentences:
 - Explicit out-of-scope:
+- Evidence that will prove this worked:
 - Intent/spec review required before implementation? yes/no, because:
 - Escalation trigger to full work contract or `uberplan`:
 - Spec review vs code review split: spec review catches missing requirements/scope/design before code; code review catches repo conventions/naming/module seams/integration/maintainability after code:

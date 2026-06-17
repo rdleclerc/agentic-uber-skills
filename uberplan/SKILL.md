@@ -13,7 +13,7 @@ Create the smallest **long-running goal** plan that makes the work safe. Plannin
 
 If a Coding Agent Work Contract already captures objective, scope, orientation, evidence, stop conditions, and gaps, use or extend it. Do not create duplicate bureaucracy.
 
-## Micro-intent / spec-first fast path
+## Micro-intent / spec-first fast path with Task Understanding Review
 
 For Tier 0/1 work, the smallest safe plan may be a **micro-intent** instead of this full contract. Capture:
 
@@ -22,7 +22,17 @@ For Tier 0/1 work, the smallest safe plan may be a **micro-intent** instead of t
 3. explicit out-of-scope note;
 4. verification command or evidence note.
 
-Use this fast path to make intent first-class without adding ceremony. Review the micro-intent before implementation when the task is more than a trivial edit. Escalate to the Coding Agent Work Contract or this full `uberplan` template when the task has cross-boundary behavior, runtime/agentic risk, irreversible side effects, vague requirements, broad refactors, or enough acceptance criteria that a table/plan tree would reduce risk.
+Before implementation, run a **Task Understanding Review** when the task is more than a trivial edit or the operator's request is vague, context-heavy, high-agency, or not fully thought through. Answer:
+
+1. What is the real problem the operator wants solved?
+2. Which requirements are clear?
+3. What is ambiguous, underspecified, or likely to change the implementation?
+4. Where are you most likely to misunderstand if you start writing directly?
+5. What is the execution plan?
+6. What is explicitly out of scope?
+7. What evidence will prove this worked?
+
+Use this fast path to make intent first-class without adding ceremony. Keep the review short for Tier 0/1 work; it is a misunderstanding-prevention step, not a full plan. Escalate to the Coding Agent Work Contract or this full `uberplan` template when the review exposes cross-boundary behavior, runtime/agentic risk, irreversible side effects, vague requirements, broad refactors, or enough acceptance criteria that a table/plan tree would reduce risk.
 
 Spec review and code review are separate layers: spec review catches missing requirements, underspecified features, scope and design mismatches before code exists; code review catches repo conventions, naming, module seams, integration details, and maintainability after code exists. Keep both when both risks apply.
 
@@ -76,7 +86,7 @@ Return thread highlights plus a durable `.md` plan path. Before showing either, 
 Use `templates/plan-contract.md` for the durable plan. It must cover, as applicable:
 
 - goal posture, checkpoints, `.md` path, thread highlights, tier, objective, scope, assumptions, non-goals
-- micro-intent / intent review fast path decision, including acceptance criteria and out-of-scope boundaries for Tier 0/1 work
+- Task Understanding Review / micro-intent fast path decision, including real problem, clear requirements, ambiguities, likely misunderstandings, execution plan, acceptance criteria, and out-of-scope boundaries for Tier 0/1 work
 - **User expectation / surprise assessment** and final handoff proof against material mismatch
 - **Scope Fidelity Ledger**: operator original instruction, verbatim or exact artifact path; agent-interpreted scope; proposed narrowed scope; explicit deferrals/non-goals; approval evidence for narrowing; and diff between original and proposed scope
 - **Gall's Law / Basic Spine First adversary** for agentic-system, harness, coordination-layer, or architecture-changing plans: smallest end-to-end working spine, not micro-feature slices or top-down architecture; evals that prove the spine works and stay green while it evolves

@@ -37,7 +37,7 @@ For Tier 1+ coding, prompt, skill, workflow, or agentic-system implementation, u
 
 Tier 0 can use an inline note. Tier 1 uses the work contract unless risk requires `uberplan`. Tier 2/3 may extend it inside `uberplan`, but must avoid a duplicate objective/scope/evidence bureaucracy.
 
-## Micro-intent fast path
+## Task Understanding Review / Micro-intent fast path
 
 For Tier 0/1 AI-assisted coding work, prefer a tiny **micro-intent** artifact instead of a full plan when risk is genuinely low:
 
@@ -46,7 +46,17 @@ For Tier 0/1 AI-assisted coding work, prefer a tiny **micro-intent** artifact in
 - explicit out-of-scope note
 - verification command or evidence note
 
-Review this intent before implementation when the task is above a trivial edit. If the micro-intent exposes ambiguous requirements, cross-boundary behavior, agentic/runtime risk, irreversible side effects, or more than a few acceptance criteria, escalate to a Coding Agent Work Contract or `$uberplan`.
+Before implementation, run a **Task Understanding Review** when the task is more than a trivial edit or the operator's request is vague, context-heavy, high-agency, or not fully thought through. Answer:
+
+1. What is the real problem the operator wants solved?
+2. Which requirements are clear?
+3. What is ambiguous, underspecified, or likely to change the implementation?
+4. Where are you most likely to misunderstand if you start writing directly?
+5. What is the execution plan?
+6. What is explicitly out of scope?
+7. What evidence will prove this worked?
+
+Keep this review short for Tier 0/1 work; it is a misunderstanding-prevention step, not a full plan. If the review exposes ambiguous requirements, cross-boundary behavior, agentic/runtime risk, irreversible side effects, or more than a few acceptance criteria, escalate to a Coding Agent Work Contract or `$uberplan`.
 
 Code review and intent/spec review catch different failures. Intent/spec review should catch missing requirements, bad scope, and design mismatches before code exists; code review should catch repo conventions, naming, module seams, integration details, and maintainability. Do not use the fast path to bypass tests, evidence, final `$uberaccept`, or Tier 2/3 operational outcome gates.
 
@@ -57,7 +67,7 @@ For Tier 1+ or any explicit `ubergoal` work, create or update `coordination/<tas
 ## Lifecycle
 
 1. **Classify tier.** Choose the lowest safe Tier 0/1/2/3.
-2. **Frame enough to make the goal non-vague.** Before creating a platform goal, do the minimum clarification needed to name the outcome, rough scope, non-goals, likely tier, and what “done” could mean. For Tier 0/1, a micro-intent note may be enough. For Tier 1+ or explicit `ubergoal` work, first create/update `coordination/<task-slug>/scope.md`; record operator-original scope, interpreted scope, proposed narrowing, deferrals/non-goals, and approval evidence there. This is not full planning and must not become implementation.
+2. **Frame enough to make the goal non-vague.** Before creating a platform goal, do the minimum clarification needed to name the outcome, rough scope, non-goals, likely tier, and what “done” could mean. For Tier 0/1, a Task Understanding Review / micro-intent note may be enough. For Tier 1+ or explicit `ubergoal` work, first create/update `coordination/<task-slug>/scope.md`; record operator-original scope, interpreted scope, proposed narrowing, deferrals/non-goals, and approval evidence there. This is not full planning and must not become implementation.
 3. **Create or bind the goal before robust planning/execution.** If no goal exists and the user explicitly invoked `ubergoal`, call `create_goal` once the compact objective is specific enough. The goal may explicitly be “produce a robust plan, then execute it after the acceptance gate”; this preserves `ubergoal`’s purpose of preventing shallow plans while avoiding vague goal launch.
 4. **Plan.** Start Tier 1+ with a **user expectation / surprise assessment**. Use a micro-intent note, work contract, or `$uberplan` by tier/risk. Agentic-system plans bias toward thin deterministic harnesses around capable agents. Do not execute until the plan or work contract names verification, stop conditions, and a red/green proof ledger when the task changes code, skills, prompts, workflows, or agent behavior.
 5. **Review and execute.** Main agent owns integration. Explicit `ubergoal` authorizes bounded Tier 2+ specialist review-board agents/lenses unless the user says no/lightweight. Workers mutate files only with disjoint write scopes.
