@@ -75,6 +75,49 @@ class PlanValidatorTests(unittest.TestCase):
             plan.write_text(text[:start] + text[end:])
             self.assertFails(str(PLAN), str(plan), "--tier", "2", "--agent-behavior")
 
+    def test_tier2_requires_v0_plan_premortem(self) -> None:
+        text = (FIX / "valid" / "tier2_agent_plan.md").read_text()
+        start = text.index("## V0 plan premortem")
+        end = text.index("## Verifiable subgoals and metrics")
+        with tempfile.TemporaryDirectory() as tmp:
+            plan = Path(tmp) / "missing_v0_plan_premortem.md"
+            plan.write_text(text[:start] + text[end:])
+            result = run_cmd(str(PLAN), str(plan), "--tier", "2", "--agent-behavior")
+            self.assertNotEqual(result.returncode, 0, "unexpected pass\n" + result.stdout)
+            self.assertIn("v0 plan premortem", result.stderr.lower())
+
+    def test_tier2_v0_plan_premortem_requires_failure_dispositions(self) -> None:
+        text = (FIX / "valid" / "tier2_agent_plan.md").read_text()
+        start = text.index("| ownership ceremony ignored |")
+        end = text.index("## Verifiable subgoals and metrics")
+        with tempfile.TemporaryDirectory() as tmp:
+            plan = Path(tmp) / "missing_failure_dispositions.md"
+            plan.write_text(text[:start] + "\n" + text[end:])
+            result = run_cmd(str(PLAN), str(plan), "--tier", "2", "--agent-behavior")
+            self.assertNotEqual(result.returncode, 0, "unexpected pass\n" + result.stdout)
+            self.assertIn("failure-disposition", result.stderr.lower())
+
+    def test_tier2_v0_plan_premortem_allows_replan_verdict_structurally(self) -> None:
+        text = (FIX / "valid" / "tier2_agent_plan.md").read_text()
+        text = text.replace(
+            "Premortem gate verdict: pass; material blockers were converted into plan revision or accepted risk rows.",
+            "Premortem gate verdict: replan; V0 issues were converted into the revised final contract and disposition rows.",
+        )
+        with tempfile.TemporaryDirectory() as tmp:
+            plan = Path(tmp) / "replan_premortem_verdict.md"
+            plan.write_text(text)
+            self.assertPasses(str(PLAN), str(plan), "--tier", "2", "--agent-behavior")
+
+    def test_tier2_v0_plan_premortem_allows_accepted_risk_only_dispositions(self) -> None:
+        text = (FIX / "valid" / "tier2_agent_plan.md").read_text()
+        text = text.replace("plan revision / accepted risk", "accepted risk")
+        text = text.replace("plan revision |", "accepted risk |")
+        text = text.replace("plan revision or accepted risk rows", "accepted risk rows")
+        with tempfile.TemporaryDirectory() as tmp:
+            plan = Path(tmp) / "accepted_risk_only_premortem.md"
+            plan.write_text(text)
+            self.assertPasses(str(PLAN), str(plan), "--tier", "2", "--agent-behavior")
+
     def test_tier2_requires_verifiable_subgoals(self) -> None:
         text = (FIX / "valid" / "tier2_agent_plan.md").read_text()
         start = text.index("## Verifiable subgoals and metrics")
@@ -166,6 +209,17 @@ class PlanValidatorTests(unittest.TestCase):
             plan = Path(tmp) / "missing_testing_adaptation.md"
             plan.write_text(text[:start] + text[end:])
             self.assertFails(str(PLAN), str(plan), "--tier", "2", "--agent-behavior")
+
+    def test_tier2_requires_scope_fidelity(self) -> None:
+        text = (FIX / "valid" / "tier2_agent_plan.md").read_text()
+        start = text.index("## Scope fidelity")
+        end = text.index("## Scope\n", start + 1)
+        with tempfile.TemporaryDirectory() as tmp:
+            plan = Path(tmp) / "missing_scope_fidelity.md"
+            plan.write_text(text[:start] + text[end:])
+            result = run_cmd(str(PLAN), str(plan), "--tier", "2", "--agent-behavior")
+            self.assertNotEqual(result.returncode, 0, "unexpected pass\n" + result.stdout)
+            self.assertIn("scope fidelity", result.stderr)
 
     def test_tier2_requires_goal_execution_posture(self) -> None:
         text = (FIX / "valid" / "tier2_agent_plan.md").read_text()

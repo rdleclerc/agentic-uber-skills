@@ -21,14 +21,17 @@ Do **not** invoke the Claude adversary from task similarity, from a generic need
 
 For any Claude/second-review round that judges a goal, plan, assessment, acceptance, or proposed scope, the reviewer prompt must include a **Scope Fidelity Packet** before the agent's summary. Do not let the reviewer assess only the agent's lossy restatement.
 
+Prompt artifact rule: save the exact generated Claude/adversary prompt under `coordination/<task-slug>/` before running it. Section 1 of that prompt must load or quote `coordination/<task-slug>/scope.md`. Section 2 must be the diff, plan, final report, or artifact under review.
+
 Required packet fields:
 
-1. **Operator original instruction, verbatim** — exact controlling prompt/instruction, or an exact artifact path when too long/sensitive. Do not replace it with an agent summary.
-2. **Agent interpreted scope** — what the agent believes the work means.
-3. **Proposed narrowed scope** — any smaller slice the agent proposes to do now.
-4. **Explicit deferrals/non-goals** — obligations not being done now.
-5. **Approval evidence** — whether the operator explicitly approved each narrowing or deferral.
-6. **Diff between original and proposed scope** — added, removed, narrowed, or deferred obligations.
+1. **Scope artifact** — `coordination/<task-slug>/scope.md`, loaded or quoted as prompt section 1.
+2. **Operator original instruction, verbatim** — from `scope.md`, or an exact artifact path when too long/sensitive. Do not replace it with an agent summary.
+3. **Agent interpreted scope** — what the agent believes the work means.
+4. **Proposed narrowed scope** — any smaller slice the agent proposes to do now.
+5. **Explicit deferrals/non-goals** — obligations not being done now.
+6. **Approval evidence** — whether the operator explicitly approved each narrowing or deferral.
+7. **Diff between original and proposed scope** — added, removed, narrowed, or deferred obligations.
 
 The reviewer must answer:
 

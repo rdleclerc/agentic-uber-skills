@@ -70,6 +70,21 @@ Read `references/eval_driven_skill_creation.md` when the skill is reusable, high
 
 Keep this portable. Do not paste platform-specific slash commands, subprocess assumptions, or proprietary runtime conventions into a general skill; translate useful methods into neutral SKILL.md terms and record provenance in notice/reference notes.
 
+### Refactor failure-patched prose
+
+When a skill has accumulated long corrective paragraphs after failures, rewrite
+them before adding more prose. Prefer `Trigger / Do / Fallback / Invalid`:
+
+- **Trigger:** observable condition that activates the rule.
+- **Do:** required action, output field, trace, or receipt.
+- **Fallback:** only acceptable blocked/degraded path.
+- **Invalid:** missing evidence, vague blockers, or lower-affordance shortcuts.
+
+Keep the invariant and required evidence. Delete human-debugging history. Move
+rationale to a reference/session log unless one short "why" line materially
+changes behavior. Preserve source-authority/receipt requirements and keep an eval
+or example proving the compressed wording still prevents the failure.
+
 ## Legacy alias migration
 
 Use this path when the user mentions `skill-creator` or `skill-creator-pro`, asks whether either is deprecated, or wants to purge old creator skills.

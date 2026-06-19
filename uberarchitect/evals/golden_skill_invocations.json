@@ -1,0 +1,37 @@
+{
+  "trigger_examples": [
+    {
+      "name": "type0_gateway_concurrency",
+      "prompt": "Twenty long-running newsroom agents are all stuck behind one gateway and timeout tuning has not fixed it. Figure out the architecture.",
+      "must_surface": [
+        "queue",
+        "worker",
+        "backpressure",
+        "durable state",
+        "symptom patches demoted"
+      ]
+    },
+    {
+      "name": "blocked_pipeline_repeated_timeouts",
+      "prompt": "Our multi-agent pipeline has repeated timeouts and local fixes keep moving the bottleneck. Step back architecturally.",
+      "must_surface": [
+        "system class",
+        "normal industry architecture",
+        "fresh-start architecture",
+        "proof gate"
+      ]
+    }
+  ],
+  "non_trigger_examples": [
+    {
+      "name": "tiny_typo_fix",
+      "prompt": "Fix a typo in a README heading.",
+      "reason": "Tiny deterministic edit with no system-shape question."
+    },
+    {
+      "name": "settled_local_bug",
+      "prompt": "A unit test expects 3 but the function returns 4 after an off-by-one change.",
+      "reason": "Local deterministic bug where architecture is already settled."
+    }
+  ]
+}

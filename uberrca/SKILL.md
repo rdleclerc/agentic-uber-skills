@@ -88,6 +88,10 @@ Treat these as incomplete until traced deeper:
 
 If a coding run hits clear repeated failures from the same test command or failure family, do not keep patching through the loop. At or before five consecutive clear failures, preserve the command output, build the RCA ladder, name the missing invariant, and hand the revised hypothesis back to `uberplan`/`ubergoal` before implementation resumes.
 
+## Architecture stepback route
+
+If the RCA class-level cause is a system-shape problem — concurrency, scaling, queues, workers, long-running jobs, gateway stalls, orchestration, workflow durability, backpressure, or repeated symptom patches — route to `$uberarchitect` before recommending durable fixes. Treat the RCA as incomplete if it names a queue/worker/backpressure class of failure but still recommends only a local timeout, prompt, config, or component patch.
+
 ## Patch selection — after RCA is complete
 
 Map the fix to the lowest enforceable layer. Prefer in order:

@@ -20,6 +20,7 @@ Claude Code sessions using this pack default each Uber skill invocation to `clau
 | [uberskillevolver](uberskillevolver/) | Captures post-run skill lessons and promotes only evidence-backed evals, validators, templates, or deletions |
 | [ubersimplify](ubersimplify/) | Opt-in complexity/modularity/dead-code audits with timestamped trails; Patch mode is conservative/experimental until dogfooded |
 | [uberassess](uberassess/) | Explicit source-to-recommendation assessment for X/GitHub/arXiv/articles/videos before adoption; preserves source authority and approval boundaries |
+| [uberarchitect](uberarchitect/) | Architecture stepback gate for concurrency, queue/worker, gateway, orchestration, backpressure, repeated-timeout, and symptom-patching failures before local code patches harden |
 | [ubershow](ubershow/) | Browser-first static visual artifacts for high-bandwidth decision boards, plans, maps, timelines, and visual briefs with copyable decision receipts |
 
 ## Install
@@ -38,7 +39,7 @@ Copy or symlink the skill directories into your agent runtime's local skill dire
 ```bash
 # Example: install the Uber family into a generic local skill dir
 mkdir -p ~/.agent/skills
-for s in uberrca uber-skill-creator ubergoal uberplan uberaccept uberskillevolver ubersimplify uberassess ubershow; do
+for s in uberrca uber-skill-creator ubergoal uberplan uberaccept uberskillevolver ubersimplify uberassess uberarchitect ubershow; do
   rm -rf "$HOME/.agent/skills/$s"
   ln -s "$PWD/$s" "$HOME/.agent/skills/$s"
 done
@@ -48,19 +49,19 @@ done
 
 ```bash
 mkdir -p ~/.codex/skills
-for s in uberrca uber-skill-creator ubergoal uberplan uberaccept uberskillevolver ubersimplify uberassess ubershow; do
+for s in uberrca uber-skill-creator ubergoal uberplan uberaccept uberskillevolver ubersimplify uberassess uberarchitect ubershow; do
   rm -rf "$HOME/.codex/skills/$s"
   ln -s "$PWD/$s" "$HOME/.codex/skills/$s"
 done
 ```
 
-Invoke the wrapper with `$ubergoal` by default. Call `$uberrca` for general RCA, call `$ubershow` when a browser-first visual decision surface will materially improve understanding, and call phase skills directly only when you explicitly want `$uberplan`, `$uberaccept`, `$uberskillevolver`, `$ubersimplify`, or `$uberassess`.
+Invoke the wrapper with `$ubergoal` by default. Call `$uberrca` for general RCA, call `$uberarchitect` when a system-scale failure needs an architecture stepback before patches, call `$ubershow` when a browser-first visual decision surface will materially improve understanding, and call phase skills directly only when you explicitly want `$uberplan`, `$uberaccept`, `$uberskillevolver`, `$ubersimplify`, `$uberassess`, or `$uberarchitect`.
 
 ### Claude Code-compatible install
 
 ```bash
 mkdir -p ~/.claude/skills
-for s in uberrca uber-skill-creator ubergoal uberplan uberaccept uberskillevolver ubersimplify uberassess ubershow; do
+for s in uberrca uber-skill-creator ubergoal uberplan uberaccept uberskillevolver ubersimplify uberassess uberarchitect ubershow; do
   rm -rf "$HOME/.claude/skills/$s"
   cp -R "$PWD/$s" "$HOME/.claude/skills/$s"
 done

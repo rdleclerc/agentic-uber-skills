@@ -17,7 +17,7 @@ This roadmap keeps the skill pack evolving without turning it into bureaucracy. 
 ## Routing and source-authority policy
 
 - `ubergoal` is the only implicit/default Uber lifecycle router.
-- Phase skills are explicit or wrapper-invoked to prevent ceremony creep; descriptions/prompts say not to auto-trigger from task similarity, while Codex adapter metadata still exposes every skill in the pack.
+- Phase skills are explicit or wrapper-invoked; `uberarchitect` is explicit or wrapper-routed for architecture-shaped failures to prevent ceremony creep; descriptions/prompts say not to auto-trigger from task similarity, while Codex adapter metadata still exposes every skill in the pack.
 - `skill-creator` and `skill-creator-pro` are legacy local alias names, not parallel canonical creator skills. Redirect them to `uber-skill-creator` for portable SKILL.md work, or `openclaw-agentic-skill-creator` for OpenClaw/Gaia/Type0/Soho-specific skills.
 - `uberassess` is explicit or routed by `ubergoal` for source/artifact assessment only. Its portable validator requires completed project rows but does not hardcode Rob-local project names; local adapter references may provide Type0/Gaia/Soho/Hermes defaults.
 - `uberrca` is the general incident RCA utility. Agent Advocate is the agent-behavior RCA lens inside planning/acceptance/simplification. If both apply, use the `uberrca` ladder plus Agent Advocate human-counterfactual evidence.
@@ -104,3 +104,8 @@ Use Git to combine learnings, but do not commit raw traces by default.
 - Archive: after promotion/rejection, move packets to `learning/processed/` or leave them referenced by the promotion batch.
 
 No silent self-modification: shared learnings are evidence, not authority.
+
+
+## Uberarchitect dogfooding
+
+`uberarchitect` is admitted as a small architecture stepback gate only if tests and fresh-agent fixtures prove it catches system-scale queue/worker/backpressure failures without turning ordinary edits into process theater.

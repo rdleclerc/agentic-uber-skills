@@ -59,6 +59,7 @@ Do not store secrets, credentials, private customer data, full copyrighted sourc
    - a template change
    - a script/tool change
    - a deletion/simplification
+   - a compression/refactor of failure-patched skill prose
    - documentation/reference routing
    - a deferred/no-change note
 5. **Demand benefit >> cost.** One-off annoyances usually become notes, not permanent machinery.
@@ -82,11 +83,29 @@ Before changing a skill, answer:
 - Is it a repeated pattern or a severe one-off?
 - What is the smallest durable change that prevents recurrence?
 - Can we delete/simplify instead of adding instructions?
+- If this is a skill-prose patch, can verbose corrective text become a compact
+  Trigger/Do/Invalid rule with required evidence and allowed fallbacks?
 - Will this increase context load, checklist fatigue, coordination, false positives, or maintenance burden?
 - What eval, validator, or example will catch regression?
 - What would make us revert this change?
 
 If evidence is weak or benefit is not clearly much greater than cost, defer or record `no change`. Do not promote a standalone `ubertesting` or `ubereval` skill from one bookmark batch or one annoying run; first prefer a red/green proof ledger, black-box quality/eval lane, negative fixture, or template field inside existing skills.
+
+### Skill prose compression candidates
+
+Promote compression when evidence shows a real rule is buried in
+failure-patched prose. Preserve the invariant; shrink the explanation.
+
+Good compression keeps:
+
+- Trigger: the exact condition that activates the rule.
+- Do: the required action, evidence, field, trace, or receipt.
+- Fallback: the only acceptable blocked/degraded path.
+- Invalid: shortcuts that previously caused failures.
+
+Do not promote compression that removes source authority, receipt requirements,
+side-effect boundaries, or eval coverage. If a longer explanation is needed only
+for humans, move it to a reference, learning record, or session archive.
 
 
 

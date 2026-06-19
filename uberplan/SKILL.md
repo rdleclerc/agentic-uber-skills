@@ -34,6 +34,10 @@ For product/rewrite/agentic-system work, first name the minimum user-visible pro
 
 For Type0, the default spine is: real feed/tip/wire input → normalized signal → admission decision → lane/story assignment → story processing → fact-check/publish/reject guard → traceable result.
 
+## Scope fidelity artifact gate
+
+Tier 1+ durable plans must include a `## Scope fidelity` block that links or quotes `coordination/<task-slug>/scope.md`, names the plan scope, states `Narrowing? yes/no`, and cites `Operator approved narrowing in:` whenever narrowed. Unapproved narrowing makes the plan invalid and cannot later count as completion; record it as blocked, deferred, or ask the operator to approve the narrower scope.
+
 ## Operational outcome contract
 
 Tier 1+ plans must include a **Definition of Done / Operational Outcome Contract** naming intended outcome, what counts as implemented/operational, evidence, non-implementation examples, and terminal state.
@@ -108,6 +112,12 @@ Choose lanes by risk, not ceremony: Architecture Steward; **Agent Advocate / Age
 
 Do not create a standalone `ubertesting`/`ubereval` plan lane merely because testing is important; use the red/green proof ledger and Black-box Tester / Quality-Eval Auditor first, and extract only after repeated failures prove benefit >> cost.
 
+## V0 plan premortem / failure dispositions
+
+For Tier 2/3 plans, after drafting the first concrete plan and before the confidence gate, run an explicit premortem against that V0 plan. This is a required plan artifact, not a reminder. Ask the adversary questions even when no separate reviewer is available; if Claude or another adversarial reviewer is requested or available for the plan review, use that reviewer and save the prompt/output with the coordination artifacts.
+
+The premortem must assume the V0 plan failed, then name: the most likely execution failure, missing affordance/context/tool/source, overengineering or code-bloat failure mode, files/modules/abstractions proposed, what can be deleted/merged/avoided, and the 80/50 alternative that gets most value with much less surface area. Every material failure mode needs a failure disposition: either a concrete plan revision, or an explicit accepted-risk rationale; accepted-risk-only disposition tables are valid when every row has a rationale. Do not pass the confidence gate with unresolved premortem blockers or with findings that did not mutate the plan or risk ledger.
+
 ## Parallel exploration and execution planning
 
 Map the critical path before parallel work. If subagents are authorized, split exploration into non-overlapping slices and require trails: key files, invariants, commands/tests, unknowns, false leads, next angles. Even without subagents, identify parallelizable work, serial blockers, disjoint write scopes, and batching/max-concurrency policy. Do not spawn duplicate agents over the same context.
@@ -142,13 +152,18 @@ For plans that introduce new agentic behavior, new harness, new coordination lay
 
 Before implementation or launch, try to reject the plan against OpenClaw/agentic architecture, thin-harness/fat-agent policy, topology, dead-code, source-authority, side effects, and evidence. Then run the scoped verdict from `templates/confidence-gate.md`; do not say “100% confident” while a material blocker remains.
 
+
+## Architecture stepback gate
+
+For Tier 2/3 plans involving concurrency, scaling, queues, workers, long-running jobs, gateways, orchestration, workflow durability, backpressure, repeated timeouts, or suspected symptom-patching, route to `$uberarchitect` before the task map hardens. The plan must not proceed on local patches alone until it includes an Architecture Stepback Packet: system class, normal industry architecture, fresh-start architecture, current mismatch, symptom patches demoted, smallest transition path, proof gate, and human counterfactual.
+
 ## Optional Claude adversary
 
 Use this only when the user explicitly asks for Claude review, e.g. `with Claude`, `Claude review`, `Claude debate`, or `Claude for 2 rounds`. Do not invoke Claude from task similarity or ordinary `uberplan` use. Codex remains plan owner and reconciler; Claude is an adversarial reviewer, not a co-author, final authority, or acceptance substitute. If available, read `../references/claude-adversary.md`; keep the essentials here because references may not auto-load.
 
 Default to one Claude challenge round; run two or three only when requested or when material unresolved risk remains. Each Claude challenge must name a claim, causal layer, why it matters, falsifying/satisfying evidence, and minimum impact threshold. If more than one challenge is raised, the first two challenges must use distinct causal layers; a single-challenge round must say why only one challenge is material. Codex reconciliation must classify each challenge as `Accepted`, `Risk added`, `Rejected`, `Uncertain`, or `No material impact`; `No material impact` is non-evidence: it proves a review ran, not that the artifact is acceptable. Bind the ledger to the artifact version/section reviewed.
 
-Before the skill-specific questions, include the Scope Fidelity Packet from `../references/claude-adversary.md` and require the reviewer to answer `Original-scope satisfaction`, `Narrowing approval`, and `Scope fidelity verdict` against the operator-original instruction. A reviewer must not assess only Codex's summary or proposed scope. Also require Claude to challenge whether Codex is sticking to the operator-approved plan and preserving modularity, thin harness / fat skills/tools, and agentic affordance unless the user explicitly overrides those defaults. For plan-phase review, require the Gall's Law / Basic Spine First adversary: think bigger about the ultimate goal and first principles, not bigger about architecture; identify the basic working spine, the thin/fat split, eval-driven evolution, what success is not, and the smallest next move.
+Before the skill-specific questions, include the Scope Fidelity Packet from `../references/claude-adversary.md`: section 1 must be `coordination/<task-slug>/scope.md`; section 2 must be the plan/diff/artifact under review; save the generated Claude prompt in that coordination folder. Require the reviewer to answer `Original-scope satisfaction`, `Narrowing approval`, and `Scope fidelity verdict` against the operator-original instruction. A reviewer must not assess only Codex's summary or proposed scope. Also require Claude to challenge whether Codex is sticking to the operator-approved plan and preserving modularity, thin harness / fat skills/tools, and agentic affordance unless the user explicitly overrides those defaults. For plan-phase review, require the Gall's Law / Basic Spine First adversary: think bigger about the ultimate goal and first principles, not bigger about architecture; identify the basic working spine, the thin/fat split, eval-driven evolution, what success is not, and the smallest next move.
 
 Also include the Frame-independence / anti-roleplay check from `../references/claude-adversary.md`. The reviewer prompt must put the operator-original instruction first; if it is missing, Claude must stop and flag the review as invalid. Before any approval language, require Claude to state what role Codex is asking it to play and whether it accepts, modifies, or refuses that role; name what the operator's original instruction requires that Codex's summary might hide or narrow; and list three concrete reject conditions. Treat highly one-sided `Accepted`/`No material impact` ledgers as rubber-stamp warnings, not proof of quality. Model adversary review is reduced-noise, not zero-noise, and does not replace operator-defined observable success criteria, direct prompt/diff spot-checks, deterministic tests, evals, or receipts.
 
@@ -156,7 +171,8 @@ For `uberplan`, ask exactly:
 
 1. **Most likely execution failure.** Causal layer: failure prediction. Name the single most likely execution failure and its mitigation, not just acknowledgment. Evidence: tie it to a prior failure/source constraint. Minimum impact: add a stop gate or remove the risky branch.
 2. **Missing affordance.** Causal layer: agent affordance/tooling. What skill, tool, source, or context does this plan depend on that does not exist or is unproven? Evidence: identify the exact missing affordance. Minimum impact: add proof/fallback or remove dependency.
-3. **Linear 80/50 alternative.** Causal layer: simplification. Is there a linear no-branch version that gets at least 80% of the value with at most 50% of the surface? Evidence: describe it. Minimum impact: replace the plan or justify complexity.
+3. **Overengineering / code-bloat failure.** Causal layer: complexity and topology. If this plan fails by adding too much machinery, too many files, or the wrong abstraction, what caused it? Evidence: name proposed files/modules/abstractions and what can be deleted, merged, or avoided. Minimum impact: simplify the plan or explicitly accept the bloat risk.
+4. **Linear 80/50 alternative.** Causal layer: simplification. Is there a linear no-branch version that gets at least 80% of the value with at most 50% of the surface? Evidence: describe it. Minimum impact: replace the plan or justify complexity.
 
 ## Helpful resources
 
