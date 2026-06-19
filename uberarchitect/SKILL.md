@@ -1,6 +1,8 @@
 ---
 name: uberarchitect
 description: "Do not auto-trigger from task similarity. Use only when explicitly named by the user or routed by ubergoal, uberassess, uberplan, or uberaccept for system-scale architecture questions: concurrency, scaling, queues, workers, long-running jobs, gateways, orchestration, workflow durability, backpressure, repeated timeouts, or agents stuck in micro-patches. Forces a senior-architect stepback before local code fixes."
+model: claude-opus-4-8
+effort: max
 ---
 
 # Uberarchitect

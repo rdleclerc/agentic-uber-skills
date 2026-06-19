@@ -1,6 +1,8 @@
 ---
 name: uberplan
 description: Do not auto-trigger from task similarity. Use only when explicitly named by the user or routed by ubergoal. Plans substantial coding, refactoring, UI, prompt/skill/workflow, or agentic-system work as a long-running goal plan with architecture stepback, thread highlights, a durable .md file, operational outcome/Definition of Done contract, recursive pseudocode for hierarchical plan trees, proof ladders, review lanes, topology seams, and confidence gates without treating planning as permission to over-engineer.
+model: claude-opus-4-8
+effort: max
 ---
 
 # Uberplan
@@ -68,7 +70,7 @@ Readiness gates, safe adoption spines, registries, plans, eval fixtures, local p
 
 ## Recursive / hierarchical execution pseudocode
 
-For multi-plan goals, subplans, plan-making plans, or “execute all plans,” include **Recursive / Hierarchical Execution Pseudocode**. It must show child iteration, recursion, proof before parent return, child terminal-state recording, and rejection of superficial completion. Parent/shared proof cannot substitute for child operational completion.
+For multi-plan goals, subplans, plan-making plans, or “execute all plans,” include **Recursive / Hierarchical Execution Pseudocode**. Use a plan-making plan when the final plan depends on multi-source synthesis such as transcripts, source docs, codebase conventions, or ambiguous strategy/architecture work. Output only the sources to inspect, evidence map, questions the final plan must answer, constraints, shallow-synthesis risks, and stop condition before writing the real plan; do not solve the final deliverable yet. Skip this for Tier 0/1 edits, one-file fixes, or cases where micro-intent already captures the work. Example: “Plan how you will read this transcript, repo context, and source docs before writing the actual implementation plan.” It must show child iteration, recursion, proof before parent return, child terminal-state recording, and rejection of superficial completion. Parent/shared proof cannot substitute for child operational completion.
 
 For large plan trees, use `references/plan-tree-artifact-layout.md`: root `index.md`, child plan files, `status-ledger.md`, receipts, and final acceptance. Bound recursion; create child plans only when they reduce risk or separate operational outcomes.
 

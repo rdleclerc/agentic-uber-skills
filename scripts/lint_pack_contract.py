@@ -20,12 +20,15 @@ PACK_SKILLS = [
     "uberarchitect",
     "ubershow",
 ]
+CLAUDE_CODE_UBER_MODEL = "claude-opus-4-8"
+CLAUDE_CODE_UBER_EFFORT = "max"
 UBER_PHASE_SKILLS = ["uberplan", "uberaccept", "uberskillevolver", "ubersimplify", "uberassess", "uberarchitect"]
 UTILITY_IMPLICIT_SKILLS = ["uberrca", "uber-skill-creator", "ubershow"]
 ROOT_REQUIRED_FILES = ["AGENTS.md", "CLAUDE.md", "README.md", "ROADMAP.md"]
 AGENTS_REQUIRED_PHRASES = [
     "$ubergoal` is the only default/implicit Uber lifecycle router",
     "All skills in this pack must be installed and exposed to Codex sessions",
+    "Claude Code skill frontmatter for every pack skill must keep `model: claude-opus-4-8` and `effort: max`",
     "Phase skills are explicit or wrapper-invoked",
     "uberassess` = source-to-recommendation due diligence",
     "ubershow` = visual communication utility",
@@ -61,6 +64,14 @@ def read(path: Path) -> str:
     return path.read_text() if path.exists() else ""
 
 
+def frontmatter_value(root: Path, skill: str, key: str) -> str | None:
+    text = read(root / skill / "SKILL.md")
+    match = re.search(rf"^\s*{re.escape(key)}:\s*(.+?)\s*$", text, flags=re.M)
+    if not match:
+        return None
+    return match.group(1).strip().strip('"').strip("'")
+
+
 def policy_value(root: Path, skill: str) -> str | None:
     path = root / skill / "agents" / "openai.yaml"
     if not path.exists():
@@ -92,6 +103,10 @@ def main() -> int:
     for skill in PACK_SKILLS:
         if not (root / skill / "SKILL.md").exists():
             errors.append(f"missing skill package: {skill}/SKILL.md")
+        if frontmatter_value(root, skill, "model") != CLAUDE_CODE_UBER_MODEL:
+            errors.append(f"{skill} must default Claude Code skill runs to {CLAUDE_CODE_UBER_MODEL}")
+        if frontmatter_value(root, skill, "effort") != CLAUDE_CODE_UBER_EFFORT:
+            errors.append(f"{skill} must default Claude Code skill runs to {CLAUDE_CODE_UBER_EFFORT} effort")
 
     implicit = {skill: policy_value(root, skill) for skill in ["ubergoal", *UBER_PHASE_SKILLS]}
     if implicit.get("ubergoal") != "true":

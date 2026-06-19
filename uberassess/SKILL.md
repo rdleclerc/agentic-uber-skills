@@ -1,6 +1,8 @@
 ---
 name: uberassess
 description: "Do not auto-trigger from task similarity. Use only when explicitly asked to assess or deeply research a source, plan artifact, idea seed, open research question, or implementation question for possible adoption, or routed by ubergoal: X/Twitter posts, bookmarked links, articles, GitHub repos, arXiv/papers, videos, Hermes/bookmark signals, internal artifacts, draft plans, planning packets, scraps of ideas, alternatives research, and codebase/docs/forum/GitHub reconnaissance. Produces a source-grounded recommendation packet, not implementation."
+model: claude-opus-4-8
+effort: max
 ---
 
 # Uberassess

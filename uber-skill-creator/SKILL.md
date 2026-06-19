@@ -1,6 +1,8 @@
 ---
 name: uber-skill-creator
 description: Portable guide for creating, updating, migrating, deprecating, and evaluating Uber-style SKILL.md skills for Codex, Claude, and compatible coding agents. Use when users want to create a new general skill, update an existing skill, audit an existing skill or skill pack with a read-only quality report, migrate or purge legacy local skill-creator or skill-creator-pro aliases, add scripts/references/assets, run eval-driven skill iteration, compare with-skill vs without-skill behavior, generate an HTML review report, or tune a skill description for better triggering. For OpenClaw/Gaia/Type0/Soho-specific skills, prefer openclaw-agentic-skill-creator.
+model: claude-opus-4-8
+effort: max
 metadata:
   short-description: Create or update an Uber skill
 ---
@@ -35,13 +37,16 @@ Portable guide for creating effective `SKILL.md` packages for Codex, Claude, and
 ## Skill creation workflow
 
 1. **Classify target profile.** Portable, Uber-family, or OpenClaw/Gaia/Type0/Soho-specific.
-2. **Collect concrete examples.** Ask only material trigger/non-trigger/resource questions. Stop once usage is clear.
-3. **Plan reusable contents.** Choose `scripts/`, `references/`, and/or `assets/` only when they reduce repeated work, improve reliability, or keep active context small.
-4. **Initialize when new.** Prefer `scripts/init_skill.py <skill-name> --path <output-directory> [--resources scripts,references,assets] [--examples]`; skip only for existing skills.
-5. **Edit active instructions.** Write imperative guidance for another agent. Keep trigger information in frontmatter `description`; keep body focused on procedure and resource use.
-6. **Validate.** Run `scripts/quick_validate.py <path/to/skill-folder>` plus package lint/tests when present.
-7. **Run the eval-driven extension** for reusable, high-impact, broadly installed, or behavior-changing skills.
-8. **Install/sync/migrate.** Sync canonical source to runtime skill roots only after source validation passes.
+2. **Run the non-skill check.** Prefer a direct answer, note/doc, or small script when discoverable agent execution is not the real need.
+3. **Collect concrete examples.** Ask only material trigger/non-trigger/resource questions. Stop once usage is clear.
+4. **Plan reusable contents.** Choose `scripts/`, `references/`, and/or `assets/` only when they reduce repeated work, improve reliability, or keep active context small.
+5. **Pick the maturity tier.** Use `Scaffold`, `Production`, `Library`, or `Governed`; each higher tier must earn its gates.
+6. **Draft the production contract when needed.** For production/library/governed skills, read `references/production-skill-contract.md` and capture the owned job, trigger/non-trigger cases, resources, evals, risk boundary, owner/review cadence, and targets before adding adapters or release claims.
+7. **Initialize when new.** Prefer `scripts/init_skill.py <skill-name> --path <output-directory> [--resources scripts,references,assets] [--examples]`; skip only for existing skills.
+8. **Edit active instructions.** Write imperative guidance for another agent. Keep trigger information in frontmatter `description`; keep body focused on procedure and resource use.
+9. **Validate.** Run `scripts/quick_validate.py <path/to/skill-folder>` plus package lint/tests when present.
+10. **Run the eval-driven extension** for reusable, high-impact, broadly installed, or behavior-changing skills.
+11. **Install/sync/migrate.** Sync canonical source to runtime skill roots only after source validation passes.
 
 Read `references/skill-creation-workflow.md` for command examples, anatomy, resource-selection details, and forward-testing prompts.
 

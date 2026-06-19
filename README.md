@@ -6,6 +6,8 @@ The pack is not tied to Claude or Codex. Some skills include optional adapter no
 
 Agent-facing source authority lives in [AGENTS.md](AGENTS.md). The default routing rule is: invoke `$ubergoal` as the implicit lifecycle router; invoke utility skills like `$uberrca` and `$ubershow` directly when their specific trigger applies; invoke phase skills directly only when explicitly named or when `$ubergoal` routes to them. Codex sessions should expose every skill in this pack; phase-skill descriptions intentionally say not to auto-trigger from task similarity, which prevents ceremony creep from broad descriptions without hiding the skills from direct use.
 
+Claude Code sessions using this pack default each Uber skill invocation to `claude-opus-4-8` with `effort: max`. This requires Claude Code v2.1.154 or later.
+
 ## Skills
 
 | Skill | What it does |

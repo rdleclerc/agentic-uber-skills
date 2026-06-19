@@ -1,6 +1,8 @@
 ---
 name: ubershow
 description: "Use when the user needs high-bandwidth visual communication rather than a text wall: browser-first HTML decision boards, implementation plans, questionnaires, architecture/source/code-review maps, status or incident reports, visual briefs, or interactive decision receipts for Codex/Claude coding workflows. Produces local self-contained HTML artifacts as generated views while preserving Markdown/source/ledger authority."
+model: claude-opus-4-8
+effort: max
 ---
 
 # Ubershow

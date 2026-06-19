@@ -1,6 +1,8 @@
 ---
 name: uberaccept
 description: Do not auto-trigger from task similarity. Use only when explicitly named by the user or routed by ubergoal. Performs adversarial final acceptance for substantial coding, refactoring, UI, prompt/skill/workflow, or agentic-system work before completion, merge, commit, push, or ship claims.
+model: claude-opus-4-8
+effort: max
 ---
 
 # Uberaccept

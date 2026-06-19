@@ -18,6 +18,7 @@ Read in this order:
 
 - `$ubergoal` is the only default/implicit Uber lifecycle router.
 - All skills in this pack must be installed and exposed to Codex sessions. Exposure is not trigger authority.
+- Claude Code skill frontmatter for every pack skill must keep `model: claude-opus-4-8` and `effort: max` so Uber-skill invocations default to Opus 4.8 max in every session.
 - Phase skills are explicit or wrapper-invoked: `$uberplan`, `$uberaccept`, `$uberskillevolver`, `$ubersimplify`, and `$uberassess` should not trigger merely because a task resembles their domain. Their descriptions and OpenAI adapter prompts should say "Do not auto-trigger from task similarity" so runtime skill routers do not confuse examples with permission.
 - `$uberrca` is a utility skill, not an Uber lifecycle phase. Use it directly for general incidents, debugging, postmortems, repeated bugs, and class-level root-cause analysis.
 - `ubershow` = visual communication utility, not an Uber lifecycle phase. Use it when a browser-first static artifact will materially improve decision speed or comprehension; generated HTML is a view, and copy/paste receipts are the decision registration path.
@@ -47,6 +48,19 @@ Read in this order:
 - Prefer small validators/tests over prose-only policy when a failure class can drift.
 - Do not create another new `uber*` skill until repeated real-project use proves extraction makes the common path smaller, faster, or safer; `uberassess` is admitted because source-to-recommendation assessment is a repeated cross-project workflow with clear no-implementation safety boundaries, and `ubershow` is admitted because repeated coding sessions needed high-bandwidth visual decision surfaces without adding a server or UI framework.
 - Do not silently self-modify skills from learning records; learning packets are evidence, not authority.
+
+## Lazy Senior Dev preflight
+
+Before adding code, skill machinery, or another process layer, run the smallest useful simplification ladder:
+
+1. Can the requirement be narrowed or deleted?
+2. Does the standard library, platform, shell, database, browser, an existing repo helper, an installed dependency, or an existing skill/tool already do it?
+3. Can this be one line, one function, or one file instead of a new abstraction?
+4. Only then write the minimum code that works.
+
+Do not simplify away trust-boundary validation, data-loss protection, security,
+accessibility, source authority, side-effect proof, or explicitly requested
+behavior.
 
 ## Test commands
 
