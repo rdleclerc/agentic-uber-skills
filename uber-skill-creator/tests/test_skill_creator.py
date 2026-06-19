@@ -39,7 +39,35 @@ class SkillCreatorPackageTests(unittest.TestCase):
         self.assertIn("skill-creator-pro", combined)
         self.assertIn("deprecation shim", body)
         self.assertIn("Use `uberskillevolver` after substantial or surprising runs", body)
+        self.assertIn("Run the non-skill check", body)
+        self.assertIn("Pick the maturity tier", body)
+        self.assertIn("references/production-skill-contract.md", combined)
         self.assertIn("use uberskillevolver after real runs", meta)
+
+    def test_production_skill_contract_keeps_governance_light_and_private(self) -> None:
+        contract_path = ROOT / "references" / "production-skill-contract.md"
+        contract = contract_path.read_text()
+
+        self.assertIn("Direct answer", contract)
+        self.assertIn("Document or note", contract)
+        self.assertIn("Script", contract)
+        self.assertIn("Skill", contract)
+        self.assertIn("Scaffold", contract)
+        self.assertIn("Production", contract)
+        self.assertIn("Library", contract)
+        self.assertIn("Governed", contract)
+        self.assertIn("owned recurring job", contract)
+        self.assertIn("should-trigger, should-not-trigger, and near-neighbor examples", contract)
+        self.assertIn("review cadence", contract)
+        self.assertIn("verification_command", contract)
+        self.assertIn("Never collect raw prompts", contract)
+        self.assertIn("Convert missed triggers into trigger evals", contract)
+        self.assertLess(contract_path.stat().st_size, 5000)
+        self.assertNotIn("```python", contract)
+        self.assertNotIn("```sh", contract)
+        self.assertNotIn("```bash", contract)
+        self.assertNotIn("subprocess", contract)
+        self.assertNotIn("sqlite", contract.lower())
 
     def test_eval_report_escapes_and_summarizes(self) -> None:
         payload = {
