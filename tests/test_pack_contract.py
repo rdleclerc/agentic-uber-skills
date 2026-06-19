@@ -247,6 +247,33 @@ class PackContractTests(unittest.TestCase):
         ]:
             self.assertIn(phrase, template)
 
+    def test_uberplan_architecture_focus_is_not_uberengineering(self) -> None:
+        body = (ROOT / "uberplan" / "SKILL.md").read_text()
+        template = (ROOT / "uberplan" / "templates" / "plan-contract.md").read_text()
+        meta = (ROOT / "uberplan" / "agents" / "openai.yaml").read_text()
+
+        for phrase in [
+            "Architecture focus, not uberengineering",
+            "extra thinking time/tokens to see the architecture and the terrain before cutting",
+            "Measure three times, cut once",
+            "viable avenues, blockers, second-order implications, pitfalls",
+            "If the bigger-picture review only adds ceremony",
+            "blindly closing on the first plausible route",
+        ]:
+            self.assertIn(phrase, body)
+
+        for phrase in [
+            "Architecture stepback / measure-three-times review",
+            "The goal is not more machinery; it is a clearer cut.",
+            "Likely pitfalls and false-closure traps",
+            "What not to build / what to delete or avoid",
+            "Simplest path after seeing the whole terrain",
+        ]:
+            self.assertIn(phrase, template)
+
+        self.assertIn("without turning uberplan into uberengineering", meta)
+        self.assertIn("architecture stepback, viable avenues, blockers, implications, pitfalls", meta)
+
     def test_utility_skills_have_task_specific_invocation_policy(self) -> None:
         text = (ROOT / "ubershow" / "agents" / "openai.yaml").read_text()
         self.assertIn("allow_implicit_invocation: true", text)

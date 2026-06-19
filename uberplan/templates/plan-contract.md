@@ -45,6 +45,21 @@ Use this when Claude or any second reviewer is asked to judge the plan before im
 - What success is NOT:
 - Smallest next move:
 
+## Architecture stepback / measure-three-times review
+
+Use this to spend extra thinking time before committing to a path. The goal is not more machinery; it is a clearer cut.
+
+- Big-picture architecture question:
+- Current system shape and important seams:
+- Viable avenues considered:
+- Blockers / prerequisites / unknowns:
+- Second-order implications:
+- Likely pitfalls and false-closure traps:
+- Adoption, rollback, and operator-surprise concerns:
+- What not to build / what to delete or avoid:
+- Simplest path after seeing the whole terrain:
+- Architecture focus verdict: enough context to cut once? yes/no, because:
+
 ## Scope
 
 ### In scope

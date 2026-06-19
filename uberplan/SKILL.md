@@ -1,6 +1,6 @@
 ---
 name: uberplan
-description: Do not auto-trigger from task similarity. Use only when explicitly named by the user or routed by ubergoal. Plans substantial coding, refactoring, UI, prompt/skill/workflow, or agentic-system work as a long-running goal plan with thread highlights, a durable .md file, operational outcome/Definition of Done contract, recursive pseudocode for hierarchical plan trees, proof ladders, review lanes, topology seams, and confidence gates.
+description: Do not auto-trigger from task similarity. Use only when explicitly named by the user or routed by ubergoal. Plans substantial coding, refactoring, UI, prompt/skill/workflow, or agentic-system work as a long-running goal plan with architecture stepback, thread highlights, a durable .md file, operational outcome/Definition of Done contract, recursive pseudocode for hierarchical plan trees, proof ladders, review lanes, topology seams, and confidence gates without treating planning as permission to over-engineer.
 ---
 
 # Uberplan
@@ -12,6 +12,14 @@ Create the smallest **long-running goal** plan that makes the work safe. Plannin
 `uberplan` owns planning only. It does not execute patches or accept completion; route final proof to `uberaccept` and post-run lessons to `uberskillevolver`. Do not collapse substantial work into a default 20-minute slice unless the user explicitly asks for a slice.
 
 If a Coding Agent Work Contract already captures objective, scope, orientation, evidence, stop conditions, and gaps, use or extend it. Do not create duplicate bureaucracy.
+
+## Architecture focus, not uberengineering
+
+`uberplan` buys extra thinking time/tokens to see the architecture and the terrain before cutting, not to make the system bigger. Use the extra pass to map viable avenues, blockers, second-order implications, pitfalls, package seams, adoption/rollback concerns, and likely false-closure traps before choosing a path.
+
+Measure three times, cut once: after the architecture stepback, prefer the simplest plan that still sees the big picture. If the bigger-picture review only adds ceremony, files, agents, harness, or abstraction without changing the decision or reducing a named risk, delete it.
+
+The output should make the operator more confident that the agent is not blindly closing on the first plausible route. It should not make the repo heavier merely because the word "architecture" appeared.
 
 ## Micro-intent / spec-first fast path with Task Understanding Review
 
@@ -90,6 +98,7 @@ Use `templates/plan-contract.md` for the durable plan. It must cover, as applica
 - **User expectation / surprise assessment** and final handoff proof against material mismatch
 - **Scope Fidelity Ledger**: operator original instruction, verbatim or exact artifact path; agent-interpreted scope; proposed narrowed scope; explicit deferrals/non-goals; approval evidence for narrowing; and diff between original and proposed scope
 - **Gall's Law / Basic Spine First adversary** for agentic-system, harness, coordination-layer, or architecture-changing plans: smallest end-to-end working spine, not micro-feature slices or top-down architecture; evals that prove the spine works and stay green while it evolves
+- **Architecture stepback / measure-three-times review**: system shape, viable avenues, blockers, implications, pitfalls, package seams, adoption/rollback, what not to build, and the simplest path after seeing the whole terrain
 - Definition of Done / Operational Outcome Contract, allowed terminal state, and non-implementation examples
 - Recursive / Hierarchical Execution Pseudocode plus Plan Tree Artifact Layout for child/subplans
 - Unattended production/runtime approval and safe-predecessor plan when production/runtime work could hit external/unsafe/irreversible steps
