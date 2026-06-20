@@ -1,0 +1,46 @@
+test_golden_eval_schema (test_validators.PackageTests.test_golden_eval_schema) ... ok
+test_key_templates_exist (test_validators.PackageTests.test_key_templates_exist) ... ok
+test_package_lint_passes (test_validators.PackageTests.test_package_lint_passes) ... ok
+test_agent_behavior_requires_advocate (test_validators.PlanValidatorTests.test_agent_behavior_requires_advocate) ... ok
+test_agent_behavior_requires_boundary_contract (test_validators.PlanValidatorTests.test_agent_behavior_requires_boundary_contract) ... ok
+test_agent_behavior_requires_regex_keyword_semantic_gate (test_validators.PlanValidatorTests.test_agent_behavior_requires_regex_keyword_semantic_gate) ... ok
+test_agentic_plan_requires_agent_execution_proof_ladder (test_validators.PlanValidatorTests.test_agentic_plan_requires_agent_execution_proof_ladder) ... ok
+test_agentic_plan_requires_runtime_agent_topology (test_validators.PlanValidatorTests.test_agentic_plan_requires_runtime_agent_topology) ... ok
+test_agentic_plan_requires_source_convention_check (test_validators.PlanValidatorTests.test_agentic_plan_requires_source_convention_check) ... ok
+test_agentic_plan_requires_thin_harness_rubric (test_validators.PlanValidatorTests.test_agentic_plan_requires_thin_harness_rubric) ... ok
+test_code_plan_requires_dead_code_tool_plan (test_validators.PlanValidatorTests.test_code_plan_requires_dead_code_tool_plan) ... ok
+test_code_plan_requires_repository_topology (test_validators.PlanValidatorTests.test_code_plan_requires_repository_topology) ... ok
+test_code_plan_requires_target_file_tree (test_validators.PlanValidatorTests.test_code_plan_requires_target_file_tree) ... ok
+test_existing_file_plan_can_mark_topology_not_applicable (test_validators.PlanValidatorTests.test_existing_file_plan_can_mark_topology_not_applicable) ... ok
+test_hierarchical_plan_requires_plan_tree_layout (test_validators.PlanValidatorTests.test_hierarchical_plan_requires_plan_tree_layout) ... ok
+test_hierarchical_plan_requires_recursive_pseudocode (test_validators.PlanValidatorTests.test_hierarchical_plan_requires_recursive_pseudocode) ... ok
+test_hierarchical_pseudocode_requires_child_terminal_table (test_validators.PlanValidatorTests.test_hierarchical_pseudocode_requires_child_terminal_table) ... ok
+test_hollow_tier3_plan_fails (test_validators.PlanValidatorTests.test_hollow_tier3_plan_fails) ... ok
+test_operational_contract_rejects_proof_only_as_done (test_validators.PlanValidatorTests.test_operational_contract_rejects_proof_only_as_done) ... ok
+test_production_runtime_goal_requires_upfront_approval_and_safe_predecessors (test_validators.PlanValidatorTests.test_production_runtime_goal_requires_upfront_approval_and_safe_predecessors) ... ok
+test_templates_need_allow_template_mode (test_validators.PlanValidatorTests.test_templates_need_allow_template_mode) ... ok
+test_tier0_plan_stays_lightweight (test_validators.PlanValidatorTests.test_tier0_plan_stays_lightweight) ... ok
+test_tier2_agent_plan_passes_with_agent_behavior (test_validators.PlanValidatorTests.test_tier2_agent_plan_passes_with_agent_behavior) ... ok
+test_tier2_requires_decision_tradeoff_register (test_validators.PlanValidatorTests.test_tier2_requires_decision_tradeoff_register) ... ok
+test_tier2_requires_goal_execution_posture (test_validators.PlanValidatorTests.test_tier2_requires_goal_execution_posture) ... ok
+test_tier2_requires_operational_outcome_contract (test_validators.PlanValidatorTests.test_tier2_requires_operational_outcome_contract) ... ok
+test_tier2_requires_over_orchestration_review (test_validators.PlanValidatorTests.test_tier2_requires_over_orchestration_review) ... ok
+test_tier2_requires_parallelization_plan (test_validators.PlanValidatorTests.test_tier2_requires_parallelization_plan) ... ok
+test_tier2_requires_plan_acceptance_gate (test_validators.PlanValidatorTests.test_tier2_requires_plan_acceptance_gate) ... ok
+test_tier2_requires_prd_checklist (test_validators.PlanValidatorTests.test_tier2_requires_prd_checklist) ... ok
+test_tier2_requires_scope_fidelity (test_validators.PlanValidatorTests.test_tier2_requires_scope_fidelity) ... ok
+test_tier2_requires_task_map_mermaid (test_validators.PlanValidatorTests.test_tier2_requires_task_map_mermaid) ... ok
+test_tier2_requires_testing_adaptation_gate (test_validators.PlanValidatorTests.test_tier2_requires_testing_adaptation_gate) ... ok
+test_tier2_requires_user_expectation_surprise_assessment (test_validators.PlanValidatorTests.test_tier2_requires_user_expectation_surprise_assessment) ... ok
+test_tier2_requires_v0_plan_premortem (test_validators.PlanValidatorTests.test_tier2_requires_v0_plan_premortem) ... ok
+test_tier2_requires_verifiable_subgoals (test_validators.PlanValidatorTests.test_tier2_requires_verifiable_subgoals) ... ok
+test_tier2_v0_plan_premortem_allows_accepted_risk_only_dispositions (test_validators.PlanValidatorTests.test_tier2_v0_plan_premortem_allows_accepted_risk_only_dispositions) ... ok
+test_tier2_v0_plan_premortem_allows_replan_verdict_structurally (test_validators.PlanValidatorTests.test_tier2_v0_plan_premortem_allows_replan_verdict_structurally) ... ok
+test_tier2_v0_plan_premortem_requires_failure_dispositions (test_validators.PlanValidatorTests.test_tier2_v0_plan_premortem_requires_failure_dispositions) ... ok
+test_tier3_expensive_proof_plan_tree_passes (test_validators.PlanValidatorTests.test_tier3_expensive_proof_plan_tree_passes) ... ok
+test_tier3_expensive_proof_rejects_flat_plan (test_validators.PlanValidatorTests.test_tier3_expensive_proof_rejects_flat_plan) ... ok
+
+----------------------------------------------------------------------
+Ran 41 tests in 2.442s
+
+OK

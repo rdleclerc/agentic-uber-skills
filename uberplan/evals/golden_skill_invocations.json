@@ -418,5 +418,39 @@
       "create a standalone ubertesting skill",
       "treat unit tests as sufficient black-box evidence"
     ]
+  },
+  {
+    "id": "pre_prd_grilling_clarifies_domain_without_bloat",
+    "user_prompt": "Use uberplan for a vague feature idea. I need the agent to grill me before creating a PRD, but don't turn it into a giant questionnaire or status doc.",
+    "expected_tier": 2,
+    "required_behavior": [
+      "asks one blocking question at a time with a recommended answer",
+      "answers repo-discoverable questions by inspecting code or docs instead of asking the user",
+      "records unresolved questions as plan risks or scope gaps rather than stalling indefinitely",
+      "captures durable domain terminology or hard-to-reverse ADR decisions only when they crystallize",
+      "keeps glossary or context docs separate from PRDs, scratchpads, implementation plans, and status logs"
+    ],
+    "forbidden_behavior": [
+      "ask a broad questionnaire before doing any codebase inspection",
+      "use CONTEXT.md as a PRD or implementation plan",
+      "treat every clarified term as an ADR"
+    ]
+  },
+  {
+    "id": "prd_to_issue_plan_requires_vertical_tracer_slices",
+    "user_prompt": "Use uberplan to turn this PRD into coding-agent issues. Avoid layer-by-layer tickets, make dependencies explicit, and say which issues are safe for AFK agents.",
+    "expected_tier": 2,
+    "required_behavior": [
+      "splits work into vertical tracer-bullet issues that deliver end-to-end behavior",
+      "adds acceptance criteria to each issue",
+      "names blockers and dependency order",
+      "marks AFK-safe versus HITL/tool-approval-required slices",
+      "puts prefactor or seam-making work before dependent behavior slices"
+    ],
+    "forbidden_behavior": [
+      "create horizontal schema-only API-only or UI-only tickets when an end-to-end slice is possible",
+      "omit dependency relationships",
+      "make issue bodies depend on stale file-path-heavy implementation details"
+    ]
   }
 ]

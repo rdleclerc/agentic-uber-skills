@@ -87,6 +87,27 @@ class AcceptanceValidatorTests(unittest.TestCase):
             report.write_text(text[:start] + text[end:])
             self.assertFails(str(ACCEPT), str(report), "--agent-behavior")
 
+    def test_acceptance_requires_spec_fidelity_and_standards_review(self) -> None:
+        text = (FIX / "valid" / "final_acceptance.md").read_text()
+        start = text.index("## Spec fidelity and standards review")
+        end = text.index("## Runtime agent topology acceptance")
+        with tempfile.TemporaryDirectory() as tmp:
+            report = Path(tmp) / "missing_spec_fidelity_standards.md"
+            report.write_text(text[:start] + text[end:])
+            result = run_cmd(str(ACCEPT), str(report), "--agent-behavior")
+            self.assertNotEqual(result.returncode, 0, "unexpected pass\n" + result.stdout)
+            self.assertIn("spec fidelity and standards review", result.stderr)
+
+    def test_acceptance_requires_spec_fidelity_verdict_field(self) -> None:
+        text = (FIX / "valid" / "final_acceptance.md").read_text()
+        text = text.replace("- Spec fidelity verdict: pass, implemented validator/template/eval hardening matches the plan fixture.\n", "")
+        with tempfile.TemporaryDirectory() as tmp:
+            report = Path(tmp) / "missing_spec_fidelity_verdict.md"
+            report.write_text(text)
+            result = run_cmd(str(ACCEPT), str(report), "--agent-behavior")
+            self.assertNotEqual(result.returncode, 0, "unexpected pass\n" + result.stdout)
+            self.assertIn("Spec fidelity verdict", result.stderr)
+
     def test_agent_behavior_requires_runtime_agent_topology_acceptance(self) -> None:
         text = (FIX / "valid" / "final_acceptance.md").read_text()
         start = text.index("## Runtime agent topology acceptance")
@@ -234,6 +255,7 @@ class PackageTests(unittest.TestCase):
         self.assertIn("acceptance_rejects_flat_expensive_proof", ids)
         self.assertIn("acceptance_rejects_production_active_blocker_completion", ids)
         self.assertIn("acceptance_requires_safe_work_exhaustion_adversarial_review", ids)
+        self.assertIn("acceptance_separates_spec_fidelity_from_repo_standards", ids)
         for case in cases:
             self.assertIn("user_prompt", case)
             self.assertTrue(case.get("required_behavior"))

@@ -1,0 +1,31 @@
+test_acceptance_rejects_shared_spine_parent_completion (test_validators.AcceptanceValidatorTests.test_acceptance_rejects_shared_spine_parent_completion) ... ok
+test_acceptance_requires_claim_state_ledger (test_validators.AcceptanceValidatorTests.test_acceptance_requires_claim_state_ledger) ... ok
+test_acceptance_requires_scope_fidelity_verdict (test_validators.AcceptanceValidatorTests.test_acceptance_requires_scope_fidelity_verdict) ... ok
+test_acceptance_requires_spec_fidelity_and_standards_review (test_validators.AcceptanceValidatorTests.test_acceptance_requires_spec_fidelity_and_standards_review) ... ok
+test_acceptance_requires_spec_fidelity_verdict_field (test_validators.AcceptanceValidatorTests.test_acceptance_requires_spec_fidelity_verdict_field) ... ok
+test_acceptance_requires_user_expectation_surprise_delta (test_validators.AcceptanceValidatorTests.test_acceptance_requires_user_expectation_surprise_delta) ... ok
+test_agent_behavior_requires_boundary_final_check (test_validators.AcceptanceValidatorTests.test_agent_behavior_requires_boundary_final_check) ... ok
+test_agent_behavior_requires_regex_keyword_final_check (test_validators.AcceptanceValidatorTests.test_agent_behavior_requires_regex_keyword_final_check) ... ok
+test_agent_behavior_requires_runtime_agent_topology_acceptance (test_validators.AcceptanceValidatorTests.test_agent_behavior_requires_runtime_agent_topology_acceptance) ... ok
+test_blank_acceptance_fails (test_validators.AcceptanceValidatorTests.test_blank_acceptance_fails) ... ok
+test_code_acceptance_requires_repository_topology (test_validators.AcceptanceValidatorTests.test_code_acceptance_requires_repository_topology) ... ok
+test_decorated_zero_score_fails (test_validators.AcceptanceValidatorTests.test_decorated_zero_score_fails) ... ok
+test_existing_file_acceptance_can_mark_topology_not_applicable (test_validators.AcceptanceValidatorTests.test_existing_file_acceptance_can_mark_topology_not_applicable) ... ok
+test_expensive_proof_acceptance_section_passes (test_validators.AcceptanceValidatorTests.test_expensive_proof_acceptance_section_passes) ... ok
+test_expensive_proof_requires_acceptance_section (test_validators.AcceptanceValidatorTests.test_expensive_proof_requires_acceptance_section) ... ok
+test_production_active_blocker_rejects_parent_completion (test_validators.AcceptanceValidatorTests.test_production_active_blocker_rejects_parent_completion) ... ok
+test_production_completion_requires_safe_work_exhaustion_review (test_validators.AcceptanceValidatorTests.test_production_completion_requires_safe_work_exhaustion_review) ... ok
+test_production_hard_blocked_after_exhaustion_passes (test_validators.AcceptanceValidatorTests.test_production_hard_blocked_after_exhaustion_passes) ... ok
+test_template_needs_allow_template_mode (test_validators.AcceptanceValidatorTests.test_template_needs_allow_template_mode) ... ok
+test_valid_acceptance_passes (test_validators.AcceptanceValidatorTests.test_valid_acceptance_passes) ... ok
+test_architecture_steward_requires_repository_topology_dimension (test_validators.ArchitectureStewardValidatorTests.test_architecture_steward_requires_repository_topology_dimension) ... ok
+test_architecture_template_needs_allow_template_mode (test_validators.ArchitectureStewardValidatorTests.test_architecture_template_needs_allow_template_mode) ... ok
+test_blank_architecture_steward_report_fails (test_validators.ArchitectureStewardValidatorTests.test_blank_architecture_steward_report_fails) ... ok
+test_valid_architecture_steward_report_passes (test_validators.ArchitectureStewardValidatorTests.test_valid_architecture_steward_report_passes) ... ok
+test_golden_eval_schema (test_validators.PackageTests.test_golden_eval_schema) ... ok
+test_package_lint_passes (test_validators.PackageTests.test_package_lint_passes) ... ok
+
+----------------------------------------------------------------------
+Ran 26 tests in 1.101s
+
+OK

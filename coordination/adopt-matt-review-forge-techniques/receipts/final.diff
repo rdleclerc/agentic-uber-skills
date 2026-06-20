@@ -1,0 +1,393 @@
+diff --git a/uberaccept/SKILL.md b/uberaccept/SKILL.md
+index a0aba86..da61b7c 100644
+--- a/uberaccept/SKILL.md
++++ b/uberaccept/SKILL.md
+@@ -62,6 +62,13 @@ When a task used a micro-intent, work contract, PRD, ticket, or `uberplan` with
+
+ This is not a replacement for the Operational Outcome Contract. Acceptance criteria prove the stated intent was checked; the Operational Outcome Contract proves the final state being claimed. For AI-generated code, also check whether spec/intent review caught design and scope issues before code, and whether code review still covered repo conventions, naming, module seams, integration details, and maintainability.
+
++For branches, PRs, or implemented work that originated from an issue, PRD, work contract, or explicit user request, keep two review axes separate:
++
++- **Spec fidelity** — did the diff implement what the originating spec, PRD, issue, or operator instruction asked for, and did it avoid unapproved scope creep?
++- **Repo standards** — did the diff follow documented project standards, naming, module seams, tests, and maintainability expectations?
++
++Do not merge these into one generic review verdict. A change can satisfy the spec while violating standards, or follow standards while implementing the wrong behavior; either axis can block acceptance. If no spec source exists, state that explicitly and do not let standards-only review stand in for product correctness.
++
+ ## Scope fidelity verdict gate
+
+ Before any `SHIP`, completion, ready, or goal-complete language, final acceptance must include `## Scope fidelity verdict`. It must quote/link `coordination/<task-slug>/scope.md`, check the operator original instruction, agent-interpreted scope, proposed narrowed scope, explicit deferrals/non-goals, and approval evidence, answer whether implemented scope satisfies original scope, and block unapproved narrowing.
+diff --git a/uberaccept/evals/golden_skill_invocations.json b/uberaccept/evals/golden_skill_invocations.json
+index 3601c17..1b7787f 100644
+--- a/uberaccept/evals/golden_skill_invocations.json
++++ b/uberaccept/evals/golden_skill_invocations.json
+@@ -178,5 +178,19 @@
+       "recommend completion because unit tests passed",
+       "create a standalone ubertesting skill as the fix"
+     ]
++  },
++  {
++    "id": "acceptance_separates_spec_fidelity_from_repo_standards",
++    "user_prompt": "Use uberaccept on this PR. It follows our coding standards, but I am not sure it actually implements the issue/PRD.",
++    "required_behavior": [
++      "review spec fidelity separately from repo standards",
++      "inspect the originating issue PRD work contract or operator instruction when available",
++      "block or mark partial when implementation misses requested behavior even if standards pass",
++      "state when no spec source exists and avoid treating standards-only review as product correctness"
++    ],
++    "forbidden_behavior": [
++      "merge spec and standards into one generic review verdict",
++      "accept because code style and tests look good while requested behavior is unverified"
++    ]
+   }
+ ]
+diff --git a/uberaccept/scripts/validate_acceptance_report.py b/uberaccept/scripts/validate_acceptance_report.py
+index d6189b3..83f3ee6 100755
+--- a/uberaccept/scripts/validate_acceptance_report.py
++++ b/uberaccept/scripts/validate_acceptance_report.py
+@@ -17,6 +17,7 @@ REQUIRED_SECTIONS = [
+     "scope fidelity verdict",
+     "rubric scores",
+     "commands and artifacts",
++    "spec fidelity and standards review",
+     "claim-state ledger",
+     "planning review reconciliation",
+     "user expectation / surprise delta",
+@@ -229,6 +230,30 @@ def validate_claim_state_ledger(found: dict[str, str], full_text: str, errors: l
+         errors.append("cannot recommend completion while proof-only/shared-spine evidence is claimed as operational")
+
+
++def validate_spec_fidelity_and_standards_review(found: dict[str, str], errors: list[str]) -> None:
++    section = found.get("spec fidelity and standards review", "")
++    if not section:
++        return
++    if not meaningful_lines(section):
++        errors.append("Spec fidelity and standards review lacks completed substance")
++        return
++    for label in [
++        "Spec source",
++        "Standards sources inspected",
++        "Spec fidelity verdict",
++        "Repo standards verdict",
++        "If spec source missing, standards-only review not treated as product correctness?",
++        "Unapproved scope creep found?",
++    ]:
++        require_field(section, label, errors)
++    rows = table_rows(section)
++    axes = {normalize(row[0]) for row in rows if row}
++    if "spec fidelity" not in axes:
++        errors.append("Spec fidelity and standards review needs a Spec fidelity table row")
++    if "repo standards" not in axes:
++        errors.append("Spec fidelity and standards review needs a Repo standards table row")
++
++
+ def blockers_clear(text: str, errors: list[str], label: str = "Material blockers") -> None:
+     value = require_field(text, label, errors)
+     if not value:
+@@ -703,6 +728,8 @@ def main() -> int:
+     rows = parse_rubric_rows(found.get("rubric scores", ""))
+     if not rows:
+         errors.append("rubric scores table has no completed rows")
++    if find_rubric_row(rows, "Spec fidelity vs repo standards") is None:
++        errors.append("rubric scores must include Spec fidelity vs repo standards row")
+     if find_rubric_row(rows, "Claim-language / operational outcome") is None:
+         errors.append("rubric scores must include Claim-language / operational outcome row")
+     runtime_topology_required = args.agent_behavior or any(term in lower for term in RUNTIME_TOPOLOGY_TERMS)
+@@ -760,6 +787,7 @@ def main() -> int:
+         if not any(term in command_blob for term in ["topology", "dependency", "lint", "validator", "validate", "package", "gate"]):
+             errors.append("commands and artifacts must include topology/dependency gate evidence when the report indicates new/moved code, refactors, or package/dependency seams")
+
++    validate_spec_fidelity_and_standards_review(found, errors)
+     validate_claim_state_ledger(found, text, errors)
+     validate_user_expectation_delta(found, errors)
+     validate_runtime_topology_acceptance(found, text, runtime_topology_required, errors)
+diff --git a/uberaccept/templates/final-acceptance.md b/uberaccept/templates/final-acceptance.md
+index 023ed35..c2d9ba2 100644
+--- a/uberaccept/templates/final-acceptance.md
++++ b/uberaccept/templates/final-acceptance.md
+@@ -31,6 +31,7 @@ Use 0 = blocker, 1 = weak/unresolved, 2 = acceptable with named residual risk, 3
+ | Scope clarity |  |  |  |
+ | Scope fidelity against operator-original instruction |  | Operator original instruction, proposed scope, deferrals, approval evidence, and actual diff compared |  |
+ | Acceptance criteria verification |  | every micro-intent/work-contract/PRD/plan acceptance criterion mapped to pass/fail/partial with evidence |  |
++| Spec fidelity vs repo standards |  | originating spec/PRD/issue/operator request checked separately from documented project standards and conventions |  |
+ | Planning review board |  | board findings reconciled |  |
+ | User expectation / surprise delta |  | expected user outcome compared against actual implementation and gaps |  |
+ | Claim-language / operational outcome |  | implemented/operational/live/adopted/proof-only/blocked/shadow-only language checked against the Operational Outcome Contract |  |
+@@ -76,6 +77,22 @@ Required when the task used a micro-intent, work contract, PRD, ticket, or plan
+ |---|---|---|---|
+ |  |  |  |  |
+
++## Spec fidelity and standards review
++
++Required when implemented work had an originating spec, issue, PRD, work contract, or explicit user request. Keep these axes separate; do not collapse them into one generic review verdict.
++
++- Spec source: path, issue, PRD, scope artifact, or none found:
++- Standards sources inspected: paths or none found:
++- Spec fidelity verdict: pass / fail / partial / skipped, why:
++- Repo standards verdict: pass / fail / partial / skipped, why:
++- If spec source missing, standards-only review not treated as product correctness? yes/no/n/a:
++- Unapproved scope creep found? yes/no, explain:
++
++| Axis | Status: pass / fail / partial / skipped | Evidence | Blocker or residual risk |
++|---|---|---|---|
++| Spec fidelity |  |  |  |
++| Repo standards |  |  |  |
++
+ ## Red/green and black-box proof ledger audit
+
+ - Baseline command/result before change:
+diff --git a/uberaccept/tests/fixtures/valid/final_acceptance.md b/uberaccept/tests/fixtures/valid/final_acceptance.md
+index 80306a2..a133926 100644
+--- a/uberaccept/tests/fixtures/valid/final_acceptance.md
++++ b/uberaccept/tests/fixtures/valid/final_acceptance.md
+@@ -29,6 +29,7 @@ Hardened validators, metadata, templates, package lint, and golden eval fixtures
+ | Dimension | Score | Evidence | Residual gap |
+ |---|---:|---|---|
+ | Scope clarity | 3 | tier2_agent_plan.md fixture | none |
++| Spec fidelity vs repo standards | 3 | originating plan fixture and package standards checked separately | none |
+ | Planning review board | 3 | planning review findings reconciled in plan | none |
+ | User expectation / surprise delta | 3 | expected local skill-package hardening compared against actual files, tests, and deferred fresh-agent gap | none |
+ | Claim-language / operational outcome | 3 | Claim-state ledger distinguishes operational local package proof from live/adopted/runtime claims | none |
+@@ -64,6 +65,20 @@ Hardened validators, metadata, templates, package lint, and golden eval fixtures
+ | security privacy concurrency idempotency | no external writes; no runtime mutation; local-only files | pass |
+
+
++## Spec fidelity and standards review
++
++- Spec source: tier2_agent_plan.md fixture and scope artifact.
++- Standards sources inspected: AGENTS.md and package validator/test conventions.
++- Spec fidelity verdict: pass, implemented validator/template/eval hardening matches the plan fixture.
++- Repo standards verdict: pass, changes stay inside existing skill package surfaces and package tests pass.
++- If spec source missing, standards-only review not treated as product correctness? n/a, spec source exists.
++- Unapproved scope creep found? no.
++
++| Axis | Status: pass / fail / partial / skipped | Evidence | Blocker or residual risk |
++|---|---|---|---|
++| Spec fidelity | pass | plan fixture requirements mapped to changed validators/templates/evals | none |
++| Repo standards | pass | AGENTS.md package rules plus lint/tests | none |
++
+ ## Runtime agent topology acceptance
+
+ - Config source / observed source: local Codex config or runtime report; fixture uses standard policy.
+diff --git a/uberaccept/tests/fixtures/valid/production_hard_blocked_acceptance.md b/uberaccept/tests/fixtures/valid/production_hard_blocked_acceptance.md
+index c15d810..c864857 100644
+--- a/uberaccept/tests/fixtures/valid/production_hard_blocked_acceptance.md
++++ b/uberaccept/tests/fixtures/valid/production_hard_blocked_acceptance.md
+@@ -29,6 +29,7 @@ Accepted a domain-neutral production implementation goal with child blockers and
+ | Dimension | Score | Evidence | Residual gap |
+ |---|---:|---|---|
+ | Scope clarity | 3 | tier2_agent_plan.md fixture | none |
++| Spec fidelity vs repo standards | 3 | originating plan fixture and package standards checked separately | none |
+ | Planning review board | 3 | planning review findings reconciled in plan | none |
+ | User expectation / surprise delta | 3 | expected local skill-package hardening compared against actual files, tests, and deferred fresh-agent gap | none |
+ | Claim-language / operational outcome | 3 | Claim-state ledger distinguishes operational local package proof from live/adopted/runtime claims | none |
+@@ -66,6 +67,20 @@ Accepted a domain-neutral production implementation goal with child blockers and
+ | security privacy concurrency idempotency | no external writes; no runtime mutation; local-only files | pass |
+
+
++## Spec fidelity and standards review
++
++- Spec source: tier2_agent_plan.md fixture and production blocker gate fixture requirements.
++- Standards sources inspected: AGENTS.md and package validator/test conventions.
++- Spec fidelity verdict: pass, production blocker and safe-work exhaustion requirements are represented in the fixture.
++- Repo standards verdict: pass, fixture stays inside the existing skill package and validator tests cover it.
++- If spec source missing, standards-only review not treated as product correctness? n/a, spec source exists.
++- Unapproved scope creep found? no.
++
++| Axis | Status: pass / fail / partial / skipped | Evidence | Blocker or residual risk |
++|---|---|---|---|
++| Spec fidelity | pass | production hard-blocked fixture requirements mapped to acceptance sections | none |
++| Repo standards | pass | AGENTS.md package rules plus lint/tests | none |
++
+ ## Runtime agent topology acceptance
+
+ - Config source / observed source: local Codex config or runtime report; fixture uses standard policy.
+diff --git a/uberaccept/tests/test_validators.py b/uberaccept/tests/test_validators.py
+index ececebc..7b0ebcc 100644
+--- a/uberaccept/tests/test_validators.py
++++ b/uberaccept/tests/test_validators.py
+@@ -87,6 +87,27 @@ class AcceptanceValidatorTests(unittest.TestCase):
+             report.write_text(text[:start] + text[end:])
+             self.assertFails(str(ACCEPT), str(report), "--agent-behavior")
+
++    def test_acceptance_requires_spec_fidelity_and_standards_review(self) -> None:
++        text = (FIX / "valid" / "final_acceptance.md").read_text()
++        start = text.index("## Spec fidelity and standards review")
++        end = text.index("## Runtime agent topology acceptance")
++        with tempfile.TemporaryDirectory() as tmp:
++            report = Path(tmp) / "missing_spec_fidelity_standards.md"
++            report.write_text(text[:start] + text[end:])
++            result = run_cmd(str(ACCEPT), str(report), "--agent-behavior")
++            self.assertNotEqual(result.returncode, 0, "unexpected pass\n" + result.stdout)
++            self.assertIn("spec fidelity and standards review", result.stderr)
++
++    def test_acceptance_requires_spec_fidelity_verdict_field(self) -> None:
++        text = (FIX / "valid" / "final_acceptance.md").read_text()
++        text = text.replace("- Spec fidelity verdict: pass, implemented validator/template/eval hardening matches the plan fixture.\n", "")
++        with tempfile.TemporaryDirectory() as tmp:
++            report = Path(tmp) / "missing_spec_fidelity_verdict.md"
++            report.write_text(text)
++            result = run_cmd(str(ACCEPT), str(report), "--agent-behavior")
++            self.assertNotEqual(result.returncode, 0, "unexpected pass\n" + result.stdout)
++            self.assertIn("Spec fidelity verdict", result.stderr)
++
+     def test_agent_behavior_requires_runtime_agent_topology_acceptance(self) -> None:
+         text = (FIX / "valid" / "final_acceptance.md").read_text()
+         start = text.index("## Runtime agent topology acceptance")
+@@ -234,6 +255,7 @@ class PackageTests(unittest.TestCase):
+         self.assertIn("acceptance_rejects_flat_expensive_proof", ids)
+         self.assertIn("acceptance_rejects_production_active_blocker_completion", ids)
+         self.assertIn("acceptance_requires_safe_work_exhaustion_adversarial_review", ids)
++        self.assertIn("acceptance_separates_spec_fidelity_from_repo_standards", ids)
+         for case in cases:
+             self.assertIn("user_prompt", case)
+             self.assertTrue(case.get("required_behavior"))
+diff --git a/uberplan/SKILL.md b/uberplan/SKILL.md
+index 611c4de..8994f76 100644
+--- a/uberplan/SKILL.md
++++ b/uberplan/SKILL.md
+@@ -46,6 +46,12 @@ Use this fast path to make intent first-class without adding ceremony. Keep the
+
+ Spec review and code review are separate layers: spec review catches missing requirements, underspecified features, scope and design mismatches before code exists; code review catches repo conventions, naming, module seams, integration details, and maintainability after code exists. Keep both when both risks apply.
+
++## Pre-PRD interrogation and domain capture
++
++Before hardening a PRD or task map for vague product, refactor, or workflow ideas, run the smallest useful interrogation loop: ask one blocking question at a time, include your recommended answer, and answer it yourself by inspecting code/docs when the repo can resolve it. Stop when the next planning decision no longer depends on unresolved user intent, domain language, or test seams. Do not turn this into a generic questionnaire; if more than three unanswered questions remain, record them as plan risks or scope gaps instead of stalling.
++
++When terminology crystallizes during that interrogation, capture only durable domain language or hard-to-reverse decisions. A glossary/context doc should define terms and rejected meanings; an ADR should record a surprising, costly-to-reverse tradeoff. Do not use glossary/context docs as PRDs, scratchpads, implementation plans, or status logs.
++
+ ## Basic Spine First gate
+
+ For product/rewrite/agentic-system work, first name the minimum user-visible product spine, the canonical command/live-safe check that proves it, and current result: `pass`, `fail`, or `not available`. If it is not green, plan only to create/fix that spine or explicitly scope a non-readiness spike. Do not add architecture, agents, routers, monitors, or eval frameworks until the spine is green or the user accepts the spike.
+@@ -87,6 +93,10 @@ For OpenClaw or agentic-system plans, the **Agent execution proof ladder** is st
+ 3. Prove the same activity through OpenClaw or target runtime.
+ 4. Do not call ready until two target-runtime parity proofs pass or the missing proof is a blocker/spike.
+
++## PRD-to-issue slicing
++
++For plans that will be handed to coding agents, convert PRD/task work into vertical tracer-bullet issues rather than horizontal layer tickets. Each issue should deliver a narrow end-to-end behavior through the relevant layers, carry acceptance criteria, name dependencies/blockers, and be demoable or verifiable on its own. Put any prefactor or seam-making work before the dependent behavior slice, and mark whether an issue is safe for AFK execution or needs HITL approval/tool access. Avoid file-path-heavy issue bodies unless a prototype produced a decision-rich snippet that would be less precise as prose.
++
+ ## Delivery format
+
+ Return thread highlights plus a durable `.md` plan path. Before showing either, run an over-orchestration deletion review for accidental slices, expectation mismatch, unnecessary agents/templates/files, duplicate artifacts, deterministic harness creep, regex/router semantic authority, and places where better skills/tools/context/source authority beat more process.
+diff --git a/uberplan/evals/golden_skill_invocations.json b/uberplan/evals/golden_skill_invocations.json
+index e3eca54..ac9131c 100644
+--- a/uberplan/evals/golden_skill_invocations.json
++++ b/uberplan/evals/golden_skill_invocations.json
+@@ -418,5 +418,39 @@
+       "create a standalone ubertesting skill",
+       "treat unit tests as sufficient black-box evidence"
+     ]
++  },
++  {
++    "id": "pre_prd_grilling_clarifies_domain_without_bloat",
++    "user_prompt": "Use uberplan for a vague feature idea. I need the agent to grill me before creating a PRD, but don't turn it into a giant questionnaire or status doc.",
++    "expected_tier": 2,
++    "required_behavior": [
++      "asks one blocking question at a time with a recommended answer",
++      "answers repo-discoverable questions by inspecting code or docs instead of asking the user",
++      "records unresolved questions as plan risks or scope gaps rather than stalling indefinitely",
++      "captures durable domain terminology or hard-to-reverse ADR decisions only when they crystallize",
++      "keeps glossary or context docs separate from PRDs, scratchpads, implementation plans, and status logs"
++    ],
++    "forbidden_behavior": [
++      "ask a broad questionnaire before doing any codebase inspection",
++      "use CONTEXT.md as a PRD or implementation plan",
++      "treat every clarified term as an ADR"
++    ]
++  },
++  {
++    "id": "prd_to_issue_plan_requires_vertical_tracer_slices",
++    "user_prompt": "Use uberplan to turn this PRD into coding-agent issues. Avoid layer-by-layer tickets, make dependencies explicit, and say which issues are safe for AFK agents.",
++    "expected_tier": 2,
++    "required_behavior": [
++      "splits work into vertical tracer-bullet issues that deliver end-to-end behavior",
++      "adds acceptance criteria to each issue",
++      "names blockers and dependency order",
++      "marks AFK-safe versus HITL/tool-approval-required slices",
++      "puts prefactor or seam-making work before dependent behavior slices"
++    ],
++    "forbidden_behavior": [
++      "create horizontal schema-only API-only or UI-only tickets when an end-to-end slice is possible",
++      "omit dependency relationships",
++      "make issue bodies depend on stale file-path-heavy implementation details"
++    ]
+   }
+ ]
+diff --git a/uberplan/templates/plan-contract.md b/uberplan/templates/plan-contract.md
+index 252612e..120fa49 100644
+--- a/uberplan/templates/plan-contract.md
++++ b/uberplan/templates/plan-contract.md
+@@ -96,6 +96,22 @@ Use this section to keep Tier 0/1 AI-assisted work lightweight. For Tier 2/3 or
+ |---|---|---|
+ |  |  |  |
+
++## Pre-PRD interrogation and domain capture
++
++Use this section when the plan starts from a vague idea, feature, refactor, workflow, or domain-heavy change. Ask one blocking question at a time with a recommended answer. If the codebase or docs can answer the question, inspect them instead of asking the operator. If the section is not relevant, say why.
++
++- Applies? yes/no, because:
++- Question loop status: resolved / unresolved / not applicable:
++- Remaining blocking questions count:
++- If more than three remain, why this is still plannable or why it is blocked:
++- Domain glossary/context doc touched? yes/no, path or n/a:
++- ADR needed? yes/no, path or n/a:
++- Guardrail: glossary/context docs are not PRDs, scratchpads, implementation plans, or status logs? yes/no:
++
++| Question ID | Blocking planning decision | Recommended answer | Source: operator / code / docs / assumption | Status |
++|---|---|---|---|---|
++| Q1 |  |  |  | planned / resolved / gap |
++
+ ## Goal execution posture and delivery
+
+ Use this plan as a long-running goal contract unless the user explicitly asked for a compact slice. Thread highlights are the short in-chat version; this `.md` file is the durable source of truth.
+@@ -224,6 +240,21 @@ Use this as the checkable product requirements document for Tier 2/3 work. Keep
+ - [ ] Test/eval evidence captured:
+ - [ ] Deferred item recorded with owner:
+
++## PRD-to-issue vertical slicing
++
++Required when the plan will become multiple coding-agent issues, tickets, child tasks, or AFK work items. Prefer vertical tracer-bullet slices over horizontal layer tickets. For non-issue plans, say why this section is not applicable.
++
++- Issue slicing applies? yes/no, because:
++- Horizontal slicing avoided? yes/no:
++- AFK/HITL policy: which slices are safe for unattended agent execution, and which require human/tool approval:
++- Dependency/blocker ordering checked? yes/no:
++- Prefactor/seam-making slices separated before dependent behavior? yes/no/n/a:
++- File-path-heavy issue bodies avoided unless using a decision-rich prototype snippet? yes/no:
++
++| Issue ID | Vertical behavior delivered | Blocked by | Acceptance evidence | AFK/HITL | Done condition |
++|---|---|---|---|---|---|
++| I1 |  | none |  | AFK / HITL |  |
++
+ ## Task map / implementation graph
+
+ For Tier 2/3 work, provide stable task IDs, dependencies, owners, write scopes, done conditions, evidence, and whether each task is serial, parallelizable, or on the critical path. Include a Mermaid diagram that coding agents can follow.
+@@ -584,6 +615,7 @@ Score only relevant dimensions. Use 0 = blocker, 1 = weak/unresolved, 2 = accept
+ |---|---|---|---|
+ | Scope clarity | In/out/non-scope and assumptions are explicit | plan contract |  |
+ | Micro-intent / acceptance criteria | Tier 0/1 fast path captures scope, acceptance criteria, out-of-scope, verification, and escalation trigger; higher-risk work explains why full planning applies | Micro-intent / Intent Review Fast Path section or explicit non-applicability |  |
++| Pre-PRD interrogation | Vague ideas were clarified one question at a time, recommended answers were offered, repo-answerable questions were inspected, and glossary/ADR capture stayed out of PRD/status territory | Pre-PRD interrogation and domain capture |  |
+ | Planning review | Relevant agent-advocate/loophole/simplifier/codebase/platform/quality lanes ran or were explicitly skipped | Planning Review Board verdict |  |
+ | Cost/complexity | The plan uses the smallest guardrails that address named failure classes and benefit >> cost | Cost/complexity check |  |
+ | First-principles simplification | Requirements and added machinery were challenged; deletion/simplification was considered | Simplifier report |  |
+@@ -596,6 +628,7 @@ Score only relevant dimensions. Use 0 = blocker, 1 = weak/unresolved, 2 = accept
+ | Plan tree artifact layout | Hierarchical plans split root index, child files, status ledger, receipts, and final acceptance instead of one giant file | Plan Tree Artifact Layout or explicit non-applicability |  |
+ | Production implementation blocker gate | Long unattended production/runtime goals include upfront approvals, safe-predecessor decomposition, active-vs-hard blocker rules, and no runnable safe next actions at completion | Unattended production/runtime approval and safe-predecessor plan or explicit non-applicability |  |
+ | PRD checklist | Requirements, non-goals, acceptance targets, and deferred items are checkable | Product / PRD checklist |  |
++| Vertical issue slicing | PRD/task work is split into dependency-ordered tracer bullets with acceptance criteria and AFK/HITL boundaries instead of horizontal layer tickets | PRD-to-issue vertical slicing |  |
+ | Task map | Coding tasks have stable IDs, dependencies, owners, write scopes, done conditions, evidence, and Mermaid graph | Task map / implementation graph |  |
+ | Verifiable subgoals | Objective is decomposed into observable subgoals with evidence and metrics/rubrics | Verifiable subgoals and metrics |  |
+ | Parallelization | Critical path, parallelizable slices, serial blockers, disjoint write scopes, batching, and integration order are explicit | Parallelization plan |  |
+diff --git a/uberplan/tests/test_validators.py b/uberplan/tests/test_validators.py
+index a89a15e..fba8c0d 100644
+--- a/uberplan/tests/test_validators.py
++++ b/uberplan/tests/test_validators.py
+@@ -520,6 +520,8 @@ class PackageTests(unittest.TestCase):
+         self.assertIn("plan_records_runtime_agent_topology", ids)
+         self.assertIn("tier3_expensive_proof_requires_plan_tree_preflight", ids)
+         self.assertIn("production_runtime_goal_requires_approval_packet_and_safe_predecessors", ids)
++        self.assertIn("pre_prd_grilling_clarifies_domain_without_bloat", ids)
++        self.assertIn("prd_to_issue_plan_requires_vertical_tracer_slices", ids)
+         for case in cases:
+             self.assertIn("user_prompt", case)
+             self.assertIn("expected_tier", case)

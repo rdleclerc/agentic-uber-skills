@@ -62,6 +62,13 @@ When a task used a micro-intent, work contract, PRD, ticket, or `uberplan` with 
 
 This is not a replacement for the Operational Outcome Contract. Acceptance criteria prove the stated intent was checked; the Operational Outcome Contract proves the final state being claimed. For AI-generated code, also check whether spec/intent review caught design and scope issues before code, and whether code review still covered repo conventions, naming, module seams, integration details, and maintainability.
 
+For branches, PRs, or implemented work that originated from an issue, PRD, work contract, or explicit user request, keep two review axes separate:
+
+- **Spec fidelity** — did the diff implement what the originating spec, PRD, issue, or operator instruction asked for, and did it avoid unapproved scope creep?
+- **Repo standards** — did the diff follow documented project standards, naming, module seams, tests, and maintainability expectations?
+
+Do not merge these into one generic review verdict. A change can satisfy the spec while violating standards, or follow standards while implementing the wrong behavior; either axis can block acceptance. If no spec source exists, state that explicitly and do not let standards-only review stand in for product correctness.
+
 ## Scope fidelity verdict gate
 
 Before any `SHIP`, completion, ready, or goal-complete language, final acceptance must include `## Scope fidelity verdict`. It must quote/link `coordination/<task-slug>/scope.md`, check the operator original instruction, agent-interpreted scope, proposed narrowed scope, explicit deferrals/non-goals, and approval evidence, answer whether implemented scope satisfies original scope, and block unapproved narrowing.

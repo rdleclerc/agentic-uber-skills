@@ -178,5 +178,19 @@
       "recommend completion because unit tests passed",
       "create a standalone ubertesting skill as the fix"
     ]
+  },
+  {
+    "id": "acceptance_separates_spec_fidelity_from_repo_standards",
+    "user_prompt": "Use uberaccept on this PR. It follows our coding standards, but I am not sure it actually implements the issue/PRD.",
+    "required_behavior": [
+      "review spec fidelity separately from repo standards",
+      "inspect the originating issue PRD work contract or operator instruction when available",
+      "block or mark partial when implementation misses requested behavior even if standards pass",
+      "state when no spec source exists and avoid treating standards-only review as product correctness"
+    ],
+    "forbidden_behavior": [
+      "merge spec and standards into one generic review verdict",
+      "accept because code style and tests look good while requested behavior is unverified"
+    ]
   }
 ]

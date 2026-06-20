@@ -17,6 +17,7 @@ REQUIRED_SECTIONS = [
     "scope fidelity verdict",
     "rubric scores",
     "commands and artifacts",
+    "spec fidelity and standards review",
     "claim-state ledger",
     "planning review reconciliation",
     "user expectation / surprise delta",
@@ -227,6 +228,30 @@ def validate_claim_state_ledger(found: dict[str, str], full_text: str, errors: l
     final_recommendation = require_field(full_text, "Goal completion recommendation", errors).lower()
     if proof_claim.startswith("yes") and any(term in final_recommendation for term in ["complete", "ready", "accept"]):
         errors.append("cannot recommend completion while proof-only/shared-spine evidence is claimed as operational")
+
+
+def validate_spec_fidelity_and_standards_review(found: dict[str, str], errors: list[str]) -> None:
+    section = found.get("spec fidelity and standards review", "")
+    if not section:
+        return
+    if not meaningful_lines(section):
+        errors.append("Spec fidelity and standards review lacks completed substance")
+        return
+    for label in [
+        "Spec source",
+        "Standards sources inspected",
+        "Spec fidelity verdict",
+        "Repo standards verdict",
+        "If spec source missing, standards-only review not treated as product correctness?",
+        "Unapproved scope creep found?",
+    ]:
+        require_field(section, label, errors)
+    rows = table_rows(section)
+    axes = {normalize(row[0]) for row in rows if row}
+    if "spec fidelity" not in axes:
+        errors.append("Spec fidelity and standards review needs a Spec fidelity table row")
+    if "repo standards" not in axes:
+        errors.append("Spec fidelity and standards review needs a Repo standards table row")
 
 
 def blockers_clear(text: str, errors: list[str], label: str = "Material blockers") -> None:
@@ -703,6 +728,8 @@ def main() -> int:
     rows = parse_rubric_rows(found.get("rubric scores", ""))
     if not rows:
         errors.append("rubric scores table has no completed rows")
+    if find_rubric_row(rows, "Spec fidelity vs repo standards") is None:
+        errors.append("rubric scores must include Spec fidelity vs repo standards row")
     if find_rubric_row(rows, "Claim-language / operational outcome") is None:
         errors.append("rubric scores must include Claim-language / operational outcome row")
     runtime_topology_required = args.agent_behavior or any(term in lower for term in RUNTIME_TOPOLOGY_TERMS)
@@ -760,6 +787,7 @@ def main() -> int:
         if not any(term in command_blob for term in ["topology", "dependency", "lint", "validator", "validate", "package", "gate"]):
             errors.append("commands and artifacts must include topology/dependency gate evidence when the report indicates new/moved code, refactors, or package/dependency seams")
 
+    validate_spec_fidelity_and_standards_review(found, errors)
     validate_claim_state_ledger(found, text, errors)
     validate_user_expectation_delta(found, errors)
     validate_runtime_topology_acceptance(found, text, runtime_topology_required, errors)

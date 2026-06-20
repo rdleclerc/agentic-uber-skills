@@ -46,6 +46,12 @@ Use this fast path to make intent first-class without adding ceremony. Keep the 
 
 Spec review and code review are separate layers: spec review catches missing requirements, underspecified features, scope and design mismatches before code exists; code review catches repo conventions, naming, module seams, integration details, and maintainability after code exists. Keep both when both risks apply.
 
+## Pre-PRD interrogation and domain capture
+
+Before hardening a PRD or task map for vague product, refactor, or workflow ideas, run the smallest useful interrogation loop: ask one blocking question at a time, include your recommended answer, and answer it yourself by inspecting code/docs when the repo can resolve it. Stop when the next planning decision no longer depends on unresolved user intent, domain language, or test seams. Do not turn this into a generic questionnaire; if more than three unanswered questions remain, record them as plan risks or scope gaps instead of stalling.
+
+When terminology crystallizes during that interrogation, capture only durable domain language or hard-to-reverse decisions. A glossary/context doc should define terms and rejected meanings; an ADR should record a surprising, costly-to-reverse tradeoff. Do not use glossary/context docs as PRDs, scratchpads, implementation plans, or status logs.
+
 ## Basic Spine First gate
 
 For product/rewrite/agentic-system work, first name the minimum user-visible product spine, the canonical command/live-safe check that proves it, and current result: `pass`, `fail`, or `not available`. If it is not green, plan only to create/fix that spine or explicitly scope a non-readiness spike. Do not add architecture, agents, routers, monitors, or eval frameworks until the spine is green or the user accepts the spike.
@@ -86,6 +92,10 @@ For OpenClaw or agentic-system plans, the **Agent execution proof ladder** is st
 2. If it fails, improve skill/tool/context affordances before adding orchestration.
 3. Prove the same activity through OpenClaw or target runtime.
 4. Do not call ready until two target-runtime parity proofs pass or the missing proof is a blocker/spike.
+
+## PRD-to-issue slicing
+
+For plans that will be handed to coding agents, convert PRD/task work into vertical tracer-bullet issues rather than horizontal layer tickets. Each issue should deliver a narrow end-to-end behavior through the relevant layers, carry acceptance criteria, name dependencies/blockers, and be demoable or verifiable on its own. Put any prefactor or seam-making work before the dependent behavior slice, and mark whether an issue is safe for AFK execution or needs HITL approval/tool access. Avoid file-path-heavy issue bodies unless a prototype produced a decision-rich snippet that would be less precise as prose.
 
 ## Delivery format
 

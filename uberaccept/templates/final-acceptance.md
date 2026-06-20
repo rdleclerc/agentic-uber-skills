@@ -31,6 +31,7 @@ Use 0 = blocker, 1 = weak/unresolved, 2 = acceptable with named residual risk, 3
 | Scope clarity |  |  |  |
 | Scope fidelity against operator-original instruction |  | Operator original instruction, proposed scope, deferrals, approval evidence, and actual diff compared |  |
 | Acceptance criteria verification |  | every micro-intent/work-contract/PRD/plan acceptance criterion mapped to pass/fail/partial with evidence |  |
+| Spec fidelity vs repo standards |  | originating spec/PRD/issue/operator request checked separately from documented project standards and conventions |  |
 | Planning review board |  | board findings reconciled |  |
 | User expectation / surprise delta |  | expected user outcome compared against actual implementation and gaps |  |
 | Claim-language / operational outcome |  | implemented/operational/live/adopted/proof-only/blocked/shadow-only language checked against the Operational Outcome Contract |  |
@@ -75,6 +76,22 @@ Required when the task used a micro-intent, work contract, PRD, ticket, or plan 
 | Acceptance criterion | Status: pass / fail / partial / n/a | Evidence: file path, command, artifact, or reason | Residual risk / follow-up owner |
 |---|---|---|---|
 |  |  |  |  |
+
+## Spec fidelity and standards review
+
+Required when implemented work had an originating spec, issue, PRD, work contract, or explicit user request. Keep these axes separate; do not collapse them into one generic review verdict.
+
+- Spec source: path, issue, PRD, scope artifact, or none found:
+- Standards sources inspected: paths or none found:
+- Spec fidelity verdict: pass / fail / partial / skipped, why:
+- Repo standards verdict: pass / fail / partial / skipped, why:
+- If spec source missing, standards-only review not treated as product correctness? yes/no/n/a:
+- Unapproved scope creep found? yes/no, explain:
+
+| Axis | Status: pass / fail / partial / skipped | Evidence | Blocker or residual risk |
+|---|---|---|---|
+| Spec fidelity |  |  |  |
+| Repo standards |  |  |  |
 
 ## Red/green and black-box proof ledger audit
 

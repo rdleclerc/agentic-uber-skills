@@ -96,6 +96,22 @@ Use this section to keep Tier 0/1 AI-assisted work lightweight. For Tier 2/3 or 
 |---|---|---|
 |  |  |  |
 
+## Pre-PRD interrogation and domain capture
+
+Use this section when the plan starts from a vague idea, feature, refactor, workflow, or domain-heavy change. Ask one blocking question at a time with a recommended answer. If the codebase or docs can answer the question, inspect them instead of asking the operator. If the section is not relevant, say why.
+
+- Applies? yes/no, because:
+- Question loop status: resolved / unresolved / not applicable:
+- Remaining blocking questions count:
+- If more than three remain, why this is still plannable or why it is blocked:
+- Domain glossary/context doc touched? yes/no, path or n/a:
+- ADR needed? yes/no, path or n/a:
+- Guardrail: glossary/context docs are not PRDs, scratchpads, implementation plans, or status logs? yes/no:
+
+| Question ID | Blocking planning decision | Recommended answer | Source: operator / code / docs / assumption | Status |
+|---|---|---|---|---|
+| Q1 |  |  |  | planned / resolved / gap |
+
 ## Goal execution posture and delivery
 
 Use this plan as a long-running goal contract unless the user explicitly asked for a compact slice. Thread highlights are the short in-chat version; this `.md` file is the durable source of truth.
@@ -223,6 +239,21 @@ Use this as the checkable product requirements document for Tier 2/3 work. Keep 
 - [ ] Requirement:
 - [ ] Test/eval evidence captured:
 - [ ] Deferred item recorded with owner:
+
+## PRD-to-issue vertical slicing
+
+Required when the plan will become multiple coding-agent issues, tickets, child tasks, or AFK work items. Prefer vertical tracer-bullet slices over horizontal layer tickets. For non-issue plans, say why this section is not applicable.
+
+- Issue slicing applies? yes/no, because:
+- Horizontal slicing avoided? yes/no:
+- AFK/HITL policy: which slices are safe for unattended agent execution, and which require human/tool approval:
+- Dependency/blocker ordering checked? yes/no:
+- Prefactor/seam-making slices separated before dependent behavior? yes/no/n/a:
+- File-path-heavy issue bodies avoided unless using a decision-rich prototype snippet? yes/no:
+
+| Issue ID | Vertical behavior delivered | Blocked by | Acceptance evidence | AFK/HITL | Done condition |
+|---|---|---|---|---|---|
+| I1 |  | none |  | AFK / HITL |  |
 
 ## Task map / implementation graph
 
@@ -584,6 +615,7 @@ Score only relevant dimensions. Use 0 = blocker, 1 = weak/unresolved, 2 = accept
 |---|---|---|---|
 | Scope clarity | In/out/non-scope and assumptions are explicit | plan contract |  |
 | Micro-intent / acceptance criteria | Tier 0/1 fast path captures scope, acceptance criteria, out-of-scope, verification, and escalation trigger; higher-risk work explains why full planning applies | Micro-intent / Intent Review Fast Path section or explicit non-applicability |  |
+| Pre-PRD interrogation | Vague ideas were clarified one question at a time, recommended answers were offered, repo-answerable questions were inspected, and glossary/ADR capture stayed out of PRD/status territory | Pre-PRD interrogation and domain capture |  |
 | Planning review | Relevant agent-advocate/loophole/simplifier/codebase/platform/quality lanes ran or were explicitly skipped | Planning Review Board verdict |  |
 | Cost/complexity | The plan uses the smallest guardrails that address named failure classes and benefit >> cost | Cost/complexity check |  |
 | First-principles simplification | Requirements and added machinery were challenged; deletion/simplification was considered | Simplifier report |  |
@@ -596,6 +628,7 @@ Score only relevant dimensions. Use 0 = blocker, 1 = weak/unresolved, 2 = accept
 | Plan tree artifact layout | Hierarchical plans split root index, child files, status ledger, receipts, and final acceptance instead of one giant file | Plan Tree Artifact Layout or explicit non-applicability |  |
 | Production implementation blocker gate | Long unattended production/runtime goals include upfront approvals, safe-predecessor decomposition, active-vs-hard blocker rules, and no runnable safe next actions at completion | Unattended production/runtime approval and safe-predecessor plan or explicit non-applicability |  |
 | PRD checklist | Requirements, non-goals, acceptance targets, and deferred items are checkable | Product / PRD checklist |  |
+| Vertical issue slicing | PRD/task work is split into dependency-ordered tracer bullets with acceptance criteria and AFK/HITL boundaries instead of horizontal layer tickets | PRD-to-issue vertical slicing |  |
 | Task map | Coding tasks have stable IDs, dependencies, owners, write scopes, done conditions, evidence, and Mermaid graph | Task map / implementation graph |  |
 | Verifiable subgoals | Objective is decomposed into observable subgoals with evidence and metrics/rubrics | Verifiable subgoals and metrics |  |
 | Parallelization | Critical path, parallelizable slices, serial blockers, disjoint write scopes, batching, and integration order are explicit | Parallelization plan |  |

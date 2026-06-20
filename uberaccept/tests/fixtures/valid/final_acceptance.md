@@ -29,6 +29,7 @@ Hardened validators, metadata, templates, package lint, and golden eval fixtures
 | Dimension | Score | Evidence | Residual gap |
 |---|---:|---|---|
 | Scope clarity | 3 | tier2_agent_plan.md fixture | none |
+| Spec fidelity vs repo standards | 3 | originating plan fixture and package standards checked separately | none |
 | Planning review board | 3 | planning review findings reconciled in plan | none |
 | User expectation / surprise delta | 3 | expected local skill-package hardening compared against actual files, tests, and deferred fresh-agent gap | none |
 | Claim-language / operational outcome | 3 | Claim-state ledger distinguishes operational local package proof from live/adopted/runtime claims | none |
@@ -63,6 +64,20 @@ Hardened validators, metadata, templates, package lint, and golden eval fixtures
 | dead-code/cache | package lint forbidden cache check | pass |
 | security privacy concurrency idempotency | no external writes; no runtime mutation; local-only files | pass |
 
+
+## Spec fidelity and standards review
+
+- Spec source: tier2_agent_plan.md fixture and scope artifact.
+- Standards sources inspected: AGENTS.md and package validator/test conventions.
+- Spec fidelity verdict: pass, implemented validator/template/eval hardening matches the plan fixture.
+- Repo standards verdict: pass, changes stay inside existing skill package surfaces and package tests pass.
+- If spec source missing, standards-only review not treated as product correctness? n/a, spec source exists.
+- Unapproved scope creep found? no.
+
+| Axis | Status: pass / fail / partial / skipped | Evidence | Blocker or residual risk |
+|---|---|---|---|
+| Spec fidelity | pass | plan fixture requirements mapped to changed validators/templates/evals | none |
+| Repo standards | pass | AGENTS.md package rules plus lint/tests | none |
 
 ## Runtime agent topology acceptance
 

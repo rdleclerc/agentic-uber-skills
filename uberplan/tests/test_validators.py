@@ -520,6 +520,8 @@ class PackageTests(unittest.TestCase):
         self.assertIn("plan_records_runtime_agent_topology", ids)
         self.assertIn("tier3_expensive_proof_requires_plan_tree_preflight", ids)
         self.assertIn("production_runtime_goal_requires_approval_packet_and_safe_predecessors", ids)
+        self.assertIn("pre_prd_grilling_clarifies_domain_without_bloat", ids)
+        self.assertIn("prd_to_issue_plan_requires_vertical_tracer_slices", ids)
         for case in cases:
             self.assertIn("user_prompt", case)
             self.assertIn("expected_tier", case)
