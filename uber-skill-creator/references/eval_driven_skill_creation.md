@@ -27,11 +27,22 @@ This workflow is portable across Codex, Claude, and SKILL.md-compatible agent ru
    - Look for missing trigger cases, over-triggering, hidden platform assumptions, bloated context, missing scripts, brittle examples, and untested output formats.
    - Record what changed because of evidence, not preference.
 
-5. Generate a compact HTML review report.
+5. Use champion/challenger discipline for behavior tuning.
+   - Preserve the current skill/prompt/configuration as the champion.
+   - Tune challengers on the working set only.
+   - Promote only if untouched holdouts improve by the preset margin and must-pass checks stay green.
+   - Keep the champion when evidence is tied, stale, or ambiguous.
+
+6. Fresh-install check when install or onboarding behavior changed.
+   - Use a disposable environment and only the documented install/onboarding path.
+   - Do not copy personal credentials, cached dependencies, or manual repairs into the test.
+   - If a hidden setup assumption appears, fix the smallest doc/setup gap, discard the environment, and retry.
+
+7. Generate a compact HTML review report.
    - Use `scripts/generate_eval_report.py` with a small JSON report.
    - The report is a review surface, not source authority. Keep the JSON or Markdown notes as the durable record.
 
-6. Tune the description.
+8. Tune the description.
    - Put all trigger information in frontmatter `description`, not a "When to use" body section.
    - Use held-out trigger and non-trigger examples so the description does not overfit to the first eval set.
    - Prefer concrete contexts and file types over broad claims.

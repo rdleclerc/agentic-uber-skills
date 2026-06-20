@@ -82,3 +82,8 @@ Better answer:
 - Big rewrite reflex: naming the ideal architecture without a smallest transition proof.
 - Hidden deterministic decision tree: keyword-matching the user's problem into a fixed architecture.
 - Jargon-first answer: speaking in labels before the operator understands the system failure.
+
+## Package resources
+
+- `templates/architecture-stepback-packet.md` — durable packet when the recommendation needs review or handoff.
+- `evals/golden_skill_invocations.json` — routing examples for trigger/non-trigger audits; load when tuning invocation behavior.

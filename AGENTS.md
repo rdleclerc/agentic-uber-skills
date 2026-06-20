@@ -44,6 +44,7 @@ Read in this order:
 ## Edit rules
 
 - Keep `ubergoal` thin. It routes; it does not absorb planning, acceptance, simplification, or learning machinery.
+- Treat every Uber workflow as a bounded loop, not an infinite agent run: observe current state, choose one highest-value bounded action, act, verify against named evidence, record the result, then continue, complete, block, exhaust, or ask for approval.
 - Add durable machinery only when benefit is clearly **much greater than** implementation, maintenance, context, coordination, eval, rollback, latency, and operator-attention cost.
 - Prefer small validators/tests over prose-only policy when a failure class can drift.
 - Do not create another new `uber*` skill until repeated real-project use proves extraction makes the common path smaller, faster, or safer; `uberassess` is admitted because source-to-recommendation assessment is a repeated cross-project workflow with clear no-implementation safety boundaries, and `ubershow` is admitted because repeated coding sessions needed high-bandwidth visual decision surfaces without adding a server or UI framework.

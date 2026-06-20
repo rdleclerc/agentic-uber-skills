@@ -69,6 +69,14 @@ Use this as the thin tracing artifact for an `ubergoal` run. It is not an orches
 
 - Proof-only, shadow-only, local-safe-proof, or shared-spine evidence claimed as operational? yes/no, explain:
 
+## Requirement-to-evidence ledger
+
+Every material requirement from the micro-intent, work contract, `uberplan`, PRD, ticket, or user correction gets one row. Do not summarize ten requirements as "tests passed."
+
+| Requirement / acceptance criterion | Evidence: command, artifact, diff, eval, replay, or reason n/a | Status: proved / weak / missing / contradicted | False-green risk checked? | Follow-up / owner |
+|---|---|---|---|---|
+|  |  |  |  |  |
+
 ## Production implementation blocker gate
 
 Required for production/runtime implementation goals, long unattended production goals, or goals with external/unsafe/irreversible stop points; otherwise state why it is not applicable. A blocked child with runnable safe next actions is active work, not completion.

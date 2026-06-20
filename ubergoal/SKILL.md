@@ -13,6 +13,8 @@ effort: max
 
 Use the lightest tier that makes the work safe. Add process only when benefit is **clearly much greater than** total downstream cost.
 
+Bounded loop contract: observe current state, choose one highest-value bounded action, act once, verify against named evidence, record the requirement as `proved`/`weak`/`missing`/`contradicted`, then continue only if the next action changes a decision or closes a named gap. Otherwise stop as complete, blocked, exhausted, or approval-needed. If an iteration cannot name the requirement it advances and evidence it will produce, downgrade, route, or ask.
+
 ## Routing table
 
 | Need | Use |
@@ -74,7 +76,7 @@ For Tier 1+ or any explicit `ubergoal` work, create or update `coordination/<tas
 4. **Plan.** Start Tier 1+ with a **user expectation / surprise assessment**. Use a micro-intent note, work contract, or `$uberplan` by tier/risk. Agentic-system plans bias toward thin deterministic harnesses around capable agents. Do not execute until the plan or work contract names verification, stop conditions, and a red/green proof ledger when the task changes code, skills, prompts, workflows, or agent behavior.
 5. **Review and execute.** Main agent owns integration. Explicit `ubergoal` authorizes bounded Tier 2+ specialist review-board agents/lenses unless the user says no/lightweight. Workers mutate files only with disjoint write scopes.
 6. **Adapt on test failure.** Stop before or at **five consecutive failures** of the same command/family, or immediately for material unexpected failures. Capture evidence, run `$uberrca`, revise with `$uberplan`, append/merge scope expansion/correction/blocker, update ledger/receipt, continue under same goal.
-7. **Ledger/receipt.** For long work, maintain `templates/goal-ledger.md` and the **Uber run receipt** in `templates/uber-run-receipt.md`, including the **Skills invoked summary**.
+7. **Ledger/receipt.** For long work, maintain `templates/goal-ledger.md` and the **Uber run receipt** in `templates/uber-run-receipt.md`, including the **Skills invoked summary** and a requirement-to-evidence ledger.
 8. **Assess/simplify/accept/learn.** Route source due diligence to `$uberassess`; complexity campaigns to `$ubersimplify`; final proof to `$uberaccept`; Tier 2/3 skill/prompt/workflow/agentic lessons to `$uberskillevolver`.
 
 ## Tier selection

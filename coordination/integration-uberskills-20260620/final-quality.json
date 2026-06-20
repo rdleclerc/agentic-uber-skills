@@ -1,0 +1,167 @@
+{
+  "skills": [
+    {
+      "description_chars": 653,
+      "issue_categories": [],
+      "issue_count": 0,
+      "issues": [],
+      "line_count": 107,
+      "name": "uber-skill-creator",
+      "path": "/Users/claw1/agentic-uber-skills/uber-skill-creator",
+      "resources": [
+        "assets",
+        "references",
+        "scripts"
+      ],
+      "score": 100
+    },
+    {
+      "description_chars": 288,
+      "issue_categories": [],
+      "issue_count": 0,
+      "issues": [],
+      "line_count": 174,
+      "name": "uberaccept",
+      "path": "/Users/claw1/agentic-uber-skills/uberaccept",
+      "resources": [
+        "evals",
+        "references",
+        "scripts",
+        "templates"
+      ],
+      "score": 100
+    },
+    {
+      "description_chars": 415,
+      "issue_categories": [],
+      "issue_count": 0,
+      "issues": [],
+      "line_count": 89,
+      "name": "uberarchitect",
+      "path": "/Users/claw1/agentic-uber-skills/uberarchitect",
+      "resources": [
+        "evals",
+        "templates"
+      ],
+      "score": 100
+    },
+    {
+      "description_chars": 548,
+      "issue_categories": [],
+      "issue_count": 0,
+      "issues": [],
+      "line_count": 138,
+      "name": "uberassess",
+      "path": "/Users/claw1/agentic-uber-skills/uberassess",
+      "resources": [
+        "evals",
+        "references",
+        "scripts",
+        "templates"
+      ],
+      "score": 100
+    },
+    {
+      "description_chars": 707,
+      "issue_categories": [],
+      "issue_count": 0,
+      "issues": [],
+      "line_count": 159,
+      "name": "ubergoal",
+      "path": "/Users/claw1/agentic-uber-skills/ubergoal",
+      "resources": [
+        "evals",
+        "references",
+        "scripts",
+        "templates"
+      ],
+      "score": 100
+    },
+    {
+      "description_chars": 514,
+      "issue_categories": [],
+      "issue_count": 0,
+      "issues": [],
+      "line_count": 215,
+      "name": "uberplan",
+      "path": "/Users/claw1/agentic-uber-skills/uberplan",
+      "resources": [
+        "evals",
+        "references",
+        "scripts",
+        "templates"
+      ],
+      "score": 100
+    },
+    {
+      "description_chars": 353,
+      "issue_categories": [],
+      "issue_count": 0,
+      "issues": [],
+      "line_count": 163,
+      "name": "uberrca",
+      "path": "/Users/claw1/agentic-uber-skills/uberrca",
+      "resources": [
+        "evals",
+        "scripts"
+      ],
+      "score": 100
+    },
+    {
+      "description_chars": 422,
+      "issue_categories": [],
+      "issue_count": 0,
+      "issues": [],
+      "line_count": 161,
+      "name": "ubershow",
+      "path": "/Users/claw1/agentic-uber-skills/ubershow",
+      "resources": [
+        "evals",
+        "scripts",
+        "templates"
+      ],
+      "score": 100
+    },
+    {
+      "description_chars": 288,
+      "issue_categories": [],
+      "issue_count": 0,
+      "issues": [],
+      "line_count": 102,
+      "name": "ubersimplify",
+      "path": "/Users/claw1/agentic-uber-skills/ubersimplify",
+      "resources": [
+        "evals",
+        "references",
+        "scripts",
+        "templates"
+      ],
+      "score": 100
+    },
+    {
+      "description_chars": 288,
+      "issue_categories": [],
+      "issue_count": 0,
+      "issues": [],
+      "line_count": 179,
+      "name": "uberskillevolver",
+      "path": "/Users/claw1/agentic-uber-skills/uberskillevolver",
+      "resources": [
+        "evals",
+        "references",
+        "scripts",
+        "templates"
+      ],
+      "score": 100
+    }
+  ],
+  "summary": {
+    "average_score": 100.0,
+    "severity_counts": {
+      "error": 0,
+      "info": 0,
+      "warn": 0
+    },
+    "skill_count": 10
+  }
+}

@@ -1,0 +1,238 @@
+## Integration per-skill validation rerun — 2026-06-20
+
+### uberrca quick_validate
+Skill is valid!
+### uberrca lint_skill_package
+PASS: skill package lint passed
+### uberrca tests
+test_golden_eval_schema_and_trigger_mix (test_validators.UberRcaPackageTests) ... ok
+test_lint_rejects_auxiliary_readme (test_validators.UberRcaPackageTests) ... ok
+test_metadata_declares_implicit_utility_trigger (test_validators.UberRcaPackageTests) ... ok
+test_package_lint_passes (test_validators.UberRcaPackageTests) ... ok
+
+----------------------------------------------------------------------
+Ran 4 tests in 0.059s
+
+OK
+
+### uber-skill-creator quick_validate
+Skill is valid!
+### uber-skill-creator lint_skill_package
+PASS: skill package lint passed
+### uber-skill-creator tests
+test_eval_report_escapes_and_summarizes (test_skill_creator.SkillCreatorPackageTests) ... ok
+test_lossless_compression_estimator_accepts_plan_directory (test_skill_creator.SkillCreatorPackageTests) ... ok
+test_lossless_compression_estimator_separates_safe_and_advisory (test_skill_creator.SkillCreatorPackageTests) ... ok
+test_package_lint_passes (test_skill_creator.SkillCreatorPackageTests) ... ok
+test_production_skill_contract_keeps_governance_light_and_private (test_skill_creator.SkillCreatorPackageTests) ... ok
+test_quality_evaluator_flags_vague_skill (test_skill_creator.SkillCreatorPackageTests) ... ok
+test_quality_evaluator_parses_folded_description (test_skill_creator.SkillCreatorPackageTests) ... ok
+test_quality_evaluator_reports_pack_markdown_and_overlap (test_skill_creator.SkillCreatorPackageTests) ... ok
+test_quality_evaluator_rewards_production_shape (test_skill_creator.SkillCreatorPackageTests) ... ok
+test_uber_skill_creator_declares_target_profiles_and_alias_boundary (test_skill_creator.SkillCreatorPackageTests) ... ok
+
+----------------------------------------------------------------------
+Ran 10 tests in 0.290s
+
+OK
+
+### ubergoal quick_validate
+Skill is valid!
+### ubergoal lint_skill_package
+PASS: skill package lint passed
+### ubergoal tests
+test_goal_objective_accepts_compact_goal (test_validators.GoalObjectiveValidatorTests) ... ok
+test_goal_objective_rejects_near_limit (test_validators.GoalObjectiveValidatorTests) ... ok
+test_goal_ledger_has_skills_used_summary (test_validators.ThinWrapperTests) ... ok
+test_golden_eval_schema (test_validators.ThinWrapperTests) ... ok
+test_monolith_files_are_absent (test_validators.ThinWrapperTests) ... ok
+test_package_lint_passes (test_validators.ThinWrapperTests) ... ok
+test_skill_body_is_thin_and_routes (test_validators.ThinWrapperTests) ... ok
+test_uber_run_receipt_validator (test_validators.ThinWrapperTests) ... ok
+test_uber_run_receipt_validator_accepts_legacy_skill_labels (test_validators.ThinWrapperTests) ... ok
+
+----------------------------------------------------------------------
+Ran 9 tests in 0.385s
+
+OK
+
+### uberplan quick_validate
+Skill is valid!
+### uberplan lint_skill_package
+PASS: skill package lint passed
+### uberplan tests
+test_golden_eval_schema (test_validators.PackageTests) ... ok
+test_key_templates_exist (test_validators.PackageTests) ... ok
+test_package_lint_passes (test_validators.PackageTests) ... ok
+test_agent_behavior_requires_advocate (test_validators.PlanValidatorTests) ... ok
+test_agent_behavior_requires_boundary_contract (test_validators.PlanValidatorTests) ... ok
+test_agent_behavior_requires_regex_keyword_semantic_gate (test_validators.PlanValidatorTests) ... ok
+test_agentic_plan_requires_agent_execution_proof_ladder (test_validators.PlanValidatorTests) ... ok
+test_agentic_plan_requires_runtime_agent_topology (test_validators.PlanValidatorTests) ... ok
+test_agentic_plan_requires_source_convention_check (test_validators.PlanValidatorTests) ... ok
+test_agentic_plan_requires_thin_harness_rubric (test_validators.PlanValidatorTests) ... ok
+test_code_plan_requires_dead_code_tool_plan (test_validators.PlanValidatorTests) ... ok
+test_code_plan_requires_repository_topology (test_validators.PlanValidatorTests) ... ok
+test_code_plan_requires_target_file_tree (test_validators.PlanValidatorTests) ... ok
+test_existing_file_plan_can_mark_topology_not_applicable (test_validators.PlanValidatorTests) ... ok
+test_hierarchical_plan_requires_plan_tree_layout (test_validators.PlanValidatorTests) ... ok
+test_hierarchical_plan_requires_recursive_pseudocode (test_validators.PlanValidatorTests) ... ok
+test_hierarchical_pseudocode_requires_child_terminal_table (test_validators.PlanValidatorTests) ... ok
+test_hollow_tier3_plan_fails (test_validators.PlanValidatorTests) ... ok
+test_operational_contract_rejects_proof_only_as_done (test_validators.PlanValidatorTests) ... ok
+test_production_runtime_goal_requires_upfront_approval_and_safe_predecessors (test_validators.PlanValidatorTests) ... ok
+test_templates_need_allow_template_mode (test_validators.PlanValidatorTests) ... ok
+test_tier0_plan_stays_lightweight (test_validators.PlanValidatorTests) ... ok
+test_tier2_agent_plan_passes_with_agent_behavior (test_validators.PlanValidatorTests) ... ok
+test_tier2_requires_decision_tradeoff_register (test_validators.PlanValidatorTests) ... ok
+test_tier2_requires_goal_execution_posture (test_validators.PlanValidatorTests) ... ok
+test_tier2_requires_operational_outcome_contract (test_validators.PlanValidatorTests) ... ok
+test_tier2_requires_over_orchestration_review (test_validators.PlanValidatorTests) ... ok
+test_tier2_requires_parallelization_plan (test_validators.PlanValidatorTests) ... ok
+test_tier2_requires_plan_acceptance_gate (test_validators.PlanValidatorTests) ... ok
+test_tier2_requires_prd_checklist (test_validators.PlanValidatorTests) ... ok
+test_tier2_requires_scope_fidelity (test_validators.PlanValidatorTests) ... ok
+test_tier2_requires_task_map_mermaid (test_validators.PlanValidatorTests) ... ok
+test_tier2_requires_testing_adaptation_gate (test_validators.PlanValidatorTests) ... ok
+test_tier2_requires_user_expectation_surprise_assessment (test_validators.PlanValidatorTests) ... ok
+test_tier2_requires_v0_plan_premortem (test_validators.PlanValidatorTests) ... ok
+test_tier2_requires_verifiable_subgoals (test_validators.PlanValidatorTests) ... ok
+test_tier2_v0_plan_premortem_allows_accepted_risk_only_dispositions (test_validators.PlanValidatorTests) ... ok
+test_tier2_v0_plan_premortem_allows_replan_verdict_structurally (test_validators.PlanValidatorTests) ... ok
+test_tier2_v0_plan_premortem_requires_failure_dispositions (test_validators.PlanValidatorTests) ... ok
+test_tier3_expensive_proof_plan_tree_passes (test_validators.PlanValidatorTests) ... ok
+test_tier3_expensive_proof_rejects_flat_plan (test_validators.PlanValidatorTests) ... ok
+
+----------------------------------------------------------------------
+Ran 41 tests in 2.241s
+
+OK
+
+### uberaccept quick_validate
+Skill is valid!
+### uberaccept lint_skill_package
+PASS: skill package lint passed
+### uberaccept tests
+test_acceptance_rejects_shared_spine_parent_completion (test_validators.AcceptanceValidatorTests) ... ok
+test_acceptance_requires_claim_state_ledger (test_validators.AcceptanceValidatorTests) ... ok
+test_acceptance_requires_scope_fidelity_verdict (test_validators.AcceptanceValidatorTests) ... ok
+test_acceptance_requires_spec_fidelity_and_standards_review (test_validators.AcceptanceValidatorTests) ... ok
+test_acceptance_requires_spec_fidelity_verdict_field (test_validators.AcceptanceValidatorTests) ... ok
+test_acceptance_requires_user_expectation_surprise_delta (test_validators.AcceptanceValidatorTests) ... ok
+test_agent_behavior_requires_boundary_final_check (test_validators.AcceptanceValidatorTests) ... ok
+test_agent_behavior_requires_regex_keyword_final_check (test_validators.AcceptanceValidatorTests) ... ok
+test_agent_behavior_requires_runtime_agent_topology_acceptance (test_validators.AcceptanceValidatorTests) ... ok
+test_blank_acceptance_fails (test_validators.AcceptanceValidatorTests) ... ok
+test_code_acceptance_requires_repository_topology (test_validators.AcceptanceValidatorTests) ... ok
+test_decorated_zero_score_fails (test_validators.AcceptanceValidatorTests) ... ok
+test_existing_file_acceptance_can_mark_topology_not_applicable (test_validators.AcceptanceValidatorTests) ... ok
+test_expensive_proof_acceptance_section_passes (test_validators.AcceptanceValidatorTests) ... ok
+test_expensive_proof_requires_acceptance_section (test_validators.AcceptanceValidatorTests) ... ok
+test_production_active_blocker_rejects_parent_completion (test_validators.AcceptanceValidatorTests) ... ok
+test_production_completion_requires_safe_work_exhaustion_review (test_validators.AcceptanceValidatorTests) ... ok
+test_production_hard_blocked_after_exhaustion_passes (test_validators.AcceptanceValidatorTests) ... ok
+test_template_needs_allow_template_mode (test_validators.AcceptanceValidatorTests) ... ok
+test_valid_acceptance_passes (test_validators.AcceptanceValidatorTests) ... ok
+test_architecture_steward_requires_repository_topology_dimension (test_validators.ArchitectureStewardValidatorTests) ... ok
+test_architecture_template_needs_allow_template_mode (test_validators.ArchitectureStewardValidatorTests) ... ok
+test_blank_architecture_steward_report_fails (test_validators.ArchitectureStewardValidatorTests) ... ok
+test_valid_architecture_steward_report_passes (test_validators.ArchitectureStewardValidatorTests) ... ok
+test_golden_eval_schema (test_validators.PackageTests) ... ok
+test_package_lint_passes (test_validators.PackageTests) ... ok
+
+----------------------------------------------------------------------
+Ran 26 tests in 0.913s
+
+OK
+
+### uberskillevolver quick_validate
+Skill is valid!
+### uberskillevolver lint_skill_package
+PASS: /Users/claw1/agentic-uber-skills/uberskillevolver
+### uberskillevolver tests
+test_golden_eval_schema_mentions_completion_claim_regression (test_validators.ValidatorTests) ... ok
+test_learning_record_requires_completion_claim_regression_check (test_validators.ValidatorTests) ... ok
+test_learning_record_requires_evidence_and_decision (test_validators.ValidatorTests) ... ok
+test_learning_record_requires_runtime_topology_lesson (test_validators.ValidatorTests) ... ok
+test_learning_record_valid (test_validators.ValidatorTests) ... ok
+test_lint_skill_package (test_validators.ValidatorTests) ... ok
+test_new_learning_record_creates_timestamped_template (test_validators.ValidatorTests) ... ok
+test_promotion_batch_rejects_auto_mutation (test_validators.ValidatorTests) ... ok
+test_promotion_batch_valid (test_validators.ValidatorTests) ... ok
+
+----------------------------------------------------------------------
+Ran 9 tests in 0.250s
+
+OK
+
+### ubersimplify quick_validate
+Skill is valid!
+### ubersimplify lint_skill_package
+PASS: /Users/claw1/agentic-uber-skills/ubersimplify
+### ubersimplify tests
+test_dynamic_refs_not_checked_fails (test_validators.UbersimplifyTests) ... ok
+test_golden_eval_schema (test_validators.UbersimplifyTests) ... ok
+test_new_simplify_run_creates_full_trail (test_validators.UbersimplifyTests) ... ok
+test_package_lint (test_validators.UbersimplifyTests) ... ok
+test_patch_no_authorization_fails (test_validators.UbersimplifyTests) ... ok
+test_patch_no_tests_fails (test_validators.UbersimplifyTests) ... ok
+test_ready_yes_no_placeholder_fails (test_validators.UbersimplifyTests) ... ok
+test_rollback_vague_fails (test_validators.UbersimplifyTests) ... ok
+test_template_report_allow_template (test_validators.UbersimplifyTests) ... ok
+test_valid_patch_report_passes (test_validators.UbersimplifyTests) ... ok
+test_valid_report_passes (test_validators.UbersimplifyTests) ... ok
+test_weak_report_fails (test_validators.UbersimplifyTests) ... ok
+
+----------------------------------------------------------------------
+Ran 12 tests in 0.411s
+
+OK
+
+### uberassess quick_validate
+Skill is valid!
+### uberassess lint_skill_package
+PASS: skill package lint passed
+### uberassess tests
+test_implementation_before_approval_must_be_no (test_validators.AssessmentPacketValidatorTests) ... ok
+test_missing_source_packet_fails (test_validators.AssessmentPacketValidatorTests) ... ok
+test_project_matrix_is_portable_not_type0_required (test_validators.AssessmentPacketValidatorTests) ... ok
+test_template_requires_allow_template (test_validators.AssessmentPacketValidatorTests) ... ok
+test_tier1_assessment_passes (test_validators.AssessmentPacketValidatorTests) ... ok
+test_tier3_agent_assessment_passes (test_validators.AssessmentPacketValidatorTests) ... ok
+test_tier3_requires_agent_advocate (test_validators.AssessmentPacketValidatorTests) ... ok
+test_golden_eval_schema (test_validators.PackageTests) ... ok
+test_package_lint_passes (test_validators.PackageTests) ... ok
+
+----------------------------------------------------------------------
+Ran 9 tests in 0.536s
+
+OK
+
+### uberarchitect quick_validate
+Skill is valid!
+### uberarchitect tests
+test_golden_invocation_examples_cover_type0_failure (test_uberarchitect_contract.UberarchitectContractTests) ... ok
+test_skill_contains_stepback_packet_contract (test_uberarchitect_contract.UberarchitectContractTests) ... ok
+test_template_contains_required_fields (test_uberarchitect_contract.UberarchitectContractTests) ... ok
+
+----------------------------------------------------------------------
+Ran 3 tests in 0.001s
+
+OK
+
+### ubershow quick_validate
+Skill is valid!
+### ubershow lint_skill_package
+PASS: /Users/claw1/agentic-uber-skills/ubershow
+### ubershow tests
+test_decision_board_schema_is_minimal_and_valid (test_pattern_kit.UbershowPatternKitTests) ... ok
+test_lint_passes (test_pattern_kit.UbershowPatternKitTests) ... ok
+test_required_templates_exist_and_are_self_contained (test_pattern_kit.UbershowPatternKitTests) ... ok
+test_skill_mentions_browser_first_and_source_authority (test_pattern_kit.UbershowPatternKitTests) ... ok
+test_templates_explain_receipt_registration (test_pattern_kit.UbershowPatternKitTests) ... ok
+test_templates_include_sibling_markdown_receipt_instruction (test_pattern_kit.UbershowPatternKitTests) ... ok
+
+----------------------------------------------------------------------
+Ran 6 tests in 0.135s
+
+OK
