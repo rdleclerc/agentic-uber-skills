@@ -31,6 +31,7 @@ Use 0 = blocker, 1 = weak/unresolved, 2 = acceptable with named residual risk, 3
 | Scope clarity |  |  |  |
 | Scope fidelity against operator-original instruction |  | Operator original instruction, proposed scope, deferrals, approval evidence, and actual diff compared |  |
 | Acceptance criteria verification |  | every micro-intent/work-contract/PRD/plan acceptance criterion mapped to pass/fail/partial with evidence |  |
+| Requirement-to-evidence ledger |  | every material requirement mapped to proved/weak/missing/contradicted with evidence |  |
 | Planning review board |  | board findings reconciled |  |
 | User expectation / surprise delta |  | expected user outcome compared against actual implementation and gaps |  |
 | Claim-language / operational outcome |  | implemented/operational/live/adopted/proof-only/blocked/shadow-only language checked against the Operational Outcome Contract |  |
@@ -75,6 +76,14 @@ Required when the task used a micro-intent, work contract, PRD, ticket, or plan 
 | Acceptance criterion | Status: pass / fail / partial / n/a | Evidence: file path, command, artifact, or reason | Residual risk / follow-up owner |
 |---|---|---|---|
 |  |  |  |  |
+
+## Requirement-to-evidence ledger
+
+Use this as the short truth table for the final claim. Include user instructions, plan/work-contract requirements, PRD/ticket requirements, review-board blockers, and material later corrections.
+
+| Requirement | Evidence: command, artifact, diff, eval, replay, or reason n/a | Status: proved / weak / missing / contradicted | False-green risk checked? | Residual risk / owner |
+|---|---|---|---|---|
+|  |  |  |  |  |
 
 ## Red/green and black-box proof ledger audit
 

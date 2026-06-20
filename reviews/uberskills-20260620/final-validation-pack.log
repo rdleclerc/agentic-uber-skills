@@ -1,0 +1,34 @@
+## Final pack validation after all edits — 2026-06-20
+
+### Pack contract lint
+PASS: pack contract lint passed for /Users/claw1/.openclaw/worktrees/agentic-uber-skills/uberskills
+
+### Unit tests
+test_all_uber_skills_are_exposed_but_phase_skills_are_explicit (test_pack_contract.PackContractTests.test_all_uber_skills_are_exposed_but_phase_skills_are_explicit) ... ok
+test_architecture_stepback_routes_are_present (test_pack_contract.PackContractTests.test_architecture_stepback_routes_are_present) ... ok
+test_galls_law_basic_spine_adversary_is_packaged_for_plan_review (test_pack_contract.PackContractTests.test_galls_law_basic_spine_adversary_is_packaged_for_plan_review) ... ok
+test_install_docs_include_full_pack (test_pack_contract.PackContractTests.test_install_docs_include_full_pack) ... ok
+test_intent_driven_verification_fast_path_is_pack_wide (test_pack_contract.PackContractTests.test_intent_driven_verification_fast_path_is_pack_wide) ... ok
+test_operational_outcome_completion_claim_contract_is_pack_wide (test_pack_contract.PackContractTests.test_operational_outcome_completion_claim_contract_is_pack_wide) ... ok
+test_optional_claude_adversary_contract_is_explicit_and_bounded (test_pack_contract.PackContractTests.test_optional_claude_adversary_contract_is_explicit_and_bounded) ... ok
+test_pack_contract_lint_passes (test_pack_contract.PackContractTests.test_pack_contract_lint_passes) ... ok
+test_root_agent_contract_declares_rca_authority (test_pack_contract.PackContractTests.test_root_agent_contract_declares_rca_authority) ... ok
+test_scope_fidelity_contract_prevents_reviewer_scope_drift (test_pack_contract.PackContractTests.test_scope_fidelity_contract_prevents_reviewer_scope_drift) ... ok
+test_task_understanding_review_is_first_class (test_pack_contract.PackContractTests.test_task_understanding_review_is_first_class) ... ok
+test_uber_rca_is_hardened_as_codex_utility_skill (test_pack_contract.PackContractTests.test_uber_rca_is_hardened_as_codex_utility_skill) ... ok
+test_uber_skill_creator_is_canonical_and_legacy_aliases_are_deprecated (test_pack_contract.PackContractTests.test_uber_skill_creator_is_canonical_and_legacy_aliases_are_deprecated) ... ok
+test_uberarchitect_stepback_gate_is_packaged (test_pack_contract.PackContractTests.test_uberarchitect_stepback_gate_is_packaged) ... ok
+test_ubergoal_owns_platform_goal_by_default (test_pack_contract.PackContractTests.test_ubergoal_owns_platform_goal_by_default) ... ok
+test_ubergoal_tier2_requires_specialist_review_board (test_pack_contract.PackContractTests.test_ubergoal_tier2_requires_specialist_review_board) ... ok
+test_uberplan_architecture_focus_is_not_uberengineering (test_pack_contract.PackContractTests.test_uberplan_architecture_focus_is_not_uberengineering) ... ok
+test_utility_skills_have_task_specific_invocation_policy (test_pack_contract.PackContractTests.test_utility_skills_have_task_specific_invocation_policy) ... ok
+test_uberassess_contract_declares_no_implementation_boundary (test_pack_contract.UberassessContractTests.test_uberassess_contract_declares_no_implementation_boundary) ... ok
+test_missing_scope_file_fails (test_scope_fidelity_artifacts.ScopeFidelityArtifactTests.test_missing_scope_file_fails) ... ok
+test_operator_approved_narrowing_passes (test_scope_fidelity_artifacts.ScopeFidelityArtifactTests.test_operator_approved_narrowing_passes) ... ok
+test_ship_before_scope_verdict_fails (test_scope_fidelity_artifacts.ScopeFidelityArtifactTests.test_ship_before_scope_verdict_fails) ... ok
+test_unapproved_slack_only_narrowing_fails (test_scope_fidelity_artifacts.ScopeFidelityArtifactTests.test_unapproved_slack_only_narrowing_fails) ... ok
+
+----------------------------------------------------------------------
+Ran 23 tests in 0.198s
+
+OK

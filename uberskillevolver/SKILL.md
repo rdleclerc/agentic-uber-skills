@@ -53,7 +53,8 @@ Do not store secrets, credentials, private customer data, full copyrighted sourc
 1. **Capture the run** using `templates/post-run-learning.md` or `scripts/new_learning_record.py`.
 2. **Separate observations from lessons.** A surprising outcome is evidence, not yet a rule.
 3. **Create lesson candidates** with `templates/lesson-candidate.md` only for actionable patterns.
-4. **Run the promotion gate.** A candidate may become:
+4. **Use recent-feedback sweeps for repeated user corrections.** When several recent threads contain user-reported fixes for the same project or skill pack, deduplicate the issues, group them into failure patterns, verify current state, audit the in-scope surface for each pattern, and convert confirmed matches into fixes, eval seeds, validators, or no-change decisions.
+5. **Run the promotion gate.** A candidate may become:
    - an eval seed or regression case
    - a validator/checklist item
    - a template change
@@ -62,10 +63,10 @@ Do not store secrets, credentials, private customer data, full copyrighted sourc
    - a compression/refactor of failure-patched skill prose
    - documentation/reference routing
    - a deferred/no-change note
-5. **Demand benefit >> cost.** One-off annoyances usually become notes, not permanent machinery.
-6. **Patch only with authorization.** Apply skill changes only when the current task authorizes edits; otherwise produce a change plan.
-7. **Validate.** Run quick validation, package lint, unit tests, and any behavior/eval checks relevant to the changed skill.
-8. **Close the loop.** Record what changed, what was deliberately not changed, and what future run would falsify the decision.
+6. **Demand benefit >> cost.** One-off annoyances usually become notes, not permanent machinery.
+7. **Patch only with authorization.** Apply skill changes only when the current task authorizes edits; otherwise produce a change plan.
+8. **Validate.** Run quick validation, package lint, unit tests, and any behavior/eval checks relevant to the changed skill.
+9. **Close the loop.** Record what changed, what was deliberately not changed, and what future run would falsify the decision.
 
 ## Slop register
 
@@ -83,6 +84,8 @@ Before changing a skill, answer:
 - Is it a repeated pattern or a severe one-off?
 - What is the smallest durable change that prevents recurrence?
 - Can we delete/simplify instead of adding instructions?
+- For prompt/skill/config tuning, is there a current champion, working set, untouched holdout set, must-pass checks, budget, and promotion margin?
+- Did the challenger beat the champion on fresh holdouts without weakening any must-pass check? If not, keep the champion.
 - If this is a skill-prose patch, can verbose corrective text become a compact
   Trigger/Do/Invalid rule with required evidence and allowed fallbacks?
 - Will this increase context load, checklist fatigue, coordination, false positives, or maintenance burden?

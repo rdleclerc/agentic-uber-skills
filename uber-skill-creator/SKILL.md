@@ -45,8 +45,9 @@ Portable guide for creating effective `SKILL.md` packages for Codex, Claude, and
 7. **Initialize when new.** Prefer `scripts/init_skill.py <skill-name> --path <output-directory> [--resources scripts,references,assets] [--examples]`; skip only for existing skills.
 8. **Edit active instructions.** Write imperative guidance for another agent. Keep trigger information in frontmatter `description`; keep body focused on procedure and resource use.
 9. **Validate.** Run `scripts/quick_validate.py <path/to/skill-folder>` plus package lint/tests when present.
-10. **Run the eval-driven extension** for reusable, high-impact, broadly installed, or behavior-changing skills.
-11. **Install/sync/migrate.** Sync canonical source to runtime skill roots only after source validation passes.
+10. **Fresh-install check when install/onboarding changed.** In a disposable environment, install from the documented instructions using no carried dependencies, credentials, or manual repairs. If a hidden assumption appears, fix the smallest setup/doc gap, discard the environment, and retry.
+11. **Run the eval-driven extension** for reusable, high-impact, broadly installed, or behavior-changing skills.
+12. **Install/sync/migrate.** Sync canonical source to runtime skill roots only after source validation passes.
 
 Read `references/skill-creation-workflow.md` for command examples, anatomy, resource-selection details, and forward-testing prompts.
 
@@ -70,6 +71,8 @@ The read-only evaluator checks trigger clarity, concision, progressive disclosur
 ## Eval-driven extension
 
 Read `references/eval_driven_skill_creation.md` when the skill is reusable, high-impact, likely to be installed broadly, or likely to change agent behavior beyond simple validation. The extension adds intent examples, trigger/non-trigger prompts, realistic evals, with-skill vs without-skill comparison when feasible, qualitative review notes, an HTML review report via `scripts/generate_eval_report.py`, and trigger-description tuning with held-out examples.
+
+For prompt, policy, or skill-behavior tuning, keep a champion and challenge it deliberately: save the current version, working set, untouched holdouts, must-pass checks, budget, and promotion margin before editing. Promote a challenger only when it wins on fresh holdouts without weakening a must-pass check; keep the champion on uncertainty.
 
 Keep this portable. Do not paste platform-specific slash commands, subprocess assumptions, or proprietary runtime conventions into a general skill; translate useful methods into neutral SKILL.md terms and record provenance in notice/reference notes.
 

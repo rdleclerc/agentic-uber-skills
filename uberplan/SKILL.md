@@ -23,6 +23,8 @@ Measure three times, cut once: after the architecture stepback, prefer the simpl
 
 The output should make the operator more confident that the agent is not blindly closing on the first plausible route. It should not make the repo heavier merely because the word "architecture" appeared.
 
+For deliberate refactors, define "satisfactory" before editing: module boundaries, dependency direction, observable behavior, tests, performance, and rollback. Plan one meaningful checkpoint at a time: change, live-test or run the closest black-box check, run an independent review/lens when risk warrants it, then record the checkpoint before continuing.
+
 ## Micro-intent / spec-first fast path with Task Understanding Review
 
 For Tier 0/1 work, the smallest safe plan may be a **micro-intent** instead of this full contract. Capture:

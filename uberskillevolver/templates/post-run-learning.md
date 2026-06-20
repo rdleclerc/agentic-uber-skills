@@ -23,6 +23,15 @@ List concrete evidence: plan files, diffs, commits, logs, tests, evals, traces, 
 - What was slower or noisier than expected?
 - What assumption proved false?
 
+## Recent-feedback sweep, if applicable
+- Lookback window:
+- User-reported fixes collected:
+- Deduplicated failure patterns:
+- Current-state verification:
+- In-scope surfaces audited:
+- Confirmed matches fixed or converted to evals/validators:
+- Remaining blockers / no-change rationale:
+
 ## Agent Advocate / human counterfactual
 - Did an agent make an avoidable error?
 - Would a competent human with normal context/tools have made it?
@@ -105,6 +114,14 @@ Use this only for repeated or severe AI-generated-code failure patterns; otherwi
 - Anti-bloat verdict for any durable fix:
 
 ## Promotion decision
+- Champion/holdout result for prompt/skill/config tuning:
+  - Current champion:
+  - Working set:
+  - Untouched holdouts:
+  - Must-pass checks:
+  - Promotion margin / budget:
+  - Challenger result:
+  - Promote challenger? yes/no, why:
 - Promote now:
 - Defer:
 - Delete/simplify:
