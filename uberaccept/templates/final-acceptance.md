@@ -177,6 +177,28 @@ Required when accepting a production/runtime implementation goal, long unattende
 |---|---|---|---|---|
 |  |  |  |  |  |
 
+## Loop acceptance lens
+
+Required for recurring, scheduled, watch-and-fix, event-triggered, queue-driven, or unattended work. Otherwise state why not applicable. Use `references/loop-engineering.md` for the shared lens.
+
+- Loop scope applies? yes/no, why:
+- Loop Contract source:
+- Per-iteration receipts or sampled receipt set inspected:
+- Independent verifier / gate, not maker-only self-review:
+- Correct-stop proof for complete / no-work / blocked / exhausted / approval-needed:
+- Durable state replay proof:
+- No-progress detection evidence:
+- Budget/time/retry kill-switch evidence:
+- Idempotent side effects and duplicate suppression evidence:
+- Human approval before irreversible actions:
+- Attention/noise policy followed:
+- Comprehension-debt spot-check performed or deferred with owner:
+- Loop acceptance verdict: pass / fail / residual risk accepted:
+
+| Iteration / sample | Trigger | Work discovered | Verification evidence | State written | Stop/continue decision | Gap |
+|---|---|---|---|---|---|---|
+|  |  |  |  |  |  |  |
+
 ## Claim-state ledger
 
 Check that the final report does not blur `implemented`, `operational`, `live`, `adopted`, `tested`, `ready`, `wired`, `proof-only`, `blocked`, or `shadow-only`.

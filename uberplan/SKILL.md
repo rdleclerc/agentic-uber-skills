@@ -64,6 +64,9 @@ For Type0, the default spine is: real feed/tip/wire input → normalized signal 
 
 Tier 1+ durable plans must include a `## Scope fidelity` block that links or quotes `coordination/<task-slug>/scope.md`, names the plan scope, states `Narrowing? yes/no`, and cites `Operator approved narrowing in:` whenever narrowed. Unapproved narrowing makes the plan invalid and cannot later count as completion; record it as blocked, deferred, or ask the operator to approve the narrower scope.
 
+## Loop Engineering Contract
+Use this only when the work is recurring, scheduled, event-triggered, queue-driven, watch-and-fix, or unattended. Read `../references/loop-engineering.md`; keep it inside the existing plan, not a standalone `uberloop`. Name trigger/cadence, discovery source, handoff/isolation, focused tool/connector surface, durable state path, independent verification gate, stop conditions, no-progress rule, token/time/cost/retry caps, idempotency/replay behavior for side effects, human approval points before irreversible actions, attention/notification policy, comprehension-debt spot-checks, and learning/eval promotion path; if missing, downgrade to a manual goal, one-shot automation, or non-readiness spike.
+
 ## Operational outcome contract
 
 Tier 1+ plans must include a **Definition of Done / Operational Outcome Contract** naming intended outcome, what counts as implemented/operational, evidence, non-implementation examples, and terminal state.
@@ -114,6 +117,7 @@ Use `templates/plan-contract.md` for the durable plan. It must cover, as applica
 - **Gall's Law / Basic Spine First adversary** for agentic-system, harness, coordination-layer, or architecture-changing plans: smallest end-to-end working spine, not micro-feature slices or top-down architecture; evals that prove the spine works and stay green while it evolves
 - **Architecture stepback / measure-three-times review**: system shape, viable avenues, blockers, implications, pitfalls, package seams, adoption/rollback, what not to build, and the simplest path after seeing the whole terrain
 - Definition of Done / Operational Outcome Contract, allowed terminal state, and non-implementation examples
+- Loop Engineering Contract for recurring/watch-and-fix/scheduled/unattended work: trigger, discovery, isolation, verification, durable state, stop/no-progress/budget controls, idempotency, human gates, attention policy, and learning path
 - Recursive / Hierarchical Execution Pseudocode plus Plan Tree Artifact Layout for child/subplans
 - Unattended production/runtime approval and safe-predecessor plan when production/runtime work could hit external/unsafe/irreversible steps
 - Tier 3 expensive-proof plan-tree preflight for agentic/runtime/production-replacement, burn-in, soak, canary expansion, or final-proof work

@@ -32,6 +32,9 @@ For code, prompt, skill, workflow, UI, or agent-behavior changes, final acceptan
 
 If the ledger is missing, stale, or maps green checks to the wrong risk, score the relevant evidence layer 0/1 and do not recommend completion unless the user explicitly accepts the residual gap. Do not create a standalone `ubertesting` skill as a shortcut for this final audit; route recurring lessons to `uberskillevolver` and keep future `ubereval` extraction behind the roadmap promotion gate.
 
+## Loop acceptance lens
+For recurring, scheduled, watch-and-fix, queue-driven, or unattended loops, read `../references/loop-engineering.md` and try to prove the loop is unsafe or not actually closed. Require per-iteration receipts or a sampled receipt set, independent verification rather than maker-only self-review, correct-stop evidence for complete/no-work/blocked/exhausted/approval-needed states, durable state replay, no-progress detection, budget/time/retry kill-switches, idempotency for repeated side effects, duplicate suppression for writes, and explicit human approval before irreversible merge, deploy, publish, payment, credential, data-loss, or external-send actions. Reject readiness when evidence is only “the agent kept running,” self-graded review, an unrelated green command, or a schedule without durable state and stop controls; do not recommend `uberloop` until real usage proves extraction benefit >> cost.
+
 ## Claim-language and operational outcome audit
 
 Final acceptance must prevent claim blur. Check every use of: `implemented`, `operational`, `live`, `adopted`, `tested`, `ready`, `wired`, `proof-only`, `blocked`, and `shadow-only`.
@@ -83,20 +86,21 @@ Produce a final acceptance report that names every relevant layer explicitly:
 2. rubric scores with evidence and residual gaps
 3. commands/artifacts proving unit, regression, integration, UI/browser, eval, security/privacy, concurrency/idempotency, architecture, repository-topology/dependency boundaries, dead-code, rollback, and observability layers as applicable
 4. Acceptance-criteria verification: criterion-by-criterion pass/fail/partial evidence
-5. Requirement-to-evidence ledger: each material requirement marked proved/weak/missing/contradicted with evidence
-6. Claim-state ledger: claim language, Operational Outcome Contract evidence, and child terminal states for multi-child goals
-7. Production implementation blocker gate: active blockers vs hard blockers, runnable safe next actions, safe-predecessor exhaustion, and parent completion rule
-8. Safe-work exhaustion adversarial review: blocked children inspected for plausible safe next actions before parent completion
-9. Tier 3 expensive-proof acceptance when the work involved burn-in, soak, canary expansion, replacement proof, or final proof
-10. planning-board reconciliation
-11. user expectation / surprise delta: what the user likely expected, what was actually implemented, what changed, what may surprise them, and whether any mismatch needs explicit approval
-12. scope fidelity verdict: quote/link `coordination/<task-slug>/scope.md`, compare original scope to implemented scope, cite approved narrowing, and block unapproved narrowing
-13. Agent Advocate final check for agentic work or agent failures
-14. Architecture Steward final check
-15. first-principles simplification and cost/complexity verdict, including any Basic Spine First veto
-16. adversarial acceptance check
-17. post-run learning decision for skill/workflow/agentic-system changes
-18. confidence verdict and completion recommendation
+5. Loop acceptance lens when recurring/watch-and-fix/scheduled/unattended work is claimed: per-iteration receipts, independent verification, correct-stop proof, durable state replay, no-progress/budget controls, idempotent side effects, and human gates
+6. Requirement-to-evidence ledger: each material requirement marked proved/weak/missing/contradicted with evidence
+7. Claim-state ledger: claim language, Operational Outcome Contract evidence, and child terminal states for multi-child goals
+8. Production implementation blocker gate: active blockers vs hard blockers, runnable safe next actions, safe-predecessor exhaustion, and parent completion rule
+9. Safe-work exhaustion adversarial review: blocked children inspected for plausible safe next actions before parent completion
+10. Tier 3 expensive-proof acceptance when the work involved burn-in, soak, canary expansion, replacement proof, or final proof
+11. planning-board reconciliation
+12. user expectation / surprise delta: what the user likely expected, what was actually implemented, what changed, what may surprise them, and whether any mismatch needs explicit approval
+13. scope fidelity verdict: quote/link `coordination/<task-slug>/scope.md`, compare original scope to implemented scope, cite approved narrowing, and block unapproved narrowing
+14. Agent Advocate final check for agentic work or agent failures
+15. Architecture Steward final check
+16. first-principles simplification and cost/complexity verdict, including any Basic Spine First veto
+17. adversarial acceptance check
+18. post-run learning decision for skill/workflow/agentic-system changes
+19. confidence verdict and completion recommendation
 
 Use `templates/final-acceptance.md` and validate with `scripts/validate_acceptance_report.py` when producing durable artifacts.
 
@@ -170,5 +174,6 @@ Then answer the separate final gate: **Ship: yes/no, one sentence.** This ship g
 - `templates/first-principles-simplifier-report.md` — simplification/cost report.
 - `templates/agent-failure-rca.md` — agent RCA/human counterfactual.
 - `references/agentic-architecture-checklist.md` — architecture checklist.
+- `../references/loop-engineering.md` — loop-mode acceptance lens and anti-bloat trigger.
 - `scripts/validate_acceptance_report.py` — final report sanity checks.
 - `scripts/validate_architecture_steward_report.py` — architecture report checks.

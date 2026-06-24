@@ -9,14 +9,12 @@ effort: max
 
 ## Core rule
 
-`ubergoal` is the **thin lifecycle wrapper**, goal owner, and bounded review-board coordinator for the Uber skill family. In runtimes with a platform goal object, explicit `ubergoal` use means create or bind that goal first, then route to focused subskills and specialist agents instead of carrying all planning and acceptance machinery itself.
-
-Use the lightest tier that makes the work safe. Add process only when benefit is **clearly much greater than** total downstream cost.
+`ubergoal` is the **thin lifecycle wrapper**, goal owner, and bounded review-board coordinator for the Uber skill family. In runtimes with a platform goal object, explicit `ubergoal` use means create or bind that goal first, then route to focused subskills and specialist agents instead of carrying all planning and acceptance machinery itself. Use the lightest tier that makes the work safe; add process only when benefit is **clearly much greater than** total downstream cost.
 
 Bounded loop contract: observe current state, choose one highest-value bounded action, act once, verify against named evidence, record the requirement as `proved`/`weak`/`missing`/`contradicted`, then continue only if the next action changes a decision or closes a named gap. Otherwise stop as complete, blocked, exhausted, or approval-needed. If an iteration cannot name the requirement it advances and evidence it will produce, downgrade, route, or ask.
+Recurring loop mode is a thin routing flag, not a new phase. When the user asks to watch, monitor, rerun, keep fixing, schedule, maintain, or run unattended, mark `loop_mode` and load `../references/loop-engineering.md`. `ubergoal` names the mode, trigger, approval boundary, and target outcome, then routes the Loop Contract to `$uberplan`, loop acceptance to `$uberaccept`, and reviewed learning to `$uberskillevolver`. Do not create or invoke `uberloop` unless repeated real loop-building runs have proven extraction makes the common path smaller, faster, or safer.
 
 ## Routing table
-
 | Need | Use |
 |---|---|
 | Rigorous planning, review-board lanes, codebase exploration, confidence gate | `$uberplan` |
@@ -29,6 +27,7 @@ Bounded loop contract: observe current state, choose one highest-value bounded a
 | Refactor campaign / HOT-file audit | load `references/refactor-campaign-profile.md` |
 | `ubercampaign`, product campaign, multi-feature/feature-list/plan-tree campaign, “assess then plan then execute all items” | load `references/campaign-profile.md` |
 | Tier 3 agentic/runtime/production-replacement expensive proof, burn-in, soak, canary expansion, or final proof | route to `$uberplan` with `templates/tier3-expensive-proof-plan-tree.md` and validator before launch |
+| Recurring/watch-and-fix/scheduled loop | mark `loop_mode`, read `../references/loop-engineering.md`, route contract design to `$uberplan`, final proof to `$uberaccept`, and loop lessons to `$uberskillevolver` |
 
 Deferred until real usage proves benefit >> cost: `ubercode`, `ubergit`, `ubereval`, `uberui`, and standalone specialist-lane skills. Do **not** create `ubertesting` as a workaround for missing proof discipline; keep testing/eval as an explicit lane until repeated real runs show extraction makes the common path smaller or safer.
 

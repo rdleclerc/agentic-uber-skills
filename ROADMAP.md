@@ -13,6 +13,7 @@ This roadmap keeps the skill pack evolving without turning it into bureaucracy. 
 - `uberassess` = source-to-recommendation due diligence — explicit assessment for X/GitHub/arXiv/articles/videos/Hermes signals before adoption; produces packets, not implementation.
 - `ubershow` — browser-first visual communication utility for decision boards, implementation plans, maps, timelines, questionnaires, and visual briefs; produces generated HTML views with copyable decision receipts, not source-of-truth records.
 - `uber-skill-creator` — portable Uber skill authoring and migration utility for Codex, Claude, and SKILL.md-compatible agents; keeps general skill-authoring guidance under version control and adds legacy alias deprecation support, read-only quality reports, eval-driven iteration, HTML review reports, and trigger-description tuning without runtime-specific commands.
+- Loop engineering mode — recurring/watch-and-fix/scheduled loops stay inside the existing lifecycle: `ubergoal` marks/routes, `uberplan` owns the Loop Contract, `uberaccept` owns loop acceptance, and `uberskillevolver` owns reviewed learning. `references/loop-engineering.md` is the shared source; `uberloop` remains uncreated until at least three real loop-building runs prove extraction benefit >> cost.
 
 ## Routing and source-authority policy
 

@@ -135,6 +135,27 @@ Use this to avoid surprises, not to mind-read. Ground the assessment in the expl
 - Ask/flag-before-proceeding triggers:
 - Final handoff expectation check:
 
+## Loop Engineering Contract
+
+Required for recurring, scheduled, watch-and-fix, event-triggered, queue-driven, or unattended work. Otherwise state why not applicable. Use `references/loop-engineering.md` for the shared anatomy.
+
+- Loop mode: manual continuation / scheduled / event-triggered / queue-driven / monitor / background goal / n/a:
+- Trigger and cadence / event source:
+- Discovery source and filter:
+- Handoff and isolation strategy:
+- Focused tool / connector surface:
+- Durable state path and schema:
+- Independent verification gate:
+- Stop conditions: complete / no work / blocked / budget exhausted / no progress / repeated failure / approval needed / safety boundary:
+- No-progress detection rule:
+- Token/time/cost/retry caps:
+- Idempotency and replay behavior for side effects:
+- Human approval before irreversible actions:
+- Attention / notification policy:
+- Comprehension-debt spot-check plan:
+- Learning/eval promotion path:
+- If any field is weak/missing, downgrade path: manual goal / one-shot automation / non-readiness spike / ask operator:
+
 ## Definition of Done / Operational Outcome Contract
 
 Use this for Tier 1+ substantial plans. Be explicit about what counts as implementation and what remains proof-only.

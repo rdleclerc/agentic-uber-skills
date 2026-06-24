@@ -58,6 +58,19 @@ List concrete evidence: plan files, diffs, commits, logs, tests, evals, traces, 
 - Restore-to-default evidence:
 - Lesson for future campaigns:
 
+## Loop-learning check
+
+Use this for recurring, scheduled, watch-and-fix, queue-driven, or unattended loop runs. Otherwise record `not applicable`.
+
+- Loop mode and trigger:
+- Loop Contract source:
+- Repeated loop lesson observed? yes/no:
+- Failure class if any: missed stop / no-progress spin / runaway budget / missing durable state / self-grading / non-idempotent side effect / noisy attention / comprehension debt / other:
+- Evidence from receipts/traces:
+- Smallest durable fix: eval seed / validator / template / skill diff / deletion / no change:
+- Does this contribute to the ≥3-real-run `uberloop` extraction trigger? yes/no, count and evidence:
+- Anti-bloat verdict:
+
 ## Red/green / false-green lesson check
 
 - Did a green command fail to prove the real user-visible, black-box, integration, eval, or target-system risk?

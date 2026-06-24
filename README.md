@@ -23,6 +23,10 @@ Claude Code sessions using this pack default each Uber skill invocation to `clau
 | [uberarchitect](uberarchitect/) | Architecture stepback gate for concurrency, queue/worker, gateway, orchestration, backpressure, repeated-timeout, and symptom-patching failures before local code patches harden |
 | [ubershow](ubershow/) | Browser-first static visual artifacts for high-bandwidth decision boards, plans, maps, timelines, and visual briefs with copyable decision receipts |
 
+## Loop engineering mode
+
+Recurring, scheduled, watch-and-fix, or unattended agent loops are handled as an `ubergoal` mode, not as a standalone `uberloop` skill. Use [`references/loop-engineering.md`](references/loop-engineering.md) plus the existing lifecycle: `ubergoal` marks/routes the mode, `uberplan` records the Loop Contract, `uberaccept` checks per-iteration receipts and stop/budget/idempotency proof, and `uberskillevolver` promotes loop lessons only through reviewed learning. Extract a separate `uberloop` only after repeated real loop-building runs prove it would make the common path smaller, faster, or safer.
+
 ## Install
 
 Clone the pack:

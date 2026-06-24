@@ -38,6 +38,44 @@ class PackContractTests(unittest.TestCase):
                 self.assertIn("do not auto-trigger from task similarity", meta, skill)
 
 
+
+    def test_loop_engineering_mode_is_shared_and_hooked(self) -> None:
+        reference = (ROOT / "references" / "loop-engineering.md").read_text()
+        for phrase in [
+            "Five moves of one loop",
+            "Six parts to check before launch",
+            "Loop Contract fields",
+            "Acceptance lens",
+            "verification debt",
+            "comprehension rot",
+            "cognitive surrender",
+            "token/cost blowout",
+            "at least three real loop-building runs",
+        ]:
+            self.assertIn(phrase, reference)
+
+        expected_hooks = {
+            "ubergoal/SKILL.md": ["Recurring loop mode", "loop_mode", "Do not create or invoke `uberloop`"],
+            "uberplan/SKILL.md": ["Loop Engineering Contract", "trigger/cadence", "no-progress rule", "idempotency"],
+            "uberaccept/SKILL.md": ["Loop acceptance lens", "per-iteration receipts", "maker-only self-review", "budget/time/retry kill-switches"],
+            "uberskillevolver/SKILL.md": ["Loop-learning gate", "Never let a self-improving loop silently rewrite", "standalone `uberloop` remains a candidate"],
+        }
+        for rel, phrases in expected_hooks.items():
+            body = (ROOT / rel).read_text()
+            self.assertIn("../references/loop-engineering.md", body, rel)
+            for phrase in phrases:
+                self.assertIn(phrase, body, rel)
+
+        templates = {
+            "uberplan/templates/plan-contract.md": ["Loop Engineering Contract", "Token/time/cost/retry caps", "Learning/eval promotion path"],
+            "uberaccept/templates/final-acceptance.md": ["Loop acceptance lens", "Durable state replay proof", "Loop acceptance verdict"],
+            "uberskillevolver/templates/post-run-learning.md": ["Loop-learning check", "Does this contribute to the ≥3-real-run `uberloop` extraction trigger?"],
+        }
+        for rel, phrases in templates.items():
+            body = (ROOT / rel).read_text()
+            for phrase in phrases:
+                self.assertIn(phrase, body, rel)
+
     def test_optional_claude_adversary_contract_is_explicit_and_bounded(self) -> None:
         reference = (ROOT / "references" / "claude-adversary.md").read_text()
         for phrase in [

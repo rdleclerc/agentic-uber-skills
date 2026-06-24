@@ -35,6 +35,7 @@ For a learning pass, produce:
 4. required evals/validators before changing a skill
 5. slop-register promote/defer/no-change decision when repeated AI-code failure patterns appear
 6. explicit anti-bloat verdict: why benefit >> cost, or why no change is better
+7. for loop runs: promote/defer/no-change decision on eval seeds, validators, templates, skill diffs, or a future `uberloop` extraction trigger
 
 ## Storage policy
 
@@ -47,6 +48,12 @@ Default location for artifacts:
 - If the run already has a session archive, store there and link from the session log.
 
 Do not store secrets, credentials, private customer data, full copyrighted source dumps, or unnecessary raw prompts/responses. Prefer links, file paths, hashes, excerpts, and summaries. Redact sensitive traces before persisting. For multi-machine use, commit only sanitized learning packets whose `Privacy and redaction` section says `Safe to commit? yes`.
+
+## Loop-learning gate
+
+For recurring, scheduled, watch-and-fix, or unattended loop runs, use `../references/loop-engineering.md` to separate evidence from promotion. Loop findings can become eval seeds, validators, templates, skill diffs, connector/tool changes, or deletions only after reviewed promotion. Never let a self-improving loop silently rewrite its own skill, prompt, trigger, memory policy, routing, budget, or tool permissions from its own output.
+
+A standalone `uberloop` remains a candidate only after at least three real loop-building runs show repeated contract re-derivation or a loop-specific failure such as runaway budget, missed stop, missing durable state, self-grading, or non-idempotent recurrence because the guidance was too hidden inside existing skills. Until then, prefer the shared reference plus hooks in `ubergoal`, `uberplan`, and `uberaccept`.
 
 ## Learning loop
 
@@ -177,3 +184,4 @@ For Tier 2/3 skill, prompt, workflow, or agentic-system runs, use `uberskillevol
 - `scripts/validate_promotion_batch.py` — validate promotion-batch review discipline.
 - `scripts/lint_skill_package.py` — check this skill package for required files and policy hooks.
 - `references/cross-machine-learning.md` — combine sanitized learning packets across machines.
+- `../references/loop-engineering.md` — loop-learning promotion gate and anti-bloat trigger.
