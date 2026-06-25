@@ -34,8 +34,10 @@ Use these fields in `uberplan` when the plan is recurring, scheduled, watch-and-
 - Loop mode: manual continuation / scheduled / event-triggered / queue-driven / monitor / background goal.
 - Trigger and cadence: exact schedule, event source, queue query, or wakeup condition.
 - Discovery source: what the loop reads to decide whether work exists.
+- Retrieval/example corpus: prior successful runs, failed attempts, fixtures, benchmark examples, or source-of-truth examples the loop may use before generating new work; include similarity/diversity and staleness/failure filters when retrieval affects output quality.
 - Handoff and isolation: worktree/thread/ticket/child-plan/write-scope strategy.
 - Verification gate: deterministic command, evaluator, rubric, or human-review gate.
+- Measurement feedback: when the objective is optimization, the baseline metric, candidate-ranking metric, and receipt proving the winning candidate beats the baseline without violating correctness.
 - Durable state: file/board/database/receipt path and schema.
 - Stop conditions: complete, no work, blocked, budget exhausted, no progress, repeated failure, approval needed, safety boundary.
 - No-progress rule: what repeated tool call, repeated diff, repeated failure family, or unchanged state proves spinning.
@@ -44,6 +46,10 @@ Use these fields in `uberplan` when the plan is recurring, scheduled, watch-and-
 - Human attention policy: what is silent, what goes to triage, what wakes a human, and maximum notification cadence.
 - Comprehension-debt control: what output a human must spot-check and how often.
 - Learning path: which findings become eval seeds, validators, templates, deletions, or `uberskillevolver` records.
+
+## Optimization / benchmark loops
+
+For optimization-shaped loops, borrow the useful LOOPRAG pattern without turning it into ceremony: retrieve relevant examples first, generate only as many candidates as the budget justifies, reject candidates that fail correctness/equivalence/idempotency checks, benchmark the survivors against a named baseline, rank passing candidates by the measured objective, and persist the receipt for the selected winner. A green check alone is not enough when the claim is "better"; the verifier must produce a measured delta and the loop must remember losing attempts so it does not rediscover them.
 
 ## Acceptance lens
 
