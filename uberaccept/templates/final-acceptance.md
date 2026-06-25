@@ -216,6 +216,18 @@ Check that the final report does not blur `implemented`, `operational`, `live`, 
 |---|---|---|---|---|
 |  |  |  |  |  |
 
+## Review independence ledger
+
+Same-agent review can be useful, but it is not independent evidence. Record every review lane before acceptance.
+
+| Round | Artifact reviewed | Author identity/model/runtime | Reviewer identity/model/runtime | Fresh context? | Cross-model? | independent_review true/false | Material edits after review? | Receipt path |
+|---|---|---|---|---|---|---|---|---|
+|  |  |  |  |  |  |  |  |  |
+
+- Any same-agent review counted as independent evidence? yes/no; if yes, blocker.
+- Any requested reviewer unavailable or waived by operator? yes/no; evidence:
+- Review independence verdict: pass / fail / residual risk accepted
+
 ## Planning review reconciliation
 
 Confirm every material planning-board blocker was resolved, explicitly deferred with user acceptance, or converted into a known residual risk.

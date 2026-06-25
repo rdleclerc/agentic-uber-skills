@@ -79,12 +79,18 @@ class PackContractTests(unittest.TestCase):
     def test_optional_claude_adversary_contract_is_explicit_and_bounded(self) -> None:
         reference = (ROOT / "references" / "claude-adversary.md").read_text()
         for phrase in [
-            "Do **not** invoke the Claude adversary from task similarity",
-            "A prompt without an explicit Claude-adversary phrase should not mention adversary invocation",
-            "Codex remains owner and reconciler",
+            "Do **not** invoke the adversary from task similarity",
+            "A prompt without an explicit adversary phrase should not mention adversary invocation",
+            "The authoring/orchestrating agent remains owner and reconciler",
             "Skill bodies intentionally inline the key rules",
             "Non-trigger example: `use uberassess on this plan` should run ordinary `uberassess` without Claude adversary language",
-            "Default to one Claude challenge round",
+            "Default to one challenge round",
+            "Cross-model symmetry: if Codex authored the artifact, Claude may review; if Claude authored it, Codex may review",
+            "Same-agent review can be a useful lens, but it is **not independent evidence**",
+            "Continue to another round only after accepted/risk/uncertain findings",
+            "If the requested reviewer is unavailable",
+            "record the missing proof as a gap or ask for a waiver",
+            "Author reconciliation",
             "first two challenges must name distinct layers",
             "No material impact",
             "must not count as independent acceptance evidence",
@@ -109,9 +115,9 @@ class PackContractTests(unittest.TestCase):
             "What would success NOT look like",
             "smallest next move",
             "Frame-independence / anti-roleplay check",
-            "What role is Codex asking Claude to play",
+            "What role is the authoring agent asking the reviewer to play",
             "accept, modify, or refuse that role",
-            "Name three concrete outcomes that would make Claude reject",
+            "Name three concrete outcomes that would make the reviewer reject",
             "highly one-sided reconciliation ledger",
             "rubber-stamp warning",
             "reduced-noise, not zero-noise",
@@ -129,15 +135,17 @@ class PackContractTests(unittest.TestCase):
         for skill, questions in expected_questions.items():
             body = (ROOT / skill / "SKILL.md").read_text()
             self.assertIn("## Optional Claude adversary", body, skill)
-            self.assertIn("explicitly asks for Claude review", body, skill)
-            self.assertIn("Do not invoke Claude from task similarity", body, skill)
+            self.assertIn("explicitly asks for Claude review or cross-model review", body, skill)
+            self.assertIn("Do not invoke Claude or alternate reviewer from task similarity", body, skill)
             self.assertIn("../references/claude-adversary.md", body, skill)
             self.assertIn("references may not auto-load", body, skill)
-            self.assertIn("Default to one Claude challenge round", body, skill)
+            self.assertIn("Default to one challenge round", body, skill)
+            self.assertIn("Each adversary challenge must name", body, skill)
+            self.assertIn("Owning-agent reconciliation must classify each challenge", body, skill)
             self.assertIn("first two challenges must use distinct causal layers", body, skill)
             self.assertIn("`No material impact` is non-evidence: it proves a review ran, not that the artifact is acceptable", body, skill)
             self.assertIn("Frame-independence / anti-roleplay check", body, skill)
-            self.assertIn("Claude must stop and flag the review as invalid", body, skill)
+            self.assertIn("the reviewer must stop and flag the review as invalid", body, skill)
             self.assertIn("accepts, modifies, or refuses that role", body, skill)
             self.assertIn("three concrete reject conditions", body, skill)
             self.assertIn("rubber-stamp warnings, not proof of quality", body, skill)
@@ -147,6 +155,67 @@ class PackContractTests(unittest.TestCase):
                 self.assertIn(question, body, skill)
             if skill == "uberaccept":
                 self.assertIn("Ship: yes/no, one sentence", body, skill)
+
+    def test_review_independence_and_subagent_digest_are_first_class(self) -> None:
+        reference = (ROOT / "references" / "claude-adversary.md").read_text()
+        for phrase in [
+            "Cross-model symmetry: if Codex authored the artifact, Claude may review; if Claude authored it, Codex may review",
+            "Same-agent review can be a useful lens, but it is **not independent evidence**",
+            "Continue to another round only after accepted/risk/uncertain findings",
+            "record the missing proof as a gap or ask for a waiver",
+            "Author reconciliation",
+        ]:
+            self.assertIn(phrase, reference)
+
+        goal = (ROOT / "ubergoal" / "SKILL.md").read_text()
+        for phrase in [
+            "Decision-changing ambiguity gate",
+            "Root orchestrator owns scope, decomposition, integration, and acceptance",
+            "return digest-only receipts",
+            "never counts as independent review evidence",
+        ]:
+            self.assertIn(phrase, goal)
+
+        plan = (ROOT / "uberplan" / "SKILL.md").read_text()
+        for phrase in [
+            "Decision-changing ambiguity gate",
+            "split exploration, implementation, verification, and detail work into non-overlapping slices",
+            "digest-only receipts",
+            "Root orchestrator keeps scope/decomposition/integration/acceptance",
+        ]:
+            self.assertIn(phrase, plan)
+
+        plan_template = (ROOT / "uberplan" / "templates" / "plan-contract.md").read_text()
+        for phrase in [
+            "Decision-changing ambiguity questions asked before coding",
+            "Root orchestrator/subagent split",
+            "Same-agent passes are allowed as internal lenses but are not independent evidence",
+            "Digest-only return schema for subagents/reviewers",
+            "independent_review",
+            "raw_detail_path",
+        ]:
+            self.assertIn(phrase, plan_template)
+
+        accept = (ROOT / "uberaccept" / "SKILL.md").read_text()
+        for phrase in [
+            "same-agent review can be recorded as a lens but must not count as independent evidence",
+            "reviewer identity/model/runtime",
+            "independent_review: true/false",
+            "Cross-model symmetry applies: Codex-authored work can route to Claude",
+            "Same-agent review is not independent evidence",
+        ]:
+            self.assertIn(phrase, accept)
+
+        final = (ROOT / "uberaccept" / "templates" / "final-acceptance.md").read_text()
+        for phrase in [
+            "Review independence ledger",
+            "Same-agent review can be useful, but it is not independent evidence",
+            "Author identity/model/runtime",
+            "Reviewer identity/model/runtime",
+            "independent_review true/false",
+            "Any same-agent review counted as independent evidence? yes/no; if yes, blocker",
+        ]:
+            self.assertIn(phrase, final)
 
     def test_scope_fidelity_contract_prevents_reviewer_scope_drift(self) -> None:
         required_skill_phrases = [
@@ -161,7 +230,7 @@ class PackContractTests(unittest.TestCase):
             body = (ROOT / skill / "SKILL.md").read_text()
             for phrase in required_skill_phrases:
                 self.assertIn(phrase, body, f"{skill}: {phrase}")
-            self.assertIn("must not assess only Codex's summary", body, skill)
+            self.assertIn("must not assess only the authoring agent's summary", body, skill)
             self.assertIn("operator-approved plan", body, skill)
             self.assertIn("modularity, thin harness / fat skills/tools, and agentic affordance", body, skill)
             self.assertIn("Frame-independence / anti-roleplay check", body, skill)

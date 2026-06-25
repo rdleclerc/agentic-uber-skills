@@ -1,8 +1,8 @@
-# Claude adversary opt-in contract
+# Cross-model adversary opt-in contract
 
-Use this reference when an Uber skill invocation explicitly asks for Claude review, for example: `with Claude`, `Claude review`, `Claude debate`, `Claude adversarial review`, or `Claude for 2 rounds`.
+Use this reference when an Uber skill invocation explicitly asks for Claude or cross-model review, for example: `with Claude`, `Claude review`, `Claude debate`, `Claude adversarial review`, `Claude for 2 rounds`, or `Codex review of Claude work`.
 
-Do **not** invoke the Claude adversary from task similarity, from a generic need for quality, or from ordinary use of an Uber skill. A prompt without an explicit Claude-adversary phrase should not mention adversary invocation. Skill bodies intentionally inline the key rules from this reference because runtime skill readers may not auto-load shared references.
+Do **not** invoke the adversary from task similarity, from a generic need for quality, or from ordinary use of an Uber skill. A prompt without an explicit adversary phrase should not mention adversary invocation. Skill bodies intentionally inline the key rules from this reference because runtime skill readers may not auto-load shared references.
 
 ## Trigger examples
 
@@ -12,14 +12,17 @@ Do **not** invoke the Claude adversary from task similarity, from a generic need
 
 ## Role contract
 
-- Codex remains owner and reconciler. Claude is an adversarial reviewer, not a co-author, final authority, integrator, or acceptance substitute.
-- Default to one Claude challenge round. Run two or three rounds only when the user requests them or when material unresolved risk remains in a high-stakes plan/RCA/acceptance artifact.
-- If Claude is unavailable, continue without inventing a fake review and record the missing proof as a gap.
+- The authoring/orchestrating agent remains owner and reconciler. The alternate reviewer is an adversarial reviewer, not a co-author, final authority, integrator, or acceptance substitute.
+- Cross-model symmetry: if Codex authored the artifact, Claude may review; if Claude authored it, Codex may review under the same packet, challenge format, and reconciliation rules.
+- Same-agent review can be a useful lens, but it is **not independent evidence**. Mark `independent_review: false` unless the reviewer is a fresh context and, when requested, an alternate model/runtime.
+- Default to one challenge round. Run two or three rounds only when the user requests them, when material unresolved risk remains, or when material edits make a prior round stale.
+- Continue to another round only after accepted/risk/uncertain findings, material edits, or stale reviewed sections; stop when no new material challenge remains, or escalate to the operator when risk cannot be resolved.
+- If the requested reviewer is unavailable, continue only if safe without inventing a fake review; record the missing proof as a gap or ask for a waiver when the user made the review a gate.
 - Do not add a hidden reviewer loop, cron, persistent debate state, semantic judge, or orchestration harness.
 
 ## Scope fidelity packet
 
-For any Claude/second-review round that judges a goal, plan, assessment, acceptance, or proposed scope, the reviewer prompt must include a **Scope Fidelity Packet** before the agent's summary. Do not let the reviewer assess only the agent's lossy restatement.
+For any adversary/second-review round that judges a goal, plan, assessment, acceptance, or proposed scope, the reviewer prompt must include a **Scope Fidelity Packet** before the agent's summary. Do not let the reviewer assess only the agent's lossy restatement.
 
 Prompt artifact rule: save the exact generated Claude/adversary prompt under `coordination/<task-slug>/` before running it. Section 1 of that prompt must load or quote `coordination/<task-slug>/scope.md`. Section 2 must be the diff, plan, final report, or artifact under review.
 
@@ -45,15 +48,15 @@ Standing default review criteria: unless the operator explicitly overrides them,
 
 ## Frame-independence / anti-roleplay check
 
-Before Claude evaluates Codex's plan, RCA, assessment, reconciliation, or acceptance claim, require a short frame-independence pass. This is meant to prevent Claude from merely playing the role Codex assigned, adopting Codex's local jargon, or approving an argument-shaped process.
+Before the reviewer evaluates the authoring agent's plan, RCA, assessment, reconciliation, or acceptance claim, require a short frame-independence pass. This is meant to prevent the reviewer from merely playing the role assigned by the authoring agent, adopting local jargon, or approving an argument-shaped process.
 
 Put the **Operator original instruction, verbatim** as the first field in the reviewer prompt. If it is missing, Claude must stop and flag the review as invalid instead of reviewing Codex's summary.
 
-Claude must answer these before any approval or ship language:
+The reviewer must answer these before any approval or ship language:
 
-1. **Invited role.** What role is Codex asking Claude to play, and should Claude accept, modify, or refuse that role?
+1. **Invited role.** What role is the authoring agent asking the reviewer to play, and should the reviewer accept, modify, or refuse that role?
 2. **Original-vs-summary gap.** What does the operator's original instruction require that Codex's summary, plan, or terminology might hide, narrow, or skip?
-3. **Reject conditions.** Name three concrete outcomes that would make Claude reject the plan/work before naming reasons to approve it.
+3. **Reject conditions.** Name three concrete outcomes that would make the reviewer reject the plan/work before naming reasons to approve it.
 
 Plain-language rule: do not extend Codex's terminology until it has been restated in ordinary language and tied back to the operator's real goal. A highly one-sided reconciliation ledger with only `Accepted` or `No material impact` entries is a rubber-stamp warning, not proof of quality.
 
@@ -90,9 +93,9 @@ A review round that raises more than one challenge must cover at least two causa
 
 Layer tags must not be gamed: two differently tagged challenges that name the same underlying factor count as one layer. A structural/systemic challenge must identify a different structural incentive, constraint, missing affordance, or seam than the direct/proximal challenge.
 
-## Codex reconciliation
+## Author reconciliation
 
-For every Claude challenge, Codex must classify it as:
+For every adversary challenge, the owning agent must classify it as:
 
 - **Accepted** — name the exact artifact section/file changed.
 - **Risk added** — name the specific risk, assumption, test, or proof gap added.
@@ -100,15 +103,15 @@ For every Claude challenge, Codex must classify it as:
 - **Uncertain** — carry it into Known Risks, Acceptance Gaps, or RCA alternatives.
 - **No material impact** — state that Claude found no actionable issue and that the round must not count as independent acceptance evidence.
 
-`No material impact` / no-impact Claude review is non-evidence: it is a receipt that a review ran, not proof that the artifact is acceptable.
+`No material impact` / no-impact adversary review is non-evidence: it is a receipt that a review ran, not proof that the artifact is acceptable.
 
-When a Claude round is itself used as proof that the adversary workflow works, an all-`No material impact` round is non-evidence and cannot satisfy the proof gate. The proof must show a specific artifact change, risk/test added, or challenge rejected with evidence.
+When an adversary round is itself used as proof that the adversary workflow works, an all-`No material impact` round is non-evidence and cannot satisfy the proof gate. The proof must show a specific artifact change, risk/test added, or challenge rejected with evidence.
 
 ## Staleness and receipts
 
 - Bind each ledger to the artifact path, version, commit, section, or timestamp reviewed.
 - A material edit is any edit that changes meaning, scope, or constraint of a named section. Whitespace, formatting, and comment-only edits are non-material.
-- Material edits to challenged sections make the relevant challenge stale; rerun Claude or mark the stale challenge explicitly.
+- Material edits to challenged sections make the relevant challenge stale; rerun the reviewer or mark the stale challenge explicitly.
 - A receipt is reproducible only if a skeptic can inspect deterministic command output, logs, diffs, or saved Claude prompt/output without trusting model prose alone.
 
 ## Exact skill questions

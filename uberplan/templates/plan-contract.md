@@ -79,6 +79,7 @@ Use this to spend extra thinking time before committing to a path. The goal is n
 Use this section to keep Tier 0/1 AI-assisted work lightweight. For Tier 2/3 or risky work, record why the fast path is insufficient and continue with the full plan.
 
 - Micro-intent applies? yes/no, because:
+- Decision-changing ambiguity questions asked before coding? yes/no/n/a; include recommended defaults and unsafe-guess stop conditions:
 - Task Understanding Review required before implementation? yes/no, because:
 - Real problem the operator wants solved:
 - Clear requirements:
@@ -330,6 +331,10 @@ For Tier 1+ work, convert the objective into high-quality subgoals. Every subgoa
 | G2 |  | command/artifact/eval/manual proof |  |  | yes/no/serial |  |
 
 ## Parallelization plan
+
+Root orchestrator/subagent split: root owns original scope, decomposition, integration, acceptance, and user status. Subagents own bounded exploration, implementation, verification, or adversarial-review slices. Same-agent passes are allowed as internal lenses but are not independent evidence.
+
+Digest-only return schema for subagents/reviewers: `outcome`, `independent_review`, `agent_id_or_session`, `model_or_runtime`, `changed_files`, `commands_run`, `receipts`, `key_findings`, `risks_or_gaps`, `next_decision_needed`, `raw_detail_path`.
 
 Plan the work graph even if the current runtime or user does not authorize subagents. Mark what can run in parallel, what must stay serial, and what write scopes must remain disjoint. Do not spawn agents unless the active runtime/user policy allows it.
 
