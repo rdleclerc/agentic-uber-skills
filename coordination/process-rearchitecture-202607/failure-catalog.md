@@ -1,6 +1,6 @@
 # Real-World Failure Catalog v2 — seed cases for the failure→eval database (R16)
 
-v2 after round-1 review: 14 → 20 cases (5 added per judgment #13; case 20 added by orchestrator as P4 dogfood on the round's own baseline errors). Verdicts below are the JUDGE-FINAL merged grades for plan v2, with the v3 repair that lifts each case below PREVENTED (now baked into plan-v3). Round 2 verifies the mapping, it does not re-litigate round-1 grades.
+v2 after round-1 review: 14 → 21 cases (5 added per judgment #13, case 21 added round 2; case 20 added by orchestrator as P4 dogfood on the round's own baseline errors). Verdicts below are the JUDGE-FINAL merged grades for plan v2, with the v3 repair that lifts each case below PREVENTED (now baked into plan-v3). Round 2 verifies the mapping, it does not re-litigate round-1 grades.
 
 ## Schema v2 (formalized in Wave 1 as YAML frontmatter + md body, `validate_failure_case.py`)
 
@@ -44,3 +44,5 @@ Sanitization rules (pack layer is pushed to GitHub): no named individuals, no cr
 1. **Reviewer test set**: round 2 verifies the verdicts/repairs above are implemented in plan-v3.
 2. **Seed of the R16 database**: Wave 1 formalizes schema v2, splits cases by `canonical_layer` (pointers + shared-id drift fingerprint for `both` cases), builds the Wave-1 executable evals (cases 7, 8, 9, 14-helper, 15, 19).
 3. **Automatic intake (P4 completeness rule)**: every terminal failure path has validator-enforced intake — uberrca exit, uberaccept surprise rows, uberdebug/R11 exit, gaia alert-RCA loop — requiring `failure_case_id | case_updated | not_applicable_with_reason`. Campaign-internal failures are appended under the same rule (case 20 is the first).
+
+| 21 | subprocess-dies-without-terminal-state | process | dispatched subprocess (codex exec, round 2) exited 1 mid-run: no terminal message, no output file; retry succeeded | dispatch without truthful terminal state (distinct from case 19 preflight) | 1 lost review run (~15 min) | NEW (round 2, campaign-internal, P4 intake) | eval: dispatch wrapper asserts exit code + expected-output existence; retry-once-then-ledger (R12) |

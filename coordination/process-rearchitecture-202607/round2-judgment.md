@@ -1,0 +1,26 @@
+# Round 2 Judgment — orchestrator ruling
+
+Reviews: `round2-codex-review.md` (Codex gpt-5.5 xhigh, implementer lens) = MINOR_CHANGES_ONLY; `round2-fable-review.md` (fresh Fable, design lens) = MINOR_CHANGES_ONLY. Resolution audits agree: 15/19 RESOLVED, remainder PARTIAL or resolved-but-breaks-X, zero NOT-RESOLVED, zero factual disputes (both independently re-verified the repos).
+
+**Judge topology note (transparent deviation):** round 1 used a Fable subagent judge to reconcile disputed MAJOR verdicts with spot-checks. Round 2's verdicts are convergent, fact-dispute-free, and complementary; the operator's protocol branch is "otherwise move to implementation." The orchestrator (operator-designated judge) reconciles directly here rather than spawning a third confirming pass — the risk-priced-gates principle (P3) applied to the campaign's own process. Operator may veto.
+
+**JUDGMENT: MINOR_CHANGES_ONLY — implementation approved.** The following amendments (A–L) bind as plan v3.1 (appended to plan-v3.md) and fold into Wave-1 execution before the first dedup/retire commit.
+
+## Amendments (merged from both reviews; all accepted)
+
+- **A. Terminal-failure validation mode** [Codex ch.1, res#3]: `validate_acceptance_report.py` gains an explicit terminal-status mode (`accepted | rejected | blocked_with_failure_intake`); a truthful failing/blocked report with intake fields MUST validate. Pass/fail fixtures both ways. → Wave 1 (R16a).
+- **B. Registry manifest schema** [Codex ch.2]: `references/drift-fingerprints.toml` fields: `id, owner, adoption_state, canonical_source, target_paths, match (literal|regex), normalization, allowed_absences, severity, blocking_wave`. → Wave 1 (R3).
+- **C. Catalog binding completeness** [Codex ch.3 + Fable catalog notes]: every case carries `plan_items / eval_type / status` (lands with Wave-1 per-case formalization); case 16's post-upgrade canary-mandate sentence enters the INITIAL registry; case 17's class eval → R3/R13; case 18's ingest sanity check → Gaia child plan; case 20 becomes standing via uberplan plan-contract rule ("load-bearing evidence claims cite checkable artifact paths") + an R13 fixture.
+- **D. Validators enforce every new field** [Codex ch.4]: tier justification, reproduced-red receipt, interface-shape receipt, cost fields, intake fields — validator functions + negative fixtures, not template prose. → Waves 1–2 as each field lands.
+- **E. Ladder-copy decision** [Fable NC1]: ubergoal's condensed tier table is fingerprinted IN FULL against the spine ladder (registry entry = whole table, not header line). Fresh-agent routing stays self-sufficient AND drift-protected. → R3/R6.
+- **F. Wave-2 entry rule scoped; R6 list fixed** [Fable NC2]: entry rule reads "no dedup/retire/unify deletion of a rule that survives elsewhere before its canonical home and the precedence/ladder exist; same-commit replacements and dead-content removals with P1 deletion receipts are exempt." R6's ubergoal content list gains "micro-intent fast path" (R10's referent survives Wave 2).
+- **G. Tier-0/1 intake coverage** [Fable NC3]: the Tier-1 micro-intent artifact carries `failure_case_id | case_updated | not_applicable_with_reason`, validator named in R10/R11; Tier-0 boundary stated: typo/cosmetic only — anything fixing observed misbehavior is ≥Tier 1; Tier-0 commits carry a `tier0:` trailer that Hermes samples weekly (cheap down-tiering audit).
+- **H. Channel-posture decision made explicit** [Fable NC4]: canonical = `#gaia-testing-alpha` with the workspace CLAUDE.md posture (posting pre-approved for test proofs; R9b's live probes depend on it); GAIA_TESTING.md as owning doc is edited to carry that sentence; **logged in the operator-decision register — operator veto point**, not a silent string cleanup.
+- **I. Comparator fallback** [Fable NC5]: if R15/Hermes is blocked, the orchestrator publishes the first outcome comparison manually from R13c receipts; the DoD line is satisfiable either way.
+- **J. Standing tooling-reuse rule** [Codex res#10 gap]: "new standalone CLIs only where fixtures prove separate need; default = module in the pack-contract aggregator" — added to pack AGENTS.md (fingerprinted).
+- **K. Effort honesty** [both]: Wave 1 planned at 4 implementation dispatches (top of the 2–4 range).
+- **L. New catalog case 21** [campaign-internal failure, P4 intake]: round-2's first Codex run died exit-1 mid-run with no terminal message and no output file (retry succeeded). Class: dispatched subprocess terminates without truthful terminal state. Distinct from case 19 (writeability preflight). Eval: dispatch wrapper checks exit code + expected-output existence; retry-once-then-ledger policy. → catalog seed (21 cases), eval in R12's dispatch contract.
+
+## Review-quality note
+
+Neither round-2 review rubber-stamped: Codex found a real validator-contract break (A) checked against actual scripts; Fable found five genuine spec holes including a hidden safety-posture decision (H) and the P4 volume-end leak one level down (G) — the same class its round-1 counterpart caught at Tier 2. Both stated revision-specific reject conditions and searched before returning few findings. Convergence is earned, not complacent.

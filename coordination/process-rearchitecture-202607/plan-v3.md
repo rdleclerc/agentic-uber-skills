@@ -112,3 +112,20 @@ Wave 1: 2–4 Codex sessions (8–16h) · Wave 2: 4–7 (18–35h) · Wave 3: 5�
 ## Round-2 focus (for reviewers)
 
 The 19 judgment changes above are claimed implemented in this document. Round 2 verifies: (a) each change is genuinely resolved, not renamed; (b) no new major issues introduced (especially: the Wave-2 entry block ordering, the R9b live gate, the conditional word target, P4-completeness); (c) the 20-case catalog mapping (final verdicts in `failure-catalog.md`) is correct; (d) the plan is implementable by Codex as specified with the resolved inputs (fingerprint registry, answer key, schema, install policy, cutover protocol, access assumptions).
+
+## Round-2 amendments (plan v3.1 — binding; see round2-judgment.md for provenance)
+
+Both round-2 reviews: MINOR_CHANGES_ONLY → implementation approved. Amendments A–L bind over the text above where they conflict:
+
+A. Acceptance validator gains terminal-status mode (`accepted|rejected|blocked_with_failure_intake`); truthful failure reports MUST validate; fixtures both ways (Wave 1).
+B. `references/drift-fingerprints.toml` schema: `id, owner, adoption_state, canonical_source, target_paths, match, normalization, allowed_absences, severity, blocking_wave` (Wave 1).
+C. Catalog cases carry `plan_items/eval_type/status`; case 16's canary-mandate sentence in the INITIAL registry; case 17 eval → R3/R13; case 18 → child plan; case 20 standing via uberplan contract rule + R13 fixture.
+D. Every new receipt/plan field gets a validator function + negative fixture as it lands (tier justification, reproduced-red, interface-shape, cost, intake).
+E. ubergoal's condensed tier table fingerprinted IN FULL against the spine ladder.
+F. Wave-2 entry rule scoped: applies to dedup/retire/unify deletions of rules surviving elsewhere; same-commit replacements + dead-content removals w/ P1 receipts exempt. R6 ubergoal content list gains "micro-intent fast path".
+G. Tier-1 micro-intent artifact carries the intake field (validator named in R10/R11); Tier-0 = typo/cosmetic only, `tier0:` commit trailer, Hermes samples weekly.
+H. Test-channel canonical = `#gaia-testing-alpha`, posture = posting pre-approved for test proofs (workspace CLAUDE.md sentence wins; GAIA_TESTING.md edited as owner). OPERATOR VETO POINT — logged in decision register as #5.
+I. If Hermes/R15 is blocked, orchestrator publishes the first outcome comparison manually from R13c receipts.
+J. Standing rule in pack AGENTS.md: new standalone CLIs only where fixtures prove separate need; default = aggregator module.
+K. Wave 1 = 4 implementation dispatches.
+L. Catalog case 21 (subprocess-dies-without-terminal-state, from this round's own failed Codex run): dispatch wrapper checks exit code + expected output; retry-once-then-ledger (R12).
