@@ -219,3 +219,20 @@ normalization = "whitespace"
 allowed_absences = []
 severity = "warn"
 blocking_wave = 2
+
+[[fingerprint]]
+id = "liveness-contract"
+owner = "pack maintainer"
+adoption_state = "report_only"
+canonical_source = "${GAIA_ROOT:-~/repos/agfunder-gaia}/GAIA_TESTING.md#lane-liveness-contract"
+target_paths = [
+  "${GAIA_ROOT:-~/repos/agfunder-gaia}/GAIA_TESTING.md",
+]
+git_ref = "origin/main"
+match = "regex"
+pattern = '''proof-of-life.*freshness canary.*human-owned'''
+normalization = "whitespace"
+allowed_absences = []
+severity = "warn"
+blocking_wave = 4
+pending = "G7: fingerprint the canonical liveness statement; flip blocking next campaign wave"

@@ -348,16 +348,20 @@ blocking_wave = 1
             self.assertIn("MATCH id=fixture-git-ref", proc.stdout)
             self.assertIn("source=git_ref(main)", proc.stdout)
 
-    def test_doctrine_drift_git_ref_freshness_note_reports_behind_upstream(self) -> None:
+    def test_doctrine_drift_git_ref_freshness_note_reports_stale_fetch_head_for_remote_tracking_ref(self) -> None:
         with tempfile.TemporaryDirectory() as td:
             temp = Path(td)
             repo = temp / "repo"
             repo.mkdir()
             (repo / ".git").mkdir()
+            fetch_head = repo / ".git" / "FETCH_HEAD"
+            fetch_head.write_text("stale fetch marker\n")
+            stale = 0
+            os.utime(fetch_head, (stale, stale))
             (repo / "doctrine.md").write_text("Working tree divergent sentence.\n")
             bin_dir = temp / "bin"
             bin_dir.mkdir()
-            write_fake_git_show_and_behind(bin_dir, "Ref doctrine sentence.", 3)
+            write_fake_git_show(bin_dir, "Ref doctrine sentence.")
             registry = temp / "registry.toml"
             registry.write_text(
                 f"""
@@ -369,7 +373,7 @@ canonical_source = "fixture"
 target_paths = [
   "{(repo / "doctrine.md").as_posix()}",
 ]
-git_ref = "main"
+git_ref = "origin/main"
 match = "literal"
 pattern = "Ref doctrine sentence."
 normalization = "whitespace"
@@ -382,8 +386,8 @@ blocking_wave = 1
             proc = run_pack_lint(ROOT, "--drift", "--strict", "--drift-registry", str(registry), env=env)
             self.assertEqual(proc.returncode, 0, proc.stderr + proc.stdout)
             self.assertIn("NOTE git_ref freshness", proc.stdout)
-            self.assertIn("ref=main", proc.stdout)
-            self.assertIn("local_ref_behind_upstream_by=3", proc.stdout)
+            self.assertIn("ref=origin/main", proc.stdout)
+            self.assertIn("fetch_head_stale_hours=", proc.stdout)
 
     def test_doctrine_drift_pattern_expansion_uses_defaults_not_env_overrides(self) -> None:
         with tempfile.TemporaryDirectory() as td:

@@ -8,11 +8,11 @@ what_happened: Work dispatch could launch duplicate agents without a claim-befor
 failure_class: non-idempotent dispatch
 cost: Duplicate work, conflicting writes, and unclear ownership.
 gate_that_missed_it: No dispatch ledger enforced single-writer claims before launch.
-eval_check: "references/dispatch-and-sessions.md#dispatch-mechanics and #dispatch-ledger checklist for claim-before-launch, one row per work item, and duplicate cull; validator not built."
-eval_type: checklist
+eval_check: scripts/validate_dispatch_ledger.py validates required dispatch ledger rows and rejects duplicate non-retry work_item rows.
+eval_type: executable
 plan_items:
   - R12
-status: seed
+status: eval_built
 ---
 
-Canonical pack-layer case for duplicate dispatch. `references/dispatch-and-sessions.md` now names the checklist: claim before launch, one dispatch per work item, duplicate cull before work starts, and a ledger row that survives orchestrator handoff. This remains `seed` until an executable validator exists.
+Canonical pack-layer case for duplicate dispatch. `references/dispatch-and-sessions.md` now names the checklist: claim before launch, one dispatch per work item, duplicate cull before work starts, and a ledger row that survives orchestrator handoff. `scripts/validate_dispatch_ledger.py` is the executable check for the row shape and duplicate-cull rule.

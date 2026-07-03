@@ -8,7 +8,7 @@ Use direct `codex exec`; do not wrap it in a companion process unless the orches
 
 Always redirect stdin explicitly. Use `codex exec - < packet.md` for file prompts and `< /dev/null` for prompt arguments. The Wave 2 V3 probe showed Codex can block forever on open non-TTY stdin.
 
-Checkpoint-commit before dispatch. Before any implementation dispatch or commit promise, run `scripts/lint_pack_contract.py --dispatch-preflight <root>` or the equivalent repo preflight: writeability, repository status probe, and temp-dir write/delete. This is case 19.
+Checkpoint-commit before dispatch. Commit or stash the orchestrator tree before dispatching so implementer receipts reconcile against a known state. Before any implementation dispatch or commit promise, run `scripts/lint_pack_contract.py --dispatch-preflight <root>` or the equivalent repo preflight: writeability, repository status probe, and temp-dir write/delete. This is case 19.
 
 Cull duplicates and claim before launch. One work item gets one dispatch, and the ledger row exists before launch. If a duplicate is discovered, cancel or merge ownership before work starts. This is case 11.
 

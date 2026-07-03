@@ -79,6 +79,15 @@ HIGH_STATE_PROOF_TERMS = {
     "live": ["live", "production", "runtime", "route", "log", "traffic", "user-facing"],
     "adopted": ["adopted", "default", "routing", "canonical", "migration", "retired", "install", "sync"],
 }
+DEFECT_FIX_RE = re.compile(r"\bfix(?:e[sd])?\b|\bfixing\b", re.I)
+DEFECT_TERM_RE = re.compile(r"\b(?:bug|defect|regression)s?\b", re.I)
+FAKE_STANDIN_RE = re.compile(r"\b(?:fake|fakes|stub|stubs|mock|mocks|mocked)\b", re.I)
+EXTERNAL_INTERFACE_RE = re.compile(
+    r"\b(?:external|interface|api|service|provider|integration|client|database|db|slack|gmail|launchd)\b",
+    re.I,
+)
+RECEIPT_PLACEHOLDERS = {"", "todo", "tbd", "yes/no", "<text>"}
+RED_RECEIPT_TERMS = {"command", "output", "log", "fixture", "test", "before", "red", "stdout", "stderr", "artifact"}
 
 
 def normalize(text: str) -> str:
@@ -116,6 +125,40 @@ def optional_field(text: str, label: str) -> str:
     pattern = re.compile(rf"^[ \t]*(?:-[ \t]*)?{re.escape(label)}[ \t]*:[ \t]*(.+?)[ \t]*$", re.I | re.M)
     match = pattern.search(text)
     return match.group(1).strip() if match else ""
+
+
+def claim_segments(text: str) -> list[str]:
+    """Return conservative line/sentence chunks for natural-language heuristics."""
+    segments: list[str] = []
+    for line in text.splitlines():
+        for segment in re.split(r"(?<=[.!?])\s+", line):
+            if segment.strip():
+                segments.append(segment.strip())
+    return segments
+
+
+def claims_defect_fix(text: str) -> bool:
+    """Conservative trigger: the same sentence/paragraph must claim fix + bug/defect/regression."""
+    return any(DEFECT_FIX_RE.search(segment) and DEFECT_TERM_RE.search(segment) for segment in claim_segments(text))
+
+
+def mentions_external_fake_standin(text: str) -> bool:
+    """Trigger only when fake/stub/mock language is tied to an external-interface term."""
+    return any(FAKE_STANDIN_RE.search(segment) and EXTERNAL_INTERFACE_RE.search(segment) for segment in claim_segments(text))
+
+
+def receipt_value_is_present(value: str, *, allow_na: bool = False) -> bool:
+    low = normalize(value)
+    if allow_na and low == "n/a":
+        return True
+    return bool(value.strip()) and low not in RECEIPT_PLACEHOLDERS and low not in INTAKE_PLACEHOLDERS
+
+
+def red_receipt_is_usable(value: str) -> bool:
+    if not receipt_value_is_present(value):
+        return False
+    low = normalize(value)
+    return "`" in value or "/" in value or any(term in low for term in RED_RECEIPT_TERMS)
 
 
 def acceptance_status(text: str, errors: list[str]) -> str:
@@ -167,6 +210,28 @@ def warn_missing_failure_case(referenced: tuple[str, str] | None, cases_dir: Pat
         return
     if not (cases_dir / f"{case_id}.md").exists():
         warnings.append(f"failure_case_id has no case file under {cases_dir}: {case_id}")
+
+
+def validate_defect_fix_receipt(text: str, errors: list[str]) -> None:
+    if not claims_defect_fix(text):
+        return
+    reproduced_red = optional_field(text, "reproduced_red")
+    no_repro_reason = optional_field(text, "no_repro_reason")
+    if red_receipt_is_usable(reproduced_red) or receipt_value_is_present(no_repro_reason):
+        return
+    errors.append(
+        "defect-fix claim requires reproduced_red with command/output evidence "
+        "or no_repro_reason"
+    )
+
+
+def validate_interface_shape_receipt(text: str, errors: list[str]) -> None:
+    if not mentions_external_fake_standin(text):
+        return
+    value = optional_field(text, "interface_shape_receipt")
+    if receipt_value_is_present(value, allow_na=True):
+        return
+    errors.append("external fake/stub/mock stand-in requires interface_shape_receipt")
 
 
 def validate_terminal_failure_report(found: dict[str, str], full_text: str, status: str, errors: list[str]) -> None:
@@ -810,6 +875,8 @@ def main() -> int:
     status = acceptance_status(text, errors)
     referenced_failure = validate_failure_intake(text, status, errors)
     warn_missing_failure_case(referenced_failure, args.cases_dir, warnings)
+    validate_defect_fix_receipt(text, errors)
+    validate_interface_shape_receipt(text, errors)
     if status in {"rejected", "blocked_with_failure_intake"}:
         validate_terminal_failure_report(found, text, status, errors)
         if errors:

@@ -11,6 +11,7 @@ import re
 import subprocess
 import sys
 import tempfile
+import time
 import tomllib
 
 DEFAULT_ROOT = Path(__file__).resolve().parents[1]
@@ -520,7 +521,27 @@ def read_drift_target(target_path: Path, git_ref: str) -> tuple[str | None, bool
         return None, True, "working_tree", notes, f"unreadable text: {exc}"
 
 
+def is_remote_tracking_ref(git_ref: str) -> bool:
+    return bool(re.fullmatch(r"[A-Za-z0-9._-]+/.+", git_ref))
+
+
+def fetch_head_path(repo_root: Path) -> Path:
+    git_path = repo_root / ".git"
+    if git_path.is_dir():
+        return git_path / "FETCH_HEAD"
+    return git_path / "FETCH_HEAD"
+
+
 def git_ref_freshness_note(repo_root: Path, git_ref: str) -> str | None:
+    if is_remote_tracking_ref(git_ref):
+        fetch_head = fetch_head_path(repo_root)
+        try:
+            age_hours = (time.time() - fetch_head.stat().st_mtime) / 3600
+        except OSError:
+            return None
+        if age_hours <= 24:
+            return None
+        return f"NOTE git_ref freshness repo={repo_root} ref={git_ref} fetch_head_stale_hours={age_hours:.1f}"
     try:
         proc = subprocess.run(
             ["git", "-C", str(repo_root), "rev-list", "--count", f"{git_ref}..{git_ref}@{{upstream}}"],

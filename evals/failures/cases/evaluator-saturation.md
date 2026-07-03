@@ -16,3 +16,5 @@ status: eval_built
 ---
 
 Canonical pack-layer case for evaluator saturation. The standing fix is to keep seeded known-bad fixtures and demote broad scoring instruments that cannot reject. R13 adds a deliberately bad mini-skill fixture that must be flagged by `lint_skill_shape.py` and must trip the pack word-budget, model-pin, and portability batteries when inserted into a pack skill slot.
+
+Wave 3 G3 added a related evaluator-honesty note: the replacement routing instrument shipped with adversarial packet text that leaked `EXPECT-ESCALATION` / `MUST-ESCALATE` to the agent under test. The fix is to keep those markers only in the answer key and grader output, never in rendered fresh-agent packets.

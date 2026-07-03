@@ -8,11 +8,11 @@ what_happened: A sandbox fake stood in for an external interface but did not pro
 failure_class: sandbox-blind interface fake
 cost: Local tests could pass while integration failed on real data shape.
 gate_that_missed_it: Acceptance did not require an interface-shape receipt for fakes.
-eval_check: "references/dispatch-and-sessions.md#sandbox-blind-claims defines the interface-shape receipt; fixture remains pending."
+eval_check: uberaccept/scripts/validate_acceptance_report.py requires interface_shape_receipt when fakes/stubs/mocks stand in for external interfaces.
 eval_type: fixture
 plan_items:
   - R12
-status: seed
+status: eval_built
 ---
 
-Canonical pack-layer case for fake interface shape. `references/dispatch-and-sessions.md` is the contract home: external-interface or DB fakes need shape evidence from the real interface before a sandbox pass can support an integration claim.
+Canonical pack-layer case for fake interface shape. `references/dispatch-and-sessions.md` is the contract home: external-interface or DB fakes need shape evidence from the real interface before a sandbox pass can support an integration claim. The acceptance validator now rejects reports that mention such stand-ins without an `interface_shape_receipt`.

@@ -18,7 +18,8 @@ class RoutingEvalTests(unittest.TestCase):
     def test_packet_generation_is_fresh_agent_contract(self) -> None:
         proc = self.run_harness("--case-id", "R11")
         self.assertEqual(proc.returncode, 0, proc.stderr + proc.stdout)
-        self.assertIn("MUST-ESCALATE", proc.stdout)
+        self.assertNotIn("MUST-ESCALATE", proc.stdout)
+        self.assertNotIn("EXPECT-ESCALATION", proc.stdout)
         self.assertIn("Read ONLY `ubergoal/SKILL.md`", proc.stdout)
         self.assertIn("Do not implement", proc.stdout)
         self.assertIn("provider routing", proc.stdout)
@@ -35,7 +36,7 @@ class RoutingEvalTests(unittest.TestCase):
         self.assertNotEqual(proc.returncode, 0)
         self.assertIn("FAIL R11 MUST_ESCALATE", proc.stdout)
         self.assertIn("FAIL R12 MUST_ESCALATE", proc.stdout)
-        self.assertIn("tier expected='Tier 3' actual='Tier 1'", proc.stdout)
+        self.assertIn("tier expected_token='3' actual_token='1' actual='Tier 1'", proc.stdout)
 
 
 if __name__ == "__main__":

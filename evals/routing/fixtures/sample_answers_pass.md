@@ -30,7 +30,7 @@ gates: exact-diff review, independent adversarial lane, scope-fidelity verdict
 
 ## R05
 case_id: R05
-tier: Tier 1 plus loop_mode if repeated/watch semantics persist
+tier: Tier 1 + loop_mode
 artifact: Loop Contract inside uberplan
 routing: Tier 1 loop_mode
 gates: no-progress rule and failure cap; uberrca on same-family failure

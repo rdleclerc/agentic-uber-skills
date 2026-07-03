@@ -42,8 +42,14 @@ FRONTMATTER_RE = re.compile(r"\A---\s*\n(.*?)\n---\s*(?:\n|\Z)(.*)\Z", re.S)
 INDEX_LINE_RE = re.compile(
     r"^\s*-\s+(?P<id>[a-z0-9]+(?:-[a-z0-9]+)*)\s+·\s+"
     r"(?P<layer>[a-z]+)\((?P<canonical_layer>[a-z]+)\)\s+·\s+"
-    r"(?P<status>[a-z_]+)\s+·\s+canonical:\s+(?P<canonical>.+?)\s*$"
+    r"(?P<status>[a-z_]+)\s+·\s+"
+    r"(?:date:\s+(?P<date>\d{4}-\d{2}-\d{2})\s+·\s+)?"
+    r"canonical:\s+(?P<canonical>.+?)\s*$"
 )
+REPO_CANONICAL_DIRS = {
+    "agfunder-gaia/evals/failures/",
+    "agentic-uber-skills/evals/failures/",
+}
 
 
 def normalize(value: object) -> str:
@@ -211,6 +217,28 @@ def is_local_canonical(canonical: str) -> bool:
     return canonical.startswith("evals/failures/cases/")
 
 
+def canonical_repo_dir_for_cases(cases_dir: Path) -> str | None:
+    parts = cases_dir.expanduser().resolve(strict=False).parts
+    for repo in ("agfunder-gaia", "agentic-uber-skills"):
+        for index, part in enumerate(parts):
+            if part != repo:
+                continue
+            if tuple(parts[index + 1 : index + 4]) == ("evals", "failures", "cases"):
+                return f"{repo}/evals/failures/"
+    return None
+
+
+def is_local_index_entry(canonical: str, cases_dir: Path, case_id: str = "", file_ids: set[str] | None = None) -> bool:
+    repo_dir = canonical_repo_dir_for_cases(cases_dir)
+    if is_local_canonical(canonical):
+        return True
+    if canonical not in REPO_CANONICAL_DIRS:
+        return False
+    if repo_dir:
+        return canonical == repo_dir
+    return bool(file_ids is not None and case_id in file_ids)
+
+
 def parse_index(index_path: Path) -> tuple[dict[str, dict[str, str]], list[str]]:
     try:
         lines = index_path.read_text().splitlines()
@@ -230,6 +258,9 @@ def parse_index(index_path: Path) -> tuple[dict[str, dict[str, str]], list[str]]
             errors.append(f"{index_path}:{line_no}: duplicate case id: {case_id}")
             continue
         entries[case_id] = match.groupdict()
+        observed = entries[case_id].get("date")
+        if observed and not DATE_RE.fullmatch(observed):
+            errors.append(f"{index_path}:{line_no}: invalid date segment: {observed}")
     return entries, errors
 
 
@@ -251,8 +282,12 @@ def validate_index(index_path: Path, cases_dir: Path) -> list[str]:
             continue
         case_by_id[case_id] = (path, data)
 
-    local_index_ids = {case_id for case_id, entry in entries.items() if is_local_canonical(entry["canonical"])}
     file_ids = set(case_by_id)
+    local_index_ids = {
+        case_id
+        for case_id, entry in entries.items()
+        if is_local_index_entry(entry["canonical"], cases_dir, case_id, file_ids)
+    }
     missing_from_index = sorted(file_ids - local_index_ids)
     missing_files = sorted(local_index_ids - file_ids)
     for case_id in missing_from_index:
@@ -263,8 +298,9 @@ def validate_index(index_path: Path, cases_dir: Path) -> list[str]:
     for case_id, entry in entries.items():
         if not CASE_ID_RE.fullmatch(case_id):
             errors.append(f"{index_path}: invalid index id: {case_id}")
-        if is_local_canonical(entry["canonical"]):
-            if entry["canonical"] != f"evals/failures/cases/{case_id}.md":
+        canonical = entry["canonical"]
+        if is_local_index_entry(canonical, cases_dir, case_id, file_ids):
+            if is_local_canonical(canonical) and canonical != f"evals/failures/cases/{case_id}.md":
                 errors.append(f"{index_path}: local canonical path mismatch for {case_id}: {entry['canonical']}")
             if case_id not in case_by_id:
                 continue
@@ -272,8 +308,31 @@ def validate_index(index_path: Path, cases_dir: Path) -> list[str]:
             status = normalize(data.get("status", ""))
             if entry["status"] != status:
                 errors.append(f"{index_path}: status mismatch for {case_id}: index={entry['status']} case={status} ({path})")
-        elif case_id not in entries:
-            errors.append(f"{index_path}: pointer line missing id")
+        elif canonical not in REPO_CANONICAL_DIRS:
+            errors.append(f"{index_path}: unsupported canonical path for {case_id}: {canonical}")
+    return errors
+
+
+def validate_cross_index(index_path: Path, other_index_path: Path) -> list[str]:
+    left, errors = parse_index(index_path)
+    right, right_errors = parse_index(other_index_path)
+    errors.extend(right_errors)
+    if not left:
+        errors.append(f"{index_path}: no index entries found")
+    if not right:
+        errors.append(f"{other_index_path}: no index entries found")
+    shared = sorted(set(left) & set(right))
+    if not shared:
+        errors.append(f"{index_path}: no shared ids with {other_index_path}")
+        return errors
+    for case_id in shared:
+        left_status = left[case_id]["status"]
+        right_status = right[case_id]["status"]
+        if left_status != right_status:
+            errors.append(
+                f"shared-id status mismatch for {case_id}: "
+                f"{index_path}={left_status} {other_index_path}={right_status}"
+            )
     return errors
 
 
@@ -282,7 +341,19 @@ def main() -> int:
     parser.add_argument("target", nargs="?", type=Path, help="case file or directory of case files")
     parser.add_argument("--index", type=Path, default=None, help="INDEX.md to check against a local cases directory")
     parser.add_argument("--cases", type=Path, default=None, help="case directory for --index mode")
+    parser.add_argument("--cross-index", type=Path, default=None, help="other INDEX.md to compare shared-id statuses against")
     args = parser.parse_args()
+    if args.cross_index:
+        if not args.index:
+            parser.error("--cross-index requires --index")
+        errors = validate_cross_index(args.index, args.cross_index)
+        if errors:
+            print("FAIL: failure case cross-index validation failed", file=sys.stderr)
+            for error in errors:
+                print(f"- {error}", file=sys.stderr)
+            return 1
+        print(f"PASS: shared-id statuses match between {args.index} and {args.cross_index}")
+        return 0
     if args.index or args.cases:
         if not args.index or not args.cases:
             parser.error("--index and --cases must be provided together")

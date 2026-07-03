@@ -242,6 +242,51 @@ class AcceptanceValidatorTests(unittest.TestCase):
             report.write_text(text)
             self.assertPasses(str(ACCEPT), str(report), "--agent-behavior")
 
+    def test_defect_fix_claim_requires_reproduced_red_or_no_repro_reason(self) -> None:
+        text = (FIX / "valid" / "final_acceptance.md").read_text()
+        text = text.replace(
+            "Hardened validators, metadata, templates, package lint, and golden eval fixtures for the skill package.",
+            "Hardened validators, metadata, templates, package lint, and golden eval fixtures for the skill package. This fixes a regression in the acceptance validator.",
+            1,
+        )
+        with tempfile.TemporaryDirectory() as tmp:
+            report = Path(tmp) / "missing_reproduced_red.md"
+            report.write_text(text)
+            result = run_cmd(str(ACCEPT), str(report), "--agent-behavior")
+            self.assertNotEqual(result.returncode, 0, "unexpected pass\n" + result.stdout)
+            self.assertIn("defect-fix claim requires reproduced_red", result.stderr)
+
+    def test_defect_fix_claim_accepts_no_repro_reason(self) -> None:
+        text = (FIX / "valid" / "final_acceptance.md").read_text()
+        text = text.replace(
+            "Hardened validators, metadata, templates, package lint, and golden eval fixtures for the skill package.",
+            "Hardened validators, metadata, templates, package lint, and golden eval fixtures for the skill package. This fixes a regression in documentation-only acceptance wording.",
+            1,
+        )
+        text = text.replace(
+            "- not_applicable_with_reason: no failure observed",
+            "- not_applicable_with_reason: no failure observed\n- no_repro_reason: documentation-only regression; no executable baseline existed.",
+            1,
+        )
+        with tempfile.TemporaryDirectory() as tmp:
+            report = Path(tmp) / "no_repro_reason.md"
+            report.write_text(text)
+            self.assertPasses(str(ACCEPT), str(report), "--agent-behavior")
+
+    def test_external_mock_requires_interface_shape_receipt(self) -> None:
+        text = (FIX / "valid" / "final_acceptance.md").read_text()
+        text = text.replace(
+            "Hardened validators, metadata, templates, package lint, and golden eval fixtures for the skill package.",
+            "Hardened validators, metadata, templates, package lint, and golden eval fixtures for the skill package. A mock external provider stood in for the real interface.",
+            1,
+        )
+        with tempfile.TemporaryDirectory() as tmp:
+            report = Path(tmp) / "missing_interface_shape_receipt.md"
+            report.write_text(text)
+            result = run_cmd(str(ACCEPT), str(report), "--agent-behavior")
+            self.assertNotEqual(result.returncode, 0, "unexpected pass\n" + result.stdout)
+            self.assertIn("interface_shape_receipt", result.stderr)
+
     def test_template_needs_allow_template_mode(self) -> None:
         self.assertFails(str(ACCEPT), str(ROOT / "templates" / "final-acceptance.md"))
         self.assertPasses(str(ACCEPT), str(ROOT / "templates" / "final-acceptance.md"), "--allow-template")

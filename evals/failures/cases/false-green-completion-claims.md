@@ -8,12 +8,12 @@ what_happened: Process runs can claim completion from a green command, shared pr
 failure_class: false-green completion proof
 cost: Operators receive completion confidence while the important outcome can still be missing.
 gate_that_missed_it: Acceptance did not require proof tied to the intended operational outcome and skipped evidence-layer falsifiers.
-eval_check: R13 false-green and missing-black-box-proof fixture plus red/green proof-ledger acceptance checks.
+eval_check: uberaccept/scripts/validate_acceptance_report.py requires reproduced_red or no_repro_reason for defect-fix claims, plus R13 false-green proof-ledger checks.
 eval_type: fixture
 plan_items:
   - R8
   - R13
-status: seed
+status: eval_built
 ---
 
 Canonical pack-layer case for false-green completion claims. Promote future lessons here when a run treats a convenient green check as proof of the actual outcome.

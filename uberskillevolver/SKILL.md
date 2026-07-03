@@ -43,6 +43,8 @@ Default location for artifacts:
 - Reference the learning packet from the active task's coordination folder, usually `coordination/<task-slug>/`, so run receipts and review artifacts can find it.
 - If a run needs private/raw detail, keep it out of Git and promote only a sanitized packet whose `Privacy and redaction` section says `Safe to commit? yes`.
 
+Promotion owner: operator; cadence: per-wave during campaigns, monthly otherwise.
+
 Do not store secrets, credentials, private customer data, full copyrighted source dumps, or unnecessary raw prompts/responses. Prefer links, file paths, hashes, excerpts, and summaries. Redact sensitive traces before persisting. For multi-machine use, commit only sanitized learning packets whose `Privacy and redaction` section says `Safe to commit? yes`.
 
 ## Loop-learning gate

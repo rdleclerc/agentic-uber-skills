@@ -62,6 +62,31 @@ def normalize(value: str) -> str:
     return re.sub(r"\s+", " ", value.lower()).strip()
 
 
+def display_prompt(prompt: str) -> str:
+    return re.sub(r"^\s*EXPECT-ESCALATION:\s*", "", prompt).strip()
+
+
+def tier_token(value: str) -> str | None:
+    match = re.search(r"\btier\s*([0-3])\b", normalize(value))
+    if match:
+        return match.group(1)
+    if "no goal" in normalize(value) or "assessment route" in normalize(value):
+        return "no_goal"
+    return None
+
+
+def tier_qualifier_keywords(expected_tier: str) -> list[str]:
+    expected = normalize(expected_tier)
+    qualifiers: list[str] = []
+    if "loop mode" in expected:
+        qualifiers.append("loop mode")
+    if "assessment route" in expected:
+        qualifiers.append("assessment route")
+    if "no goal" in expected:
+        qualifiers.append("no goal")
+    return qualifiers
+
+
 def contains_keyword(text: str, keyword: str) -> bool:
     return normalize(keyword) in normalize(text)
 
@@ -117,8 +142,7 @@ def parse_answer_key(path: Path = DEFAULT_KEY) -> list[RoutingCase]:
 
 
 def render_packet(case: RoutingCase) -> str:
-    marker = " MUST-ESCALATE" if case.must_escalate else ""
-    return f"""## {case.case_id}{marker}
+    return f"""## {case.case_id}
 
 Fresh-agent routing eval packet.
 
@@ -135,7 +159,7 @@ Contract:
   - one_line_justification:
 
 Probe prompt:
-{case.prompt}
+{display_prompt(case.prompt)}
 """
 
 
@@ -190,8 +214,13 @@ def grade_case(case: RoutingCase, answer: dict[str, str] | None) -> tuple[bool, 
         return False, ["missing answer"]
     failures: list[str] = []
     actual_tier = answer_field(answer, "tier")
-    if normalize(actual_tier) != normalize(case.expected_tier):
-        failures.append(f"tier expected={case.expected_tier!r} actual={actual_tier!r}")
+    expected_token = tier_token(case.expected_tier)
+    actual_token = tier_token(actual_tier)
+    if expected_token != actual_token:
+        failures.append(f"tier expected_token={expected_token!r} actual_token={actual_token!r} actual={actual_tier!r}")
+    for keyword in tier_qualifier_keywords(case.expected_tier):
+        if not contains_keyword(actual_tier, keyword):
+            failures.append(f"tier missing qualifier {keyword!r} actual={actual_tier!r}")
     if not matches_any_keyword_set(answer_field(answer, "artifact"), case.artifact_keyword_sets):
         failures.append(f"artifact missing keyword set actual={answer_field(answer, 'artifact')!r}")
     if not matches_any_keyword_set(answer_field(answer, "routing"), case.routing_keyword_sets):

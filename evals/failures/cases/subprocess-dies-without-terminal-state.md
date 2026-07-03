@@ -8,12 +8,12 @@ what_happened: A dispatched subprocess exited nonzero without an expected output
 failure_class: dispatch without terminal-state contract
 cost: One lost review run of roughly fifteen minutes.
 gate_that_missed_it: Dispatch wrapper did not require exit-code plus expected-output checks before ledgering the child.
-eval_check: "references/dispatch-and-sessions.md#dispatch-mechanics and #dispatch-ledger checklist for exit-code assertions, required artifacts, and retry-once-then-ledger; wrapper validator not built."
-eval_type: checklist
+eval_check: scripts/validate_dispatch_ledger.py validates exit, output_path, and retry_count columns for dispatch terminal-state ledgers.
+eval_type: executable
 plan_items:
   - R12
   - R16a
-status: seed
+status: eval_built
 ---
 
-Canonical pack-layer case for subprocess terminality. `references/dispatch-and-sessions.md` now records the rule: assert exit codes and required output artifacts, never grep failure text as success evidence, retry once, then ledger the child terminal state and failure intake. This remains `seed` until a wrapper validator exists.
+Canonical pack-layer case for subprocess terminality. `references/dispatch-and-sessions.md` now records the rule: assert exit codes and required output artifacts, never grep failure text as success evidence, retry once, then ledger the child terminal state and failure intake. `scripts/validate_dispatch_ledger.py` is the executable row-shape guard for the terminal-state fields.

@@ -110,6 +110,8 @@ Use this as the short truth table for the final claim. Include user instructions
 
 - Baseline command/result before change:
 - Expected red/failing fixture or regression before fix, if applicable:
+- reproduced_red: command/output ref when claiming a bug, defect, or regression fix; otherwise omit or use no_repro_reason below
+- no_repro_reason:
 - First green proof after change:
 - Black-box/user-visible proof:
 - False-green risks checked:
@@ -254,6 +256,8 @@ For agent behavior or multi-agent changes, confirm the final implementation fixe
 ## Agent Boundary Contract final check
 
 For agentic/tool/memory/subagent/external-action changes, confirm every model-output boundary has shape, authority, isolation, failure semantics, observability, and replay/eval evidence. Name only relevant sentinel probes: wrong-shaped identifiers, swallowed errors, ambiguity/no ask path, shared mutable state, untrusted memory/context, unbounded loop, privileged action, parent-context dump, or missing trace propagation.
+
+- interface_shape_receipt: value or n/a when fakes, stubs, or mocks stand in for external interfaces
 
 ## Regex / keyword semantic gate final check
 
