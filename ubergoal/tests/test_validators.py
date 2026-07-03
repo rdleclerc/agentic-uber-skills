@@ -87,6 +87,8 @@ class ThinWrapperTests(unittest.TestCase):
         self.assertIn("runnable safe next actions", active_blocker.stderr)
         hard_blocked = run_cmd(str(RECEIPT), str(ROOT / "tests" / "fixtures" / "valid" / "uber_run_receipt_production_hard_blocked.md"))
         self.assertEqual(hard_blocked.returncode, 0, hard_blocked.stderr + hard_blocked.stdout)
+        open_parent = run_cmd(str(RECEIPT), str(ROOT / "tests" / "fixtures" / "valid" / "uber_run_receipt_production_open_parent.md"))
+        self.assertEqual(open_parent.returncode, 0, open_parent.stderr + open_parent.stdout)
         missing_lane = run_cmd(str(RECEIPT), str(ROOT / "tests" / "fixtures" / "invalid" / "uber_run_receipt_missing_lane_used.md"))
         self.assertNotEqual(missing_lane.returncode, 0)
         self.assertIn("missing field: lane_used", missing_lane.stderr)

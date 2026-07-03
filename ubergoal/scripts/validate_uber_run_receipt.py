@@ -194,7 +194,7 @@ def has_production_implementation_scope(full_text: str) -> bool:
     return any(term in text for term in PRODUCTION_IMPLEMENTATION_TERMS)
 
 
-def validate_production_blocker_gate(found: dict[str, str], required: bool, errors: list[str]) -> bool:
+def validate_production_blocker_gate(found: dict[str, str], required: bool, errors: list[str], *, claims_success: bool = True) -> bool:
     section = found.get("production implementation blocker gate", "")
     if not required:
         return True
@@ -230,19 +230,29 @@ def validate_production_blocker_gate(found: dict[str, str], required: bool, erro
         errors,
     )
     ok = True
-    if active not in {None, 0}:
-        errors.append("receipt cannot mark success with active blocked production children")
-        ok = False
-    if runnable not in {None, 0}:
-        errors.append("receipt cannot mark success while runnable safe next actions remain")
-        ok = False
-    if not normalize(values["Parent completion allowed?"]).startswith("yes"):
-        errors.append("Production implementation blocker gate must say parent completion allowed? yes before success")
-        ok = False
+    parent_allowed = normalize(values["Parent completion allowed?"]).startswith("yes")
+    if claims_success:
+        if active not in {None, 0}:
+            errors.append("receipt cannot mark success with active blocked production children")
+            ok = False
+        if runnable not in {None, 0}:
+            errors.append("receipt cannot mark success while runnable safe next actions remain")
+            ok = False
+        if not parent_allowed:
+            errors.append("Production implementation blocker gate must say parent completion allowed? yes before success")
+            ok = False
+    else:
+        # Open-parent receipt (outcome partial/failed/aborted): active blocked
+        # children are legal recorded state per references/operational-states.md,
+        # but the gate must be internally consistent and truthfully open.
+        if parent_allowed and (active or 0) > 0:
+            errors.append("parent completion cannot be allowed while active blocked children remain")
+            ok = False
     if hard and hard > 0 and not normalize(values["Safe autonomous predecessor work exhausted?"]).startswith("yes"):
         errors.append("hard-blocked production children require safe autonomous predecessor work exhausted? yes")
         ok = False
-    if None not in {required_count, operational, hard} and (operational or 0) + (hard or 0) < (required_count or 0):
+    covered = (operational or 0) + (hard or 0) + (0 if claims_success else (active or 0))
+    if None not in {required_count, operational, hard} and covered < (required_count or 0):
         errors.append("production blocker counts do not cover required child count")
         ok = False
 
@@ -261,12 +271,19 @@ def validate_production_blocker_gate(found: dict[str, str], required: bool, erro
         runnable_cell = normalize(row[3])
         exhaustion = normalize(row[4])
         blocker = normalize(row[5])
-        if "active_blocked" in classification or "active blocked" in classification:
-            errors.append(f"production child remains active-blocked: {child}")
-            ok = False
-        if runnable_cell.startswith("yes"):
-            errors.append(f"production child has runnable safe next actions: {child}")
-            ok = False
+        is_active = "active_blocked" in classification or "active blocked" in classification
+        if claims_success:
+            if is_active:
+                errors.append(f"production child remains active-blocked: {child}")
+                ok = False
+            if runnable_cell.startswith("yes"):
+                errors.append(f"production child has runnable safe next actions: {child}")
+                ok = False
+        elif is_active:
+            unblock = normalize(row[6]) if len(row) > 6 else ""
+            if not unblock or unblock in PLACEHOLDERS:
+                errors.append(f"active-blocked child needs a named unblock owner/action: {child}")
+                ok = False
         if "hard_blocked_after_safe_action_exhaustion" in classification or "hard-blocked-after" in classification:
             if "exhaust" not in exhaustion:
                 errors.append(f"hard-blocked child lacks safe-predecessor exhaustion evidence: {child}")
@@ -368,7 +385,8 @@ def validate(path: Path, allow_template: bool = False) -> list[str]:
     validate_cost_metadata(metadata, errors)
     validate_failure_intake(text, errors)
 
-    production_gate_ok = validate_production_blocker_gate(found, has_production_implementation_scope(text), errors)
+    outcome_value = normalize(found.get("run metadata", "").split("Outcome:", 1)[1].splitlines()[0]) if "Outcome:" in found.get("run metadata", "") else ""
+    production_gate_ok = validate_production_blocker_gate(found, has_production_implementation_scope(text), errors, claims_success=outcome_value.startswith("success"))
     validate_operational_summary(found, metadata, production_gate_ok, errors)
     validate_runtime_topology(found, text, errors)
 
