@@ -1,0 +1,15 @@
+[[fingerprint]]
+id = "fixture-drift"
+owner = "pack maintainer"
+adoption_state = "blocking"
+canonical_source = "tests/fixtures/drift/canonical.md#fixture"
+target_paths = [
+  "tests/fixtures/drift/target-match.md",
+  "tests/fixtures/drift/target-diverged.md",
+]
+match = "literal"
+pattern = "Canonical doctrine sentence."
+normalization = "whitespace"
+allowed_absences = []
+severity = "error"
+blocking_wave = 1

@@ -4,8 +4,11 @@ from __future__ import annotations
 
 from pathlib import Path
 import argparse
+from dataclasses import dataclass
+import os
 import re
 import sys
+import tomllib
 
 DEFAULT_ROOT = Path(__file__).resolve().parents[1]
 PACK_SKILLS = [
@@ -71,6 +74,58 @@ ROADMAP_REQUIRED_PHRASES = [
     "Ubershow dogfooding",
     "RCA-driven testing adaptation",
 ]
+DRIFT_REGISTRY = "references/drift-fingerprints.toml"
+DRIFT_REQUIRED_FIELDS = {
+    "id",
+    "owner",
+    "adoption_state",
+    "canonical_source",
+    "target_paths",
+    "match",
+    "pattern",
+    "normalization",
+    "allowed_absences",
+    "severity",
+    "blocking_wave",
+}
+DRIFT_OPTIONAL_FIELDS = {"pending"}
+DRIFT_ADOPTION_STATES = {"report_only", "blocking", "planned"}
+DRIFT_MATCH_TYPES = {"literal", "regex"}
+DRIFT_NORMALIZATIONS = {"none", "whitespace"}
+DRIFT_SEVERITIES = {"error", "warn"}
+INSTALL_SYNC_IGNORED_EXTRAS = {
+    "chronicle",
+    "harmonic",
+    "codex-primary-runtime",
+    "gaia-session-lane",
+    "build-agent-eval",
+    "design-agent-memory",
+    "design-context-engine",
+    "design-source-lane",
+    "openclaw-agentic-skill-creator",
+    "openclaw-agentic-tool-designer",
+    "review-agentic-architecture",
+}
+
+
+@dataclass(frozen=True)
+class CheckReport:
+    lines: list[str]
+    blocking_failures: list[str]
+    errors: list[str]
+
+    def exit_code(self, strict: bool) -> int:
+        if self.errors:
+            return 1
+        if strict and self.blocking_failures:
+            return 1
+        return 0
+
+    def print(self) -> None:
+        for line in self.lines:
+            print(line)
+        for error in self.errors:
+            print(f"ERROR: {error}", file=sys.stderr)
 
 
 def read(path: Path) -> str:
@@ -165,6 +220,221 @@ def validate_portability_oracle(root: Path, errors: list[str]) -> None:
                     errors.append(f"{rel}:{index + 1} absolute path does not exist or need parameterization: {candidate}")
 
 
+def expand_shell_token(value: str) -> str:
+    def replace(match: re.Match[str]) -> str:
+        name = match.group("name")
+        default = match.group("default")
+        if default is not None:
+            return os.environ.get(name) or str(Path(default).expanduser())
+        return os.environ.get(name, "")
+
+    expanded = re.sub(
+        r"\$\{(?P<name>[A-Za-z_][A-Za-z0-9_]*)(?::-((?P<default>[^}]*)))?\}",
+        replace,
+        value,
+    )
+    return str(Path(expanded).expanduser()) if expanded.startswith("~") else expanded
+
+
+def resolve_registry_path(root: Path, raw_path: str) -> Path:
+    expanded = expand_shell_token(raw_path)
+    path = Path(expanded).expanduser()
+    if not path.is_absolute():
+        path = root / path
+    return path
+
+
+def normalize_match_text(value: str, normalization: str) -> str:
+    if normalization == "whitespace":
+        return " ".join(value.split())
+    return value
+
+
+def load_drift_registry(path: Path) -> tuple[list[dict[str, object]], list[str]]:
+    if not path.exists():
+        return [], [f"drift registry missing: {path}"]
+    try:
+        data = tomllib.loads(path.read_text())
+    except tomllib.TOMLDecodeError as exc:
+        return [], [f"drift registry TOML error in {path}: {exc}"]
+    raw_entries = data.get("fingerprint")
+    if not isinstance(raw_entries, list):
+        return [], [f"drift registry {path} must contain [[fingerprint]] entries"]
+
+    entries: list[dict[str, object]] = []
+    errors: list[str] = []
+    for index, entry in enumerate(raw_entries, start=1):
+        if not isinstance(entry, dict):
+            errors.append(f"drift registry entry {index} must be a table")
+            continue
+        entry_id = str(entry.get("id") or f"entry-{index}")
+        missing = sorted(DRIFT_REQUIRED_FIELDS - set(entry))
+        if missing:
+            errors.append(f"drift registry entry {entry_id} missing required field(s): {', '.join(missing)}")
+            continue
+        unknown = sorted(set(entry) - DRIFT_REQUIRED_FIELDS - DRIFT_OPTIONAL_FIELDS)
+        if unknown:
+            errors.append(f"drift registry entry {entry_id} has unknown field(s): {', '.join(unknown)}")
+        for field in ["id", "owner", "adoption_state", "canonical_source", "match", "pattern", "normalization", "severity"]:
+            if not isinstance(entry[field], str):
+                errors.append(f"drift registry entry {entry_id} field {field} must be a string")
+        if entry["adoption_state"] not in DRIFT_ADOPTION_STATES:
+            errors.append(f"drift registry entry {entry_id} has invalid adoption_state: {entry['adoption_state']}")
+        if entry["match"] not in DRIFT_MATCH_TYPES:
+            errors.append(f"drift registry entry {entry_id} has invalid match: {entry['match']}")
+        if entry["normalization"] not in DRIFT_NORMALIZATIONS:
+            errors.append(f"drift registry entry {entry_id} has invalid normalization: {entry['normalization']}")
+        if entry["severity"] not in DRIFT_SEVERITIES:
+            errors.append(f"drift registry entry {entry_id} has invalid severity: {entry['severity']}")
+        if not isinstance(entry["target_paths"], list) or not all(isinstance(item, str) for item in entry["target_paths"]):
+            errors.append(f"drift registry entry {entry_id} target_paths must be a list of strings")
+        if not isinstance(entry["allowed_absences"], list) or not all(
+            isinstance(item, str) for item in entry["allowed_absences"]
+        ):
+            errors.append(f"drift registry entry {entry_id} allowed_absences must be a list of strings")
+        if not isinstance(entry["blocking_wave"], int):
+            errors.append(f"drift registry entry {entry_id} blocking_wave must be an int")
+        if "pending" in entry and not isinstance(entry["pending"], str):
+            errors.append(f"drift registry entry {entry_id} pending must be a string")
+        entries.append(entry)
+    return entries, errors
+
+
+def pattern_matches(text: str, pattern: str, match_type: str, normalization: str) -> tuple[bool, str]:
+    comparable_text = normalize_match_text(text, normalization)
+    comparable_pattern = normalize_match_text(expand_shell_token(pattern), normalization)
+    if comparable_pattern == "":
+        return False, "empty pattern"
+    if match_type == "literal":
+        return comparable_pattern in comparable_text, "literal not found"
+    try:
+        found = re.search(comparable_pattern, comparable_text, flags=re.M | re.S) is not None
+    except re.error as exc:
+        return False, f"invalid regex: {exc}"
+    return found, "regex not found"
+
+
+def check_doctrine_drift(root: Path, *, registry_path: Path | None = None) -> CheckReport:
+    """Report doctrine fingerprint drift; only adoption_state=blocking fails strict mode."""
+    registry = registry_path or (root / DRIFT_REGISTRY)
+    entries, errors = load_drift_registry(registry)
+    lines = [f"DOCTRINE DRIFT REPORT registry={registry}"]
+    blocking_failures: list[str] = []
+    if errors:
+        return CheckReport(lines, [], errors)
+
+    for entry in entries:
+        entry_id = str(entry["id"])
+        adoption_state = str(entry["adoption_state"])
+        severity = str(entry["severity"])
+        blocking_wave = entry["blocking_wave"]
+        pending = str(entry.get("pending") or "")
+        allowed_absences = set(entry["allowed_absences"])  # type: ignore[arg-type]
+        target_paths = entry["target_paths"]  # type: ignore[assignment]
+        for raw_target in target_paths:
+            target_path = resolve_registry_path(root, raw_target)
+            detail_prefix = (
+                f"id={entry_id} target={raw_target} adoption_state={adoption_state} "
+                f"severity={severity} blocking_wave={blocking_wave}"
+            )
+            if not target_path.exists():
+                allowed = raw_target in allowed_absences
+                status = "ABSENT(allowed)" if allowed else "ABSENT(not)"
+                detail = f"{status} {detail_prefix} resolved={target_path}"
+                if pending:
+                    detail += f" pending={pending}"
+                lines.append(detail)
+                if adoption_state == "blocking" and not allowed:
+                    blocking_failures.append(detail)
+                continue
+            try:
+                text = target_path.read_text()
+            except UnicodeDecodeError as exc:
+                detail = f"DIVERGED {detail_prefix} detail=unreadable text: {exc}"
+                lines.append(detail)
+                if adoption_state == "blocking":
+                    blocking_failures.append(detail)
+                continue
+
+            matched, miss_detail = pattern_matches(
+                text,
+                str(entry["pattern"]),
+                str(entry["match"]),
+                str(entry["normalization"]),
+            )
+            if matched:
+                lines.append(f"MATCH {detail_prefix}")
+            else:
+                allowed = raw_target in allowed_absences and str(entry["pattern"]) == ""
+                status = "ABSENT(allowed)" if allowed else "DIVERGED"
+                detail = f"{status} {detail_prefix} detail={miss_detail}"
+                if pending:
+                    detail += f" pending={pending}"
+                lines.append(detail)
+                if adoption_state == "blocking" and not allowed:
+                    blocking_failures.append(detail)
+    return CheckReport(lines, blocking_failures, [])
+
+
+def skills_root_from_env(kind: str) -> Path:
+    specific = f"UBER_{kind.upper()}_SKILLS_ROOT"
+    generic = f"{kind.upper()}_SKILLS_ROOT"
+    value = os.environ.get(specific) or os.environ.get(generic)
+    if value:
+        return Path(value).expanduser()
+    return Path.home() / f".{kind.lower()}" / "skills"
+
+
+def allowed_install_extra(name: str) -> bool:
+    return name in INSTALL_SYNC_IGNORED_EXTRAS or name.startswith(".") or name == "plugins" or name.startswith("plugins/")
+
+
+def check_skill_install_sync(root: Path) -> CheckReport:
+    """Report pack skill install sync. Strict failure starts at blocking_wave=2."""
+    lines = ["SKILL INSTALL SYNC REPORT blocking_wave=2"]
+    violations: list[str] = []
+    errors: list[str] = []
+    expected = set(PACK_SKILLS)
+
+    for kind in ["claude", "codex"]:
+        skills_root = skills_root_from_env(kind)
+        if not skills_root.exists():
+            detail = f"VIOLATION root={kind} path={skills_root} detail=skills root missing"
+            lines.append(detail)
+            violations.append(detail)
+            continue
+        for skill in PACK_SKILLS:
+            install_path = skills_root / skill
+            expected_target = (root / skill).resolve()
+            prefix = f"root={kind} skill={skill} path={install_path}"
+            if not install_path.exists() and not install_path.is_symlink():
+                detail = f"VIOLATION {prefix} detail=missing symlink"
+                lines.append(detail)
+                violations.append(detail)
+                continue
+            if not install_path.is_symlink():
+                detail = f"VIOLATION {prefix} detail=copy-or-directory install; symlink required"
+                lines.append(detail)
+                violations.append(detail)
+                continue
+            actual_target = install_path.resolve()
+            if actual_target != expected_target:
+                detail = f"VIOLATION {prefix} detail=wrong target actual={actual_target} expected={expected_target}"
+                lines.append(detail)
+                violations.append(detail)
+                continue
+            lines.append(f"MATCH {prefix} target={actual_target}")
+
+        for child in sorted(skills_root.iterdir(), key=lambda item: item.name):
+            if child.name in expected:
+                continue
+            if allowed_install_extra(child.name):
+                lines.append(f"EXTRA_ALLOWED root={kind} name={child.name}")
+            else:
+                lines.append(f"WARN root={kind} name={child.name} detail=unknown extra skill entry")
+    return CheckReport(lines, violations, errors)
+
+
 def policy_value(root: Path, skill: str) -> str | None:
     path = root / skill / "agents" / "openai.yaml"
     if not path.exists():
@@ -184,8 +454,24 @@ def install_loop_skills(readme: str, heading: str) -> set[str]:
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--root", type=Path, default=DEFAULT_ROOT)
+    parser.add_argument("--drift", action="store_true", help="run only the doctrine drift report")
+    parser.add_argument("--install-sync", action="store_true", help="run only the local skill install-sync report")
+    parser.add_argument("--strict", action="store_true", help="fail focused reports on blocking violations")
+    parser.add_argument("--drift-registry", type=Path, default=None, help="override doctrine drift registry path")
     args = parser.parse_args()
     root = args.root.resolve()
+
+    if args.drift or args.install_sync:
+        reports: list[CheckReport] = []
+        if args.drift:
+            reports.append(check_doctrine_drift(root, registry_path=args.drift_registry))
+        if args.install_sync:
+            reports.append(check_skill_install_sync(root))
+        exit_code = 0
+        for report in reports:
+            report.print()
+            exit_code = max(exit_code, report.exit_code(args.strict))
+        return exit_code
 
     errors: list[str] = []
 
@@ -258,6 +544,12 @@ def main() -> int:
             errors.append(f"ROADMAP.md missing phrase: {phrase}")
 
     validate_portability_oracle(root, errors)
+    drift_report = check_doctrine_drift(root, registry_path=args.drift_registry)
+    install_sync_report = check_skill_install_sync(root)
+    drift_report.print()
+    install_sync_report.print()
+    errors.extend(f"doctrine drift: {error}" for error in drift_report.errors)
+    errors.extend(f"install sync: {error}" for error in install_sync_report.errors)
 
     if errors:
         for error in sorted(set(errors)):

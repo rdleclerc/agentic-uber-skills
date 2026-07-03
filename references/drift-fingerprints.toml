@@ -1,0 +1,124 @@
+# Doctrine drift fingerprints for the pack-contract aggregator.
+# Rewording a fingerprinted rule means updating this registry in the same change.
+
+[[fingerprint]]
+id = "test-channel-posture"
+owner = "pack maintainer"
+adoption_state = "report_only"
+canonical_source = "${GAIA_ROOT:-~/repos/agfunder-gaia}/CLAUDE.md#live-slack-proof-gate"
+target_paths = [
+  "${GAIA_ROOT:-~/repos/agfunder-gaia}/GAIA_TESTING.md",
+  "${GAIA_ROOT:-~/repos/agfunder-gaia}/CLAUDE.md",
+  "${GAIA_ROOT:-~/repos/agfunder-gaia}/AGENTS.md",
+  "${GAIA_ROOT:-~/repos/agfunder-gaia}/skills/gaia-testing/SKILL.md",
+]
+match = "literal"
+pattern = '''Rob has pre-approved live Slack proof prompts in `#gaia-testing-alpha` as part of Gaia testing. Do not pause to ask for permission before posting a realistic proof prompt there. There should normally be a Chrome window with Slack web open; use that Slack web window for the live proof path before falling back to another Slack access path. This pre-approval is only for the alpha testing channel and Gaia proof prompts, not for external/customer channels or unrelated Slack posting.'''
+normalization = "whitespace"
+allowed_absences = []
+severity = "warn"
+blocking_wave = 2
+
+[[fingerprint]]
+id = "canary-command"
+owner = "pack maintainer"
+adoption_state = "report_only"
+canonical_source = "${GAIA_ROOT:-~/repos/agfunder-gaia}/scripts/run_gateway_health_canary.sh#repo-root-command"
+target_paths = [
+  "${GAIA_ROOT:-~/repos/agfunder-gaia}/GAIA_TESTING.md",
+  "${GAIA_ROOT:-~/repos/agfunder-gaia}/CLAUDE.md",
+  "${HOME}/CLAUDE.md",
+]
+match = "literal"
+pattern = '''${GAIA_ROOT:-~/repos/agfunder-gaia}/scripts/run_gateway_health_canary.sh'''
+normalization = "none"
+allowed_absences = []
+severity = "warn"
+blocking_wave = 2
+
+[[fingerprint]]
+id = "lane-policy-portable"
+owner = "pack maintainer"
+adoption_state = "blocking"
+canonical_source = "AGENTS.md#routing-contract"
+target_paths = [
+  "AGENTS.md",
+  "README.md",
+]
+match = "regex"
+pattern = '''Review and acceptance lanes use the highest-capability available Claude lane; record `lane_used` in the receipt; never silently downgrade\.(?: In gaia contexts the spine's lane policy governs \(`knowledge/coding-agent-operating-spine\.md` in the gaia workspace repo\)\.)?'''
+normalization = "whitespace"
+allowed_absences = []
+severity = "error"
+blocking_wave = 1
+
+[[fingerprint]]
+id = "post-upgrade-canary-mandate"
+owner = "pack maintainer"
+adoption_state = "report_only"
+canonical_source = "${GAIA_ROOT:-~/repos/agfunder-gaia}/GAIA_TESTING.md#mandatory-triggers-run-the-test-suite"
+target_paths = [
+  "${GAIA_ROOT:-~/repos/agfunder-gaia}/GAIA_TESTING.md",
+]
+match = "literal"
+pattern = '''After `openclaw upgrade` (or any openclaw npm version bump)** — the 2026-04-29 incident is the reason this exists. Hardening of `hooks-yfZrrzcF.js` silently broke the gmail pipeline for ~3 days. Run:'''
+normalization = "whitespace"
+allowed_absences = []
+severity = "warn"
+blocking_wave = 2
+
+[[fingerprint]]
+id = "guide-version-line"
+owner = "pack maintainer"
+adoption_state = "report_only"
+canonical_source = "${GAIA_ROOT:-~/repos/agfunder-gaia}/AGENTIC_ARCHITECTURE.md#version-line"
+target_paths = [
+  "${GAIA_ROOT:-~/repos/agfunder-gaia}/AGENTIC_ARCHITECTURE.md",
+  "${UBER_GUIDE_ROOT:-~/repos/agentic-architecture-guide}/agentic_architecture_singlefile.md",
+]
+match = "regex"
+pattern = '''^Version: 1\.5$'''
+normalization = "none"
+allowed_absences = []
+severity = "warn"
+blocking_wave = 2
+
+[[fingerprint]]
+id = "precedence-sentence"
+owner = "pack maintainer"
+adoption_state = "planned"
+canonical_source = "coordination/process-rearchitecture-202607/plan-v3.md#governance-precedence"
+target_paths = [
+  "${GAIA_ROOT:-~/repos/agfunder-gaia}/AGENTS.md",
+  "AGENTS.md",
+]
+match = "literal"
+pattern = ""
+normalization = "none"
+allowed_absences = [
+  "${GAIA_ROOT:-~/repos/agfunder-gaia}/AGENTS.md",
+  "AGENTS.md",
+]
+severity = "warn"
+blocking_wave = 2
+pending = "Wave 2 R7/R6"
+
+[[fingerprint]]
+id = "tier-ladder-table"
+owner = "pack maintainer"
+adoption_state = "planned"
+canonical_source = "coordination/process-rearchitecture-202607/plan-v3.md#governance-tier-ladder"
+target_paths = [
+  "${GAIA_ROOT:-~/repos/agfunder-gaia}/knowledge/coding-agent-operating-spine.md",
+  "ubergoal/SKILL.md",
+]
+match = "literal"
+pattern = ""
+normalization = "none"
+allowed_absences = [
+  "${GAIA_ROOT:-~/repos/agfunder-gaia}/knowledge/coding-agent-operating-spine.md",
+  "ubergoal/SKILL.md",
+]
+severity = "warn"
+blocking_wave = 2
+pending = "Wave 2 R7/R6"

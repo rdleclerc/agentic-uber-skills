@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import os
 import subprocess
 import shutil
 import sys
@@ -37,12 +38,16 @@ def copy_lint_root(destination: Path) -> Path:
     return lint_root
 
 
-def run_pack_lint(root: Path) -> subprocess.CompletedProcess[str]:
+def run_pack_lint(root: Path, *args: str, env: dict[str, str] | None = None) -> subprocess.CompletedProcess[str]:
+    full_env = os.environ.copy()
+    if env:
+        full_env.update(env)
     return subprocess.run(
-        [sys.executable, "scripts/lint_pack_contract.py", "--root", str(root)],
+        [sys.executable, "scripts/lint_pack_contract.py", "--root", str(root), *args],
         cwd=ROOT,
         text=True,
         capture_output=True,
+        env=full_env,
     )
 
 
@@ -81,6 +86,70 @@ class PackContractTests(unittest.TestCase):
             proc = run_pack_lint(lint_root)
             self.assertNotEqual(proc.returncode, 0)
             self.assertIn("machine-specific path must be parameterized or marker-exempted", proc.stderr)
+
+    def test_doctrine_drift_fixture_reports_divergence_and_strict_fails(self) -> None:
+        registry = ROOT / "tests" / "fixtures" / "drift" / "registry.toml"
+
+        proc = run_pack_lint(ROOT, "--drift", "--drift-registry", str(registry))
+        self.assertEqual(proc.returncode, 0, proc.stderr + proc.stdout)
+        self.assertIn("MATCH id=fixture-drift", proc.stdout)
+        self.assertIn("DIVERGED id=fixture-drift", proc.stdout)
+
+        strict = run_pack_lint(ROOT, "--drift", "--strict", "--drift-registry", str(registry))
+        self.assertNotEqual(strict.returncode, 0)
+        self.assertIn("DIVERGED id=fixture-drift", strict.stdout)
+
+    def test_doctrine_drift_registry_schema_requires_all_fields(self) -> None:
+        registry = ROOT / "tests" / "fixtures" / "drift" / "invalid-registry.toml"
+        proc = run_pack_lint(ROOT, "--drift", "--drift-registry", str(registry))
+        self.assertNotEqual(proc.returncode, 0)
+        self.assertIn("missing required field", proc.stderr)
+        self.assertIn("pattern", proc.stderr)
+
+    def test_install_sync_fixture_reports_desync_and_strict_fails(self) -> None:
+        with tempfile.TemporaryDirectory() as td:
+            temp = Path(td)
+            lint_root = copy_lint_root(temp)
+            claude_root = temp / "claude-skills"
+            codex_root = temp / "codex-skills"
+            claude_root.mkdir()
+            codex_root.mkdir()
+
+            for install_root in [claude_root, codex_root]:
+                for skill in PACK_SKILLS:
+                    (install_root / skill).symlink_to(lint_root / skill)
+
+            (claude_root / "ubergoal").unlink()
+            (claude_root / "uberplan").unlink()
+            shutil.copytree(lint_root / "uberplan", claude_root / "uberplan")
+            (claude_root / "uberaccept").unlink()
+            wrong_target = temp / "wrong-target"
+            wrong_target.mkdir()
+            (claude_root / "uberaccept").symlink_to(wrong_target)
+            (claude_root / "chronicle").mkdir()
+            (claude_root / "unknown-extra").mkdir()
+
+            env = {
+                "UBER_CLAUDE_SKILLS_ROOT": str(claude_root),
+                "UBER_CODEX_SKILLS_ROOT": str(codex_root),
+            }
+            report = run_pack_lint(lint_root, "--install-sync", env=env)
+            self.assertEqual(report.returncode, 0, report.stderr + report.stdout)
+            self.assertIn("detail=missing symlink", report.stdout)
+            self.assertIn("detail=copy-or-directory install; symlink required", report.stdout)
+            self.assertIn("detail=wrong target", report.stdout)
+            self.assertIn("EXTRA_ALLOWED root=claude name=chronicle", report.stdout)
+            self.assertIn("WARN root=claude name=unknown-extra", report.stdout)
+
+            strict = run_pack_lint(lint_root, "--install-sync", "--strict", env=env)
+            self.assertNotEqual(strict.returncode, 0)
+
+    def test_real_skill_installs_are_synced_when_roots_exist(self) -> None:
+        roots = [Path.home() / ".claude" / "skills", Path.home() / ".codex" / "skills"]
+        if not all(path.exists() for path in roots):
+            self.skipTest("local skill roots are absent in this runtime")
+        proc = run_pack_lint(ROOT, "--install-sync", "--strict")
+        self.assertEqual(proc.returncode, 0, proc.stderr + proc.stdout)
 
     def test_all_uber_skills_are_exposed_but_phase_skills_are_explicit(self) -> None:
         expected = {

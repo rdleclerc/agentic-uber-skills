@@ -1,0 +1,13 @@
+[[fingerprint]]
+id = "invalid-missing-pattern"
+owner = "pack maintainer"
+adoption_state = "blocking"
+canonical_source = "tests/fixtures/drift/canonical.md#fixture"
+target_paths = [
+  "tests/fixtures/drift/target-match.md",
+]
+match = "literal"
+normalization = "whitespace"
+allowed_absences = []
+severity = "error"
+blocking_wave = 1
