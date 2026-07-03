@@ -63,11 +63,12 @@ target_paths = [
   "${GAIA_ROOT:-~/repos/agfunder-gaia}/knowledge/coding-agent-operating-spine.md",
 ]
 match = "regex"
-pattern = '''For Gaia/OpenClaw coding tasks beyond the most minor edits, use the best available Claude review lane as a required gate unless Rob explicitly waives it.*claude --model opus --effort max.*record the fallback\. Do not silently downgrade\. If no Claude review lane is reachable, stop before merge, commit, or completion claims'''
+pattern = '''For Tier ≥1 Gaia/OpenClaw work, use the best available Claude review lane unless Rob explicitly waives it.*claude --model opus --effort max.*record the fallback\. Do not silently downgrade\. If no Claude review lane is reachable, stop before merge, commit, or completion claims'''
 normalization = "whitespace"
 allowed_absences = []
 severity = "warn"
 blocking_wave = 2
+pending = "pattern updated with W2-D1 spine reword (cross-repo same-commit rule satisfied at pointer commit)"
 
 [[fingerprint]]
 id = "post-upgrade-canary-mandate"
@@ -103,39 +104,41 @@ blocking_wave = 2
 [[fingerprint]]
 id = "precedence-sentence"
 owner = "pack maintainer"
-adoption_state = "planned"
-canonical_source = "coordination/process-rearchitecture-202607/plan-v3.md#governance-precedence"
+adoption_state = "report_only"
+canonical_source = "${GAIA_ROOT:-~/repos/agfunder-gaia}/knowledge/coding-agent-operating-spine.md#precedence"
 target_paths = [
+  "${GAIA_ROOT:-~/repos/agfunder-gaia}/knowledge/coding-agent-operating-spine.md",
   "${GAIA_ROOT:-~/repos/agfunder-gaia}/AGENTS.md",
   "AGENTS.md",
 ]
 match = "literal"
-pattern = ""
-normalization = "none"
-allowed_absences = [
-  "${GAIA_ROOT:-~/repos/agfunder-gaia}/AGENTS.md",
-  "AGENTS.md",
-]
+pattern = '''Precedence with the Uber skill pack: `ubergoal` wraps this spine's lifecycle for gaia work; the uber run receipt satisfies the spine receipt contract; `uberaccept` is the acceptance review; the claude-adversary lane is the required Tier-2+ independent lane and stays opt-in below Tier 2.'''
+normalization = "whitespace"
+allowed_absences = []
 severity = "warn"
 blocking_wave = 2
-pending = "Wave 2 R7/R6"
+pending = "flip to blocking at W2-D3 with the gaia unifications"
 
 [[fingerprint]]
 id = "tier-ladder-table"
 owner = "pack maintainer"
-adoption_state = "planned"
-canonical_source = "coordination/process-rearchitecture-202607/plan-v3.md#governance-tier-ladder"
+adoption_state = "report_only"
+canonical_source = "${GAIA_ROOT:-~/repos/agfunder-gaia}/knowledge/coding-agent-operating-spine.md#review-ladder"
 target_paths = [
   "${GAIA_ROOT:-~/repos/agfunder-gaia}/knowledge/coding-agent-operating-spine.md",
   "ubergoal/SKILL.md",
 ]
 match = "literal"
-pattern = ""
-normalization = "none"
+pattern = '''| Tier | Work class | Required review |
+|---|---|---|
+| 0 | typo/cosmetic only — nothing that fixes observed misbehavior | none; commit carries a `tier0:` trailer |
+| 1 | contained single-surface change, clear tests | one exact-diff review pass by a capable lane, including a one-line scope echo against the operator-original ask |
+| 2 | cross-repo doctrine/pointer edits; behavior surfaces (prompts/skills/evals); medium-risk code | exact-diff review + independent adversarial lane (different vendor or fresh context) + scope-fidelity verdict |
+| 3 | production/runtime services; live-injected context surfaces; provider routing; security/data-subject surfaces; major refactor/deletion | full 4-phase ladder (plan review, exact-diff, adversarial, acceptance) on the highest-capability Claude lane + review-board lanes |'''
+normalization = "whitespace"
 allowed_absences = [
-  "${GAIA_ROOT:-~/repos/agfunder-gaia}/knowledge/coding-agent-operating-spine.md",
   "ubergoal/SKILL.md",
 ]
 severity = "warn"
 blocking_wave = 2
-pending = "Wave 2 R7/R6"
+pending = "ubergoal condensed table lands at R6; full-table fingerprint per amendment E"
