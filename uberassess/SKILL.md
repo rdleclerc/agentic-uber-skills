@@ -18,7 +18,7 @@ Direct-use only when explicitly named, when the user explicitly asks to assess/e
 - `uberassess` is a pre-planning assessment phase.
 - If the recommendation is approved for code/skill/workflow changes, hand off to `$ubergoal`/`$uberplan` with the packet as evidence.
 - If the source suggests only memory, watchlist, or eval work, do not escalate to implementation.
-- Hermes may consume or propose assessment packets as read-only candidate signals; Hermes should not mutate Type0/Gaia/OpenClaw in v0.
+- Reflective readers may consume or propose assessment packets as read-only candidate signals; assessment does not grant mutation authority.
 
 ## Tiers
 
@@ -35,17 +35,17 @@ Escalate only for concrete risk. Do not spend Tier 3 effort on every bookmark.
 
 0. **Frame the assessment question.** Restate the seed in one sentence, identify whether this is source-first, plan-artifact, idea-first, implementation-question, or mixed, and name the research mode: quick source assessment or Deep Research Assessment. If the input is vague, define the smallest useful question instead of asking the user to over-specify.
 1. **Clarify before broad research when it matters.** Ask one to three targeted questions when the answer would materially change research direction, source lanes, cost, privacy/side-effect boundaries, or adoption criteria. Do not send a generic questionnaire. If the ambiguity is low-risk or the user asked for speed, state assumptions and proceed; record unanswered clarifications as coverage gaps.
-2. **Resolve the source or seed.** Capture raw source handles before summarizing. For source-first work, use source-specific tools/skills when available, e.g. X bookmark/Type0 resolvers, GitHub tooling, arXiv/PDF extraction, web fetch/browser, or transcript/OCR sidecars. For plan-artifact work, capture the draft plan as the raw source and label it `plan_artifact`. For idea-first work, record the user's wording as the raw seed and label it `idea_seed`, `implementation_question`, or `open_research_question`. Record failures and uninspected media.
+2. **Resolve the source or seed.** Capture raw source handles before summarizing. For source-first work, use source-specific tools/skills when available, e.g. bookmark resolvers, GitHub tooling, arXiv/PDF extraction, web fetch/browser, or transcript/OCR sidecars. For plan-artifact work, capture the draft plan as the raw source and label it `plan_artifact`. For idea-first work, record the user's wording as the raw seed and label it `idea_seed`, `implementation_question`, or `open_research_question`. Record failures and uninspected media.
 3. **Create a Source Packet.** Use `templates/source-packet.md` or embed its fields in the assessment packet. Separate raw source/seed, linked sources, retrieval limits, synthesis, and uncertainty.
 4. **Build the research map.** For Deep Research Assessment, intentionally choose lanes: local codebase/source-of-truth, primary docs/specs, GitHub alternatives/prior art, issues/forums/practitioner discussion, papers/blogs where relevant, and contradiction search. State coverage claimed and not claimed; never imply exhaustive research when only a slice was inspected.
-5. **Check project context.** Inspect the relevant project/source-of-truth paths/cards/docs enough to avoid stale or duplicate recommendations. Use local adapter references when present (for example Type0/Gaia/Soho/Hermes on Rob's machine), but do not force unrelated local projects into portable assessments. Record context freshness and gaps.
+5. **Check project context.** Inspect the relevant project/source-of-truth paths/cards/docs enough to avoid stale or duplicate recommendations. Use local adapter references when present, but do not force unrelated local projects into portable assessments. Record context freshness and gaps.
 6. **Extract ideas and claims.** Distinguish user/source/author claims from your inferences. Record evidence quality, contradiction risk, local fit, and what is actually actionable.
 7. **Compare alternatives.** For implementation questions and architecture/tool ideas, produce an alternatives/prior-art matrix. Include the "do nothing / note / eval-only / improve context or skill" option alongside new machinery.
 8. **Run benefit >> cost.** Ask what to delete or simplify first. Prefer notes, eval seeds, or tool/context fixes over new machinery unless benefit is clearly much greater than hidden cost.
 9. **Run Agent Advocate when agent systems are involved.** Ask the human counterfactual: would a competent human with the same context/tools have made the error? If not, identify the missing context, source authority, tool feedback, memory, affordance, or approval boundary.
 10. **Decide.** Choose Adopt now, Watch, Archive, Reject, Needs more research, or Convert to eval only.
 11. **Set approval boundary.** State `Implementation before approval: no`. If approved, provide a compact `$ubergoal`/`$uberplan` handoff and evidence plan.
-12. **Leave a learning trail.** For accepted/rejected high-signal assessments, note how outcome should feed `$uberskillevolver` or Hermes later.
+12. **Leave a learning trail.** For accepted/rejected high-signal assessments, note how outcome should feed `$uberskillevolver` or future read-only review later.
 
 ## Deep Research Assessment mode
 
@@ -56,7 +56,7 @@ Minimum lanes to consider:
 - **Seed/source capture** — exact user wording, source URL, linked artifacts, raw media/transcripts, and retrieval limits.
 - **Question framing and clarification** — what decision this assessment must support, what would be overreach, and what targeted user feedback would materially improve the research.
 - **Local project context** — current codebase, skills, docs, tests, policies, and duplicate/prior attempts.
-- **Primary docs/specs** — official docs and source-of-truth references such as OpenClaw docs when relevant.
+- **Primary docs/specs** — official docs and source-of-truth references when relevant.
 - **Alternatives/prior art** — GitHub repos, libraries, patterns, architecture options, and why they do or do not transfer.
 - **Practitioner evidence** — issues, discussions, forums, postmortems, or threads that reveal real pain and edge cases.
 - **Contradiction search** — evidence the idea is stale, solved, unsafe, too expensive, or better handled by deletion/simplification.
@@ -83,7 +83,7 @@ For Tier 1+, produce an assessment packet with:
 
 - source URL/type and raw capture status
 - assessment mode, research question, and clarification checkpoint
-- for plan artifacts: intent fit against the operator-original instruction, agent-interpreted scope, proposed narrowed scope, explicit deferrals/non-goals, approval evidence, evidence gaps, scope fidelity verdict, and revision decision
+- for plan artifacts: intent fit against the operator-original instruction, agent-interpreted scope, proposed narrowed scope, explicit deferrals/non-goals, approval evidence, evidence gaps, Scope fidelity verdict, and revision decision
 - research/source map with coverage claimed and not claimed
 - linked sources/media inspected and retrieval limitations
 - key ideas, author claims, and model inferences
@@ -95,7 +95,7 @@ For Tier 1+, produce an assessment packet with:
 - approval boundary and side effects
 - if implementation is likely: `$ubergoal` handoff, evidence plan, rollback/stop condition
 - if agentic systems are implicated: Agent Advocate human counterfactual and affordance gap
-- outcome-learning trail for future evolver/Hermes review
+- outcome-learning trail for future evolver or read-only review
 
 Use `scripts/validate_assessment_packet.py` before treating a Tier 1+ packet as complete.
 
@@ -110,13 +110,7 @@ Before recommending implementation for a system-scale question involving concurr
 
 ## Optional Claude adversary
 
-Use this only when the user explicitly asks for Claude review or cross-model review, e.g. `with Claude`, `Claude review`, `Claude debate`, `Claude for 2 rounds`, or `Codex review of Claude work`. Do not invoke Claude or alternate reviewer from task similarity or ordinary `uberassess` use. The authoring/orchestrating agent remains owner and reconciler; the alternate reviewer is adversarial, not a co-author, final authority, or acceptance substitute. Cross-model symmetry applies: Codex-authored work can route to Claude; Claude-authored work can route to Codex under the same packet and reconciliation rules. Same-agent review is not independent evidence. If available, read `../references/claude-adversary.md`; keep the essentials here because references may not auto-load.
-
-Default to one challenge round; run two or three only when requested or when material unresolved risk remains. Each adversary challenge must name a claim, causal layer, why it matters, falsifying/satisfying evidence, and minimum impact threshold. If more than one challenge is raised, the first two challenges must use distinct causal layers; a single-challenge round must say why only one challenge is material. Owning-agent reconciliation must classify each challenge as `Accepted`, `Risk added`, `Rejected`, `Uncertain`, or `No material impact`; `No material impact` is non-evidence: it proves a review ran, not that the artifact is acceptable. Bind the ledger to the artifact version/section reviewed.
-
-Before the skill-specific questions, include the Scope Fidelity Packet from `../references/claude-adversary.md` and require the reviewer to answer `Original-scope satisfaction`, `Narrowing approval`, and `Scope fidelity verdict` against the operator-original instruction. A reviewer must not assess only the authoring agent's summary or proposed scope. Also require the reviewer to challenge whether the authoring agent is sticking to the operator-approved plan and preserving modularity, thin harness / fat skills/tools, and agentic affordance unless the user explicitly overrides those defaults.
-
-Also include the Frame-independence / anti-roleplay check from `../references/claude-adversary.md`. The reviewer prompt must put the operator-original instruction first; if it is missing, the reviewer must stop and flag the review as invalid. Before any approval language, require the reviewer to state what role the authoring agent is asking the reviewer to play and whether it accepts, modifies, or refuses that role; name what the operator's original instruction requires that the authoring agent's summary might hide or narrow; and list three concrete reject conditions. Treat highly one-sided `Accepted`/`No material impact` ledgers as rubber-stamp warnings, not proof of quality. Model adversary review is reduced-noise, not zero-noise, and does not replace operator-defined observable success criteria, direct prompt/diff spot-checks, deterministic tests, evals, or receipts.
+Contract: `../references/claude-adversary.md` (opt-in only on explicit request; reconciliation + frame-independence rules there).
 
 For `uberassess`, ask exactly:
 
@@ -131,6 +125,6 @@ For `uberassess`, ask exactly:
 - `templates/project-context-card.md` — lightweight project context card.
 - `references/source-resolvers.md` — source-type handling and limitations.
 - `references/project-routing.md` — routing destinations and non-goals.
-- `references/hermes-and-approval.md` — Hermes/read-only and approval policy.
+- `references/hermes-and-approval.md` — read-only reflection and approval policy.
 - `scripts/validate_assessment_packet.py` — packet validator.
 - `evals/golden_skill_invocations.json` — trigger/non-trigger examples for routing changes; load only when tuning assessment triggers.

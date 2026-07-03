@@ -1,6 +1,6 @@
 # Loop Engineering Reference
 
-Use this reference when an Uber run becomes a recurring, scheduled, watch-and-fix, or unattended agent loop. Keep it as a shared reference so `ubergoal`, `uberplan`, `uberaccept`, and `uberskillevolver` do not each grow duplicate loop prose.
+Use this reference when an Uber run becomes a recurring, scheduled, watch-and-fix, or unattended agent loop. Keep it as a shared reference so `ubergoal`, `uberplan`, `uberaccept`, and `uberskillevolver` do not each grow duplicate loop prose; the V3 subprocess probe (`coordination/process-rearchitecture-202607/wave2-v3-probe.md`) proved reference-following, so skill bodies should keep only compact hooks here.
 
 ## Source-derived frame
 

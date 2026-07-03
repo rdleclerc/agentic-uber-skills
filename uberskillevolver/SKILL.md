@@ -47,9 +47,7 @@ Do not store secrets, credentials, private customer data, full copyrighted sourc
 
 ## Loop-learning gate
 
-For recurring, scheduled, watch-and-fix, or unattended loop runs, use `../references/loop-engineering.md` to separate evidence from promotion. Loop findings can become eval seeds, validators, templates, skill diffs, connector/tool changes, or deletions only after reviewed promotion. Never let a self-improving loop silently rewrite its own skill, prompt, trigger, memory policy, routing, budget, or tool permissions from its own output.
-
-A standalone `uberloop` remains a candidate only after at least three real loop-building runs show repeated contract re-derivation or a loop-specific failure such as runaway budget, missed stop, missing durable state, self-grading, or non-idempotent recurrence because the guidance was too hidden inside existing skills. Until then, prefer the shared reference plus hooks in `ubergoal`, `uberplan`, and `uberaccept`.
+For recurring, scheduled, watch-and-fix, or unattended loop runs, use `../references/loop-engineering.md` to separate evidence from promotion; Never let a self-improving loop silently rewrite its own skill/prompt/routing/budget/tool permissions, and standalone `uberloop` remains a candidate only after the reference's real-run extraction trigger.
 
 ## Learning loop
 
@@ -125,11 +123,7 @@ For frame-adhesion failures, promote the smallest rule that makes a reviewer sta
 
 ## Regression lessons from completion-claim failures
 
-Promote severe completion-claim failures into evals, templates, validators, or examples when they can recur. In particular, treat this as a high-value regression class: a parent `ubergoal` claims all child plans complete because a shared safe proof spine, readiness gate, registry, local proof, or shadow-only proof passed, while one or more child plans have not reached their intended operational outcome.
-
-Also promote production/runtime implementation goal failures where a parent closes because every child has a status, but one or more `blocked` children still have runnable safe next actions. The expected fix class is an active-vs-hard blocker invariant: `active_blocked` remains active work, while `hard_blocked_after_safe_action_exhaustion` requires safe predecessor exhaustion and an exact external/unsafe/irreversible blocker.
-
-When the failure is semantic safe-work exhaustion rather than only missing fields, prefer a visible `uberaccept` adversarial review over a hidden deterministic judge: list blocked children, enumerate plausible safe next actions, and block completion if any remain runnable.
+Promote completion-claim failures into evals, templates, validators, or examples when they can recur; use `../references/operational-states.md` for child operational outcomes, shared-proof non-completion, active/hard blockers, safe-work exhaustion review, and parent completion rules.
 
 If the failure involved one giant plan file causing shallow inner-loop treatment, consider promoting `uberplan`'s Plan Tree Artifact Layout: root index, child files, status ledger, receipts, and final acceptance.
 
@@ -145,7 +139,7 @@ A useful red/green learning record names: baseline result, expected red/failing 
 
 ## Runtime topology lessons
 
-For campaign/subagent runs, record whether the configured depth/thread budget matched the work shape. Preserve the distinction between plan depth and spawned-agent depth. Promote a lesson only when evidence shows the default `max_threads=6`, `max_depth=2` or explicit deep-campaign `8/3` escalation caused or prevented a real failure. Never promote a silent thread/depth increase; durable changes must keep approval, ledger, and restore rules visible.
+For campaign/subagent runs, record whether the configured depth/thread budget matched the work shape; runtime topology presets, approval, ledger, and restore rules live in `../references/operational-states.md`.
 
 ## Cross-machine learning
 

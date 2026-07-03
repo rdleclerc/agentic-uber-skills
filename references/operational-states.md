@@ -24,7 +24,7 @@ Every child plan records runtime topology, intended operational outcome, proof/b
 - `blocked` — exact blocker, evidence, owner/prerequisite, and next unblock action are recorded.
 - `re_scoped_with_approval` — the operator approved a smaller target before completion; the original outcome remains visible as deferred/not done.
 
-Do not merge children into one shared proof layer. Root demos, shared safe proof spines, registries, readiness gates, plans, local-only proofs, eval fixtures, or shadow-only proofs do not complete children unless each child explicitly scoped that artifact as its final outcome.
+Do not merge children into one shared proof layer. Root demos, shared safe proof spines, safe adoption spines, registries, readiness gates, plans, local-only proofs, eval fixtures, or shadow-only proofs do not complete children unless each child explicitly scoped that artifact as its final outcome.
 
 ## Blocked-State Taxonomy
 
@@ -33,7 +33,13 @@ Use this split for production/runtime implementation goals, long unattended goal
 - `active_blocked` — a child is blocked on one path but still has runnable safe next actions. It remains active work and cannot count toward parent completion.
 - `hard_blocked_after_safe_action_exhaustion` — safe autonomous predecessor work is exhausted; the remaining blocker is exact, external/unsafe/irreversible or approval-owned; evidence and next unblock owner/action are recorded.
 
+For production/runtime implementation goals, record the upfront approval packet and safe-predecessor decomposition before external/unsafe/irreversible stop points. A blocked child with runnable safe next actions remains `active_blocked`; only safe-action exhaustion plus an exact external/unsafe/irreversible or approval-owned blocker can become `hard_blocked_after_safe_action_exhaustion`.
+
 Blocked children with runnable safe next actions stay active. Continue safe predecessor work until no safe autonomous action remains.
+
+## Safe-Work Exhaustion Review
+
+Acceptance must list every blocked child, enumerate plausible safe next actions, and block parent completion if any safe action remains runnable. This is the semantic oversight layer; deterministic validators only prove that the review is visible and internally consistent.
 
 ## Parent Completion Conditions
 

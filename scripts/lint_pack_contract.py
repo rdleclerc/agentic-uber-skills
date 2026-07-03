@@ -31,6 +31,11 @@ UTILITY_IMPLICIT_SKILLS = ["uberrca", "uber-skill-creator", "ubershow"]
 ROOT_REQUIRED_FILES = ["AGENTS.md", "CLAUDE.md", "README.md", "ROADMAP.md"]
 SKILL_WORD_BUDGETS = {
     "ubergoal/SKILL.md": 800,
+    "uberplan/SKILL.md": 3400,
+    "uberaccept/SKILL.md": 2150,
+    "uberassess/SKILL.md": 1900,
+    "uberrca/SKILL.md": 1500,
+    "uberskillevolver/SKILL.md": 2050,
 }
 FORBIDDEN_FRONTMATTER_KEYS = {"model", "effort"}
 MODEL_ID_RE = re.compile(

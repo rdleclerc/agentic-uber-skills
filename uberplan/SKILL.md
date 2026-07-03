@@ -54,36 +54,28 @@ Before hardening a PRD or task map for vague product, refactor, or workflow idea
 
 When terminology crystallizes during that interrogation, capture only durable domain language or hard-to-reverse decisions. A glossary/context doc should define terms and rejected meanings; an ADR should record a surprising, costly-to-reverse tradeoff. Do not use glossary/context docs as PRDs, scratchpads, implementation plans, or status logs.
 
-## Basic Spine First gate
+## Gall's Law / Basic Spine First gate
 
 For product/rewrite/agentic-system work, first name the minimum user-visible product spine, the canonical command/live-safe check that proves it, and current result: `pass`, `fail`, or `not available`. If it is not green, plan only to create/fix that spine or explicitly scope a non-readiness spike. Do not add architecture, agents, routers, monitors, or eval frameworks until the spine is green or the user accepts the spike.
+
+For plans that introduce new agentic behavior, new harness, new coordination layer, or meaningful architecture, require a Gall's Law / Basic Spine First review before implementation. This does not auto-invoke Claude by task similarity; when Claude/second-review is in use, use `../references/claude-adversary.md`. Locally polished micro-feature progress is not a substitute for a basic working spine.
 
 ## Scope fidelity artifact gate
 
 Tier 1+ durable plans must include a `## Scope fidelity` block that links or quotes `coordination/<task-slug>/scope.md`, names the plan scope, states `Narrowing? yes/no`, and cites `Operator approved narrowing in:` whenever narrowed. Unapproved narrowing makes the plan invalid and cannot later count as completion; record it as blocked, deferred, or ask the operator to approve the narrower scope.
 
 ## Loop Engineering Contract
-Use this only when the work is recurring, scheduled, event-triggered, queue-driven, watch-and-fix, or unattended. Read `../references/loop-engineering.md`; keep it inside the existing plan, not a standalone `uberloop`. Name trigger/cadence, discovery source, handoff/isolation, focused tool/connector surface, durable state path, independent verification gate, stop conditions, no-progress rule, token/time/cost/retry caps, idempotency/replay behavior for side effects, human approval points before irreversible actions, attention/notification policy, comprehension-debt spot-checks, and learning/eval promotion path; if missing, downgrade to a manual goal, one-shot automation, or non-readiness spike.
+For recurring, scheduled, event-triggered, queue-driven, watch-and-fix, or unattended work, read `../references/loop-engineering.md` for trigger/cadence, discovery, isolation, verification, durable state, stop/no-progress rule, budgets, idempotency, human gates, attention policy, and learning path; keep it in the plan, not a standalone `uberloop`.
 
 ## Operational outcome contract
 
-Tier 1+ plans must include a **Definition of Done / Operational Outcome Contract** naming intended outcome, what counts as implemented/operational, evidence, non-implementation examples, and terminal state.
-
-Allowed terminal states:
-
-- `operational` — implemented, wired into the intended real/target system, tested/evaled, and supported by live or target-system proof unless the plan explicitly scoped a local proof artifact as final outcome.
-- `blocked` — exact blocker, evidence, next unblock action, and owner/prerequisite recorded.
-- `re_scoped_with_approval` — user approved the smaller target before completion; original outcome remains visible as deferred/not done.
-
-Readiness gates, safe adoption spines, registries, plans, eval fixtures, local proofs, or shadow-only proofs are not implementation unless the contract explicitly names that artifact as final outcome.
+Tier 1+ plans must include a **Definition of Done / Operational Outcome Contract** naming intended outcome, what counts as implemented/operational, evidence, non-implementation examples, and terminal state. Runtime topology, child terminal states, active/hard blockers, and parent completion rules live in `../references/operational-states.md`.
 
 ## Recursive / hierarchical execution pseudocode
 
-For multi-plan goals, subplans, plan-making plans, or “execute all plans,” include **Recursive / Hierarchical Execution Pseudocode**. Use a plan-making plan when the final plan depends on multi-source synthesis such as transcripts, source docs, codebase conventions, or ambiguous strategy/architecture work. Output only the sources to inspect, evidence map, questions the final plan must answer, constraints, shallow-synthesis risks, and stop condition before writing the real plan; do not solve the final deliverable yet. Skip this for Tier 0/1 edits, one-file fixes, or cases where micro-intent already captures the work. Example: “Plan how you will read this transcript, repo context, and source docs before writing the actual implementation plan.” It must show child iteration, recursion, proof before parent return, child terminal-state recording, and rejection of superficial completion. Parent/shared proof cannot substitute for child operational completion.
+For multi-plan goals, subplans, plan-making plans, or “execute all plans,” include **Recursive / Hierarchical Execution Pseudocode**. Use a plan-making plan when the final plan depends on multi-source synthesis such as transcripts, source docs, codebase conventions, or ambiguous strategy/architecture work. Output only the sources to inspect, evidence map, questions the final plan must answer, constraints, shallow-synthesis risks, and stop condition before writing the real plan; do not solve the final deliverable yet. Skip this for Tier 0/1 edits, one-file fixes, or cases where micro-intent already captures the work. Example: “Plan how you will read this transcript, repo context, and source docs before writing the actual implementation plan.” It must show child iteration, recursion, proof before parent return, and rejection of superficial completion; use `../references/operational-states.md` for child terminal-state and parent-proof rules.
 
 For large plan trees, use `references/plan-tree-artifact-layout.md`: root `index.md`, child plan files, `status-ledger.md`, receipts, and final acceptance. Bound recursion; create child plans only when they reduce risk or separate operational outcomes.
-
-For production/runtime implementation goals, especially long unattended goals, include an upfront approval packet and safe-predecessor decomposition before external/unsafe/irreversible stop points. A blocked child with runnable safe next actions is `active_blocked` and remains active work; only `hard_blocked_after_safe_action_exhaustion` can count toward parent completion, and only with evidence that safe autonomous predecessor work is exhausted.
 
 For Tier 3 agentic/runtime/production-replacement or other expensive-proof work, load `templates/tier3-expensive-proof-plan-tree.md` and run `scripts/validate_plan_contract.py`. A single flat plan must not launch burn-in/final proof unless the plan records an explicit flat-plan exception, approval, and validator-bypass reason.
 
@@ -157,7 +149,7 @@ Map the critical path before parallel work. If subagents are authorized, split e
 
 ## Runtime thread caps
 
-Treat subagent/session limits as hard platform policy. In Codex, read configured/reportable `[agents]` limits when available. Standard campaign preset is `max_threads=6`, `max_depth=2` for L0 root → L1 workstream → L2 worker/reviewer. If a plan needs L0→L1→L2→L3, require an explicit deep-campaign prompt before temporary `max_threads=8`, `max_depth=3`; `10/3` requires separate approval. Record approval, restore target, queued/skipped/cap-hit lanes, and never count failed/unavailable/queued lanes as evidence.
+Runtime topology presets, including standard `max_threads=6`, `max_depth=2`, approval/restore rules, cap-hit lanes, and digest-only worker receipts, live in `../references/operational-states.md`.
 
 ## Repository topology and code health
 
@@ -181,8 +173,6 @@ For agentic systems or fixes to agent mistakes, inspect what the agent experienc
 
 Before implementation or launch, compare the plan against the operator-original instruction, not only the agent's summary. If the plan narrows scope, name the narrowing and require explicit operator approval or mark it as `re_scoped_with_approval`/deferred rather than done. Final plan review must include `Scope fidelity: pass/fail/uncertain`.
 
-For plans that introduce new agentic behavior, new harness, new coordination layer, or meaningful architecture, require a Gall's Law / Basic Spine First review before implementation. This does not auto-invoke Claude by task similarity, but when Claude/second-review is in use the Gall's Law check is mandatory for these plans. Locally polished micro-feature progress is not a substitute for a basic working spine.
-
 Before implementation or launch, try to reject the plan against OpenClaw/agentic architecture, thin-harness/fat-agent policy, topology, dead-code, source-authority, side effects, and evidence. Then run the scoped verdict from `templates/confidence-gate.md`; do not say “100% confident” while a material blocker remains.
 
 
@@ -192,13 +182,7 @@ For Tier 2/3 plans involving concurrency, scaling, queues, workers, long-running
 
 ## Optional Claude adversary
 
-Use this only when the user explicitly asks for Claude review or cross-model review, e.g. `with Claude`, `Claude review`, `Claude debate`, `Claude for 2 rounds`, or `Codex review of Claude work`. Do not invoke Claude or alternate reviewer from task similarity or ordinary `uberplan` use. The authoring/orchestrating agent remains owner and reconciler; the alternate reviewer is adversarial, not a co-author, final authority, or acceptance substitute. Cross-model symmetry applies: Codex-authored work can route to Claude; Claude-authored work can route to Codex under the same packet and reconciliation rules. Same-agent review is not independent evidence. If available, read `../references/claude-adversary.md`; keep the essentials here because references may not auto-load.
-
-Default to one challenge round; run two or three only when requested or when material unresolved risk remains. Each adversary challenge must name a claim, causal layer, why it matters, falsifying/satisfying evidence, and minimum impact threshold. If more than one challenge is raised, the first two challenges must use distinct causal layers; a single-challenge round must say why only one challenge is material. Owning-agent reconciliation must classify each challenge as `Accepted`, `Risk added`, `Rejected`, `Uncertain`, or `No material impact`; `No material impact` is non-evidence: it proves a review ran, not that the artifact is acceptable. Bind the ledger to the artifact version/section reviewed.
-
-Before the skill-specific questions, include the Scope Fidelity Packet from `../references/claude-adversary.md`: section 1 must be `coordination/<task-slug>/scope.md`; section 2 must be the plan/diff/artifact under review; save the generated Claude prompt in that coordination folder. Require the reviewer to answer `Original-scope satisfaction`, `Narrowing approval`, and `Scope fidelity verdict` against the operator-original instruction. A reviewer must not assess only the authoring agent's summary or proposed scope. Also require the reviewer to challenge whether the authoring agent is sticking to the operator-approved plan and preserving modularity, thin harness / fat skills/tools, and agentic affordance unless the user explicitly overrides those defaults. For plan-phase review, require the Gall's Law / Basic Spine First adversary: think bigger about the ultimate goal and first principles, not bigger about architecture; identify the basic working spine, the thin/fat split, eval-driven evolution, what success is not, and the smallest next move.
-
-Also include the Frame-independence / anti-roleplay check from `../references/claude-adversary.md`. The reviewer prompt must put the operator-original instruction first; if it is missing, the reviewer must stop and flag the review as invalid. Before any approval language, require the reviewer to state what role the authoring agent is asking the reviewer to play and whether it accepts, modifies, or refuses that role; name what the operator's original instruction requires that the authoring agent's summary might hide or narrow; and list three concrete reject conditions. Treat highly one-sided `Accepted`/`No material impact` ledgers as rubber-stamp warnings, not proof of quality. Model adversary review is reduced-noise, not zero-noise, and does not replace operator-defined observable success criteria, direct prompt/diff spot-checks, deterministic tests, evals, or receipts.
+Contract: `../references/claude-adversary.md` (opt-in only on explicit request; reconciliation + frame-independence rules there).
 
 For `uberplan`, ask exactly:
 
