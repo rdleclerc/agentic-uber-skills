@@ -23,3 +23,7 @@
 
 - Logged policy reversal: uncertain-tier default flipped from lower to higher to prevent down-tiering; this is case 5 aligned with the spine review ladder.
 - Deleted deferred-skills paragraph from `ubergoal`; surviving homes are `ROADMAP.md`, `uberplan`, and `uberskillevolver`.
+
+## R9a Fresh-Session Orientation Smoke Record
+
+- Formal smoke record: the Wave-2 acceptance reviewer verified R9a fresh-session orientation by direct read. `INIT.md` reaches the spine, testing doctrine, and review ladder in 1 hop, satisfying the planned <=3-hop reachability smoke for the coding-process cold-start path.

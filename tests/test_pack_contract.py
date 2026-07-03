@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import os
+import json
 import subprocess
 import shutil
 import sys
@@ -12,6 +13,7 @@ from pathlib import Path
 from scripts.lint_pack_contract import check_doctrine_drift
 
 ROOT = Path(__file__).resolve().parents[1]
+SHAPE_LINT = ROOT / "uber-skill-creator" / "scripts" / "lint_skill_shape.py"
 PACK_SKILLS = [
     "uberrca",
     "uber-skill-creator",
@@ -73,6 +75,23 @@ def write_fake_git_show(bin_dir: Path, content: str) -> None:
     fake_git.chmod(0o755)
 
 
+def write_fake_git_show_and_behind(bin_dir: Path, content: str, behind_count: int) -> None:
+    fake_git = bin_dir / "git"
+    fake_git.write_text(
+        "#!/bin/sh\n"
+        "if [ \"$1\" = \"-C\" ] && [ \"$3\" = \"rev-list\" ]; then\n"
+        f"  printf '%s\\n' {str(behind_count)!r}\n"
+        "  exit 0\n"
+        "fi\n"
+        "if [ \"$1\" = \"-C\" ] && [ \"$3\" = \"show\" ]; then\n"
+        f"  printf '%s\\n' {content!r}\n"
+        "  exit 0\n"
+        "fi\n"
+        "exit 1\n"
+    )
+    fake_git.chmod(0o755)
+
+
 def create_synced_install_roots(temp: Path, lint_root: Path) -> dict[str, str]:
     claude_root = temp / "claude-skills"
     codex_root = temp / "codex-skills"
@@ -115,6 +134,32 @@ class PackContractTests(unittest.TestCase):
             self.assertNotEqual(proc.returncode, 0)
             self.assertIn("frontmatter must not contain `model:`", proc.stderr)
             self.assertIn("frontmatter must not hardcode model id", proc.stderr)
+
+    def test_known_bad_skill_fixture_fails_shape_and_pack_batteries(self) -> None:
+        fixture = ROOT / "tests" / "fixtures" / "skill_shape" / "bad-mini-skill"
+        shape = subprocess.run(
+            [sys.executable, str(SHAPE_LINT), str(fixture)],
+            cwd=ROOT,
+            text=True,
+            capture_output=True,
+        )
+        self.assertNotEqual(shape.returncode, 0)
+        data = json.loads(shape.stdout)
+        [record] = data["skills"]
+        categories = set(record["issue_categories"])
+        self.assertIn("triggering", categories)
+        self.assertIn("verification", categories)
+        self.assertGreater(record["issue_count"], 0)
+
+        with tempfile.TemporaryDirectory() as td:
+            lint_root = copy_lint_root(Path(td))
+            (lint_root / "ubersimplify" / "SKILL.md").write_text((fixture / "SKILL.md").read_text())
+            proc = run_pack_lint(lint_root)
+            self.assertNotEqual(proc.returncode, 0)
+            self.assertIn("ubersimplify SKILL.md frontmatter must not contain `model:`", proc.stderr)
+            self.assertIn("ubersimplify SKILL.md frontmatter must not hardcode model id", proc.stderr)
+            self.assertIn("ubersimplify/SKILL.md word budget exceeded", proc.stderr)
+            self.assertIn("machine-specific path must be parameterized", proc.stderr)
 
     def test_pack_contract_lint_rejects_nonexistent_absolute_doctrine_path(self) -> None:
         with tempfile.TemporaryDirectory() as td:
@@ -302,6 +347,43 @@ blocking_wave = 1
             self.assertEqual(proc.returncode, 0, proc.stderr + proc.stdout)
             self.assertIn("MATCH id=fixture-git-ref", proc.stdout)
             self.assertIn("source=git_ref(main)", proc.stdout)
+
+    def test_doctrine_drift_git_ref_freshness_note_reports_behind_upstream(self) -> None:
+        with tempfile.TemporaryDirectory() as td:
+            temp = Path(td)
+            repo = temp / "repo"
+            repo.mkdir()
+            (repo / ".git").mkdir()
+            (repo / "doctrine.md").write_text("Working tree divergent sentence.\n")
+            bin_dir = temp / "bin"
+            bin_dir.mkdir()
+            write_fake_git_show_and_behind(bin_dir, "Ref doctrine sentence.", 3)
+            registry = temp / "registry.toml"
+            registry.write_text(
+                f"""
+[[fingerprint]]
+id = "fixture-git-ref-freshness"
+owner = "pack maintainer"
+adoption_state = "blocking"
+canonical_source = "fixture"
+target_paths = [
+  "{(repo / "doctrine.md").as_posix()}",
+]
+git_ref = "main"
+match = "literal"
+pattern = "Ref doctrine sentence."
+normalization = "whitespace"
+allowed_absences = []
+severity = "error"
+blocking_wave = 1
+""".lstrip()
+            )
+            env = {"PATH": f"{bin_dir}{os.pathsep}{os.environ['PATH']}"}
+            proc = run_pack_lint(ROOT, "--drift", "--strict", "--drift-registry", str(registry), env=env)
+            self.assertEqual(proc.returncode, 0, proc.stderr + proc.stdout)
+            self.assertIn("NOTE git_ref freshness", proc.stdout)
+            self.assertIn("ref=main", proc.stdout)
+            self.assertIn("local_ref_behind_upstream_by=3", proc.stdout)
 
     def test_doctrine_drift_pattern_expansion_uses_defaults_not_env_overrides(self) -> None:
         with tempfile.TemporaryDirectory() as td:

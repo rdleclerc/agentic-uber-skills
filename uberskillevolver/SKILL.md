@@ -89,6 +89,7 @@ Before changing a skill, answer:
 - Did the challenger beat the champion on fresh holdouts without weakening any must-pass check? If not, keep the champion.
 - If this is a skill-prose patch, can verbose corrective text become a compact
   Trigger/Do/Invalid rule with required evidence and allowed fallbacks?
+- A promoted lesson that adds words to any active skill must name the words removed (net ≤ 0 per skill unless the receipt justifies growth); Hermes surfaces per-skill budget deltas weekly.
 - Will this increase context load, checklist fatigue, coordination, false positives, or maintenance burden?
 - What eval, validator, or example will catch regression?
 - What would make us revert this change?

@@ -25,6 +25,8 @@ FORBIDDEN = [
     "skip human review",
 ]
 
+WORD_DELTA_RE = re.compile(r"\bwords_(?:added|removed)\s*=\s*\d+\b", re.IGNORECASE)
+
 
 def section_body(text: str, heading: str) -> str:
     match = re.search(rf"^## {re.escape(heading)}\s*$", text, flags=re.MULTILINE)
@@ -34,6 +36,25 @@ def section_body(text: str, heading: str) -> str:
     next_match = re.search(r"^## ", text[start:], flags=re.MULTILINE)
     end = start + next_match.start() if next_match else len(text)
     return text[start:end].strip()
+
+
+def candidate_rows(text: str) -> list[str]:
+    body = section_body(text, "Candidates included")
+    rows: list[str] = []
+    for line in body.splitlines():
+        stripped = line.strip()
+        if not stripped.startswith("|") or re.fullmatch(r"\|(?:[-: ]+\|)+", stripped):
+            continue
+        cells = [cell.strip() for cell in stripped.strip("|").split("|")]
+        if cells and cells[0].lower() == "id":
+            continue
+        rows.append(stripped)
+    return rows
+
+
+def has_word_delta_pair(row: str) -> bool:
+    lowered = row.lower()
+    return "words_added" in lowered and "words_removed" in lowered and len(WORD_DELTA_RE.findall(row)) >= 2
 
 
 def validate(path: Path) -> list[str]:
@@ -56,6 +77,9 @@ def validate(path: Path) -> list[str]:
     final = section_body(text, "Final decision").lower()
     if not any(decision in final for decision in ["approved", "revise", "rejected"]):
         errors.append("final decision must be approved, revise, or rejected")
+    for row in candidate_rows(text):
+        if re.search(r"\bpromote[- ]now\b", row, flags=re.IGNORECASE) and not has_word_delta_pair(row):
+            errors.append("promote-now candidates must include words_added=<n> and words_removed=<n>")
     return errors
 
 

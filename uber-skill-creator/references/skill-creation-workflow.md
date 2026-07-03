@@ -82,14 +82,14 @@ Run:
 scripts/quick_validate.py <path/to/skill-folder>
 ```
 
-For package-quality review, run:
+For package-shape lint, run:
 
 ```bash
-scripts/evaluate_skill_quality.py <skill-or-pack-path> --format markdown
-scripts/evaluate_skill_quality.py <skill-or-pack-path> --format json --output skill-quality.json
+scripts/lint_skill_shape.py <skill-or-pack-path> --format markdown
+scripts/lint_skill_shape.py <skill-or-pack-path> --format json --output skill-shape.json
 ```
 
-Treat evaluator output as review evidence, not authority. Do not mutate skills in evaluation mode unless edits were explicitly approved.
+Treat shape-lint output as hygiene evidence, not authority or a quality claim. Do not mutate skills in evaluation mode unless edits were explicitly approved.
 
 Forward-test complex or high-impact skills with fresh agents when practical. Pass the raw skill path and a realistic user request; do not leak intended fixes, expected answers, or your prior diagnosis. If forward-testing succeeds only with leaked context, tighten the skill or test setup.
 

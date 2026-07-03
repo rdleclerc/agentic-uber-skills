@@ -13,7 +13,7 @@ Review and acceptance lanes use the highest-capability available Claude lane; re
 | Skill | What it does |
 |-------|-------------|
 | [uberrca](uberrca/) | Utility skill for general class-level root cause analysis before patches; Agent Advocate remains the agent-behavior RCA lens inside Uber planning/acceptance |
-| [uber-skill-creator](uber-skill-creator/) | Portable Uber skill authoring guide for Codex, Claude, and SKILL.md-compatible agents, with legacy alias migration support, read-only skill-quality reports, eval-driven iteration, HTML review reports, and trigger-description tuning |
+| [uber-skill-creator](uber-skill-creator/) | Portable Uber skill authoring guide for Codex, Claude, and SKILL.md-compatible agents, with legacy alias migration support, read-only shape lint, eval-driven iteration, HTML review reports, and trigger-description tuning |
 | [ubergoal](ubergoal/) | Thin lifecycle wrapper for substantial agentic coding workflows: classify, route, launch goals, assess user expectation/surprise risk, adapt on repeated or material unexpected test failures, enforce final policy-adherence acceptance, report tradeoffs/surprises and skills invoked, learn |
 | [uberplan](uberplan/) | Rigorous lean planning for long-running goals with thread highlights plus a `.md` plan file, user expectation/surprise assessment, review lanes, verifiable subgoals, Mermaid task graphs, Codex-to-OpenClaw proof ladders, RCA-driven testing adaptation and scope append gates, confidence gates, and benefit >> cost pressure |
 | [uberaccept](uberaccept/) | Adversarial final acceptance with evidence audits, expected-vs-actual user surprise checks, architecture drift checks, and completion proof |

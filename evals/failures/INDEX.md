@@ -7,7 +7,7 @@ Schema version: v2. Process-canonical cases live here. Runtime-canonical cases a
 - silent-nonresponse-class · runtime(runtime) · seed · canonical: agfunder-gaia/evals/failures/
 - false-apology-fix-of-fix · runtime(runtime) · seed · canonical: agfunder-gaia/evals/failures/
 - scope-laundering-20260528 · process(process) · seed · canonical: evals/failures/cases/scope-laundering-20260528.md
-- evaluator-saturation · process(process) · seed · canonical: evals/failures/cases/evaluator-saturation.md
+- evaluator-saturation · process(process) · eval_built · canonical: evals/failures/cases/evaluator-saturation.md
 - claw1-path-rot · process(process) · eval_built · canonical: evals/failures/cases/claw1-path-rot.md
 - install-drift-uberarchitect · process(process) · eval_built · canonical: evals/failures/cases/install-drift-uberarchitect.md
 - doctrine-drift-trio · process(process) · eval_built · canonical: evals/failures/cases/doctrine-drift-trio.md

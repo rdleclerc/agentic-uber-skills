@@ -7,12 +7,12 @@
 - Source learning records: /tmp/example/post-run-learning.md
 
 ## Candidates included
-| ID | Decision | Target artifact | Evidence | Benefit >> cost verdict |
-|---|---|---|---|---|
-| L1 | promote | validator | failing fixture | benefit clearly exceeds cost |
+| ID | Decision | Target artifact | Evidence | Benefit >> cost verdict | Word budget delta |
+|---|---|---|---|---|---|
+| L1 | promote-now | validator | failing fixture | benefit clearly exceeds cost | words_added=8; words_removed=12 |
 
 ## Proposed skill changes
-- SKILL.md changes: none.
+- SKILL.md changes: compact rule, net -4 words.
 - Template/reference changes: add fixture reminder.
 - Script/tool changes: validator case.
 - Eval/fixture changes: one negative fixture.

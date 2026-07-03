@@ -7,9 +7,9 @@
 - Source learning records:
 
 ## Candidates included
-| ID | Decision | Target artifact | Evidence | Benefit >> cost verdict |
-|---|---|---|---|---|
-|  |  |  |  |  |
+| ID | Decision | Target artifact | Evidence | Benefit >> cost verdict | Word budget delta |
+|---|---|---|---|---|---|
+|  |  |  |  |  | words_added=0; words_removed=0 |
 
 ## Proposed skill changes
 - SKILL.md changes:

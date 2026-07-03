@@ -1,6 +1,6 @@
 ---
 name: uber-skill-creator
-description: Portable guide for creating, updating, migrating, deprecating, and evaluating Uber-style SKILL.md skills for Codex, Claude, and compatible coding agents. Use when users want to create a new general skill, update an existing skill, audit an existing skill or skill pack with a read-only quality report, migrate or purge legacy local skill-creator or skill-creator-pro aliases, add scripts/references/assets, run eval-driven skill iteration, compare with-skill vs without-skill behavior, generate an HTML review report, or tune a skill description for better triggering. For OpenClaw/Gaia/Type0/Soho-specific skills, prefer openclaw-agentic-skill-creator.
+description: Portable guide for creating, updating, migrating, deprecating, and evaluating Uber-style SKILL.md skills for Codex, Claude, and compatible coding agents. Use when users want to create a new general skill, update an existing skill, audit an existing skill or skill pack with read-only shape lint plus behavioral evals, migrate or purge legacy local skill-creator or skill-creator-pro aliases, add scripts/references/assets, run eval-driven skill iteration, compare with-skill vs without-skill behavior, generate an HTML review report, or tune a skill description for better triggering. For OpenClaw/Gaia/Type0/Soho-specific skills, prefer openclaw-agentic-skill-creator.
 metadata:
   short-description: Create or update an Uber skill
 ---
@@ -57,14 +57,14 @@ Create or update `agents/openai.yaml` for runtimes that expose skill chips/lists
 
 Use Evaluation Mode when asked whether a skill or skill pack is production-grade, should be tightened, split, deleted, promoted, or tuned.
 
-Run the read-only evaluator before recommending broad rewrites:
+Run shape lint before recommending broad rewrites:
 
 ```bash
-scripts/evaluate_skill_quality.py <skill-or-pack-path> --format markdown
-scripts/evaluate_skill_quality.py <skill-or-pack-path> --format json --output skill-quality.json
+scripts/lint_skill_shape.py <skill-or-pack-path> --format markdown
+scripts/lint_skill_shape.py <skill-or-pack-path> --format json --output skill-shape.json
 ```
 
-The read-only evaluator checks trigger clarity, concision, progressive disclosure, verification evidence, side-effect policy, eval coverage, package shape, anti-shortcut guidance, and overlap. Treat the output as review evidence, not authority; do not mutate skills unless edits were explicitly approved.
+Shape lint is hygiene only: trigger clarity, concision, progressive disclosure, verification evidence, side-effect policy, eval coverage, package shape, anti-shortcut guidance, and overlap. It does not prove behavior or support QUALITY claims. Quality claims come from behavioral evals, realistic fresh-agent runs, and with-skill vs without-skill comparisons. Treat lint output as review evidence, not authority; do not mutate skills unless edits were explicitly approved.
 
 ## Eval-driven extension
 

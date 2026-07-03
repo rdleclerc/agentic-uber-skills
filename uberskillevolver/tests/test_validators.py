@@ -54,6 +54,11 @@ class ValidatorTests(unittest.TestCase):
         proc = self.run_fail("scripts/validate_promotion_batch.py", "tests/fixtures/invalid/promotion_batch_auto_mutation.md")
         self.assertIn("forbidden", proc.stderr)
 
+    def test_promotion_batch_promote_now_requires_word_delta_pair(self):
+        proc = self.run_fail("scripts/validate_promotion_batch.py", "tests/fixtures/invalid/promotion_batch_missing_word_delta.md")
+        self.assertIn("words_added", proc.stderr)
+        self.assertIn("words_removed", proc.stderr)
+
     def test_lint_skill_package(self):
         self.run_ok("scripts/lint_skill_package.py", str(ROOT))
 

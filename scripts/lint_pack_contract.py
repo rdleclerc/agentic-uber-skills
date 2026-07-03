@@ -520,6 +520,50 @@ def read_drift_target(target_path: Path, git_ref: str) -> tuple[str | None, bool
         return None, True, "working_tree", notes, f"unreadable text: {exc}"
 
 
+def git_ref_freshness_note(repo_root: Path, git_ref: str) -> str | None:
+    try:
+        proc = subprocess.run(
+            ["git", "-C", str(repo_root), "rev-list", "--count", f"{git_ref}..{git_ref}@{{upstream}}"],
+            text=True,
+            capture_output=True,
+            check=False,
+            timeout=20,
+        )
+    except (OSError, subprocess.TimeoutExpired):
+        return None
+    if proc.returncode != 0:
+        return None
+    try:
+        behind_count = int(proc.stdout.strip())
+    except ValueError:
+        return None
+    if behind_count <= 0:
+        return None
+    return f"NOTE git_ref freshness repo={repo_root} ref={git_ref} local_ref_behind_upstream_by={behind_count}"
+
+
+def drift_freshness_notes(root: Path, entries: list[dict[str, object]]) -> list[str]:
+    notes: list[str] = []
+    seen: set[tuple[str, str]] = set()
+    for entry in entries:
+        git_ref = str(entry.get("git_ref") or "")
+        if not git_ref:
+            continue
+        for raw_target in entry["target_paths"]:  # type: ignore[index]
+            target_path = resolve_registry_path(root, str(raw_target))
+            repo_root = find_git_repo_root(target_path)
+            if repo_root is None:
+                continue
+            key = (str(repo_root), git_ref)
+            if key in seen:
+                continue
+            seen.add(key)
+            note = git_ref_freshness_note(repo_root, git_ref)
+            if note:
+                notes.append(note)
+    return notes
+
+
 def check_doctrine_drift(root: Path, *, registry_path: Path | None = None) -> CheckReport:
     """Report doctrine fingerprint drift; only adoption_state=blocking fails strict mode."""
     registry = registry_path or (root / DRIFT_REGISTRY)
@@ -528,6 +572,7 @@ def check_doctrine_drift(root: Path, *, registry_path: Path | None = None) -> Ch
     blocking_failures: list[str] = []
     if errors:
         return CheckReport(lines, [], errors)
+    lines.extend(drift_freshness_notes(root, entries))
 
     for entry in entries:
         entry_id = str(entry["id"])

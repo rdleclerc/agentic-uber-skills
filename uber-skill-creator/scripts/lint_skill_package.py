@@ -20,13 +20,13 @@ REQUIRED_FILES = [
     "scripts/quick_validate.py",
     "scripts/generate_openai_yaml.py",
     "scripts/generate_eval_report.py",
-    "scripts/evaluate_skill_quality.py",
+    "scripts/lint_skill_shape.py",
     "scripts/estimate_lossless_compression.py",
 ]
 REQUIRED_PHRASES = [
     "portable",
     "Evaluation Mode",
-    "read-only evaluator",
+    "shape lint",
     "eval-driven extension",
     "with-skill vs without-skill",
     "HTML review report",

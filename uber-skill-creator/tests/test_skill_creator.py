@@ -11,7 +11,8 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 LINT = ROOT / "scripts" / "lint_skill_package.py"
 REPORT = ROOT / "scripts" / "generate_eval_report.py"
-QUALITY = ROOT / "scripts" / "evaluate_skill_quality.py"
+SHAPE_LINT = ROOT / "scripts" / "lint_skill_shape.py"
+DEPRECATED_QUALITY = ROOT / "scripts" / "evaluate_skill_quality.py"
 COMPRESSION = ROOT / "scripts" / "estimate_lossless_compression.py"
 
 
@@ -114,7 +115,7 @@ class SkillCreatorPackageTests(unittest.TestCase):
         self.assertIn("Looks &lt;safe&gt;", html)
         self.assertNotIn("Create <x>", html)
 
-    def test_quality_evaluator_flags_vague_skill(self) -> None:
+    def test_shape_lint_flags_vague_skill(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             skill = Path(tmp) / "vague-skill"
             skill.mkdir()
@@ -129,18 +130,18 @@ description: Helpful skill.
 Do things for the user.
 """
             )
-            result = run_cmd(str(QUALITY), str(skill))
+            result = run_cmd(str(SHAPE_LINT), str(skill))
             self.assertEqual(result.returncode, 0, result.stderr + result.stdout)
             data = json.loads(result.stdout)
 
         [record] = data["skills"]
         categories = set(record["issue_categories"])
-        self.assertLess(record["score"], 75)
         self.assertIn("triggering", categories)
         self.assertIn("verification", categories)
         self.assertIn("eval_coverage", categories)
+        self.assertNotIn("score", record)
 
-    def test_quality_evaluator_rewards_production_shape(self) -> None:
+    def test_shape_lint_accepts_production_shape(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             skill = Path(tmp) / "solid-skill"
             (skill / "scripts").mkdir(parents=True)
@@ -162,15 +163,15 @@ Use `scripts/check.py` for deterministic validation and `evals/` for golden prom
 Do not mutate the target skill during evaluation. Verify outputs with evidence before recommending changes.
 """
             )
-            result = run_cmd(str(QUALITY), str(skill))
+            result = run_cmd(str(SHAPE_LINT), str(skill))
             self.assertEqual(result.returncode, 0, result.stderr + result.stdout)
             data = json.loads(result.stdout)
 
         [record] = data["skills"]
-        self.assertGreaterEqual(record["score"], 90)
         self.assertEqual(record["issue_count"], 0)
+        self.assertNotIn("score", record)
 
-    def test_quality_evaluator_parses_folded_description(self) -> None:
+    def test_shape_lint_parses_folded_description(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             skill = Path(tmp) / "folded-skill"
             (skill / "agents").mkdir(parents=True)
@@ -190,7 +191,7 @@ Verify the tool contract with evidence and add eval cases for misuse, errors, an
 Do not mutate live systems during review.
 """
             )
-            result = run_cmd(str(QUALITY), str(skill))
+            result = run_cmd(str(SHAPE_LINT), str(skill))
             self.assertEqual(result.returncode, 0, result.stderr + result.stdout)
             data = json.loads(result.stdout)
 
@@ -198,7 +199,7 @@ Do not mutate live systems during review.
         self.assertGreaterEqual(record["description_chars"], 170)
         self.assertNotIn("triggering", set(record["issue_categories"]))
 
-    def test_quality_evaluator_reports_pack_markdown_and_overlap(self) -> None:
+    def test_shape_lint_reports_pack_markdown_and_overlap(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
             for name in ["alpha-skill", "beta-skill"]:
@@ -215,11 +216,17 @@ description: Use when Codex needs a portable release review checklist with verif
 Do not publish without approval. Verify with tests and evidence.
 """
                 )
-            result = run_cmd(str(QUALITY), str(root), "--format", "markdown")
+            result = run_cmd(str(SHAPE_LINT), str(root), "--format", "markdown")
             self.assertEqual(result.returncode, 0, result.stderr + result.stdout)
 
-        self.assertIn("# Skill Quality Report", result.stdout)
+        self.assertIn("# Skill Shape Lint Report", result.stdout)
+        self.assertNotIn("Score", result.stdout)
         self.assertIn("Overlap candidates", result.stdout)
+
+    def test_deprecated_quality_evaluator_fails_loudly(self) -> None:
+        result = run_cmd(str(DEPRECATED_QUALITY), str(ROOT))
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("lint_skill_shape.py", result.stderr)
 
     def test_lossless_compression_estimator_separates_safe_and_advisory(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
