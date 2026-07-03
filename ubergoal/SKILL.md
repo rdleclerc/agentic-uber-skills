@@ -40,11 +40,10 @@ description: "Use when an agent needs the goal-owning lifecycle wrapper for subs
 | 0 | typo/cosmetic only — nothing that fixes observed misbehavior | none; commit carries a `tier0:` trailer |
 | 1 | contained single-surface change, clear tests | one exact-diff review pass by a capable lane, including a one-line scope echo against the operator-original ask |
 | 2 | cross-repo doctrine/pointer edits; behavior surfaces (prompts/skills/evals); medium-risk code | exact-diff review + independent adversarial lane (different vendor or fresh context) + scope-fidelity verdict |
-| 3 | production/runtime services; live-injected context surfaces; provider routing; security/data-subject surfaces; major refactor/deletion | full 4-phase ladder (plan review, exact-diff, adversarial, acceptance) on the highest-capability Claude lane + review-board lanes |
+| 3 | production/runtime services; live-injected context surfaces; provider routing; security/data-subject surfaces; major refactor / mass deletion | full 4-phase ladder (plan review, exact-diff, adversarial, acceptance) on the highest-capability Claude lane + review-board lanes |
 
 Riders + audit rule: spine §Review ladder is canonical; receipts record tier + one-line justification; reviewer's first check is tier correctness. If uncertain, take the higher tier. Effort scales with tier; xhigh only where a smaller slice cannot preserve safety.
 
-Tier 0 = typo/cosmetic only; anything fixing observed misbehavior is >= Tier 1; `tier0:` commit trailer.
 
 ## Micro-intent fast path
 

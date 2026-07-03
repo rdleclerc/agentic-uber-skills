@@ -27,7 +27,7 @@ target_paths = [
   "${GAIA_ROOT:-~/repos/agfunder-gaia}/AGENTS.md",
   "${GAIA_ROOT:-~/repos/agfunder-gaia}/skills/gaia-testing/SKILL.md",
 ]
-git_ref = "main"
+git_ref = "origin/main"
 match = "literal"
 pattern = '''Rob has pre-approved live Slack proof prompts in `#gaia-testing-alpha` as part of Gaia testing. Do not pause to ask for permission before posting a realistic proof prompt there. There should normally be a Chrome window with Slack web open; use that Slack web window for the live proof path before falling back to another Slack access path. This pre-approval is only for the alpha testing channel and Gaia proof prompts, not for external/customer channels or unrelated Slack posting.'''
 normalization = "whitespace"
@@ -45,7 +45,7 @@ target_paths = [
   "${GAIA_ROOT:-~/repos/agfunder-gaia}/CLAUDE.md",
   "${HOME}/CLAUDE.md",
 ]
-git_ref = "main"
+git_ref = "origin/main"
 match = "literal"
 pattern = '''${GAIA_ROOT:-~/repos/agfunder-gaia}/scripts/run_gateway_health_canary.sh'''
 normalization = "none"
@@ -77,7 +77,7 @@ canonical_source = "${GAIA_ROOT:-~/repos/agfunder-gaia}/knowledge/coding-agent-o
 target_paths = [
   "${GAIA_ROOT:-~/repos/agfunder-gaia}/knowledge/coding-agent-operating-spine.md",
 ]
-git_ref = "main"
+git_ref = "origin/main"
 match = "regex"
 pattern = '''For Tier ≥1 Gaia/OpenClaw work, use the best available Claude review lane unless Rob explicitly waives it.*claude --model opus --effort max.*record the fallback\. Do not silently downgrade\. If no Claude review lane is reachable, stop before merge, commit, or completion claims'''
 normalization = "whitespace"
@@ -108,7 +108,7 @@ canonical_source = "${GAIA_ROOT:-~/repos/agfunder-gaia}/GAIA_TESTING.md#mandator
 target_paths = [
   "${GAIA_ROOT:-~/repos/agfunder-gaia}/GAIA_TESTING.md",
 ]
-git_ref = "main"
+git_ref = "origin/main"
 match = "literal"
 pattern = '''After `openclaw upgrade` (or any openclaw npm version bump)** — the 2026-04-29 incident is the reason this exists. Hardening of `hooks-yfZrrzcF.js` silently broke the gmail pipeline for ~3 days. Run:'''
 normalization = "whitespace"
@@ -124,7 +124,7 @@ canonical_source = "${GAIA_ROOT:-~/repos/agfunder-gaia}/AGENTIC_ARCHITECTURE.md#
 target_paths = [
   "${GAIA_ROOT:-~/repos/agfunder-gaia}/AGENTIC_ARCHITECTURE.md",
 ]
-git_ref = "main"
+git_ref = "origin/main"
 match = "literal"
 pattern = '''- **Canonical file**: `\${UBER_GUIDE_ROOT:-~/repos/agentic-architecture-guide}/agentic_architecture_singlefile.md`'''
 normalization = "whitespace"
@@ -156,7 +156,7 @@ target_paths = [
   "${GAIA_ROOT:-~/repos/agfunder-gaia}/knowledge/coding-agent-operating-spine.md",
   "${GAIA_ROOT:-~/repos/agfunder-gaia}/AGENTS.md",
 ]
-git_ref = "main"
+git_ref = "origin/main"
 match = "literal"
 pattern = '''Precedence with the Uber skill pack: `ubergoal` wraps this spine's lifecycle for gaia work; the uber run receipt satisfies the spine receipt contract; `uberaccept` is the acceptance review; the claude-adversary lane is the required Tier-2+ independent lane and stays opt-in below Tier 2.'''
 normalization = "whitespace"
@@ -187,14 +187,14 @@ canonical_source = "${GAIA_ROOT:-~/repos/agfunder-gaia}/knowledge/coding-agent-o
 target_paths = [
   "${GAIA_ROOT:-~/repos/agfunder-gaia}/knowledge/coding-agent-operating-spine.md",
 ]
-git_ref = "main"
+git_ref = "origin/main"
 match = "literal"
 pattern = '''| Tier | Work class | Required review |
 |---|---|---|
 | 0 | typo/cosmetic only — nothing that fixes observed misbehavior | none; commit carries a `tier0:` trailer |
 | 1 | contained single-surface change, clear tests | one exact-diff review pass by a capable lane, including a one-line scope echo against the operator-original ask |
 | 2 | cross-repo doctrine/pointer edits; behavior surfaces (prompts/skills/evals); medium-risk code | exact-diff review + independent adversarial lane (different vendor or fresh context) + scope-fidelity verdict |
-| 3 | production/runtime services; live-injected context surfaces; provider routing; security/data-subject surfaces; major refactor/deletion | full 4-phase ladder (plan review, exact-diff, adversarial, acceptance) on the highest-capability Claude lane + review-board lanes |'''
+| 3 | production/runtime services; live-injected context surfaces; provider routing; security/data-subject surfaces; major refactor / mass deletion | full 4-phase ladder (plan review, exact-diff, adversarial, acceptance) on the highest-capability Claude lane + review-board lanes |'''
 normalization = "whitespace"
 allowed_absences = []
 severity = "warn"
@@ -214,7 +214,7 @@ pattern = '''| Tier | Work class | Required review |
 | 0 | typo/cosmetic only — nothing that fixes observed misbehavior | none; commit carries a `tier0:` trailer |
 | 1 | contained single-surface change, clear tests | one exact-diff review pass by a capable lane, including a one-line scope echo against the operator-original ask |
 | 2 | cross-repo doctrine/pointer edits; behavior surfaces (prompts/skills/evals); medium-risk code | exact-diff review + independent adversarial lane (different vendor or fresh context) + scope-fidelity verdict |
-| 3 | production/runtime services; live-injected context surfaces; provider routing; security/data-subject surfaces; major refactor/deletion | full 4-phase ladder (plan review, exact-diff, adversarial, acceptance) on the highest-capability Claude lane + review-board lanes |'''
+| 3 | production/runtime services; live-injected context surfaces; provider routing; security/data-subject surfaces; major refactor / mass deletion | full 4-phase ladder (plan review, exact-diff, adversarial, acceptance) on the highest-capability Claude lane + review-board lanes |'''
 normalization = "whitespace"
 allowed_absences = []
 severity = "warn"
