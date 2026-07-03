@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import subprocess
 import sys
+import tempfile
 import unittest
 import os
 from pathlib import Path
@@ -111,13 +112,27 @@ class FailureCaseValidatorTests(unittest.TestCase):
         self.assertNotEqual(result.returncode, 0)
         self.assertIn("shared-id status mismatch", result.stderr)
 
-    def test_cross_index_matches_gaia_checkout_when_present(self) -> None:
+    def test_cross_index_matches_gaia_origin_main_when_present(self) -> None:
+        # Doctrine truth is origin/main, not the working checkout: other
+        # sessions legitimately hold lagging branches there (same rationale
+        # as the drift registry's git_ref = "origin/main").
         gaia_root = Path(os.environ.get("GAIA_ROOT", str(Path.home() / "repos" / "agfunder-gaia"))).expanduser()
-        gaia_index = gaia_root / "evals" / "failures" / "INDEX.md"
-        if not gaia_index.exists():
+        if not (gaia_root / ".git").exists():
             self.skipTest(f"LOUD SKIP: Gaia checkout absent at {gaia_root}; cross-index live check not run")
-        result = run_validator_args("--index", str(ROOT / "evals" / "failures" / "INDEX.md"), "--cross-index", str(gaia_index))
-        self.assertEqual(result.returncode, 0, result.stderr + result.stdout)
+        show = subprocess.run(
+            ["git", "-C", str(gaia_root), "show", "origin/main:evals/failures/INDEX.md"],
+            capture_output=True, text=True,
+        )
+        if show.returncode != 0:
+            self.skipTest(f"LOUD SKIP: cannot read origin/main INDEX from {gaia_root}: {show.stderr.strip()}")
+        with tempfile.NamedTemporaryFile("w", suffix="_gaia_INDEX.md", delete=False) as handle:
+            handle.write(show.stdout)
+            gaia_index_path = handle.name
+        try:
+            result = run_validator_args("--index", str(ROOT / "evals" / "failures" / "INDEX.md"), "--cross-index", gaia_index_path)
+            self.assertEqual(result.returncode, 0, result.stderr + result.stdout)
+        finally:
+            os.unlink(gaia_index_path)
 
 
 if __name__ == "__main__":
