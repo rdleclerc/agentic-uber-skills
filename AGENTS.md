@@ -18,7 +18,7 @@ Read in this order:
 
 - `$ubergoal` is the only default/implicit Uber lifecycle router.
 - All skills in this pack must be installed and exposed to Codex sessions. Exposure is not trigger authority.
-- Claude Code skill frontmatter for every pack skill must keep `model: claude-opus-4-8` and `effort: max` so Uber-skill invocations default to Opus 4.8 max in every session.
+- Review and acceptance lanes use the highest-capability available Claude lane; record `lane_used` in the receipt; never silently downgrade. In gaia contexts the spine's lane policy governs (`knowledge/coding-agent-operating-spine.md` in the gaia workspace repo).
 - Phase skills are explicit or wrapper-invoked: `$uberplan`, `$uberaccept`, `$uberskillevolver`, `$ubersimplify`, and `$uberassess` should not trigger merely because a task resembles their domain. Their descriptions and OpenAI adapter prompts should say "Do not auto-trigger from task similarity" so runtime skill routers do not confuse examples with permission.
 - `$uberrca` is a utility skill, not an Uber lifecycle phase. Use it directly for general incidents, debugging, postmortems, repeated bugs, and class-level root-cause analysis.
 - `ubershow` = visual communication utility, not an Uber lifecycle phase. Use it when a browser-first static artifact will materially improve decision speed or comprehension; generated HTML is a view, and copy/paste receipts are the decision registration path.
@@ -48,6 +48,7 @@ Read in this order:
 - Recurring/watch-and-fix loop work is a mode of `ubergoal`, not a new phase skill. Keep `ubergoal` thin: it may mark `loop_mode` and route to `uberplan` for the Loop Contract, `uberaccept` for per-iteration proof, and `uberskillevolver` for reviewed learning. Use `references/loop-engineering.md`; do not extract `uberloop` until at least three real loop-building runs prove extraction makes the common path smaller, faster, or safer.
 - Add durable machinery only when benefit is clearly **much greater than** implementation, maintenance, context, coordination, eval, rollback, latency, and operator-attention cost.
 - Prefer small validators/tests over prose-only policy when a failure class can drift.
+- New standalone CLIs only where fixtures prove separate need; default = module in the pack-contract aggregator.
 - Do not create another new `uber*` skill until repeated real-project use proves extraction makes the common path smaller, faster, or safer; `uberassess` is admitted because source-to-recommendation assessment is a repeated cross-project workflow with clear no-implementation safety boundaries, and `ubershow` is admitted because repeated coding sessions needed high-bandwidth visual decision surfaces without adding a server or UI framework.
 - Do not silently self-modify skills from learning records; learning packets are evidence, not authority.
 
@@ -88,9 +89,10 @@ uv run --with pyyaml python uber-skill-creator/scripts/quick_validate.py <skill>
 
 ## Install and sync policy
 
-- Source repo: `/Users/claw1/agentic-uber-skills`.
-- Local Codex install target: `/Users/claw1/.codex/skills/<skill>`.
-- After changing a skill that local Codex should use, sync that skill directory to `/Users/claw1/.codex/skills/<skill>` and validate the installed copy.
+- Source repo: this repository's checkout location.
+- Local Codex install target: `~/.codex/skills/<skill>`.
+- Local Claude install target: `~/.claude/skills/<skill>`.
+- After changing a skill that local Codex or Claude should use, sync by symlink from the checkout to the local install target and validate the installed copy.
 - Generic/Codex/Claude install docs should list the same pack directories unless a directory is explicitly labelled optional.
 - Codex adapter metadata should expose every pack skill; direct-use/phase gating belongs in the skill descriptions and prompts, not in hiding the skill from session context.
 - Do not commit, tag, push, or publish without explicit user authorization.

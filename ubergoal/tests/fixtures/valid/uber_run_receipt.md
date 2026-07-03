@@ -7,11 +7,12 @@
 - Tier: 2
 - Owner/session: test-session
 - Outcome: success
+- lane_used: claude-fable-5 / gpt-5.5 xhigh
 - Source branch/commit: session/test abc123
 
 ## Runtime agent topology
 
-- Config source / observed source: local Codex config `/Users/claw1/.codex/config.toml`
+- Config source / observed source: local Codex config `/Users/example/.codex/config.toml`
 - Topology mode: standard_6_2
 - Current `max_threads`: 6
 - Current `max_depth`: 2

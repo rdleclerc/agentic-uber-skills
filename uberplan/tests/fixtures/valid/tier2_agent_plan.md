@@ -124,7 +124,7 @@ flowchart TD
 
 ## Runtime agent topology / Codex depth-thread policy
 
-- Config source / observed source: planned local Codex config `/Users/claw1/.codex/config.toml` or runtime-reported `[agents]` settings.
+- Config source / observed source: planned local Codex config `/Users/example/.codex/config.toml` or runtime-reported `[agents]` settings.
 - Standard campaign preset: `max_threads=6`, `max_depth=2`.
 - Current or planned `max_threads`: 6.
 - Current or planned `max_depth`: 2.

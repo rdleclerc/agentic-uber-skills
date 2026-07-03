@@ -1,22 +1,86 @@
 from __future__ import annotations
 
 import subprocess
+import shutil
 import sys
+import tempfile
 import unittest
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
+PACK_SKILLS = [
+    "uberrca",
+    "uber-skill-creator",
+    "ubergoal",
+    "uberplan",
+    "uberaccept",
+    "uberskillevolver",
+    "ubersimplify",
+    "uberassess",
+    "uberarchitect",
+    "ubershow",
+]
+
+
+def copy_lint_root(destination: Path) -> Path:
+    lint_root = destination / "pack"
+    lint_root.mkdir()
+    for rel in ["AGENTS.md", "CLAUDE.md", "README.md", "ROADMAP.md", "references"]:
+        src = ROOT / rel
+        dst = lint_root / rel
+        if src.is_dir():
+            shutil.copytree(src, dst, ignore=shutil.ignore_patterns("__pycache__"))
+        else:
+            shutil.copy2(src, dst)
+    for skill in PACK_SKILLS:
+        shutil.copytree(ROOT / skill, lint_root / skill, ignore=shutil.ignore_patterns("__pycache__"))
+    return lint_root
+
+
+def run_pack_lint(root: Path) -> subprocess.CompletedProcess[str]:
+    return subprocess.run(
+        [sys.executable, "scripts/lint_pack_contract.py", "--root", str(root)],
+        cwd=ROOT,
+        text=True,
+        capture_output=True,
+    )
 
 
 class PackContractTests(unittest.TestCase):
     def test_pack_contract_lint_passes(self) -> None:
-        proc = subprocess.run(
-            [sys.executable, "scripts/lint_pack_contract.py", "--root", str(ROOT)],
-            cwd=ROOT,
-            text=True,
-            capture_output=True,
-        )
+        proc = run_pack_lint(ROOT)
         self.assertEqual(proc.returncode, 0, proc.stderr + proc.stdout)
+
+    def test_pack_contract_lint_rejects_model_pinned_frontmatter(self) -> None:
+        with tempfile.TemporaryDirectory() as td:
+            lint_root = copy_lint_root(Path(td))
+            skill = lint_root / "ubergoal" / "SKILL.md"
+            pin = (ROOT / "tests" / "fixtures" / "pack_contract" / "frontmatter_model_pin.txt").read_text()
+            skill.write_text(skill.read_text().replace("\n---\n\n# Ubergoal", f"\n{pin}\n---\n\n# Ubergoal", 1))
+            proc = run_pack_lint(lint_root)
+            self.assertNotEqual(proc.returncode, 0)
+            self.assertIn("frontmatter must not contain `model:`", proc.stderr)
+            self.assertIn("frontmatter must not hardcode model id", proc.stderr)
+
+    def test_pack_contract_lint_rejects_nonexistent_absolute_doctrine_path(self) -> None:
+        with tempfile.TemporaryDirectory() as td:
+            lint_root = copy_lint_root(Path(td))
+            fixture = (ROOT / "tests" / "fixtures" / "pack_contract" / "nonexistent_absolute_path.md").read_text()
+            readme = lint_root / "README.md"
+            readme.write_text(readme.read_text() + "\n" + fixture)
+            proc = run_pack_lint(lint_root)
+            self.assertNotEqual(proc.returncode, 0)
+            self.assertIn("absolute path does not exist", proc.stderr)
+
+    def test_pack_contract_lint_rejects_machine_specific_doctrine_path(self) -> None:
+        with tempfile.TemporaryDirectory() as td:
+            lint_root = copy_lint_root(Path(td))
+            fixture = (ROOT / "tests" / "fixtures" / "pack_contract" / "machine_specific_path.md").read_text()
+            readme = lint_root / "README.md"
+            readme.write_text(readme.read_text() + "\n" + fixture)
+            proc = run_pack_lint(lint_root)
+            self.assertNotEqual(proc.returncode, 0)
+            self.assertIn("machine-specific path must be parameterized or marker-exempted", proc.stderr)
 
     def test_all_uber_skills_are_exposed_but_phase_skills_are_explicit(self) -> None:
         expected = {

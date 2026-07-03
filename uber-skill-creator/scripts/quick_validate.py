@@ -7,9 +7,83 @@ import re
 import sys
 from pathlib import Path
 
-import yaml
+try:
+    import yaml
+except ModuleNotFoundError:  # pragma: no cover - exercised in minimal runtimes.
+    yaml = None
 
 MAX_SKILL_NAME_LENGTH = 64
+
+
+class FrontmatterParseError(ValueError):
+    pass
+
+
+def scalar_value(raw):
+    value = raw.strip()
+    if len(value) >= 2 and value[0] == value[-1] and value[0] in {"'", '"'}:
+        return value[1:-1]
+    return value
+
+
+def parse_simple_frontmatter(frontmatter_text):
+    """Parse the small YAML subset used by portable SKILL.md frontmatter."""
+    result = {}
+    lines = frontmatter_text.splitlines()
+    i = 0
+    while i < len(lines):
+        line = lines[i]
+        stripped = line.strip()
+        if not stripped or stripped.startswith("#"):
+            i += 1
+            continue
+        if line.startswith((" ", "\t")):
+            raise FrontmatterParseError(f"unexpected indented line: {line}")
+        if ":" not in line:
+            raise FrontmatterParseError(f"expected key/value line: {line}")
+        key, raw_value = line.split(":", 1)
+        key = key.strip()
+        raw_value = raw_value.strip()
+        if not key:
+            raise FrontmatterParseError(f"empty key in line: {line}")
+        if raw_value in {">", ">-", "|", "|-"}:
+            block_lines = []
+            i += 1
+            while i < len(lines) and (lines[i].startswith((" ", "\t")) or not lines[i].strip()):
+                block_lines.append(lines[i].strip())
+                i += 1
+            if raw_value.startswith(">"):
+                result[key] = " ".join(part for part in block_lines if part)
+            else:
+                result[key] = "\n".join(block_lines).rstrip()
+            continue
+        if raw_value == "":
+            nested = {}
+            i += 1
+            while i < len(lines) and (lines[i].startswith((" ", "\t")) or not lines[i].strip()):
+                child_line = lines[i]
+                if not child_line.strip():
+                    i += 1
+                    continue
+                if ":" not in child_line:
+                    raise FrontmatterParseError(f"expected nested key/value line: {child_line}")
+                child_key, child_value = child_line.split(":", 1)
+                nested[child_key.strip()] = scalar_value(child_value)
+                i += 1
+            result[key] = nested
+            continue
+        result[key] = scalar_value(raw_value)
+        i += 1
+    return result
+
+
+def load_frontmatter(frontmatter_text):
+    if yaml is not None:
+        try:
+            return yaml.safe_load(frontmatter_text)
+        except yaml.YAMLError as e:
+            raise FrontmatterParseError(str(e)) from e
+    return parse_simple_frontmatter(frontmatter_text)
 
 
 def validate_skill(skill_path):
@@ -31,10 +105,10 @@ def validate_skill(skill_path):
     frontmatter_text = match.group(1)
 
     try:
-        frontmatter = yaml.safe_load(frontmatter_text)
+        frontmatter = load_frontmatter(frontmatter_text)
         if not isinstance(frontmatter, dict):
             return False, "Frontmatter must be a YAML dictionary"
-    except yaml.YAMLError as e:
+    except FrontmatterParseError as e:
         return False, f"Invalid YAML in frontmatter: {e}"
 
     allowed_properties = {

@@ -42,7 +42,7 @@ Deleted helper had no imports, CLI entrypoints, registry references, config refe
 
 ## Uberskillevolver handoff
 - Lessons worth recording: uberskillevolver should record that duplicate validators need characterization tests before deletion.
-- Suggested learning record path: ~/.agentic-uber-learnings/demo-patch.
+- Suggested learning record path: learning/inbox/example/demo-patch.
 - Promote/defer/no-change: defer.
 
 ## Final verdict

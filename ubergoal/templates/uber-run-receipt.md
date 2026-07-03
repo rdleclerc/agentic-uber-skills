@@ -9,6 +9,7 @@ Use this as the thin tracing artifact for an `ubergoal` run. It is not an orches
 - Tier:
 - Owner/session:
 - Outcome: success | partial | failed | aborted
+- lane_used:
 - Source branch/commit:
 
 ## Scope fidelity

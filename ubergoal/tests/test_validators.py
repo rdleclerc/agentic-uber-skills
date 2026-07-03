@@ -91,6 +91,9 @@ class ThinWrapperTests(unittest.TestCase):
         self.assertIn("runnable safe next actions", active_blocker.stderr)
         hard_blocked = run_cmd(str(RECEIPT), str(ROOT / "tests" / "fixtures" / "valid" / "uber_run_receipt_production_hard_blocked.md"))
         self.assertEqual(hard_blocked.returncode, 0, hard_blocked.stderr + hard_blocked.stdout)
+        missing_lane = run_cmd(str(RECEIPT), str(ROOT / "tests" / "fixtures" / "invalid" / "uber_run_receipt_missing_lane_used.md"))
+        self.assertNotEqual(missing_lane.returncode, 0)
+        self.assertIn("missing field: lane_used", missing_lane.stderr)
 
     def test_uber_run_receipt_validator_accepts_legacy_skill_labels(self) -> None:
         text = (ROOT / "tests" / "fixtures" / "valid" / "uber_run_receipt.md").read_text()

@@ -1,8 +1,6 @@
 ---
 name: uberplan
 description: Do not auto-trigger from task similarity. Use only when explicitly named by the user or routed by ubergoal. Plans substantial coding, refactoring, UI, prompt/skill/workflow, or agentic-system work as a long-running goal plan with architecture stepback, thread highlights, a durable .md file, operational outcome/Definition of Done contract, recursive pseudocode for hierarchical plan trees, proof ladders, review lanes, topology seams, and confidence gates without treating planning as permission to over-engineer.
-model: claude-opus-4-8
-effort: max
 ---
 
 # Uberplan
@@ -59,8 +57,6 @@ When terminology crystallizes during that interrogation, capture only durable do
 ## Basic Spine First gate
 
 For product/rewrite/agentic-system work, first name the minimum user-visible product spine, the canonical command/live-safe check that proves it, and current result: `pass`, `fail`, or `not available`. If it is not green, plan only to create/fix that spine or explicitly scope a non-readiness spike. Do not add architecture, agents, routers, monitors, or eval frameworks until the spine is green or the user accepts the spike.
-
-For Type0, the default spine is: real feed/tip/wire input → normalized signal → admission decision → lane/story assignment → story processing → fact-check/publish/reject guard → traceable result.
 
 ## Scope fidelity artifact gate
 

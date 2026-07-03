@@ -46,7 +46,7 @@ Search/source map:
 | Lane | Sources / queries / paths | Inspected? | Key finding | Gaps |
 |---|---|---:|---|---|
 | Seed/source capture | https://x.com/example/status/1 | yes | candidate practice only | no corroborating repos |
-| Local codebase/docs | /Users/claw1/agentic-uber-skills/AGENTS.md | yes | existing validators already cover some constraints | no code scan beyond AGENTS |
+| Local codebase/docs | /Users/example/agentic-uber-skills/AGENTS.md | yes | existing validators already cover some constraints | no code scan beyond AGENTS |
 | Primary docs/specs | n/a | n/a | no external spec needed | n/a |
 | GitHub alternatives/prior art | n/a | n/a | not needed for Tier 1 watch | examples still needed |
 | Forums/issues/practitioner discussion | n/a | n/a | not needed for Tier 1 watch | no practitioner corroboration |
@@ -54,7 +54,7 @@ Search/source map:
 | Contradiction/simpler-alternative search | existing lint/eval pattern | yes | watch/eval is cheaper than implementation | no broader search |
 
 Local codebase/docs inspected:
-- /Users/claw1/agentic-uber-skills/AGENTS.md
+- /Users/example/agentic-uber-skills/AGENTS.md
 
 External primary docs inspected:
 - n/a — no primary external spec was needed for quick watch decision.
@@ -126,7 +126,7 @@ Novelty / prior-art check:
 
 ## Project relevance matrix
 
-Project context checked: yes — /Users/claw1/agentic-uber-skills/AGENTS.md on 2026-05-10
+Project context checked: yes — /Users/example/agentic-uber-skills/AGENTS.md on 2026-05-10
 
 | Destination | Relevance | Why | Existing related work / duplicate risk | Risk | Action |
 |---|---:|---|---|---|---|

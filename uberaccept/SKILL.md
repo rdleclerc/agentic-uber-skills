@@ -1,8 +1,6 @@
 ---
 name: uberaccept
 description: Do not auto-trigger from task similarity. Use only when explicitly named by the user or routed by ubergoal. Performs adversarial final acceptance for substantial coding, refactoring, UI, prompt/skill/workflow, or agentic-system work before completion, merge, commit, push, or ship claims.
-model: claude-opus-4-8
-effort: max
 ---
 
 # Uberaccept
@@ -21,8 +19,6 @@ If the completed work claims to fix a system-scale concurrency, queue/worker, ga
 ## Basic Spine First acceptance blocker
 
 For product/rewrite/agentic-system work, final acceptance must name the minimum user-visible product spine, the canonical command or live-safe check that proves it, and the current result. If the result is `fail` or `not available`, do not recommend readiness for added architecture, abstractions, agents, contracts, routers, monitors, or eval frameworks. The only acceptable completion scope is a spine-check fix/creation or an explicitly user-accepted non-readiness spike. Core spine gaps are blockers, not residual risks.
-
-For Type0, default spine: real feed/tip/wire input → normalized signal → admission decision → lane/story assignment → story processing → fact-check/publish/reject guard → traceable result.
 
 Gall's Law acceptance corollary: locally polished micro-feature success that did not advance the basic working spine is a soft rejection signal, not a pass. A complex top-down harness, proof-only scaffold, or placeholder artifact cannot be accepted as progress toward an agentic system unless the user explicitly scoped that artifact as the outcome.
 

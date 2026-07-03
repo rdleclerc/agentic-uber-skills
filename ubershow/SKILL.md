@@ -1,8 +1,6 @@
 ---
 name: ubershow
 description: "Use when the user needs high-bandwidth visual communication rather than a text wall: browser-first HTML decision boards, implementation plans, questionnaires, architecture/source/code-review maps, status or incident reports, visual briefs, or interactive decision receipts for Codex/Claude coding workflows. Produces local self-contained HTML artifacts as generated views while preserving Markdown/source/ledger authority."
-model: claude-opus-4-8
-effort: max
 ---
 
 # Ubershow
@@ -23,7 +21,7 @@ HTML clicks do not automatically register with the agent. For v1, every decision
 Default receipt path:
 
 ```text
-/Users/claw1/.openclaw/runtime/ubershow/decisions/YYYY-MM-DDTHHMMSS-<slug>-summary.md
+coordination/<task-slug>/ubershow/YYYY-MM-DDTHHMMSS-<slug>-summary.md
 ```
 
 Receipt file fields: artifact path, decision question, recommended/default option, sources, constraints, `registration_status`, selected decision when known, rationale, and next action. Use `registration_status: pending_user_choice` until the user confirms in chat, then update the session log/ADR/issue/Markdown handoff from the pasted receipt.
@@ -99,8 +97,8 @@ Use `schemas/decision-board.schema.json` only when structured input helps. Do no
 2. **Choose the smallest mode.** Prefer one self-contained page over a mini-app.
 3. **Gather sources.** Cite file paths, URLs, commits, traces, logs, or notes used to build the artifact.
 4. **Copy a template if useful.** Start from one file under `templates/`; edit inline. Final artifacts must be self-contained.
-5. **Place it safely.** Use a generated-artifact directory such as `/Users/claw1/.openclaw/runtime/ubershow/`, repo `runtime/reports/`, `/tmp`, or a project-specific generated folder. Do not put generated HTML in canonical source lanes unless explicitly requested.
-6. **Write the sibling Markdown receipt.** For decision artifacts, write `runtime/ubershow/decisions/<timestamp>-<slug>-summary.md` or a project-local equivalent with `registration_status`.
+5. **Place it safely.** Use the active task's coordination folder in the repo where the work happens: `coordination/<task-slug>/ubershow/`. Do not put generated HTML in canonical source lanes unless explicitly requested.
+6. **Write the sibling Markdown receipt.** For decision artifacts, write `coordination/<task-slug>/ubershow/<timestamp>-<slug>-summary.md` with `registration_status`.
 7. **Include a copyable receipt.** Any artifact requiring a choice must include a `decision-receipt` block and copy button for browser edits/final choices.
 8. **Render/verify when possible.** Open or screenshot the artifact and fix obvious rendering issues.
 9. **Summarize in text.** Final response includes artifact path, receipt path, and concise recommendation/status.
@@ -123,17 +121,16 @@ Use `schemas/decision-board.schema.json` only when structured input helps. Do no
 ## Suggested generated filenames
 
 ```text
-/Users/claw1/.openclaw/runtime/ubershow/YYYY-MM-DD-topic-decision-board.html
-/Users/claw1/.openclaw/runtime/ubershow/decisions/YYYY-MM-DDTHHMMSS-topic-summary.md
-/Users/claw1/.openclaw/runtime/ubershow/YYYY-MM-DD-topic-implementation-plan.html
-<repo>/runtime/reports/YYYY-MM-DD-pr-123-review-map.html
-/tmp/ubershow-<slug>.html
+coordination/<task-slug>/ubershow/YYYY-MM-DD-topic-decision-board.html
+coordination/<task-slug>/ubershow/YYYY-MM-DDTHHMMSS-topic-summary.md
+coordination/<task-slug>/ubershow/YYYY-MM-DD-topic-implementation-plan.html
+coordination/<task-slug>/ubershow/YYYY-MM-DD-pr-123-review-map.html
 ```
 
 If rendering a screenshot:
 
 ```text
-/Users/claw1/.openclaw/runtime/ubershow/YYYY-MM-DD-topic-decision-board.png
+coordination/<task-slug>/ubershow/YYYY-MM-DD-topic-decision-board.png
 ```
 
 ## Quality check before final

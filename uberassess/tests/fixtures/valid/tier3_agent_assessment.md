@@ -54,7 +54,7 @@ Search/source map:
 | Contradiction/simpler-alternative search | existing packet fields and validator | yes | one field is simpler than new subskill or MCP service | needs three-use review |
 
 Local codebase/docs inspected:
-- /Users/claw1/agentic-architecture-guide/AGENTS.md and /Users/claw1/agentic-uber-skills/uberplan/SKILL.md
+- /Users/example/agentic-architecture-guide/AGENTS.md and /Users/example/agentic-uber-skills/uberplan/SKILL.md
 
 External primary docs inspected:
 - arXiv paper text and benchmark appendix.
@@ -126,7 +126,7 @@ Novelty / prior-art check:
 
 ## Project relevance matrix
 
-Project context checked: yes — /Users/claw1/agentic-architecture-guide/AGENTS.md and /Users/claw1/agentic-uber-skills/uberplan/SKILL.md on 2026-05-10
+Project context checked: yes — /Users/example/agentic-architecture-guide/AGENTS.md and /Users/example/agentic-uber-skills/uberplan/SKILL.md on 2026-05-10
 
 | Destination | Relevance | Why | Existing related work / duplicate risk | Risk | Action |
 |---|---:|---|---|---|---|

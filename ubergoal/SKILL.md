@@ -1,8 +1,6 @@
 ---
 name: ubergoal
 description: "Use when an agent needs the goal-owning lifecycle wrapper for substantial coding or agentic-system work: create or bind a Codex/platform goal by default when available, classify risk, route to uberplan for rigorous planning, run Tier 2+ specialist review-board agents when available, coordinate execution at the right tier, route to uberaccept for final proof, and route to uberskillevolver for post-run learning. Trigger for explicit goal/objective work, long plans, goal ledgers, multi-agent coding sessions, agentic-system changes, rigorous-multiagent-coding, the former monolithic ubergoal workflow, 100% confident strategy checks, final completion orchestration, or deciding which Uber subskill to use."
-model: claude-opus-4-8
-effort: max
 ---
 
 # Ubergoal
@@ -35,10 +33,10 @@ Deferred until real usage proves benefit >> cost: `ubercode`, `ubergit`, `uberev
 
 For Tier 1+ coding, prompt, skill, workflow, or agentic-system implementation, use the Coding Agent Work Contract unless the task is tiny and deterministic:
 
-- Guide: `/Users/claw1/agentic-architecture-guide/docs/coding-agent-work-contract.md`
-- Template: `/Users/claw1/agentic-architecture-guide/.agentic/coding_agent_work_contract_template.md`
+- Guide: `${UBER_GUIDE_ROOT:-~/repos/agentic-architecture-guide}/docs/coding-agent-work-contract.md`
+- Template: `${UBER_GUIDE_ROOT:-~/repos/agentic-architecture-guide}/.agentic/coding_agent_work_contract_template.md`
 
-Tier 0 can use an inline note. Tier 1 uses the work contract unless risk requires `uberplan`. Tier 2/3 may extend it inside `uberplan`, but must avoid a duplicate objective/scope/evidence bureaucracy.
+`UBER_GUIDE_ROOT` may point at a local architecture-guide checkout; if unset, use `~/repos/agentic-architecture-guide`. Tier 0 can use an inline note. Tier 1 uses the work contract unless risk requires `uberplan`. Tier 2/3 may extend it inside `uberplan`, but must avoid a duplicate objective/scope/evidence bureaucracy.
 
 ## Task Understanding Review / Micro-intent fast path
 

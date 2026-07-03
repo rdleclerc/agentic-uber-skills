@@ -41,7 +41,7 @@ No deletion. Dynamic-reference safeguards checked for scripts, templates, config
 
 ## Uberskillevolver handoff
 - Lessons worth recording: uberskillevolver should receive audit-only lesson if repeated.
-- Suggested learning record path: ~/.agentic-uber-learnings/demo.
+- Suggested learning record path: learning/inbox/example/demo.
 - Promote/defer/no-change: defer.
 
 ## Final verdict

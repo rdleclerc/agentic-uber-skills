@@ -20,29 +20,42 @@ PACK_SKILLS = [
     "uberarchitect",
     "ubershow",
 ]
-CLAUDE_CODE_UBER_MODEL = "claude-opus-4-8"
-CLAUDE_CODE_UBER_EFFORT = "max"
 UBER_PHASE_SKILLS = ["uberplan", "uberaccept", "uberskillevolver", "ubersimplify", "uberassess", "uberarchitect"]
 UTILITY_IMPLICIT_SKILLS = ["uberrca", "uber-skill-creator", "ubershow"]
 ROOT_REQUIRED_FILES = ["AGENTS.md", "CLAUDE.md", "README.md", "ROADMAP.md"]
+FORBIDDEN_FRONTMATTER_KEYS = {"model", "effort"}
+MODEL_ID_RE = re.compile(
+    r"\b(?:claude-[A-Za-z0-9][A-Za-z0-9_.-]*-\d+(?:[.-]\d+)*|gpt-\d+(?:[.-]\d+)*(?:-[A-Za-z0-9_.-]+)?)\b",
+    re.I,
+)
+ABSOLUTE_PATH_RE = re.compile(
+    r"(?<![A-Za-z0-9_:$~.-])"
+    r"(/(?:Users|tmp|private|var|opt|usr|etc|home|Library|Applications|Volumes)/[^\s`'\"<>),]+)"
+)
+MACHINE_USER_PATH_RE = re.compile(r"/Users/[^/\s`'\"<>),]+/[^\s`'\"<>),]*")
+PORTABILITY_EXEMPT_MARKERS = ("fixture-path: intentional", "portable-path: intentional")
+DOCTRINE_TEXT_SUFFIXES = {".md", ".txt", ".toml", ".yaml", ".yml", ".json", ".html"}
 AGENTS_REQUIRED_PHRASES = [
     "$ubergoal` is the only default/implicit Uber lifecycle router",
     "All skills in this pack must be installed and exposed to Codex sessions",
-    "Claude Code skill frontmatter for every pack skill must keep `model: claude-opus-4-8` and `effort: max`",
+    "Review and acceptance lanes use the highest-capability available Claude lane; record `lane_used` in the receipt; never silently downgrade. In gaia contexts the spine's lane policy governs (`knowledge/coding-agent-operating-spine.md` in the gaia workspace repo).",
     "Phase skills are explicit or wrapper-invoked",
     "uberassess` = source-to-recommendation due diligence",
     "ubershow` = visual communication utility",
     "uberarchitect` = architecture stepback gate",
     "uberrca` = general incident/root-cause authority",
     "Agent Advocate = agent-behavior-specific RCA lens",
-    "Source repo: `/Users/claw1/agentic-uber-skills`",
-    "Local Codex install target: `/Users/claw1/.codex/skills/<skill>`",
+    "New standalone CLIs only where fixtures prove separate need; default = module in the pack-contract aggregator",
+    "Source repo: this repository's checkout location",
+    "Local Codex install target: `~/.codex/skills/<skill>`",
+    "Local Claude install target: `~/.claude/skills/<skill>`",
     "Codex adapter metadata should expose every pack skill",
     "Do not commit, tag, push, or publish without explicit user authorization",
     "child/sub-`uberplan` appendix",
 ]
 README_REQUIRED_PHRASES = [
     "Agent-facing source authority lives in [AGENTS.md](AGENTS.md)",
+    "Review and acceptance lanes use the highest-capability available Claude lane; record `lane_used` in the receipt; never silently downgrade.",
     "invoke `$ubergoal` as the implicit lifecycle router",
     "`$uberrca` is the general incident/debugging/root-cause utility",
     "`$ubershow`",
@@ -64,12 +77,92 @@ def read(path: Path) -> str:
     return path.read_text() if path.exists() else ""
 
 
-def frontmatter_value(root: Path, skill: str, key: str) -> str | None:
+def frontmatter(root: Path, skill: str) -> str:
     text = read(root / skill / "SKILL.md")
-    match = re.search(rf"^\s*{re.escape(key)}:\s*(.+?)\s*$", text, flags=re.M)
+    match = re.match(r"\A---\s*\n(.*?)\n---\s*(?:\n|\Z)", text, flags=re.S)
     if not match:
-        return None
-    return match.group(1).strip().strip('"').strip("'")
+        return ""
+    return match.group(1)
+
+
+def doctrine_text_files(root: Path) -> list[Path]:
+    files: list[Path] = []
+    for rel in ["AGENTS.md", "README.md", "ROADMAP.md"]:
+        path = root / rel
+        if path.exists():
+            files.append(path)
+    for skill in PACK_SKILLS:
+        skill_root = root / skill
+        skill_md = skill_root / "SKILL.md"
+        if skill_md.exists():
+            files.append(skill_md)
+        for dirname in ["references", "templates"]:
+            base = skill_root / dirname
+            if base.exists():
+                files.extend(path for path in base.rglob("*") if path.is_file() and path.suffix in DOCTRINE_TEXT_SUFFIXES)
+    for dirname in ["references", "templates"]:
+        base = root / dirname
+        if base.exists():
+            files.extend(path for path in base.rglob("*") if path.is_file() and path.suffix in DOCTRINE_TEXT_SUFFIXES)
+    return sorted(set(files))
+
+
+def has_portability_exemption(lines: list[str], index: int) -> bool:
+    for offset in (-1, 0):
+        candidate = index + offset
+        if 0 <= candidate < len(lines):
+            if any(marker in lines[candidate] for marker in PORTABILITY_EXEMPT_MARKERS):
+                return True
+    return False
+
+
+def is_parameterized_path_line(line: str) -> bool:
+    return "${" in line and ":-" in line and "}" in line
+
+
+def clean_path_candidate(raw: str) -> str:
+    return raw.rstrip(".,:;")
+
+
+def validate_frontmatter_policy(root: Path, errors: list[str]) -> None:
+    for skill in PACK_SKILLS:
+        path = root / skill / "SKILL.md"
+        if not path.exists():
+            errors.append(f"missing skill package: {skill}/SKILL.md")
+            continue
+        meta = frontmatter(root, skill)
+        if not meta:
+            errors.append(f"{skill} must have SKILL.md frontmatter")
+            continue
+        for match in re.finditer(r"^\s*([A-Za-z0-9_-]+)\s*:", meta, flags=re.M):
+            key = match.group(1).lower()
+            if key in FORBIDDEN_FRONTMATTER_KEYS:
+                errors.append(f"{skill} SKILL.md frontmatter must not contain `{key}:`")
+        model_match = MODEL_ID_RE.search(meta)
+        if model_match:
+            errors.append(f"{skill} SKILL.md frontmatter must not hardcode model id `{model_match.group(0)}`")
+
+
+def validate_portability_oracle(root: Path, errors: list[str]) -> None:
+    for path in doctrine_text_files(root):
+        try:
+            text = path.read_text()
+        except UnicodeDecodeError:
+            continue
+        rel = path.relative_to(root)
+        lines = text.splitlines()
+        for index, line in enumerate(lines):
+            if has_portability_exemption(lines, index) or is_parameterized_path_line(line):
+                continue
+            for match in MACHINE_USER_PATH_RE.finditer(line):
+                candidate = clean_path_candidate(match.group(0))
+                errors.append(f"{rel}:{index + 1} machine-specific path must be parameterized or marker-exempted: {candidate}")
+            for match in ABSOLUTE_PATH_RE.finditer(line):
+                candidate = clean_path_candidate(match.group(1))
+                if MACHINE_USER_PATH_RE.search(candidate):
+                    continue
+                if not Path(candidate).exists():
+                    errors.append(f"{rel}:{index + 1} absolute path does not exist or need parameterization: {candidate}")
 
 
 def policy_value(root: Path, skill: str) -> str | None:
@@ -100,13 +193,7 @@ def main() -> int:
         if not (root / rel).exists():
             errors.append(f"missing root contract file: {rel}")
 
-    for skill in PACK_SKILLS:
-        if not (root / skill / "SKILL.md").exists():
-            errors.append(f"missing skill package: {skill}/SKILL.md")
-        if frontmatter_value(root, skill, "model") != CLAUDE_CODE_UBER_MODEL:
-            errors.append(f"{skill} must default Claude Code skill runs to {CLAUDE_CODE_UBER_MODEL}")
-        if frontmatter_value(root, skill, "effort") != CLAUDE_CODE_UBER_EFFORT:
-            errors.append(f"{skill} must default Claude Code skill runs to {CLAUDE_CODE_UBER_EFFORT} effort")
+    validate_frontmatter_policy(root, errors)
 
     implicit = {skill: policy_value(root, skill) for skill in ["ubergoal", *UBER_PHASE_SKILLS]}
     if implicit.get("ubergoal") != "true":
@@ -169,6 +256,8 @@ def main() -> int:
     for phrase in ROADMAP_REQUIRED_PHRASES:
         if phrase not in roadmap:
             errors.append(f"ROADMAP.md missing phrase: {phrase}")
+
+    validate_portability_oracle(root, errors)
 
     if errors:
         for error in sorted(set(errors)):

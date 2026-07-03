@@ -99,8 +99,7 @@ Every new subskill needs:
 
 Use Git to combine learnings, but do not commit raw traces by default.
 
-- Raw records: local/private, e.g. `~/.agentic-uber-learnings/<machine-id>/...`.
-- Shared packets: sanitized, small, safe-to-commit Markdown under `learning/inbox/<machine-id>/...`.
+- Raw records and shared packets live in this repo's `learning/` tree. Use `learning/inbox/<machine-id>/...` for sanitized, safe-to-commit packets and keep private/raw detail out of Git unless explicitly approved.
 - Promotion: periodic human-reviewed batches move repeated/high-value lessons into skill diffs, evals, validators, templates, or deletions.
 - Archive: after promotion/rejection, move packets to `learning/processed/` or leave them referenced by the promotion batch.
 

@@ -7,6 +7,7 @@
 - Tier: 2
 - Owner/session: test-session
 - Outcome: partial
+- lane_used: claude-fable-5 / gpt-5.5 xhigh
 - Source branch/commit: session/test abc123
 
 ## Skills invoked

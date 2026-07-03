@@ -1,8 +1,6 @@
 ---
 name: uberskillevolver
 description: Do not auto-trigger from task similarity. Use only when explicitly named by the user or routed by ubergoal. Captures a lightweight, human-reviewed learning loop for skills, prompts, workflows, multi-agent coding protocols, or agentic-system playbooks after substantial or surprising runs.
-model: claude-opus-4-8
-effort: max
 ---
 
 # Uberskillevolver
@@ -41,11 +39,9 @@ For a learning pass, produce:
 
 Default location for artifacts:
 
-- Local/private raw records: `~/.agentic-uber-learnings/<machine-id>/<skill-name>/<YYYYMMDDTHHMMSS>-<run-slug>/`
-- In a repo/workspace: `.uberlearn/<skill-name>/<YYYYMMDDTHHMMSS>-<run-slug>/` when local-only or gitignored.
-- Cross-machine shared packets: `learning/inbox/<machine-id>/<YYYYMMDDTHHMMSS>-<run-slug>/post-run-learning.md` after sanitization.
-- In OpenClaw sessions: `/Users/claw1/.openclaw/runtime/skill-evolution/<skill-name>/<YYYYMMDDTHHMMSS>-<run-slug>/`
-- If the run already has a session archive, store there and link from the session log.
+- Learning records live in this repo's `learning/` tree: `learning/inbox/<machine-id>/<YYYYMMDDTHHMMSS>-<run-slug>/post-run-learning.md` before promotion and `learning/processed/...` after promotion or rejection.
+- Reference the learning packet from the active task's coordination folder, usually `coordination/<task-slug>/`, so run receipts and review artifacts can find it.
+- If a run needs private/raw detail, keep it out of Git and promote only a sanitized packet whose `Privacy and redaction` section says `Safe to commit? yes`.
 
 Do not store secrets, credentials, private customer data, full copyrighted source dumps, or unnecessary raw prompts/responses. Prefer links, file paths, hashes, excerpts, and summaries. Redact sensitive traces before persisting. For multi-machine use, commit only sanitized learning packets whose `Privacy and redaction` section says `Safe to commit? yes`.
 

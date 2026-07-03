@@ -329,7 +329,7 @@ def validate(path: Path, allow_template: bool = False) -> list[str]:
         return errors
 
     metadata = found["run metadata"]
-    for label in ["Run slug", "Date/time", "Project/repo", "Tier", "Owner/session", "Outcome"]:
+    for label in ["Run slug", "Date/time", "Project/repo", "Tier", "Owner/session", "Outcome", "lane_used"]:
         require_field(metadata, label, errors)
 
     production_gate_ok = validate_production_blocker_gate(found, has_production_implementation_scope(text), errors)
