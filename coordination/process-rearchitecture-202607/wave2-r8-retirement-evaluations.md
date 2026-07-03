@@ -11,7 +11,7 @@ Archiving means: uninstall the skill from both `~/.codex/skills/<skill>` and `~/
 | Skill | Owner | Observed task class | Within-month eval | Recommendation |
 |---|---|---|---|---|
 | `ubersimplify` | pass: pack maintainer/operator via `AGENTS.md` and ROADMAP dogfooding lane | pass: Gaia dirty-tree simplification audit trail | pass: local golden invocations and report validator can exercise Audit/Plan/Patch guards | keep-slimmed |
-| `ubershow` | pass: pack maintainer/operator via `AGENTS.md` and ROADMAP dogfooding lane | fail: no real generated `coordination/<task>/ubershow/` artifact + sibling receipt found | pass: local golden invocations and pattern-kit tests can exercise it | archive |
+| `ubershow` | pass: pack maintainer/operator via `AGENTS.md` and ROADMAP dogfooding lane | pass: real decision board plus sibling operator-registered receipt found by content marker | pass: local golden invocations and pattern-kit tests can exercise it | keep-slimmed |
 | `uberarchitect` | pass: pack maintainer/operator via `AGENTS.md` and ROADMAP dogfooding lane | pass: two recent Gaia Architecture Stepback Packets | pass: golden routing examples and packet-template tests can exercise it | keep |
 
 ## Ubersimplify
@@ -49,9 +49,9 @@ Archiving would mean removing symlinks from both runtime roots, tombstoning READ
 
 Evidence found:
 
-- No files under `/Users/rob/repos/agfunder-gaia/coordination/**/ubershow/`.
-- No sibling Markdown receipt matching the `ubershow` receipt convention was found in Gaia coordination.
-- HTML files do exist in Gaia coordination, such as `coordination/beautiful-responses/gallery/beautiful-output-gallery.html` and several operational dashboard `index.html` files, but the sweep did not find evidence that they were produced by `ubershow` with the required sibling Markdown receipt.
+- `/Users/rob/repos/agfunder-gaia/coordination/gaia-brain-wisdom-event-graph-activegraph/p0-wisdom-grading-board-2026-05-31.html`: read-only verified content marker `data-artifact-kind="ubershow-decision-board"`.
+- `/Users/rob/repos/agfunder-gaia/coordination/gaia-brain-wisdom-event-graph-activegraph/p0-wisdom-grading-board-2026-05-31-receipt.md`: read-only verified sibling receipt with `registration_status: registered_from_user_paste_2026-05-31` and `selected_decision: proceed_to_p1_minimal_candidate_design`.
+- Earlier directory-convention sweep found no files under `/Users/rob/repos/agfunder-gaia/coordination/**/ubershow/`, but that absence is not decisive because the real board lived beside its task artifacts.
 - Pack-side evidence is limited to templates, tests, and quality-review artifacts: `ubershow/templates/*.html`, `ubershow/evals/golden_skill_invocations.json`, `reviews/uberskills-20260620/*`, and `coordination/integration-uberskills-20260620/*`.
 - `ROADMAP.md#ubershow-dogfooding`: use only when it materially increases decision speed or comprehension; retire if visual artifacts become decorative ceremony.
 
@@ -60,14 +60,16 @@ Contract verdict:
 | Requirement | Verdict | Evidence |
 |---|---|---|
 | named owner | pass | Pack maintainer/operator ownership is implied by `AGENTS.md` install policy and ROADMAP dogfooding lane. No separate named human owner is encoded. |
-| observed task class | fail | The sweep found package tests/templates but no real generated ubershow board plus sibling receipt in coordination history. |
+| observed task class | pass | The Gaia wisdom grading board is a real ubershow decision board with a sibling receipt registered from operator paste. |
 | eval within a month | pass | Existing golden invocation and pattern-kit tests can exercise trigger/de-escalation and receipt shape. |
 
-Recommendation: archive.
+Recommendation: keep-slimmed.
 
-Rationale: ubershow has a coherent local package and eval shape, but the R8 contract requires real observed task-class usage, not just a useful idea and templates. Without a real generated board plus decision receipt, keeping it installed contradicts the retire-or-prove rule. If the operator wants a stay of execution, the smallest proof would be one real process-rearchitecture decision board with sibling Markdown receipt before Wave 2 acceptance.
+Rationale: ubershow has a coherent local package, eval shape, and at least one real operator-registered decision artifact. It should stay installed, but the active skill can still be slimmer: move pattern-kit walkthrough details into references, preserve the core rule, receipt contract, source-authority rule, and trigger/de-escalation guidance.
 
-Archiving would mean removing symlinks from both runtime roots, adding a README tombstone that points to the archived directory and restore command, and leaving `ubershow/` in git. The useful checklist could later fold into `ubershow` restore docs or a small `ubershow` example under `uber-skill-creator`, but no pack edit should happen before the operator archive decision.
+Candidate cuts if slimmed: move pattern-kit walkthroughs and template-selection examples to references; keep `Core rule`, `Decision registration`, `Source authority`, trigger/skip lists, output-mode table, and quality-check/receipt requirements.
+
+Correction history: the original sweep searched by directory convention and was falsified by content-marker search; this is case-20's third observed unverified-baseline instance.
 
 ## Uberarchitect
 
@@ -96,6 +98,6 @@ Archiving would mean removing symlinks from both runtime roots, tombstoning READ
 
 ## Contradictions Flagged
 
-- plan-v3 says `ubersimplify` and `ubershow` remain without real-usage artifacts. The sweep contradicts that for `ubersimplify`: a 2026-05-11 Gaia ubersimplify audit trail exists.
+- plan-v3 says `ubersimplify` and `ubershow` remain without real-usage artifacts. The sweep contradicts that for `ubersimplify`, and the content-marker correction contradicts it for `ubershow`.
 - `AGENTS.md` says all pack skills must be installed and exposed, while R8 allows archiving skills after operator approval. This is not an implementation blocker because this dispatch is evidence/recommendation only; if the operator accepts an archive, `AGENTS.md`/README install policy must be updated in that same archive wave.
 - Each evaluated skill passes "named owner" only by pack-maintainer/operator convention, not by an explicit owner field inside the skill. If R8 requires a named individual or role per skill, add an owner field or owner table before accepting any keep decision.

@@ -19,3 +19,5 @@ status: seed
 Canonical pack-layer case for unverified baseline claims. The durable check is to require artifact paths for load-bearing evidence and reviewer spot-checks before structural decisions.
 
 Second observed instance: a dispatch-3 result receipt claimed `eval_built=3` and case 15 still seeded, while the landed tree had 4 `eval_built` cases including case 15; the receipt/diff mismatch was caught in Wave-1 review.
+
+Third observed instance (case 20): the R8 ubershow retirement sweep claimed no real artifact because it searched only the conventional `coordination/<task>/ubershow/` directory shape. A content-marker search later found `${GAIA_ROOT:-~/repos/agfunder-gaia}/coordination/gaia-brain-wisdom-event-graph-activegraph/p0-wisdom-grading-board-2026-05-31.html` with `data-artifact-kind="ubershow-decision-board"` and its sibling receipt with `selected_decision: proceed_to_p1_minimal_candidate_design`, flipping the keep/archive recommendation.

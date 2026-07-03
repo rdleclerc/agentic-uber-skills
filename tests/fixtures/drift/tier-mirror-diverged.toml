@@ -1,0 +1,33 @@
+[[fingerprint]]
+id = "tier-ladder-table"
+owner = "pack maintainer"
+adoption_state = "blocking"
+canonical_source = "fixture"
+target_paths = [
+  "fixture",
+]
+match = "literal"
+pattern = '''| Tier | Work class | Required review |
+|---|---|---|
+| 0 | typo/cosmetic only | none |'''
+normalization = "whitespace"
+allowed_absences = []
+severity = "warn"
+blocking_wave = 2
+
+[[fingerprint]]
+id = "tier-ladder-table-pack"
+owner = "pack maintainer"
+adoption_state = "blocking"
+canonical_source = "fixture"
+target_paths = [
+  "fixture",
+]
+match = "literal"
+pattern = '''| Tier | Work class | Required review |
+|---|---|---|
+| 0 | typo/cosmetic only | exact-diff review |'''
+normalization = "whitespace"
+allowed_absences = []
+severity = "warn"
+blocking_wave = 2

@@ -23,6 +23,7 @@ description: "Use when an agent needs the goal-owning lifecycle wrapper for subs
 | Complexity/modularity/dead-code campaign | `$ubersimplify` |
 | Source/research/internal-artifact assessment before adoption | `$uberassess` |
 | Post-run learning for skills/prompts/workflows/agentic systems | `$uberskillevolver` |
+| Reword a fingerprinted rule | update `references/drift-fingerprints.toml` same commit; drift check gates |
 | Repeated or material unexpected test failures | stop before five consecutive failures; `$uberrca`; revise via `$uberplan`; append/merge child scope change |
 | Refactor campaign / HOT-file audit | `references/refactor-campaign-profile.md` |
 | `ubercampaign`, product campaign, multi-feature/feature-list/plan-tree campaign, assess-then-plan-then-execute | `references/campaign-profile.md` |

@@ -5,8 +5,11 @@ import subprocess
 import shutil
 import sys
 import tempfile
+import tomllib
 import unittest
 from pathlib import Path
+
+from scripts.lint_pack_contract import check_doctrine_drift
 
 ROOT = Path(__file__).resolve().parents[1]
 PACK_SKILLS = [
@@ -68,6 +71,33 @@ def write_fake_git_show(bin_dir: Path, content: str) -> None:
         "exit 1\n"
     )
     fake_git.chmod(0o755)
+
+
+def create_synced_install_roots(temp: Path, lint_root: Path) -> dict[str, str]:
+    claude_root = temp / "claude-skills"
+    codex_root = temp / "codex-skills"
+    claude_root.mkdir()
+    codex_root.mkdir()
+    for install_root in [claude_root, codex_root]:
+        for skill in PACK_SKILLS:
+            (install_root / skill).symlink_to(lint_root / skill)
+    return {
+        "UBER_CLAUDE_SKILLS_ROOT": str(claude_root),
+        "UBER_CODEX_SKILLS_ROOT": str(codex_root),
+    }
+
+
+def drift_patterns_by_id(registry_path: Path) -> dict[str, str]:
+    data = tomllib.loads(registry_path.read_text())
+    return {
+        str(entry["id"]): " ".join(str(entry["pattern"]).split())
+        for entry in data.get("fingerprint", [])
+    }
+
+
+def assert_tier_ladder_mirror_matches(testcase: unittest.TestCase, registry_path: Path) -> None:
+    patterns = drift_patterns_by_id(registry_path)
+    testcase.assertEqual(patterns["tier-ladder-table"], patterns["tier-ladder-table-pack"])
 
 
 class PackContractTests(unittest.TestCase):
@@ -181,6 +211,54 @@ class PackContractTests(unittest.TestCase):
         strict = run_pack_lint(ROOT, "--drift", "--strict", "--drift-registry", str(registry))
         self.assertNotEqual(strict.returncode, 0)
         self.assertIn("DIVERGED id=fixture-drift", strict.stdout)
+
+    def test_real_doctrine_drift_registry_is_strict_clean_when_gaia_checkout_exists(self) -> None:
+        gaia_root = Path(os.environ.get("GAIA_ROOT", "~/repos/agfunder-gaia")).expanduser()
+        if not gaia_root.exists():
+            self.skipTest(f"GAIA_ROOT checkout absent at {gaia_root}; set GAIA_ROOT to run real strict drift gate")
+        report = check_doctrine_drift(ROOT)
+        detail = "\n".join([*report.lines, *report.blocking_failures, *report.errors])
+        self.assertEqual(report.exit_code(strict=True), 0, detail)
+
+    def test_full_strict_lint_fails_seeded_blocking_drift(self) -> None:
+        with tempfile.TemporaryDirectory() as td:
+            temp = Path(td)
+            lint_root = copy_lint_root(temp)
+            env = create_synced_install_roots(temp, lint_root)
+            (lint_root / "references" / "target-match.md").write_text("Canonical doctrine sentence.\n")
+            (lint_root / "references" / "target-diverged.md").write_text("Divergent doctrine sentence.\n")
+            registry = lint_root / "references" / "strict-fixture-drift.toml"
+            registry.write_text(
+                """
+[[fingerprint]]
+id = "strict-fixture-drift"
+owner = "pack maintainer"
+adoption_state = "blocking"
+canonical_source = "fixture"
+target_paths = [
+  "references/target-match.md",
+  "references/target-diverged.md",
+]
+match = "literal"
+pattern = "Canonical doctrine sentence."
+normalization = "whitespace"
+allowed_absences = []
+severity = "error"
+blocking_wave = 1
+""".lstrip()
+            )
+            strict = run_pack_lint(lint_root, "--strict", "--drift-registry", str(registry), env=env)
+            self.assertNotEqual(strict.returncode, 0)
+            self.assertIn("DIVERGED id=strict-fixture-drift", strict.stdout)
+            self.assertIn("doctrine drift: DIVERGED id=strict-fixture-drift", strict.stderr)
+
+    def test_tier_ladder_registry_patterns_are_mirrored(self) -> None:
+        assert_tier_ladder_mirror_matches(self, ROOT / "references" / "drift-fingerprints.toml")
+        with self.assertRaises(AssertionError):
+            assert_tier_ladder_mirror_matches(
+                self,
+                ROOT / "tests" / "fixtures" / "drift" / "tier-mirror-diverged.toml",
+            )
 
     def test_doctrine_drift_registry_schema_requires_all_fields(self) -> None:
         registry = ROOT / "tests" / "fixtures" / "drift" / "invalid-registry.toml"

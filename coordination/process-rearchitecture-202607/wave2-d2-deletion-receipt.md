@@ -18,3 +18,8 @@
 - ubergoal 2,767 → 786 words (budget ≤800, now lint-enforced). tier-ladder-table fingerprint MATCH on ubergoal.
 - Fresh-agent routing smoke (sonnet lane, single-file read): 5/5 vs answer key, including both adversarial cases (provider-routing "quick fix" → Tier 3 escalation; repeated-timeout symptom-patching → uberarchitect stepback + uberrca). Transcript: session agent acc65416b8975c794.
 - Packet self-contradiction flagged by implementer (no-git-commands vs git-show read) — resolved acceptably via drift fingerprint; orchestrator error, noted.
+
+## Dispatch 7 receipt notes
+
+- Logged policy reversal: uncertain-tier default flipped from lower to higher to prevent down-tiering; this is case 5 aligned with the spine review ladder.
+- Deleted deferred-skills paragraph from `ubergoal`; surviving homes are `ROADMAP.md`, `uberplan`, and `uberskillevolver`.

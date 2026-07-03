@@ -34,7 +34,10 @@ SKILL_WORD_BUDGETS = {
     "uberplan/SKILL.md": 3400,
     "uberaccept/SKILL.md": 2150,
     "uberassess/SKILL.md": 1900,
+    "uberarchitect/SKILL.md": 900,
     "uberrca/SKILL.md": 1500,
+    "ubershow/SKILL.md": 1400,
+    "uber-skill-creator/SKILL.md": 1350,
     "uberskillevolver/SKILL.md": 1550,
     "ubersimplify/SKILL.md": 700,
 }
@@ -861,6 +864,8 @@ def main() -> int:
     errors.extend(f"install sync: {error}" for error in install_sync_report.errors)
     errors.extend(f"secret scan: {error}" for error in secret_report.errors)
     if args.strict:
+        errors.extend(f"doctrine drift: {failure}" for failure in drift_report.blocking_failures)
+        errors.extend(f"install sync: {failure}" for failure in install_sync_report.blocking_failures)
         errors.extend(f"secret scan: {failure}" for failure in secret_report.blocking_failures)
 
     if errors:
