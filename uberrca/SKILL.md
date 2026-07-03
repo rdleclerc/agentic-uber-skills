@@ -17,6 +17,10 @@ If you cannot answer that, say: **"RCA incomplete — still proximate. Do not pa
 
 Safe mitigations are reversible operational actions that stop current damage without claiming to fix the class.
 
+## Everyday defect boundary
+
+Ordinary defects use `../references/debug-loop.md`; repeated same-class failures, incidents, and architecture-shaped symptoms escalate here. `uberrca` is class-level/incident authority and never auto-triggers from ordinary bug similarity.
+
 ## The self-challenge loop — run this yourself, before surfacing
 
 After every candidate root cause, challenge it:

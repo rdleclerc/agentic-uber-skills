@@ -2,6 +2,21 @@
 # Rewording a fingerprinted rule means updating this registry in the same change.
 
 [[fingerprint]]
+id = "dispatch-mechanics-header"
+owner = "pack maintainer"
+adoption_state = "report_only"
+canonical_source = "references/dispatch-and-sessions.md#dispatch-mechanics"
+target_paths = [
+  "references/dispatch-and-sessions.md",
+]
+match = "literal"
+pattern = '''## Dispatch mechanics'''
+normalization = "whitespace"
+allowed_absences = []
+severity = "warn"
+blocking_wave = 3
+
+[[fingerprint]]
 id = "test-channel-posture"
 owner = "pack maintainer"
 adoption_state = "blocking"

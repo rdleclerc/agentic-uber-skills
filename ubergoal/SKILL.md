@@ -7,18 +7,20 @@ description: "Use when an agent needs the goal-owning lifecycle wrapper for subs
 
 ## Core Rule
 
-`ubergoal` is the thin lifecycle wrapper, goal owner, and bounded review-board coordinator. When invoked, create or bind the platform goal when available, classify risk, then route. Bounded loop: observe, choose one action, act once, verify named evidence, record `proved`/`weak`/`missing`/`contradicted`, and continue only if the next action changes a decision or closes a named gap. Benefit >> cost.
+`ubergoal` is the thin lifecycle wrapper, goal owner, and bounded review-board coordinator. When invoked, create/bind the platform goal, classify risk, then route. Loop: observe, choose one action, act, verify evidence, record `proved`/`weak`/`missing`/`contradicted`, and continue only if the next action changes a decision or closes a gap. Benefit >> cost.
 
 ## Routing Table
 
 | Need | Use |
 |---|---|
-| Goal/objective launch | compact platform goal primitive; `references/goal-objective.md`; validate with `scripts/validate_goal_objective.py --target-chars 3400 --strict-target` |
+| Goal/objective launch | platform goal primitive; `references/goal-objective.md`; validate with `scripts/validate_goal_objective.py --target-chars 3400 --strict-target` |
 | Coding Agent Work Contract | guide `${UBER_GUIDE_ROOT:-~/repos/agentic-architecture-guide}/docs/coding-agent-work-contract.md`; template `${UBER_GUIDE_ROOT:-~/repos/agentic-architecture-guide}/.agentic/coding_agent_work_contract_template.md` |
 | misunderstanding-prevention review | `$uberplan` Task Understanding Review |
 | Rigorous planning, review-board lanes, codebase exploration, confidence gate, user expectation / surprise assessment | `$uberplan` |
 | Architecture-shaped failures: concurrency, queues, workers, orchestration, backpressure, repeated timeouts, symptom patches | route to `$uberarchitect` before `$uberplan` |
-| Execution coordination | main coding agent; Tier 2+ uses bounded specialist review-board agents/lenses when available |
+| Execution coordination | main agent; Tier 2+ uses bounded specialist review-board agents/lenses |
+| Dispatch / parallel sessions | `../references/dispatch-and-sessions.md` |
+| Everyday defect / bug fix | `../references/debug-loop.md`; repeats or incidents -> `$uberrca` |
 | Final acceptance, policy-adherence, architecture drift, dead-code/test/eval proof, surprises | `$uberaccept` |
 | Complexity/modularity/dead-code campaign | `$ubersimplify` |
 | Source/research/internal-artifact assessment before adoption | `$uberassess` |
@@ -26,9 +28,9 @@ description: "Use when an agent needs the goal-owning lifecycle wrapper for subs
 | Reword a fingerprinted rule | update `references/drift-fingerprints.toml` same commit; drift check gates |
 | Repeated or material unexpected test failures | stop before five consecutive failures; `$uberrca`; revise via `$uberplan`; append/merge child scope change |
 | Refactor campaign / HOT-file audit | `references/refactor-campaign-profile.md` |
-| `ubercampaign`, product campaign, multi-feature/feature-list/plan-tree campaign, assess-then-plan-then-execute | `references/campaign-profile.md` |
+| `ubercampaign`, product campaign, multi-feature/feature-list/plan-tree campaign | `references/campaign-profile.md` |
 | Tier 3 agentic/runtime/production-replacement expensive proof, burn-in, soak, canary expansion, final proof | `$uberplan` with `templates/tier3-expensive-proof-plan-tree.md` validator |
-| Recurring loop mode: watch, monitor, rerun, keep fixing, scheduled, unattended | mark `loop_mode`; read `../references/loop-engineering.md`; contract `$uberplan`; acceptance `$uberaccept`; lessons `$uberskillevolver`; do not create `uberloop` yet |
+| Recurring loop mode: watch, monitor, rerun, keep fixing, scheduled, unattended | mark `loop_mode`; read `../references/loop-engineering.md`; contract `$uberplan`; acceptance `$uberaccept`; lessons `$uberskillevolver`; do not create `uberloop` |
 | Runtime topology, parent/child terminal states, active/hard blockers | `../references/operational-states.md` |
 
 ## Review Ladder
@@ -46,11 +48,11 @@ Tier 0 = typo/cosmetic only; anything fixing observed misbehavior is >= Tier 1; 
 
 ## Micro-intent fast path
 
-For Tier 0/1 low-risk work, use one micro-intent artifact when no runtime/provider/security/data-subject surface or cross-boundary ambiguity is present: 2-3 sentences of scope / intent, checkable acceptance criteria, explicit out-of-scope note, and verification command/evidence note. Escalate ambiguity, agentic/runtime risk, irreversible side effects, or many criteria to `$uberplan`. Micro-intent artifacts carry `failure_case_id | case_updated | not_applicable_with_reason`.
+For Tier 0/1 low-risk work, use one micro-intent artifact when no runtime/provider/security/data-subject surface or cross-boundary ambiguity is present: 2-3 sentences of scope / intent, acceptance criteria, explicit out-of-scope note, and verification evidence. Escalate ambiguity, agentic/runtime risk, irreversible side effects, or many criteria to `$uberplan`. Micro-intent artifacts carry `failure_case_id | case_updated | not_applicable_with_reason`.
 
-## Scope Artifact Gate
+## Scope fidelity gate
 
-For Tier 1+ or explicit `ubergoal`, create/update `coordination/<task-slug>/scope.md` from `templates/scope.md`. Scope fidelity preserves operator original instruction, agent-interpreted scope, proposed narrowed scope, explicit deferrals/non-goals, approval evidence, constraints, and dated changes.
+For Tier 1+ or explicit `ubergoal`, create/update `coordination/<task-slug>/scope.md` from `templates/scope.md`. Preserve operator original instruction, agent-interpreted scope, proposed narrowed scope, explicit deferrals/non-goals, approval evidence, constraints, and dated changes.
 
 ## Completion Rule
 
@@ -68,10 +70,8 @@ For `ubergoal`, ask exactly:
 
 ## Helpful Resources
 
-- `templates/goal-ledger.md`
 - `templates/uber-run-receipt.md`
 - `templates/scope.md`
 - `references/goal-objective.md`
 - `references/refactor-campaign-profile.md`, `references/campaign-profile.md`
 - `../references/operational-states.md`, `../references/loop-engineering.md`, `../references/claude-adversary.md`
-- `scripts/validate_goal_objective.py`, `scripts/validate_uber_run_receipt.py`

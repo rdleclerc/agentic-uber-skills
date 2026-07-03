@@ -20,8 +20,8 @@ Sanitization rules (pack layer is pushed to GitHub): no named individuals, no cr
 |---|---|---|---|---|---|
 | 1 | gmail-silent-lane-12d | runtime | unattended lane w/o proof-of-life | PREVENTED (class = silent multi-day death, not the human-owned credential expiry) | — |
 | 2 | hermes-overseer-dead-9w | both (runtime) | watcher w/o watcher; docs claim live w/o evidence | PREVENTED | R14 inventory asserts docs' "live" claims against liveness artifacts |
-| 3 | silent-nonresponse-class | runtime | point-patch instead of class-fix | SHORTENED (inherent: first patch of a novel class ships) | uberrca validator requires `class_invariant` + `surface_enumeration` |
-| 4 | false-apology-fix-of-fix | runtime | fix not proven red on real failure path | SHORTENED → PREVENTED | reproduced-red receipt defined + acceptance-validator-checked (R11) |
+| 3 | silent-nonresponse-class | runtime | point-patch instead of class-fix | SHORTENED (inherent: first patch of a novel class ships) | `references/debug-loop.md` escalates repeats to `$uberrca`; validator requires `class_invariant` + `surface_enumeration` |
+| 4 | false-apology-fix-of-fix | runtime | fix not proven red on real failure path | SHORTENED → PREVENTED | `references/debug-loop.md` defines reproduced-red receipt + rerun-green verification; acceptance validator checks the receipt |
 | 5 | scope-laundering-20260528 | process | scope narrowing + self-certification; NEW vector = self-down-tiering | WEAK → PREVENTED | tier-assignment audit: receipt records tier+justification, reviewer's first check, Tier-1 scope echo, under-tier fixtures (R7/R13) |
 | 6 | evaluator-saturation | process | gate that cannot say no | PREVENTED | — |
 | 7 | claw1-path-rot | process | machine-specific paths in portable text | PREVENTED (instance); class needs portability oracle | path-lint flags machine-specific absolute paths even if they exist here; fixture scope defined (R2) |
