@@ -482,11 +482,16 @@ class PackContractTests(unittest.TestCase):
         self.assertIn("../references/claude-adversary.md", goal)
 
         evolver = (ROOT / "uberskillevolver" / "SKILL.md").read_text()
-        self.assertIn("Regression lessons from scope-fidelity failures", evolver)
-        self.assertIn("operator original instruction", evolver)
-        self.assertIn("hidden semantic judge", evolver)
-        self.assertIn("frame-adhesion failures", evolver)
-        self.assertIn("invited role named", evolver)
+        self.assertIn("Regression lesson catalog", evolver)
+        self.assertIn("references/regression-lessons.md", evolver)
+        regression_lessons = (ROOT / "uberskillevolver" / "references" / "regression-lessons.md").read_text()
+        self.assertIn("operator original instruction", regression_lessons)
+        self.assertIn("Hidden semantic judge", regression_lessons)
+        self.assertIn("frame adhesion", regression_lessons)
+        self.assertIn("invited role named", regression_lessons)
+        scope_case = (ROOT / "evals" / "failures" / "cases" / "scope-laundering-20260528.md").read_text()
+        self.assertIn("reviewer frame adhesion", scope_case)
+        self.assertIn("operator original instruction", scope_case)
 
         templates = {
             "uberplan/templates/plan-tier3.md": "Scope Fidelity Ledger",

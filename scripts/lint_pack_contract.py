@@ -35,7 +35,7 @@ SKILL_WORD_BUDGETS = {
     "uberaccept/SKILL.md": 2150,
     "uberassess/SKILL.md": 1900,
     "uberrca/SKILL.md": 1500,
-    "uberskillevolver/SKILL.md": 2050,
+    "uberskillevolver/SKILL.md": 1550,
 }
 FORBIDDEN_FRONTMATTER_KEYS = {"model", "effort"}
 MODEL_ID_RE = re.compile(

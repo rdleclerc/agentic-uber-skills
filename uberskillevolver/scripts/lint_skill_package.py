@@ -17,6 +17,7 @@ REQUIRED_FILES = [
     "scripts/validate_learning_record.py",
     "scripts/validate_promotion_batch.py",
     "evals/golden_skill_invocations.json",
+    "references/regression-lessons.md",
     "references/cross-machine-learning.md",
 ]
 
@@ -27,7 +28,7 @@ REQUIRED_SKILL_PHRASES = [
     "Agent Advocate",
     "Relationship to Ubergoal",
     "Cross-machine learning",
-    "Runtime topology lessons",
+    "Regression lesson catalog",
 ]
 
 

@@ -22,7 +22,7 @@ class FailureCaseValidatorTests(unittest.TestCase):
     def test_pack_process_cases_validate(self) -> None:
         result = run_validator(ROOT / "evals" / "failures" / "cases")
         self.assertEqual(result.returncode, 0, result.stderr + result.stdout)
-        self.assertIn("validated 13 failure case", result.stdout)
+        self.assertIn("validated 14 failure case", result.stdout)
 
     def test_pack_failure_index_matches_local_cases(self) -> None:
         result = run_validator_args(

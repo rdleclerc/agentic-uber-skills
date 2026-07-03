@@ -24,3 +24,4 @@ Schema version: v2. Process-canonical cases live here. Runtime-canonical cases a
 - unverified-baseline-claims · process(process) · seed · canonical: evals/failures/cases/unverified-baseline-claims.md
 - subprocess-dies-without-terminal-state · process(process) · seed · canonical: evals/failures/cases/subprocess-dies-without-terminal-state.md
 - parallel-branch-reset-clobbers-merge · both(process) · seed · canonical: evals/failures/cases/parallel-branch-reset-clobbers-merge.md
+- false-green-completion-claims · process(process) · seed · canonical: evals/failures/cases/false-green-completion-claims.md

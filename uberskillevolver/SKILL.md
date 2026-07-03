@@ -111,35 +111,12 @@ Do not promote compression that removes source authority, receipt requirements,
 side-effect boundaries, or eval coverage. If a longer explanation is needed only
 for humans, move it to a reference, learning record, or session archive.
 
+## Regression lesson catalog
 
-
-## Regression lessons from scope-fidelity failures
-
-Promote severe scope-drift failures when an agent narrows, reframes, or defers the operator's original instruction and a second reviewer approves the narrowed frame because it saw only the agent's summary. The smallest durable fix should be a Scope Fidelity Packet, template field, reviewer prompt requirement, or regression fixture that forces comparison against the operator original instruction, verbatim. Do not solve this with a hidden semantic judge, persistent debate harness, or broad reviewer bureaucracy.
-
-A useful scope-fidelity learning record names: operator original instruction, agent-interpreted scope, proposed narrowed scope, explicit deferrals/non-goals, approval evidence, diff between original and proposed scope, reviewer scope-fidelity verdict, and what would have blocked the mistaken sign-off.
-
-For frame-adhesion failures, promote the smallest rule that makes a reviewer stand outside Codex's roleplay before approval: operator original instruction first, invited role named, original-vs-summary gap named, three reject conditions stated, and a reduced-noise caveat that model review cannot replace direct human spot-checks or observable success criteria. Prefer skill text, template fields, or eval fixtures; do not add a hidden debate controller.
-
-## Regression lessons from completion-claim failures
-
-Promote completion-claim failures into evals, templates, validators, or examples when they can recur; use `../references/operational-states.md` for child operational outcomes, shared-proof non-completion, active/hard blockers, safe-work exhaustion review, and parent completion rules.
-
-If the failure involved one giant plan file causing shallow inner-loop treatment, consider promoting `uberplan`'s Plan Tree Artifact Layout: root index, child files, status ledger, receipts, and final acceptance.
-
-If the failure involved Tier 3 agentic/runtime/replacement expensive proof, burn-in, soak, canary expansion, or final-proof burn, promote a scoped preflight template/validator/eval when it can catch the next shallow flat-plan launch. Require risk/failure inventory, observability/telemetry, phase-boundary contract-fuzz, burn-in/final separation, stop/replan rules, and child/status ledger unless a human-approved bypass is recorded.
-
-The smallest durable fix should usually be a plan/acceptance template field, mechanical validator, or negative fixture. Do not solve this by adding a hidden runtime controller or semantic judge inside the skill package.
-
-## Red/green and false-green lessons
-
-Promote lessons when a run claimed success from a green command that did not prove the actual user-visible, black-box, integration, eval, or target-system risk. The smallest durable fix should usually be one of: a red/green proof-ledger field, a negative eval fixture, a Black-box Tester / Quality-Eval Auditor checklist item, or clearer acceptance wording. Avoid solving false-green failures with a hidden judge or new standalone testing skill unless repeated real-project evidence shows extraction makes the common path smaller and safer.
-
-A useful red/green learning record names: baseline result, expected red/failing fixture when relevant, first green proof, black-box/user-visible proof, false-green risk, skipped evidence layers, and what would falsify the lesson.
-
-## Runtime topology lessons
-
-For campaign/subagent runs, record whether the configured depth/thread budget matched the work shape; runtime topology presets, approval, ledger, and restore rules live in `../references/operational-states.md`.
+Use `references/regression-lessons.md` to route fossil incident lessons into
+failure cases, compact Trigger/Do/Fallback/Invalid rows, or no-change decisions.
+Runtime topology and operational completion rules live in
+`../references/operational-states.md`.
 
 ## Cross-machine learning
 
@@ -173,5 +150,6 @@ For Tier 2/3 skill, prompt, workflow, or agentic-system runs, use `uberskillevol
 - `scripts/validate_learning_record.py` — validate required learning-record sections and evidence.
 - `scripts/validate_promotion_batch.py` — validate promotion-batch review discipline.
 - `scripts/lint_skill_package.py` — check this skill package for required files and policy hooks.
+- `references/regression-lessons.md` — compact routing table for promoted fossil/regression lessons.
 - `references/cross-machine-learning.md` — combine sanitized learning packets across machines.
 - `../references/loop-engineering.md` — loop-learning promotion gate and anti-bloat trigger.
