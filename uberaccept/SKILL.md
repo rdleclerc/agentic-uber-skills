@@ -101,6 +101,7 @@ Produce a final acceptance report that names every relevant layer explicitly:
 19. confidence verdict and completion recommendation
 
 Use `templates/final-acceptance.md` and validate with `scripts/validate_acceptance_report.py` when producing durable artifacts.
+Acceptance reports must include the mandatory failure-intake field; use the grammar in `evals/failures/README.md`.
 
 ## Acceptance scoring
 

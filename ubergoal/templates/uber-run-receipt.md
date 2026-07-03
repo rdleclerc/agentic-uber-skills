@@ -10,6 +10,12 @@ Use this as the thin tracing artifact for an `ubergoal` run. It is not an orches
 - Owner/session:
 - Outcome: success | partial | failed | aborted
 - lane_used:
+- tokens:
+- minutes:
+- source: self_reported | measured | unknown
+- failure_case_id: <id>
+- case_updated: <id>
+- not_applicable_with_reason: <text>
 - Source branch/commit:
 
 ## Scope fidelity

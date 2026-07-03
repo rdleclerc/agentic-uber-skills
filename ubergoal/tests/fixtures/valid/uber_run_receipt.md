@@ -8,6 +8,10 @@
 - Owner/session: test-session
 - Outcome: success
 - lane_used: claude-fable-5 / gpt-5.5 xhigh
+- tokens: unknown
+- minutes: unknown
+- source: unknown
+- not_applicable_with_reason: no failure observed
 - Source branch/commit: session/test abc123
 
 ## Runtime agent topology

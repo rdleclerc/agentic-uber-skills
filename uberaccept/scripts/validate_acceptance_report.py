@@ -71,6 +71,9 @@ PROOF_ONLY_TOKENS = [
     "plan-only",
     "eval fixture",
 ]
+ACCEPTANCE_STATUSES = {"accepted", "rejected", "blocked_with_failure_intake"}
+INTAKE_FIELDS = ["failure_case_id", "case_updated", "not_applicable_with_reason"]
+INTAKE_PLACEHOLDERS = {"", "todo", "tbd", "n/a", "none", "<id>", "<text>"}
 HIGH_STATE_PROOF_TERMS = {
     "operational": ["target", "runtime", "wired", "validator", "unit", "regression", "smoke", "real-system", "system"],
     "live": ["live", "production", "runtime", "route", "log", "traffic", "user-facing"],
@@ -107,6 +110,60 @@ def require_field(text: str, label: str, errors: list[str]) -> str:
     if not value or value.lower() in {"yes/no", "tbd", "todo", "n/a"}:
         errors.append(f"empty or placeholder field: {label}")
     return value
+
+
+def optional_field(text: str, label: str) -> str:
+    pattern = re.compile(rf"^[ \t]*(?:-[ \t]*)?{re.escape(label)}[ \t]*:[ \t]*(.+?)[ \t]*$", re.I | re.M)
+    match = pattern.search(text)
+    return match.group(1).strip() if match else ""
+
+
+def acceptance_status(text: str, errors: list[str]) -> str:
+    value = optional_field(text, "acceptance_status")
+    if not value:
+        return "accepted"
+    normalized = normalize(value)
+    if normalized not in ACCEPTANCE_STATUSES:
+        errors.append(f"invalid acceptance_status: {value}")
+        return normalized
+    return normalized
+
+
+def validate_failure_intake(text: str, errors: list[str]) -> None:
+    present: list[str] = []
+    for field in INTAKE_FIELDS:
+        value = optional_field(text, field)
+        if value and normalize(value) not in INTAKE_PLACEHOLDERS:
+            present.append(field)
+    if len(present) != 1:
+        errors.append(
+            "failure intake requires exactly one non-empty field: "
+            "failure_case_id | case_updated | not_applicable_with_reason"
+        )
+
+
+def validate_terminal_failure_report(found: dict[str, str], full_text: str, status: str, errors: list[str]) -> None:
+    if status not in {"rejected", "blocked_with_failure_intake"}:
+        return
+    status_line = optional_field(full_text, "acceptance_status")
+    if not status_line:
+        errors.append("terminal failure report missing acceptance_status line")
+    candidate_sections = [
+        found.get("adversarial acceptance check", ""),
+        found.get("confidence verdict", ""),
+        found.get("findings", ""),
+        found.get("blockers", ""),
+        found.get("rubric scores", ""),
+    ]
+    combined = "\n".join(section for section in candidate_sections if section)
+    if not meaningful_lines(combined):
+        errors.append("terminal failure report needs a truthful blocker/finding section")
+        return
+    lower = normalize(combined)
+    if not any(term in lower for term in ["blocker", "finding", "reject", "rejected", "blocked", "fail", "missing"]):
+        errors.append("terminal failure report blocker/finding section must name the blocker or finding")
+    if status == "rejected" and "no material blockers" in lower:
+        errors.append("rejected acceptance report cannot claim no material blockers")
 
 
 def meaningful_lines(section: str) -> list[str]:
@@ -707,19 +764,34 @@ def main() -> int:
     found = sections(text)
     errors: list[str] = []
     warnings: list[str] = []
+    missing_required_sections: list[str] = []
 
     for section in REQUIRED_SECTIONS:
         if section not in found:
-            errors.append(f"missing required section: {section}")
+            missing_required_sections.append(f"missing required section: {section}")
 
     if args.allow_template:
-        if errors:
+        if missing_required_sections:
             print("FAIL: acceptance template structure validation failed", file=sys.stderr)
-            for error in errors:
+            for error in missing_required_sections:
                 print(f"- {error}", file=sys.stderr)
             return 1
         print("PASS: acceptance template structure checks passed")
         return 0
+
+    status = acceptance_status(text, errors)
+    validate_failure_intake(text, errors)
+    if status in {"rejected", "blocked_with_failure_intake"}:
+        validate_terminal_failure_report(found, text, status, errors)
+        if errors:
+            print("FAIL: acceptance report validation failed", file=sys.stderr)
+            for error in errors:
+                print(f"- {error}", file=sys.stderr)
+            return 1
+        print("PASS: acceptance report terminal-status checks passed")
+        return 0
+
+    errors.extend(missing_required_sections)
 
     for section in REQUIRED_SECTIONS:
         if section in found and not meaningful_lines(found[section]):

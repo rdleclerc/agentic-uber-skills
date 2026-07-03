@@ -120,6 +120,7 @@ Human attention is for infrastructure impossibility or genuine policy ambiguity 
 - **Durable fix plan** — mapped to the lowest enforceable layer
 - **Tests/evals/monitors** that would have caught this before the user did
 - **Confidence and unknowns** — do not overclaim
+- For durable RCA artifacts, use `templates/rca-artifact.md` and `scripts/validate_rca_artifact.py`; failure intake is mandatory using `evals/failures/README.md` grammar.
 
 ## Optional Claude adversary
 

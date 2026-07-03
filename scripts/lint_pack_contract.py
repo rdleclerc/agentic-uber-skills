@@ -5,6 +5,7 @@ from __future__ import annotations
 from pathlib import Path
 import argparse
 from dataclasses import dataclass
+import math
 import os
 import re
 import sys
@@ -106,6 +107,21 @@ INSTALL_SYNC_IGNORED_EXTRAS = {
     "openclaw-agentic-tool-designer",
     "review-agentic-architecture",
 }
+SECRET_SCAN_DIRS = ["coordination", "evals"]
+SECRET_SCAN_SUFFIXES = DOCTRINE_TEXT_SUFFIXES
+SECRET_TOKEN_PATTERNS = [
+    ("openai_sk", re.compile(r"\bsk-[A-Za-z0-9_-]{8,}\b")),
+    ("slack_xoxb", re.compile(r"\bxoxb-[A-Za-z0-9-]{8,}\b")),
+    ("slack_xoxp", re.compile(r"\bxoxp-[A-Za-z0-9-]{8,}\b")),
+    ("github_ghp", re.compile(r"\bghp_[A-Za-z0-9_]{16,}\b")),
+    ("github_gho", re.compile(r"\bgho_[A-Za-z0-9_]{16,}\b")),
+    ("aws_akia", re.compile(r"\bAKIA[0-9A-Z]{12,}\b")),
+    ("google_aiza", re.compile(r"\bAIza[0-9A-Za-z_-]{20,}\b")),
+    ("bearer_long", re.compile(r"\bBearer\s+[A-Za-z0-9._~+/=-]{40,}\b")),
+    ("pem_private_key", re.compile(r"-----BEGIN (?:RSA |DSA |EC |OPENSSH |)?PRIVATE KEY-----")),
+    ("hex_32", re.compile(r"\b[0-9A-Fa-f]{32,}\b")),
+    ("base64_32", re.compile(r"\b(?=[A-Za-z0-9+/=]{32,}\b)(?=.*[+=])(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])[A-Za-z0-9+/]{32,}={0,2}\b")),
+]
 
 
 @dataclass(frozen=True)
@@ -435,6 +451,82 @@ def check_skill_install_sync(root: Path) -> CheckReport:
     return CheckReport(lines, violations, errors)
 
 
+def secret_scan_base_files(root: Path) -> list[Path]:
+    files = set(doctrine_text_files(root))
+    for dirname in SECRET_SCAN_DIRS:
+        base = root / dirname
+        if base.exists():
+            files.update(path for path in base.rglob("*") if path.is_file() and path.suffix in SECRET_SCAN_SUFFIXES)
+    return sorted(files)
+
+
+def explicit_scan_files(paths: list[Path]) -> list[Path]:
+    files: list[Path] = []
+    for path in paths:
+        expanded = path.expanduser()
+        if expanded.is_dir():
+            files.extend(item for item in expanded.rglob("*") if item.is_file())
+        elif expanded.exists():
+            files.append(expanded)
+    return sorted(set(files))
+
+
+def strip_safe_secret_refs(line: str) -> str:
+    return re.sub(r"op://[^\s`'\"<>),]+", "op://", line)
+
+
+def shannon_entropy(value: str) -> float:
+    if not value:
+        return 0.0
+    total = len(value)
+    counts = {char: value.count(char) for char in set(value)}
+    return -sum((count / total) * math.log2(count / total) for count in counts.values())
+
+
+def pattern_hits(name: str, pattern: re.Pattern[str], line: str) -> bool:
+    for match in pattern.finditer(line):
+        if name == "base64_32" and shannon_entropy(match.group(0)) < 4.2:
+            continue
+        return True
+    return False
+
+
+def check_secret_scan(root: Path, *, extra_paths: list[Path] | None = None) -> CheckReport:
+    """Report likely credential literals in doctrine, coordination, and eval artifacts.
+
+    This check is report-only by default; `--strict` makes violations blocking.
+    Adoption state: blocking_wave=2. Test fixtures under `tests/fixtures` are
+    outside the default scan path so fake tokens never exempt themselves by
+    content.
+    """
+    lines = ["SECRET SCAN REPORT blocking_wave=2 default=report_only"]
+    violations: list[str] = []
+    errors: list[str] = []
+    files = secret_scan_base_files(root)
+    if extra_paths:
+        files.extend(explicit_scan_files(extra_paths))
+    for path in sorted(set(files)):
+        try:
+            text = path.read_text()
+        except UnicodeDecodeError:
+            continue
+        try:
+            rel = path.relative_to(root)
+        except ValueError:
+            rel = path
+        for line_no, line in enumerate(text.splitlines(), start=1):
+            sanitized = strip_safe_secret_refs(line)
+            for name, pattern in SECRET_TOKEN_PATTERNS:
+                if pattern_hits(name, pattern, sanitized):
+                    detail = f"SECRET_CANDIDATE path={rel}:{line_no} kind={name}"
+                    lines.append(detail)
+                    violations.append(detail)
+                    break
+    if not violations:
+        lines.append("PASS no likely credential literals found")
+    return CheckReport(lines, violations, errors)
+
+
 def policy_value(root: Path, skill: str) -> str | None:
     path = root / skill / "agents" / "openai.yaml"
     if not path.exists():
@@ -456,17 +548,21 @@ def main() -> int:
     parser.add_argument("--root", type=Path, default=DEFAULT_ROOT)
     parser.add_argument("--drift", action="store_true", help="run only the doctrine drift report")
     parser.add_argument("--install-sync", action="store_true", help="run only the local skill install-sync report")
+    parser.add_argument("--secret-scan", action="store_true", help="run only the report-only secret scan")
+    parser.add_argument("--secret-scan-path", action="append", type=Path, default=[], help="extra file/dir to scan for secret-scan tests")
     parser.add_argument("--strict", action="store_true", help="fail focused reports on blocking violations")
     parser.add_argument("--drift-registry", type=Path, default=None, help="override doctrine drift registry path")
     args = parser.parse_args()
     root = args.root.resolve()
 
-    if args.drift or args.install_sync:
+    if args.drift or args.install_sync or args.secret_scan:
         reports: list[CheckReport] = []
         if args.drift:
             reports.append(check_doctrine_drift(root, registry_path=args.drift_registry))
         if args.install_sync:
             reports.append(check_skill_install_sync(root))
+        if args.secret_scan:
+            reports.append(check_secret_scan(root, extra_paths=args.secret_scan_path))
         exit_code = 0
         for report in reports:
             report.print()
@@ -546,10 +642,15 @@ def main() -> int:
     validate_portability_oracle(root, errors)
     drift_report = check_doctrine_drift(root, registry_path=args.drift_registry)
     install_sync_report = check_skill_install_sync(root)
+    secret_report = check_secret_scan(root)
     drift_report.print()
     install_sync_report.print()
+    secret_report.print()
     errors.extend(f"doctrine drift: {error}" for error in drift_report.errors)
     errors.extend(f"install sync: {error}" for error in install_sync_report.errors)
+    errors.extend(f"secret scan: {error}" for error in secret_report.errors)
+    if args.strict:
+        errors.extend(f"secret scan: {failure}" for failure in secret_report.blocking_failures)
 
     if errors:
         for error in sorted(set(errors)):

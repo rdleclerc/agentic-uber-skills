@@ -10,6 +10,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 LINT = ROOT / "scripts" / "lint_skill_package.py"
+RCA = ROOT / "scripts" / "validate_rca_artifact.py"
 
 
 def run_cmd(*args: str) -> subprocess.CompletedProcess[str]:
@@ -50,6 +51,23 @@ class UberRcaPackageTests(unittest.TestCase):
             result = subprocess.run([sys.executable, str(copy / "scripts" / "lint_skill_package.py"), str(copy)], text=True, capture_output=True)
             self.assertNotEqual(result.returncode, 0, result.stdout)
             self.assertIn("README.md", result.stderr)
+
+    def test_rca_artifact_validator(self) -> None:
+        self.assertEqual(run_cmd(str(RCA), str(ROOT / "templates" / "rca-artifact.md"), "--allow-template").returncode, 0)
+        valid = run_cmd(str(RCA), str(ROOT / "tests" / "fixtures" / "valid" / "rca_artifact.md"))
+        self.assertEqual(valid.returncode, 0, valid.stderr + valid.stdout)
+
+        missing_invariant = run_cmd(str(RCA), str(ROOT / "tests" / "fixtures" / "invalid" / "rca_artifact_missing_invariant.md"))
+        self.assertNotEqual(missing_invariant.returncode, 0)
+        self.assertIn("class_invariant", missing_invariant.stderr)
+
+        missing_surface = run_cmd(str(RCA), str(ROOT / "tests" / "fixtures" / "invalid" / "rca_artifact_missing_surface.md"))
+        self.assertNotEqual(missing_surface.returncode, 0)
+        self.assertIn("surface enumeration", missing_surface.stderr)
+
+        missing_intake = run_cmd(str(RCA), str(ROOT / "tests" / "fixtures" / "invalid" / "rca_artifact_missing_intake.md"))
+        self.assertNotEqual(missing_intake.returncode, 0)
+        self.assertIn("failure intake requires exactly one", missing_intake.stderr)
 
 
 if __name__ == "__main__":

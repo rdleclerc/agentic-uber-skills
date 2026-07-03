@@ -2,6 +2,10 @@
 
 ## Implementation summary
 
+- acceptance_status: accepted | rejected | blocked_with_failure_intake
+- failure_case_id: <id>
+- case_updated: <id>
+- not_applicable_with_reason: <text>
 
 ## Files changed
 

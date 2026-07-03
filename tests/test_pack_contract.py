@@ -144,6 +144,22 @@ class PackContractTests(unittest.TestCase):
             strict = run_pack_lint(lint_root, "--install-sync", "--strict", env=env)
             self.assertNotEqual(strict.returncode, 0)
 
+    def test_secret_scan_is_report_only_by_default_and_detects_fixture_when_requested(self) -> None:
+        fake = ROOT / "tests" / "fixtures" / "pack_contract" / "secrets" / "fake_secret.md"
+
+        default = run_pack_lint(ROOT, "--secret-scan", "--strict")
+        self.assertEqual(default.returncode, 0, default.stderr + default.stdout)
+        self.assertNotIn("fake_secret.md", default.stdout)
+
+        report_only = run_pack_lint(ROOT, "--secret-scan", "--secret-scan-path", str(fake))
+        self.assertEqual(report_only.returncode, 0, report_only.stderr + report_only.stdout)
+        self.assertIn("SECRET_CANDIDATE", report_only.stdout)
+        self.assertIn("kind=openai_sk", report_only.stdout)
+
+        strict = run_pack_lint(ROOT, "--secret-scan", "--secret-scan-path", str(fake), "--strict")
+        self.assertNotEqual(strict.returncode, 0)
+        self.assertIn("SECRET_CANDIDATE", strict.stdout)
+
     def test_real_skill_installs_are_synced_when_roots_exist(self) -> None:
         roots = [Path.home() / ".claude" / "skills", Path.home() / ".codex" / "skills"]
         if not all(path.exists() for path in roots):

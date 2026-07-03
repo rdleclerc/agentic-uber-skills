@@ -57,6 +57,9 @@ GATE_ALIASES = {
 }
 PLACEHOLDERS = {"", " ", "todo", "tbd", "yes/no", "yes/no/n/a", "pass/fail/n/a"}
 TERMINAL_STATES = {"operational", "blocked", "re_scoped_with_approval"}
+INTAKE_FIELDS = ["failure_case_id", "case_updated", "not_applicable_with_reason"]
+INTAKE_PLACEHOLDERS = {"", "todo", "tbd", "n/a", "none", "<id>", "<text>"}
+COST_SOURCES = {"self_reported", "measured", "unknown"}
 TOPOLOGY_TRIGGER_TERMS = [
     "ubercampaign",
     "campaign-profile",
@@ -145,6 +148,37 @@ def require_field(section: str, label: str, errors: list[str]) -> str:
     if normalize(value) in PLACEHOLDERS:
         errors.append(f"placeholder field: {label}")
     return value
+
+
+def optional_field(text: str, label: str) -> str:
+    pattern = re.compile(rf"^[ \t]*(?:-[ \t]*)?{re.escape(label)}[ \t]*:[ \t]*(.+?)[ \t]*$", re.I | re.M)
+    match = pattern.search(text)
+    return match.group(1).strip() if match else ""
+
+
+def validate_failure_intake(text: str, errors: list[str]) -> None:
+    present: list[str] = []
+    for field in INTAKE_FIELDS:
+        value = optional_field(text, field)
+        if value and normalize(value) not in INTAKE_PLACEHOLDERS:
+            present.append(field)
+    if len(present) != 1:
+        errors.append(
+            "failure intake requires exactly one non-empty field: "
+            "failure_case_id | case_updated | not_applicable_with_reason"
+        )
+
+
+def validate_cost_metadata(metadata: str, errors: list[str]) -> None:
+    tokens = require_field(metadata, "tokens", errors)
+    minutes = require_field(metadata, "minutes", errors)
+    source = normalize(require_field(metadata, "source", errors))
+    for label, value in [("tokens", tokens), ("minutes", minutes)]:
+        normalized = normalize(value)
+        if normalized != "unknown" and not re.fullmatch(r"[0-9]+", normalized):
+            errors.append(f"{label} must be a nonnegative integer or unknown")
+    if source not in COST_SOURCES:
+        errors.append("source must be self_reported, measured, or unknown")
 
 
 def parse_nonnegative_int(raw: str, label: str, errors: list[str]) -> int | None:
@@ -331,6 +365,8 @@ def validate(path: Path, allow_template: bool = False) -> list[str]:
     metadata = found["run metadata"]
     for label in ["Run slug", "Date/time", "Project/repo", "Tier", "Owner/session", "Outcome", "lane_used"]:
         require_field(metadata, label, errors)
+    validate_cost_metadata(metadata, errors)
+    validate_failure_intake(text, errors)
 
     production_gate_ok = validate_production_blocker_gate(found, has_production_implementation_scope(text), errors)
     validate_operational_summary(found, metadata, production_gate_ok, errors)

@@ -3,6 +3,9 @@
 ## Implementation summary
 Hardened validators, metadata, templates, package lint, and golden eval fixtures for the skill package.
 
+- acceptance_status: accepted
+- not_applicable_with_reason: no failure observed
+
 ## Files changed
 - SKILL.md
 - scripts/validate_plan_contract.py

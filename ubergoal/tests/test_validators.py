@@ -94,6 +94,25 @@ class ThinWrapperTests(unittest.TestCase):
         missing_lane = run_cmd(str(RECEIPT), str(ROOT / "tests" / "fixtures" / "invalid" / "uber_run_receipt_missing_lane_used.md"))
         self.assertNotEqual(missing_lane.returncode, 0)
         self.assertIn("missing field: lane_used", missing_lane.stderr)
+        text = (ROOT / "tests" / "fixtures" / "valid" / "uber_run_receipt.md").read_text()
+        with tempfile.TemporaryDirectory() as tmp:
+            missing_intake = Path(tmp) / "missing_intake.md"
+            missing_intake.write_text(text.replace("- not_applicable_with_reason: no failure observed\n", ""))
+            intake_result = run_cmd(str(RECEIPT), str(missing_intake))
+            self.assertNotEqual(intake_result.returncode, 0)
+            self.assertIn("failure intake requires exactly one", intake_result.stderr)
+
+            missing_cost = Path(tmp) / "missing_cost.md"
+            missing_cost.write_text(text.replace("- source: unknown\n", ""))
+            cost_result = run_cmd(str(RECEIPT), str(missing_cost))
+            self.assertNotEqual(cost_result.returncode, 0)
+            self.assertIn("missing field: source", cost_result.stderr)
+
+            bad_cost = Path(tmp) / "bad_cost.md"
+            bad_cost.write_text(text.replace("- source: unknown\n", "- source: guessed\n"))
+            bad_cost_result = run_cmd(str(RECEIPT), str(bad_cost))
+            self.assertNotEqual(bad_cost_result.returncode, 0)
+            self.assertIn("source must be self_reported, measured, or unknown", bad_cost_result.stderr)
 
     def test_uber_run_receipt_validator_accepts_legacy_skill_labels(self) -> None:
         text = (ROOT / "tests" / "fixtures" / "valid" / "uber_run_receipt.md").read_text()

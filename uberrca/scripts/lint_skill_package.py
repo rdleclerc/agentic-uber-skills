@@ -13,6 +13,8 @@ REQUIRED_FILES = [
     "agents/openai.yaml",
     "evals/golden_skill_invocations.json",
     "scripts/lint_skill_package.py",
+    "scripts/validate_rca_artifact.py",
+    "templates/rca-artifact.md",
     "tests/test_validators.py",
 ]
 REQUIRED_SKILL_PHRASES = [

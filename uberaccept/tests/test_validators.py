@@ -31,6 +31,22 @@ class AcceptanceValidatorTests(unittest.TestCase):
     def test_valid_acceptance_passes(self) -> None:
         self.assertPasses(str(ACCEPT), str(FIX / "valid" / "final_acceptance.md"), "--agent-behavior")
 
+    def test_accepted_status_passes(self) -> None:
+        self.assertPasses(str(ACCEPT), str(FIX / "valid" / "final_acceptance.md"), "--agent-behavior")
+
+    def test_rejected_with_intake_passes(self) -> None:
+        self.assertPasses(str(ACCEPT), str(FIX / "valid" / "rejected_with_intake.md"))
+
+    def test_rejected_without_intake_fails(self) -> None:
+        result = run_cmd(str(ACCEPT), str(FIX / "invalid" / "rejected_without_intake.md"))
+        self.assertNotEqual(result.returncode, 0, "unexpected pass\n" + result.stdout)
+        self.assertIn("failure intake requires exactly one", result.stderr)
+
+    def test_accepted_with_unresolved_blockers_fails(self) -> None:
+        result = run_cmd(str(ACCEPT), str(FIX / "invalid" / "accepted_with_unresolved_blockers.md"))
+        self.assertNotEqual(result.returncode, 0, "unexpected pass\n" + result.stdout)
+        self.assertIn("Material blockers is not clear", result.stderr)
+
     def test_acceptance_requires_scope_fidelity_verdict(self) -> None:
         text = (FIX / "valid" / "final_acceptance.md").read_text()
         start = text.index("## Scope fidelity verdict")
