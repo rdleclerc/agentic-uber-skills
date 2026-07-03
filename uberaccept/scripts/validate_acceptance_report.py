@@ -129,17 +129,44 @@ def acceptance_status(text: str, errors: list[str]) -> str:
     return normalized
 
 
-def validate_failure_intake(text: str, errors: list[str]) -> None:
-    present: list[str] = []
+def validate_failure_intake(text: str, status: str, errors: list[str]) -> tuple[str, str] | None:
+    present: list[tuple[str, str]] = []
     for field in INTAKE_FIELDS:
         value = optional_field(text, field)
         if value and normalize(value) not in INTAKE_PLACEHOLDERS:
-            present.append(field)
+            present.append((field, value))
+    allowed = INTAKE_FIELDS
+    if status == "blocked_with_failure_intake":
+        allowed = ["failure_case_id", "case_updated"]
+        disallowed = [field for field, _value in present if field not in allowed]
+        if disallowed:
+            errors.append("blocked_with_failure_intake requires failure_case_id or case_updated, not not_applicable_with_reason")
     if len(present) != 1:
+        grammar = "failure_case_id | case_updated"
+        if status != "blocked_with_failure_intake":
+            grammar = "failure_case_id | case_updated | not_applicable_with_reason"
         errors.append(
             "failure intake requires exactly one non-empty field: "
-            "failure_case_id | case_updated | not_applicable_with_reason"
+            f"{grammar}"
         )
+        return None
+    field, value = present[0]
+    if field not in allowed:
+        return None
+    return field, value
+
+
+def warn_missing_failure_case(referenced: tuple[str, str] | None, cases_dir: Path | None, warnings: list[str]) -> None:
+    if cases_dir is None or referenced is None:
+        return
+    field, value = referenced
+    if field != "failure_case_id":
+        return
+    case_id = value.strip()
+    if not case_id:
+        return
+    if not (cases_dir / f"{case_id}.md").exists():
+        warnings.append(f"failure_case_id has no case file under {cases_dir}: {case_id}")
 
 
 def validate_terminal_failure_report(found: dict[str, str], full_text: str, status: str, errors: list[str]) -> None:
@@ -757,6 +784,7 @@ def main() -> int:
     parser.add_argument("path", type=Path, help="Markdown final acceptance report path")
     parser.add_argument("--agent-behavior", action="store_true", help="Require Agent Advocate / human-counterfactual acceptance evidence")
     parser.add_argument("--allow-template", action="store_true", help="Validate template structure without filled-in evidence")
+    parser.add_argument("--cases-dir", type=Path, default=None, help="Warn if failure_case_id does not exist under this cases directory")
     args = parser.parse_args()
 
     text = args.path.read_text()
@@ -780,15 +808,20 @@ def main() -> int:
         return 0
 
     status = acceptance_status(text, errors)
-    validate_failure_intake(text, errors)
+    referenced_failure = validate_failure_intake(text, status, errors)
+    warn_missing_failure_case(referenced_failure, args.cases_dir, warnings)
     if status in {"rejected", "blocked_with_failure_intake"}:
         validate_terminal_failure_report(found, text, status, errors)
         if errors:
             print("FAIL: acceptance report validation failed", file=sys.stderr)
             for error in errors:
                 print(f"- {error}", file=sys.stderr)
+            for warning in warnings:
+                print(f"warning: {warning}", file=sys.stderr)
             return 1
         print("PASS: acceptance report terminal-status checks passed")
+        for warning in warnings:
+            print(f"warning: {warning}")
         return 0
 
     errors.extend(missing_required_sections)

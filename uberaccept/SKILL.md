@@ -102,6 +102,7 @@ Produce a final acceptance report that names every relevant layer explicitly:
 
 Use `templates/final-acceptance.md` and validate with `scripts/validate_acceptance_report.py` when producing durable artifacts.
 Acceptance reports must include the mandatory failure-intake field; use the grammar in `evals/failures/README.md`.
+`acceptance_status` values are `accepted`, `rejected`, and `blocked_with_failure_intake`; blocked reports must file or update a failure case with `failure_case_id:` or `case_updated:`.
 
 ## Acceptance scoring
 

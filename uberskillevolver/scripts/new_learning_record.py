@@ -16,7 +16,7 @@ def slugify(value: str) -> str:
 
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--root", default="learning/inbox/local", help="Learning root directory")
+    parser.add_argument("--root", default="learning/private/local", help="Learning root directory")
     parser.add_argument("--skill", required=True, help="Skill name, e.g. ubergoal")
     parser.add_argument("--run-slug", required=True, help="Short run slug")
     parser.add_argument("--timestamp", default=None, help="Override timestamp YYYYMMDDTHHMMSS")

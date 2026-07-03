@@ -18,6 +18,7 @@ normalization = "whitespace"
 allowed_absences = []
 severity = "warn"
 blocking_wave = 2
+pending = "Wave 2c propagation"
 
 [[fingerprint]]
 id = "canary-command"
@@ -35,6 +36,7 @@ normalization = "none"
 allowed_absences = []
 severity = "warn"
 blocking_wave = 2
+pending = "Wave 2c propagation"
 
 [[fingerprint]]
 id = "lane-policy-portable"
@@ -51,6 +53,21 @@ normalization = "whitespace"
 allowed_absences = []
 severity = "error"
 blocking_wave = 1
+
+[[fingerprint]]
+id = "lane-policy-spine"
+owner = "pack maintainer"
+adoption_state = "report_only"
+canonical_source = "${GAIA_ROOT:-~/repos/agfunder-gaia}/knowledge/coding-agent-operating-spine.md#default-high-tier-review-lane"
+target_paths = [
+  "${GAIA_ROOT:-~/repos/agfunder-gaia}/knowledge/coding-agent-operating-spine.md",
+]
+match = "regex"
+pattern = '''For Gaia/OpenClaw coding tasks beyond the most minor edits, use the best available Claude review lane as a required gate unless Rob explicitly waives it.*claude --model opus --effort max.*record the fallback\. Do not silently downgrade\. If no Claude review lane is reachable, stop before merge, commit, or completion claims'''
+normalization = "whitespace"
+allowed_absences = []
+severity = "warn"
+blocking_wave = 2
 
 [[fingerprint]]
 id = "post-upgrade-canary-mandate"

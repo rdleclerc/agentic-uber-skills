@@ -19,6 +19,7 @@ Read in this order:
 - `$ubergoal` is the only default/implicit Uber lifecycle router.
 - All skills in this pack must be installed and exposed to Codex sessions. Exposure is not trigger authority.
 - Review and acceptance lanes use the highest-capability available Claude lane; record `lane_used` in the receipt; never silently downgrade. In gaia contexts the spine's lane policy governs (`knowledge/coding-agent-operating-spine.md` in the gaia workspace repo).
+- Reword a fingerprinted rule ⇒ update `references/drift-fingerprints.toml` in the same commit.
 - Phase skills are explicit or wrapper-invoked: `$uberplan`, `$uberaccept`, `$uberskillevolver`, `$ubersimplify`, and `$uberassess` should not trigger merely because a task resembles their domain. Their descriptions and OpenAI adapter prompts should say "Do not auto-trigger from task similarity" so runtime skill routers do not confuse examples with permission.
 - `$uberrca` is a utility skill, not an Uber lifecycle phase. Use it directly for general incidents, debugging, postmortems, repeated bugs, and class-level root-cause analysis.
 - `ubershow` = visual communication utility, not an Uber lifecycle phase. Use it when a browser-first static artifact will materially improve decision speed or comprehension; generated HTML is a view, and copy/paste receipts are the decision registration path.

@@ -6,8 +6,8 @@ canonical_layer: runtime
 title: Runtime pointer fixture
 what_happened: Sanitized pointer case with no incident detail.
 failure_class: pointer fixture
-cost: none
-gate_that_missed_it: none
+cost: Runtime ownership could be unclear without a canonical pointer.
+gate_that_missed_it: No pointer fixture existed for cross-layer cases.
 eval_check: pointer fixture
 eval_type: checklist
 plan_items:

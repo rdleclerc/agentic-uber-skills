@@ -51,6 +51,12 @@ def run_pack_lint(root: Path, *args: str, env: dict[str, str] | None = None) -> 
     )
 
 
+def write_fake_git(bin_dir: Path) -> None:
+    fake_git = bin_dir / "git"
+    fake_git.write_text("#!/bin/sh\nexit 0\n")
+    fake_git.chmod(0o755)
+
+
 class PackContractTests(unittest.TestCase):
     def test_pack_contract_lint_passes(self) -> None:
         proc = run_pack_lint(ROOT)
@@ -86,6 +92,61 @@ class PackContractTests(unittest.TestCase):
             proc = run_pack_lint(lint_root)
             self.assertNotEqual(proc.returncode, 0)
             self.assertIn("machine-specific path must be parameterized or marker-exempted", proc.stderr)
+
+    def test_pack_contract_lint_rejects_machine_path_elsewhere_on_parameterized_line(self) -> None:
+        with tempfile.TemporaryDirectory() as td:
+            lint_root = copy_lint_root(Path(td))
+            fixture = (ROOT / "tests" / "fixtures" / "pack_contract" / "parameterized_path_plus_machine_path.md").read_text()
+            readme = lint_root / "README.md"
+            readme.write_text(readme.read_text() + "\n" + fixture)
+            proc = run_pack_lint(lint_root)
+            self.assertNotEqual(proc.returncode, 0)
+            self.assertIn("/Users/other/secret", proc.stderr)
+
+    def test_dispatch_preflight_fixture_passes_with_writable_git_and_tmpdir(self) -> None:
+        with tempfile.TemporaryDirectory() as td:
+            temp = Path(td)
+            repo = temp / "repo"
+            repo.mkdir()
+            (repo / ".git").mkdir()
+            tmpdir = temp / "tmp"
+            tmpdir.mkdir()
+            bin_dir = temp / "bin"
+            bin_dir.mkdir()
+            write_fake_git(bin_dir)
+
+            env = {"PATH": f"{bin_dir}{os.pathsep}{os.environ['PATH']}", "TMPDIR": str(tmpdir)}
+            proc = run_pack_lint(ROOT, "--dispatch-preflight", str(repo), env=env)
+            self.assertEqual(proc.returncode, 0, proc.stderr + proc.stdout)
+            self.assertIn("PASS dispatch preflight", proc.stdout)
+
+    def test_dispatch_preflight_rejects_read_only_tmpdir_fixture(self) -> None:
+        with tempfile.TemporaryDirectory() as td:
+            temp = Path(td)
+            repo = temp / "repo"
+            repo.mkdir()
+            (repo / ".git").mkdir()
+            tmpdir = temp / "tmp"
+            tmpdir.mkdir()
+            bin_dir = temp / "bin"
+            bin_dir.mkdir()
+            write_fake_git(bin_dir)
+            tmpdir.chmod(0o555)
+            try:
+                env = {"PATH": f"{bin_dir}{os.pathsep}{os.environ['PATH']}", "TMPDIR": str(tmpdir)}
+                proc = run_pack_lint(ROOT, "--dispatch-preflight", str(repo), env=env)
+            finally:
+                tmpdir.chmod(0o755)
+            self.assertNotEqual(proc.returncode, 0)
+            self.assertIn("TMPDIR is not writable", proc.stderr)
+
+    def test_dispatch_preflight_real_machine_passes_when_gitdir_writable(self) -> None:
+        git_dir = ROOT / ".git"
+        if not git_dir.is_dir() or not os.access(git_dir, os.W_OK):
+            self.skipTest("local .git directory is not writable in this runtime")
+        proc = run_pack_lint(ROOT, "--dispatch-preflight", str(ROOT))
+        self.assertEqual(proc.returncode, 0, proc.stderr + proc.stdout)
+        self.assertIn("PASS dispatch preflight", proc.stdout)
 
     def test_doctrine_drift_fixture_reports_divergence_and_strict_fails(self) -> None:
         registry = ROOT / "tests" / "fixtures" / "drift" / "registry.toml"

@@ -73,6 +73,28 @@ class ValidatorTests(unittest.TestCase):
             self.assertIn("- Skill(s): UberGoal", text)
             self.assertIn("- Run slug: big-plan", text)
 
+    def test_new_learning_record_defaults_to_private_local_root(self):
+        with tempfile.TemporaryDirectory() as td:
+            proc = subprocess.run(
+                [
+                    PY,
+                    str(ROOT / "scripts" / "new_learning_record.py"),
+                    "--skill",
+                    "UberGoal",
+                    "--run-slug",
+                    "Private Run",
+                    "--timestamp",
+                    "20260703T090000",
+                ],
+                cwd=td,
+                text=True,
+                capture_output=True,
+                check=True,
+            )
+            path = Path(td) / proc.stdout.strip()
+            self.assertTrue(path.exists())
+            self.assertIn("learning/private/local/ubergoal/20260703T090000-private-run/post-run-learning.md", str(path))
+
     def test_golden_eval_schema_mentions_completion_claim_regression(self):
         cases = json.loads((ROOT / "evals" / "golden_skill_invocations.json").read_text())
         ids = {case["id"] for case in cases}

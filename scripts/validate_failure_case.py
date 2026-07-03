@@ -34,11 +34,16 @@ LAYERS = {"process", "runtime", "both"}
 CANONICAL_LAYERS = {"process", "runtime"}
 EVAL_TYPES = {"executable", "fixture", "checklist", "live"}
 STATUSES = {"seed", "eval_built", "enforced"}
-PLACEHOLDERS = {"", "todo", "tbd", "n/a", "yes/no"}
+PLACEHOLDERS = {"", "todo", "tbd", "n/a", "none", "yes/no"}
 CASE_ID_RE = re.compile(r"^[a-z0-9]+(?:-[a-z0-9]+)*$")
 DATE_RE = re.compile(r"^\d{4}-\d{2}-\d{2}$")
 USER_PATH_RE = re.compile(r"/Users/[^/\s`'\"<>),]+/[^\s`'\"<>),]*")
 FRONTMATTER_RE = re.compile(r"\A---\s*\n(.*?)\n---\s*(?:\n|\Z)(.*)\Z", re.S)
+INDEX_LINE_RE = re.compile(
+    r"^\s*-\s+(?P<id>[a-z0-9]+(?:-[a-z0-9]+)*)\s+·\s+"
+    r"(?P<layer>[a-z]+)\((?P<canonical_layer>[a-z]+)\)\s+·\s+"
+    r"(?P<status>[a-z_]+)\s+·\s+canonical:\s+(?P<canonical>.+?)\s*$"
+)
 
 
 def normalize(value: object) -> str:
@@ -96,13 +101,23 @@ def nonempty(data: dict[str, object], field: str) -> bool:
     return normalize(value or "").lower() not in PLACEHOLDERS
 
 
+def parameterized_default_spans(line: str) -> list[tuple[int, int]]:
+    return [(span.start(), span.end()) for span in re.finditer(r"\$\{[^}\n]*:-[^}\n]*\}", line)]
+
+
+def range_inside_spans(match_start: int, match_end: int, spans: list[tuple[int, int]]) -> bool:
+    return any(start <= match_start and match_end <= end for start, end in spans)
+
+
 def has_parameterized_user_path(text: str, match: re.Match[str]) -> bool:
     line_start = text.rfind("\n", 0, match.start()) + 1
     line_end = text.find("\n", match.end())
     if line_end == -1:
         line_end = len(text)
     line = text[line_start:line_end]
-    return "${" in line or "~/" in line or "<name>" in line or "<user>" in line
+    local_start = match.start() - line_start
+    local_end = match.end() - line_start
+    return match.group(0).startswith("~/") or range_inside_spans(local_start, local_end, parameterized_default_spans(line))
 
 
 def expected_canonical_repo(layer: str) -> str:
@@ -175,10 +190,104 @@ def iter_case_files(target: Path) -> list[Path]:
     return [target]
 
 
+def parse_case_metadata(path: Path) -> tuple[dict[str, object], list[str]]:
+    try:
+        text = path.read_text()
+    except UnicodeDecodeError as exc:
+        return {}, [f"{path}: not UTF-8 text: {exc}"]
+    data, _body, parse_errors = parse_frontmatter(text)
+    return data, [f"{path}: {error}" for error in parse_errors]
+
+
+def is_local_canonical(canonical: str) -> bool:
+    return canonical.startswith("evals/failures/cases/")
+
+
+def parse_index(index_path: Path) -> tuple[dict[str, dict[str, str]], list[str]]:
+    try:
+        lines = index_path.read_text().splitlines()
+    except OSError as exc:
+        return {}, [f"{index_path}: cannot read index: {exc}"]
+    entries: dict[str, dict[str, str]] = {}
+    errors: list[str] = []
+    for line_no, line in enumerate(lines, start=1):
+        if not line.lstrip().startswith("- "):
+            continue
+        match = INDEX_LINE_RE.match(line)
+        if not match:
+            errors.append(f"{index_path}:{line_no}: malformed index line")
+            continue
+        case_id = match.group("id")
+        if case_id in entries:
+            errors.append(f"{index_path}:{line_no}: duplicate case id: {case_id}")
+            continue
+        entries[case_id] = match.groupdict()
+    return entries, errors
+
+
+def validate_index(index_path: Path, cases_dir: Path) -> list[str]:
+    entries, errors = parse_index(index_path)
+    if not entries:
+        errors.append(f"{index_path}: no index entries found")
+    files = iter_case_files(cases_dir)
+    case_by_id: dict[str, tuple[Path, dict[str, object]]] = {}
+    for path in files:
+        data, parse_errors = parse_case_metadata(path)
+        errors.extend(parse_errors)
+        case_id = normalize(data.get("id", ""))
+        if not case_id:
+            errors.append(f"{path}: missing id for index consistency")
+            continue
+        if case_id in case_by_id:
+            errors.append(f"{path}: duplicate case id also found at {case_by_id[case_id][0]}")
+            continue
+        case_by_id[case_id] = (path, data)
+
+    local_index_ids = {case_id for case_id, entry in entries.items() if is_local_canonical(entry["canonical"])}
+    file_ids = set(case_by_id)
+    missing_from_index = sorted(file_ids - local_index_ids)
+    missing_files = sorted(local_index_ids - file_ids)
+    for case_id in missing_from_index:
+        errors.append(f"{index_path}: case file missing from local index: {case_id}")
+    for case_id in missing_files:
+        errors.append(f"{index_path}: local index id has no case file: {case_id}")
+
+    for case_id, entry in entries.items():
+        if not CASE_ID_RE.fullmatch(case_id):
+            errors.append(f"{index_path}: invalid index id: {case_id}")
+        if is_local_canonical(entry["canonical"]):
+            if entry["canonical"] != f"evals/failures/cases/{case_id}.md":
+                errors.append(f"{index_path}: local canonical path mismatch for {case_id}: {entry['canonical']}")
+            if case_id not in case_by_id:
+                continue
+            path, data = case_by_id[case_id]
+            status = normalize(data.get("status", ""))
+            if entry["status"] != status:
+                errors.append(f"{index_path}: status mismatch for {case_id}: index={entry['status']} case={status} ({path})")
+        elif case_id not in entries:
+            errors.append(f"{index_path}: pointer line missing id")
+    return errors
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("target", type=Path, help="case file or directory of case files")
+    parser.add_argument("target", nargs="?", type=Path, help="case file or directory of case files")
+    parser.add_argument("--index", type=Path, default=None, help="INDEX.md to check against a local cases directory")
+    parser.add_argument("--cases", type=Path, default=None, help="case directory for --index mode")
     args = parser.parse_args()
+    if args.index or args.cases:
+        if not args.index or not args.cases:
+            parser.error("--index and --cases must be provided together")
+        errors = validate_index(args.index, args.cases)
+        if errors:
+            print("FAIL: failure case index validation failed", file=sys.stderr)
+            for error in errors:
+                print(f"- {error}", file=sys.stderr)
+            return 1
+        print(f"PASS: index {args.index} matches cases in {args.cases}")
+        return 0
+    if args.target is None:
+        parser.error("target is required unless --index --cases is used")
     files = iter_case_files(args.target)
     errors: list[str] = []
     if not files:

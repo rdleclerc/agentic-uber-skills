@@ -17,3 +17,5 @@ status: seed
 ---
 
 Canonical pack-layer case for unverified baseline claims. The durable check is to require artifact paths for load-bearing evidence and reviewer spot-checks before structural decisions.
+
+Second observed instance: a dispatch-3 result receipt claimed `eval_built=3` and case 15 still seeded, while the landed tree had 4 `eval_built` cases including case 15; the receipt/diff mismatch was caught in Wave-1 review.

@@ -71,6 +71,8 @@ def validate(path: Path, *, allow_template: bool = False) -> list[str]:
         bullets = [line for line in surface.splitlines() if line.strip().startswith("- ")]
         if not bullets:
             errors.append("surface_enumeration must be a non-empty list")
+        elif all(normalize(line.strip()[2:]) in PLACEHOLDERS for line in bullets):
+            errors.append("surface_enumeration must not contain only placeholder bullets")
     if allow_template:
         return errors
     validate_intake(text, errors)

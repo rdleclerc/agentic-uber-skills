@@ -65,6 +65,10 @@ class UberRcaPackageTests(unittest.TestCase):
         self.assertNotEqual(missing_surface.returncode, 0)
         self.assertIn("surface enumeration", missing_surface.stderr)
 
+        placeholder_surface = run_cmd(str(RCA), str(ROOT / "tests" / "fixtures" / "invalid" / "rca_artifact_placeholder_surface.md"))
+        self.assertNotEqual(placeholder_surface.returncode, 0)
+        self.assertIn("surface_enumeration", placeholder_surface.stderr)
+
         missing_intake = run_cmd(str(RCA), str(ROOT / "tests" / "fixtures" / "invalid" / "rca_artifact_missing_intake.md"))
         self.assertNotEqual(missing_intake.returncode, 0)
         self.assertIn("failure intake requires exactly one", missing_intake.stderr)

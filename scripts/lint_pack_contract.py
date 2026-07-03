@@ -8,7 +8,9 @@ from dataclasses import dataclass
 import math
 import os
 import re
+import subprocess
 import sys
+import tempfile
 import tomllib
 
 DEFAULT_ROOT = Path(__file__).resolve().parents[1]
@@ -56,6 +58,7 @@ AGENTS_REQUIRED_PHRASES = [
     "Codex adapter metadata should expose every pack skill",
     "Do not commit, tag, push, or publish without explicit user authorization",
     "child/sub-`uberplan` appendix",
+    "Reword a fingerprinted rule",
 ]
 README_REQUIRED_PHRASES = [
     "Agent-facing source authority lives in [AGENTS.md](AGENTS.md)",
@@ -187,8 +190,17 @@ def has_portability_exemption(lines: list[str], index: int) -> bool:
     return False
 
 
-def is_parameterized_path_line(line: str) -> bool:
-    return "${" in line and ":-" in line and "}" in line
+def parameterized_default_spans(line: str) -> list[tuple[int, int]]:
+    return [(match.start(), match.end()) for match in re.finditer(r"\$\{[^}\n]*:-[^}\n]*\}", line)]
+
+
+def match_inside_spans(match: re.Match[str], spans: list[tuple[int, int]]) -> bool:
+    return any(start <= match.start() and match.end() <= end for start, end in spans)
+
+
+def is_parameterized_path_match(line: str, match: re.Match[str]) -> bool:
+    candidate = match.group(0)
+    return candidate.startswith("~/") or match_inside_spans(match, parameterized_default_spans(line))
 
 
 def clean_path_candidate(raw: str) -> str:
@@ -223,17 +235,106 @@ def validate_portability_oracle(root: Path, errors: list[str]) -> None:
         rel = path.relative_to(root)
         lines = text.splitlines()
         for index, line in enumerate(lines):
-            if has_portability_exemption(lines, index) or is_parameterized_path_line(line):
+            if has_portability_exemption(lines, index):
                 continue
             for match in MACHINE_USER_PATH_RE.finditer(line):
+                if is_parameterized_path_match(line, match):
+                    continue
                 candidate = clean_path_candidate(match.group(0))
                 errors.append(f"{rel}:{index + 1} machine-specific path must be parameterized or marker-exempted: {candidate}")
             for match in ABSOLUTE_PATH_RE.finditer(line):
+                if is_parameterized_path_match(line, match):
+                    continue
                 candidate = clean_path_candidate(match.group(1))
                 if MACHINE_USER_PATH_RE.search(candidate):
                     continue
                 if not Path(candidate).exists():
                     errors.append(f"{rel}:{index + 1} absolute path does not exist or need parameterization: {candidate}")
+
+
+def resolve_git_dir(root: Path) -> tuple[Path | None, str | None]:
+    dot_git = root / ".git"
+    if dot_git.is_dir():
+        return dot_git, None
+    if dot_git.is_file():
+        try:
+            text = dot_git.read_text().strip()
+        except OSError as exc:
+            return None, f"cannot read .git file at {dot_git}: {exc}"
+        if not text.startswith("gitdir:"):
+            return None, f"{dot_git} is not a gitdir pointer"
+        raw = text.split(":", 1)[1].strip()
+        git_dir = Path(raw).expanduser()
+        if not git_dir.is_absolute():
+            git_dir = (root / git_dir).resolve()
+        return git_dir, None
+    return None, f"{root} has no .git directory or gitdir pointer"
+
+
+def probe_directory_write(path: Path, label: str) -> str | None:
+    if not path.exists():
+        return f"{label} does not exist: {path}"
+    if not path.is_dir():
+        return f"{label} is not a directory: {path}"
+    try:
+        with tempfile.NamedTemporaryFile(prefix="codex-preflight-", dir=path, delete=True) as handle:
+            handle.write(b"ok")
+            handle.flush()
+    except OSError as exc:
+        return f"{label} is not writable: {path} ({exc})"
+    return None
+
+
+def check_dispatch_preflight(root: Path) -> CheckReport:
+    """Preflight dispatch writeability for the active implementation root."""
+    lines = [f"DISPATCH PREFLIGHT root={root}"]
+    errors: list[str] = []
+    root = root.resolve()
+    if not root.exists():
+        errors.append(f"root does not exist: {root}")
+        return CheckReport(lines, [], errors)
+    if not root.is_dir():
+        errors.append(f"root is not a directory: {root}")
+        return CheckReport(lines, [], errors)
+
+    git_dir, git_error = resolve_git_dir(root)
+    if git_error:
+        errors.append(git_error)
+    elif git_dir:
+        git_write_error = probe_directory_write(git_dir, ".git directory")
+        if git_write_error:
+            errors.append(git_write_error)
+        else:
+            lines.append(f"PASS git-dir-writable path={git_dir}")
+
+    try:
+        proc = subprocess.run(
+            ["git", "-C", str(root), "status", "--porcelain"],
+            text=True,
+            capture_output=True,
+            check=False,
+            timeout=20,
+        )
+    except (OSError, subprocess.TimeoutExpired) as exc:
+        errors.append(f"git status probe failed to run: {exc}")
+    else:
+        if proc.returncode != 0:
+            detail = (proc.stderr or proc.stdout or "").strip()
+            suffix = f": {detail}" if detail else ""
+            errors.append(f"git status probe failed with exit {proc.returncode}{suffix}")
+        else:
+            lines.append("PASS git-status")
+
+    tmp_root = Path(os.environ.get("TMPDIR") or tempfile.gettempdir()).expanduser()
+    tmp_error = probe_directory_write(tmp_root, "TMPDIR")
+    if tmp_error:
+        errors.append(tmp_error)
+    else:
+        lines.append(f"PASS tmpdir-writable path={tmp_root}")
+
+    if not errors:
+        lines.append("PASS dispatch preflight")
+    return CheckReport(lines, [], errors)
 
 
 def expand_shell_token(value: str) -> str:
@@ -550,12 +651,13 @@ def main() -> int:
     parser.add_argument("--install-sync", action="store_true", help="run only the local skill install-sync report")
     parser.add_argument("--secret-scan", action="store_true", help="run only the report-only secret scan")
     parser.add_argument("--secret-scan-path", action="append", type=Path, default=[], help="extra file/dir to scan for secret-scan tests")
+    parser.add_argument("--dispatch-preflight", type=Path, nargs="?", const=DEFAULT_ROOT, default=None, help="run only the dispatch writeability preflight for a repo root")
     parser.add_argument("--strict", action="store_true", help="fail focused reports on blocking violations")
     parser.add_argument("--drift-registry", type=Path, default=None, help="override doctrine drift registry path")
     args = parser.parse_args()
     root = args.root.resolve()
 
-    if args.drift or args.install_sync or args.secret_scan:
+    if args.drift or args.install_sync or args.secret_scan or args.dispatch_preflight is not None:
         reports: list[CheckReport] = []
         if args.drift:
             reports.append(check_doctrine_drift(root, registry_path=args.drift_registry))
@@ -563,6 +665,8 @@ def main() -> int:
             reports.append(check_skill_install_sync(root))
         if args.secret_scan:
             reports.append(check_secret_scan(root, extra_paths=args.secret_scan_path))
+        if args.dispatch_preflight is not None:
+            reports.append(check_dispatch_preflight(args.dispatch_preflight))
         exit_code = 0
         for report in reports:
             report.print()

@@ -8,7 +8,8 @@ Synchronize **sanitized lesson packets**, not raw agent memory. Git is the merge
 
 ## Recommended layout
 
-- Learning records in this repo: `learning/inbox/<machine-id>/<timestamp>-<run>/post-run-learning.md`
+- Raw local learning records in this repo: `learning/private/<machine-id>/<skill>/<timestamp>-<run>/post-run-learning.md`
+- Sanitized packets for sharing: `learning/inbox/<machine-id>/<timestamp>-<run>/post-run-learning.md`
 - Processed packets: `learning/processed/...` after promotion/rejection, or leave in inbox with a linked promotion batch if the team prefers an append-only inbox.
 - Task receipts and review artifacts should reference the packet from `coordination/<task-slug>/`.
 
@@ -18,7 +19,7 @@ Synchronize **sanitized lesson packets**, not raw agent memory. Git is the merge
 
 ```bash
 uberskillevolver/scripts/new_learning_record.py \
-  --root learning/inbox/$(hostname -s) \
+  --root learning/private/$(hostname -s) \
   --skill ubergoal \
   --run-slug my-run
 ```
@@ -27,14 +28,14 @@ uberskillevolver/scripts/new_learning_record.py \
 
 ```bash
 uberskillevolver/scripts/validate_learning_record.py \
-  learning/inbox/$(hostname -s)/ubergoal/<timestamp>-my-run/post-run-learning.md
+  learning/private/$(hostname -s)/ubergoal/<timestamp>-my-run/post-run-learning.md
 ```
 
-3. If it contains a lesson worth sharing, ensure the packet is sanitized and already under the repo inbox:
+3. If it contains a lesson worth sharing, copy only a sanitized packet into the repo inbox:
 
 ```bash
 mkdir -p learning/inbox/$(hostname -s)/<timestamp>-my-run
-cp learning/inbox/$(hostname -s)/ubergoal/<timestamp>-my-run/post-run-learning.md \
+cp learning/private/$(hostname -s)/ubergoal/<timestamp>-my-run/post-run-learning.md \
   learning/inbox/$(hostname -s)/<timestamp>-my-run/post-run-learning.md
 ```
 

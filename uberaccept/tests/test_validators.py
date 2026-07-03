@@ -37,6 +37,29 @@ class AcceptanceValidatorTests(unittest.TestCase):
     def test_rejected_with_intake_passes(self) -> None:
         self.assertPasses(str(ACCEPT), str(FIX / "valid" / "rejected_with_intake.md"))
 
+    def test_blocked_with_failure_intake_passes(self) -> None:
+        self.assertPasses(str(ACCEPT), str(FIX / "valid" / "blocked_with_failure_intake.md"))
+
+    def test_blocked_with_not_applicable_intake_fails(self) -> None:
+        result = run_cmd(str(ACCEPT), str(FIX / "invalid" / "blocked_with_na_intake.md"))
+        self.assertNotEqual(result.returncode, 0, "unexpected pass\n" + result.stdout)
+        self.assertIn("blocked_with_failure_intake requires failure_case_id or case_updated", result.stderr)
+
+    def test_invalid_acceptance_status_string_fails(self) -> None:
+        result = run_cmd(str(ACCEPT), str(FIX / "invalid" / "invalid_status_string.md"))
+        self.assertNotEqual(result.returncode, 0, "unexpected pass\n" + result.stdout)
+        self.assertIn("invalid acceptance_status", result.stderr)
+
+    def test_cases_dir_warns_for_missing_failure_case_id(self) -> None:
+        result = run_cmd(
+            str(ACCEPT),
+            str(FIX / "valid" / "blocked_with_failure_intake.md"),
+            "--cases-dir",
+            str(ROOT / "tests" / "fixtures" / "empty-cases"),
+        )
+        self.assertEqual(result.returncode, 0, result.stderr + result.stdout)
+        self.assertIn("warning: failure_case_id has no case file", result.stdout)
+
     def test_rejected_without_intake_fails(self) -> None:
         result = run_cmd(str(ACCEPT), str(FIX / "invalid" / "rejected_without_intake.md"))
         self.assertNotEqual(result.returncode, 0, "unexpected pass\n" + result.stdout)
