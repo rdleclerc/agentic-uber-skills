@@ -3,3 +3,13 @@
 This fixture intentionally contains a fake token for detector tests only.
 
 sk-test000000000000000000000000000000
+github_pat_11AABBCCDDEEFF00112233445566778899
+eyJhbGciOiJIUzI1NiIsInR5cCI.eyJzdWIiOiIxMjM0NTY3ODkwIn0.KmVyeUxvbmdTaWduYXR1cmVTZWdtZW50
+xoxc-1234567890-abcdefghijklmnopqrstuvwxyz
+xoxs-1234567890-abcdefghijklmnopqrstuvwxyz
+xapp-1-ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890
+aws_secret_access_key = "wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY"
+
+Safe git SHA examples should not be flagged:
+commit 0123456789abcdef0123456789abcdef01234567
+`89abcdef0123456789abcdef0123456789abcdef`

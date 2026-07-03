@@ -129,6 +129,8 @@ def expected_canonical_repo(layer: str) -> str:
 def validate_file(path: Path) -> list[str]:
     try:
         text = path.read_text()
+    except OSError as exc:
+        return [f"{path}: cannot read case file: {exc}"]
     except UnicodeDecodeError as exc:
         return [f"{path}: not UTF-8 text: {exc}"]
     data, body, errors = parse_frontmatter(text)
@@ -165,10 +167,14 @@ def validate_file(path: Path) -> list[str]:
     if not isinstance(data.get("plan_items"), list) or not data.get("plan_items"):
         errors.append("plan_items must be a non-empty YAML list")
 
-    what_happened = normalize(data.get("what_happened", ""))
-    for match in USER_PATH_RE.finditer(what_happened):
-        if not has_parameterized_user_path(what_happened, match):
-            errors.append(f"what_happened contains unsanitized user path: {match.group(0)}")
+    for field in ["title", "what_happened", "cost"]:
+        value = normalize(data.get(field, ""))
+        for match in USER_PATH_RE.finditer(value):
+            if not has_parameterized_user_path(value, match):
+                errors.append(f"{field} contains unsanitized user path: {match.group(0)}")
+    for match in USER_PATH_RE.finditer(body):
+        if not has_parameterized_user_path(body, match):
+            errors.append(f"body contains unsanitized user path: {match.group(0)}")
 
     is_pointer = (
         normalize(data.get("canonical_pointer", "")).lower() in {"true", "yes"}
@@ -193,6 +199,8 @@ def iter_case_files(target: Path) -> list[Path]:
 def parse_case_metadata(path: Path) -> tuple[dict[str, object], list[str]]:
     try:
         text = path.read_text()
+    except OSError as exc:
+        return {}, [f"{path}: cannot read case file: {exc}"]
     except UnicodeDecodeError as exc:
         return {}, [f"{path}: not UTF-8 text: {exc}"]
     data, _body, parse_errors = parse_frontmatter(text)

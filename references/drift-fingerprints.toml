@@ -4,7 +4,7 @@
 [[fingerprint]]
 id = "test-channel-posture"
 owner = "pack maintainer"
-adoption_state = "report_only"
+adoption_state = "blocking"
 canonical_source = "${GAIA_ROOT:-~/repos/agfunder-gaia}/CLAUDE.md#live-slack-proof-gate"
 target_paths = [
   "${GAIA_ROOT:-~/repos/agfunder-gaia}/GAIA_TESTING.md",
@@ -12,31 +12,31 @@ target_paths = [
   "${GAIA_ROOT:-~/repos/agfunder-gaia}/AGENTS.md",
   "${GAIA_ROOT:-~/repos/agfunder-gaia}/skills/gaia-testing/SKILL.md",
 ]
+git_ref = "main"
 match = "literal"
 pattern = '''Rob has pre-approved live Slack proof prompts in `#gaia-testing-alpha` as part of Gaia testing. Do not pause to ask for permission before posting a realistic proof prompt there. There should normally be a Chrome window with Slack web open; use that Slack web window for the live proof path before falling back to another Slack access path. This pre-approval is only for the alpha testing channel and Gaia proof prompts, not for external/customer channels or unrelated Slack posting.'''
 normalization = "whitespace"
 allowed_absences = []
 severity = "warn"
 blocking_wave = 2
-pending = "Wave 2c propagation"
 
 [[fingerprint]]
 id = "canary-command"
 owner = "pack maintainer"
-adoption_state = "report_only"
+adoption_state = "blocking"
 canonical_source = "${GAIA_ROOT:-~/repos/agfunder-gaia}/scripts/run_gateway_health_canary.sh#repo-root-command"
 target_paths = [
   "${GAIA_ROOT:-~/repos/agfunder-gaia}/GAIA_TESTING.md",
   "${GAIA_ROOT:-~/repos/agfunder-gaia}/CLAUDE.md",
   "${HOME}/CLAUDE.md",
 ]
+git_ref = "main"
 match = "literal"
 pattern = '''${GAIA_ROOT:-~/repos/agfunder-gaia}/scripts/run_gateway_health_canary.sh'''
 normalization = "none"
 allowed_absences = []
 severity = "warn"
 blocking_wave = 2
-pending = "Wave 2c propagation"
 
 [[fingerprint]]
 id = "lane-policy-portable"
@@ -57,18 +57,33 @@ blocking_wave = 1
 [[fingerprint]]
 id = "lane-policy-spine"
 owner = "pack maintainer"
-adoption_state = "report_only"
+adoption_state = "blocking"
 canonical_source = "${GAIA_ROOT:-~/repos/agfunder-gaia}/knowledge/coding-agent-operating-spine.md#default-high-tier-review-lane"
 target_paths = [
   "${GAIA_ROOT:-~/repos/agfunder-gaia}/knowledge/coding-agent-operating-spine.md",
 ]
+git_ref = "main"
 match = "regex"
 pattern = '''For Tier ≥1 Gaia/OpenClaw work, use the best available Claude review lane unless Rob explicitly waives it.*claude --model opus --effort max.*record the fallback\. Do not silently downgrade\. If no Claude review lane is reachable, stop before merge, commit, or completion claims'''
 normalization = "whitespace"
 allowed_absences = []
 severity = "warn"
 blocking_wave = 2
-pending = "pattern updated with W2-D1 spine reword (cross-repo same-commit rule satisfied at pointer commit)"
+
+[[fingerprint]]
+id = "lane-policy-home"
+owner = "pack maintainer"
+adoption_state = "report_only"
+canonical_source = "${HOME}/CLAUDE.md#default-model-lane"
+target_paths = [
+  "${HOME}/CLAUDE.md",
+]
+match = "regex"
+pattern = '''Default model lane.*reversed 2026-06-30.*Gaia's default text lane is.*Codex-backed `openai/gpt-5\.5`.*Do not route Gaia text, reasoning, transcript categorization, Slack document summaries, or coding-agent work to.*`minimax-portal/MiniMax-M3` by default.*Evidence-bearing turns whose data subject is a founder, LP, or named individual stay on the escalated lane regardless of reasoning difficulty.*shadow until enforced'''
+normalization = "whitespace"
+allowed_absences = []
+severity = "warn"
+blocking_wave = 2
 
 [[fingerprint]]
 id = "post-upgrade-canary-mandate"
@@ -78,6 +93,7 @@ canonical_source = "${GAIA_ROOT:-~/repos/agfunder-gaia}/GAIA_TESTING.md#mandator
 target_paths = [
   "${GAIA_ROOT:-~/repos/agfunder-gaia}/GAIA_TESTING.md",
 ]
+git_ref = "main"
 match = "literal"
 pattern = '''After `openclaw upgrade` (or any openclaw npm version bump)** — the 2026-04-29 incident is the reason this exists. Hardening of `hooks-yfZrrzcF.js` silently broke the gmail pipeline for ~3 days. Run:'''
 normalization = "whitespace"
@@ -86,12 +102,27 @@ severity = "warn"
 blocking_wave = 2
 
 [[fingerprint]]
-id = "guide-version-line"
+id = "stub-canonical-path"
 owner = "pack maintainer"
 adoption_state = "report_only"
-canonical_source = "${GAIA_ROOT:-~/repos/agfunder-gaia}/AGENTIC_ARCHITECTURE.md#version-line"
+canonical_source = "${GAIA_ROOT:-~/repos/agfunder-gaia}/AGENTIC_ARCHITECTURE.md#canonical-file"
 target_paths = [
   "${GAIA_ROOT:-~/repos/agfunder-gaia}/AGENTIC_ARCHITECTURE.md",
+]
+git_ref = "main"
+match = "literal"
+pattern = '''- **Canonical file**: `\${UBER_GUIDE_ROOT:-~/repos/agentic-architecture-guide}/agentic_architecture_singlefile.md`'''
+normalization = "whitespace"
+allowed_absences = []
+severity = "warn"
+blocking_wave = 2
+
+[[fingerprint]]
+id = "guide-singlefile-version"
+owner = "pack maintainer"
+adoption_state = "report_only"
+canonical_source = "${UBER_GUIDE_ROOT:-~/repos/agentic-architecture-guide}/agentic_architecture_singlefile.md#version-line"
+target_paths = [
   "${UBER_GUIDE_ROOT:-~/repos/agentic-architecture-guide}/agentic_architecture_singlefile.md",
 ]
 match = "regex"
@@ -104,11 +135,26 @@ blocking_wave = 2
 [[fingerprint]]
 id = "precedence-sentence"
 owner = "pack maintainer"
-adoption_state = "report_only"
+adoption_state = "blocking"
 canonical_source = "${GAIA_ROOT:-~/repos/agfunder-gaia}/knowledge/coding-agent-operating-spine.md#precedence"
 target_paths = [
   "${GAIA_ROOT:-~/repos/agfunder-gaia}/knowledge/coding-agent-operating-spine.md",
   "${GAIA_ROOT:-~/repos/agfunder-gaia}/AGENTS.md",
+]
+git_ref = "main"
+match = "literal"
+pattern = '''Precedence with the Uber skill pack: `ubergoal` wraps this spine's lifecycle for gaia work; the uber run receipt satisfies the spine receipt contract; `uberaccept` is the acceptance review; the claude-adversary lane is the required Tier-2+ independent lane and stays opt-in below Tier 2.'''
+normalization = "whitespace"
+allowed_absences = []
+severity = "warn"
+blocking_wave = 2
+
+[[fingerprint]]
+id = "precedence-sentence-pack"
+owner = "pack maintainer"
+adoption_state = "blocking"
+canonical_source = "AGENTS.md#precedence"
+target_paths = [
   "AGENTS.md",
 ]
 match = "literal"
@@ -117,15 +163,34 @@ normalization = "whitespace"
 allowed_absences = []
 severity = "warn"
 blocking_wave = 2
-pending = "flip to blocking at W2-D3 with the gaia unifications"
 
 [[fingerprint]]
 id = "tier-ladder-table"
 owner = "pack maintainer"
-adoption_state = "report_only"
+adoption_state = "blocking"
 canonical_source = "${GAIA_ROOT:-~/repos/agfunder-gaia}/knowledge/coding-agent-operating-spine.md#review-ladder"
 target_paths = [
   "${GAIA_ROOT:-~/repos/agfunder-gaia}/knowledge/coding-agent-operating-spine.md",
+]
+git_ref = "main"
+match = "literal"
+pattern = '''| Tier | Work class | Required review |
+|---|---|---|
+| 0 | typo/cosmetic only — nothing that fixes observed misbehavior | none; commit carries a `tier0:` trailer |
+| 1 | contained single-surface change, clear tests | one exact-diff review pass by a capable lane, including a one-line scope echo against the operator-original ask |
+| 2 | cross-repo doctrine/pointer edits; behavior surfaces (prompts/skills/evals); medium-risk code | exact-diff review + independent adversarial lane (different vendor or fresh context) + scope-fidelity verdict |
+| 3 | production/runtime services; live-injected context surfaces; provider routing; security/data-subject surfaces; major refactor/deletion | full 4-phase ladder (plan review, exact-diff, adversarial, acceptance) on the highest-capability Claude lane + review-board lanes |'''
+normalization = "whitespace"
+allowed_absences = []
+severity = "warn"
+blocking_wave = 2
+
+[[fingerprint]]
+id = "tier-ladder-table-pack"
+owner = "pack maintainer"
+adoption_state = "blocking"
+canonical_source = "ubergoal/SKILL.md#review-ladder"
+target_paths = [
   "ubergoal/SKILL.md",
 ]
 match = "literal"
@@ -136,7 +201,6 @@ pattern = '''| Tier | Work class | Required review |
 | 2 | cross-repo doctrine/pointer edits; behavior surfaces (prompts/skills/evals); medium-risk code | exact-diff review + independent adversarial lane (different vendor or fresh context) + scope-fidelity verdict |
 | 3 | production/runtime services; live-injected context surfaces; provider routing; security/data-subject surfaces; major refactor/deletion | full 4-phase ladder (plan review, exact-diff, adversarial, acceptance) on the highest-capability Claude lane + review-board lanes |'''
 normalization = "whitespace"
-allowed_absences = [
-]
+allowed_absences = []
 severity = "warn"
 blocking_wave = 2

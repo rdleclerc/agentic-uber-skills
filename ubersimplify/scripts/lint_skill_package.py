@@ -21,6 +21,7 @@ REQUIRED_FILES = [
     "templates/simplification-candidates.md",
     "templates/patch-log.md",
     "templates/final-simplification-report.md",
+    "references/gates.md",
     "references/dead-code-safeguards.md",
     "references/modularity-principles.md",
     "references/test-confidence.md",

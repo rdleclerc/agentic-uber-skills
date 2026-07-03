@@ -38,40 +38,19 @@ Use `scripts/new_simplify_run.py` to create the trail when artifacts are authori
 
 ## Required gates
 
-Before deleting or refactoring, pass these gates:
-
-- **Basic Spine First veto** — for product/rewrite/agentic-system work, if the minimum user-visible product spine is failing or lacks a canonical proof check, veto new architecture/abstractions/agents/contracts/routers/monitors/eval frameworks. The next patch may only fix/create the spine check or explicitly stay a non-readiness spike.
-- **Burden-of-proof gate** — what cost does this complexity impose and what failure does it prevent?
-- **Chesterton gate** — why was it probably added, and is that reason gone or handled elsewhere?
-- **Modularity gate** — would better boundaries, single source of truth, or stronger contracts reduce conceptual complexity?
-- **Fail-fast gate** — should a shared dependency/contract make violations loud instead of allowing silent drift?
-- **Evidence gate** — tests/evals/static checks/characterization prove behavior is preserved or intentionally changed.
-- **Dead-code safeguard** — dynamic imports, CLI entrypoints, framework routes, configs, migrations, prompts, tools, and external references are checked before deletion.
-- **Rollback gate** — patch is small, reversible, and has a clear backout plan.
-- **Agent Advocate / human-counterfactual gate** — for agentic-system complexity, ask whether a capable human with the same goal, context, and tools would have made the error; if not, fix missing context, bad tool feedback, conflicting source authority, or weak affordances before adding/removing compensating complexity.
+Before deleting or refactoring, apply `references/gates.md`: Basic Spine First veto, burden-of-proof, Chesterton, Modularity gate, Fail-fast gate, evidence, dead-code safeguard, rollback, and Agent Advocate / human-counterfactual gate. Do not patch when any gate lacks evidence.
 
 ## Modularity stance
 
-Good modularity simplifies by reducing concepts, eliminating duplicate truths, clarifying ownership, and enforcing invariants. A central dependency can be better when it is narrow, well-tested, observable, and fails loudly.
-
-Bad modularity is theater: wrapper chains, god modules, vague helpers, premature abstraction, or splitting cohesive code just to create files.
-
-For skill/plan compression, use `uber-skill-creator`'s lossless compression profile: delete duplicated prose and move detail to references before microcopy edits; preserve validator labels, trigger phrases, and safety gates.
+Good modularity reduces concepts, duplicate truths, ambiguous ownership, and hidden invariants. Use `references/modularity-principles.md` for centralization vs split examples and `uber-skill-creator`'s lossless compression profile for skill/plan compression.
 
 ## Test-confidence policy
 
-| Confidence | Allowed action |
-|---|---|
-| strong | patch/delete allowed with acceptance |
-| medium | add characterization tests first, then patch only after the touched slice reaches strong-enough local confidence |
-| weak | audit/plan only; never delete/refactor production behavior on weak evidence |
-| unknown | no deletion; discover tests/references first |
-
-Passing weak tests is not proof. If evidence is weak, create candidates and proof requirements rather than deleting. User risk acceptance may permit audit notes, reversible non-semantic cleanup, or an explicitly quarantined spike, but not deletion/refactoring of production behavior.
+Use `references/test-confidence.md`. Strong evidence can support accepted patch/delete work; medium evidence needs characterization tests first; weak or unknown evidence stays Audit/Plan only. Passing weak tests is not proof.
 
 ## Parallel simplification
 
-When subagents are explicitly authorized, split by codebase slice or responsibility. Each simplifier must leave a trail section with key files, suspected complexity, proof needed, and no-change/defer rationale. Do not run multiple agents over the same files unless they use distinct lenses.
+When subagents are explicitly authorized, split by codebase slice or responsibility and require each simplifier to leave key files, suspected complexity, proof needed, and no-change/defer rationale in the trail. Avoid overlapping file ownership unless the lenses are distinct.
 
 ## Relationship to Uber family
 
@@ -91,6 +70,7 @@ When subagents are explicitly authorized, split by codebase slice or responsibil
 - `templates/simplification-candidates.md` — candidate ranking table.
 - `templates/patch-log.md` — reversible patch sequence.
 - `templates/final-simplification-report.md` — acceptance-ready final report.
+- `references/gates.md` — required gates before deletion or refactor.
 - `references/dead-code-safeguards.md` — false-positive traps.
 - `references/modularity-principles.md` — good vs bad modularity.
 - `references/test-confidence.md` — evidence levels.

@@ -57,6 +57,19 @@ def write_fake_git(bin_dir: Path) -> None:
     fake_git.chmod(0o755)
 
 
+def write_fake_git_show(bin_dir: Path, content: str) -> None:
+    fake_git = bin_dir / "git"
+    fake_git.write_text(
+        "#!/bin/sh\n"
+        "if [ \"$1\" = \"-C\" ] && [ \"$3\" = \"show\" ]; then\n"
+        f"  printf '%s\\n' {content!r}\n"
+        "  exit 0\n"
+        "fi\n"
+        "exit 1\n"
+    )
+    fake_git.chmod(0o755)
+
+
 class PackContractTests(unittest.TestCase):
     def test_pack_contract_lint_passes(self) -> None:
         proc = run_pack_lint(ROOT)
@@ -176,6 +189,80 @@ class PackContractTests(unittest.TestCase):
         self.assertIn("missing required field", proc.stderr)
         self.assertIn("pattern", proc.stderr)
 
+    def test_doctrine_drift_git_ref_reads_ref_content_not_worktree(self) -> None:
+        with tempfile.TemporaryDirectory() as td:
+            temp = Path(td)
+            repo = temp / "repo"
+            repo.mkdir()
+            (repo / ".git").mkdir()
+            (repo / "doctrine.md").write_text("Working tree divergent sentence.\n")
+            bin_dir = temp / "bin"
+            bin_dir.mkdir()
+            write_fake_git_show(bin_dir, "Ref doctrine sentence.")
+            registry = temp / "registry.toml"
+            registry.write_text(
+                f"""
+[[fingerprint]]
+id = "fixture-git-ref"
+owner = "pack maintainer"
+adoption_state = "blocking"
+canonical_source = "fixture"
+target_paths = [
+  "{(repo / "doctrine.md").as_posix()}",
+]
+git_ref = "main"
+match = "literal"
+pattern = "Ref doctrine sentence."
+normalization = "whitespace"
+allowed_absences = []
+severity = "error"
+blocking_wave = 1
+""".lstrip()
+            )
+            env = {"PATH": f"{bin_dir}{os.pathsep}{os.environ['PATH']}"}
+            proc = run_pack_lint(ROOT, "--drift", "--strict", "--drift-registry", str(registry), env=env)
+            self.assertEqual(proc.returncode, 0, proc.stderr + proc.stdout)
+            self.assertIn("MATCH id=fixture-git-ref", proc.stdout)
+            self.assertIn("source=git_ref(main)", proc.stdout)
+
+    def test_doctrine_drift_pattern_expansion_uses_defaults_not_env_overrides(self) -> None:
+        with tempfile.TemporaryDirectory() as td:
+            temp = Path(td)
+            default_root = temp / "default-gaia"
+            override_root = temp / "override-gaia"
+            override_root.mkdir()
+            expected_command = f"{default_root.as_posix()}/scripts/run_gateway_health_canary.sh"
+            (override_root / "target.md").write_text(f"Run {expected_command}\n")
+            registry = temp / "registry.toml"
+            registry.write_text(
+                f"""
+[[fingerprint]]
+id = "fixture-default-pattern"
+owner = "pack maintainer"
+adoption_state = "blocking"
+canonical_source = "fixture"
+target_paths = [
+  "${{GAIA_ROOT:-{default_root.as_posix()}}}/target.md",
+]
+match = "literal"
+pattern = '''${{GAIA_ROOT:-{default_root.as_posix()}}}/scripts/run_gateway_health_canary.sh'''
+normalization = "none"
+allowed_absences = []
+severity = "error"
+blocking_wave = 1
+""".lstrip()
+            )
+            proc = run_pack_lint(
+                ROOT,
+                "--drift",
+                "--strict",
+                "--drift-registry",
+                str(registry),
+                env={"GAIA_ROOT": str(override_root)},
+            )
+            self.assertEqual(proc.returncode, 0, proc.stderr + proc.stdout)
+            self.assertIn("MATCH id=fixture-default-pattern", proc.stdout)
+
     def test_install_sync_fixture_reports_desync_and_strict_fails(self) -> None:
         with tempfile.TemporaryDirectory() as td:
             temp = Path(td)
@@ -225,6 +312,13 @@ class PackContractTests(unittest.TestCase):
         self.assertEqual(report_only.returncode, 0, report_only.stderr + report_only.stdout)
         self.assertIn("SECRET_CANDIDATE", report_only.stdout)
         self.assertIn("kind=openai_sk", report_only.stdout)
+        self.assertIn("kind=github_pat", report_only.stdout)
+        self.assertIn("kind=jwt_base64url", report_only.stdout)
+        self.assertIn("kind=slack_xoxc", report_only.stdout)
+        self.assertIn("kind=slack_xoxs", report_only.stdout)
+        self.assertIn("kind=slack_xapp", report_only.stdout)
+        self.assertIn("kind=aws_secret_key", report_only.stdout)
+        self.assertNotIn("kind=hex_32", report_only.stdout)
 
         strict = run_pack_lint(ROOT, "--secret-scan", "--secret-scan-path", str(fake), "--strict")
         self.assertNotEqual(strict.returncode, 0)

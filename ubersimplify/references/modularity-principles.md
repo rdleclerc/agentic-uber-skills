@@ -18,3 +18,11 @@ Avoid modularity theater:
 - abstraction before two real use cases
 - splitting cohesive code only because files are long
 - hidden runtime dependencies without contract tests
+
+A central dependency can be simpler when it is narrow, well-tested, observable,
+and fails loudly. A split is useful when it names ownership or contracts that
+callers actually need.
+
+For skill or plan compression, use `uber-skill-creator`'s lossless compression
+profile: delete duplicated prose and move detail to references before microcopy
+edits; preserve validator labels, trigger phrases, and safety gates.

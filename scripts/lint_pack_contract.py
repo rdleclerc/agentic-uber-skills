@@ -36,6 +36,7 @@ SKILL_WORD_BUDGETS = {
     "uberassess/SKILL.md": 1900,
     "uberrca/SKILL.md": 1500,
     "uberskillevolver/SKILL.md": 1550,
+    "ubersimplify/SKILL.md": 700,
 }
 FORBIDDEN_FRONTMATTER_KEYS = {"model", "effort"}
 MODEL_ID_RE = re.compile(
@@ -100,7 +101,7 @@ DRIFT_REQUIRED_FIELDS = {
     "severity",
     "blocking_wave",
 }
-DRIFT_OPTIONAL_FIELDS = {"pending"}
+DRIFT_OPTIONAL_FIELDS = {"pending", "git_ref"}
 DRIFT_ADOPTION_STATES = {"report_only", "blocking", "planned"}
 DRIFT_MATCH_TYPES = {"literal", "regex"}
 DRIFT_NORMALIZATIONS = {"none", "whitespace"}
@@ -124,12 +125,24 @@ SECRET_TOKEN_PATTERNS = [
     ("openai_sk", re.compile(r"\bsk-[A-Za-z0-9_-]{8,}\b")),
     ("slack_xoxb", re.compile(r"\bxoxb-[A-Za-z0-9-]{8,}\b")),
     ("slack_xoxp", re.compile(r"\bxoxp-[A-Za-z0-9-]{8,}\b")),
+    ("slack_xoxc", re.compile(r"\bxoxc-[A-Za-z0-9-]{8,}\b")),
+    ("slack_xoxs", re.compile(r"\bxoxs-[A-Za-z0-9-]{8,}\b")),
+    ("slack_xapp", re.compile(r"\bxapp-[A-Za-z0-9-]{8,}\b")),
     ("github_ghp", re.compile(r"\bghp_[A-Za-z0-9_]{16,}\b")),
     ("github_gho", re.compile(r"\bgho_[A-Za-z0-9_]{16,}\b")),
+    ("github_pat", re.compile(r"\bgithub_pat_[A-Za-z0-9_]{16,}\b")),
     ("aws_akia", re.compile(r"\bAKIA[0-9A-Z]{12,}\b")),
+    (
+        "aws_secret_key",
+        re.compile(
+            r"(?i)\b(?:aws[_-]?)?(?:secret|access)[_-]?(?:access[_-]?)?key\b"
+            r"[^\n]{0,40}[:=]\s*['\"]?[A-Za-z0-9/+=]{40}['\"]?"
+        ),
+    ),
     ("google_aiza", re.compile(r"\bAIza[0-9A-Za-z_-]{20,}\b")),
     ("bearer_long", re.compile(r"\bBearer\s+[A-Za-z0-9._~+/=-]{40,}\b")),
     ("pem_private_key", re.compile(r"-----BEGIN (?:RSA |DSA |EC |OPENSSH |)?PRIVATE KEY-----")),
+    ("jwt_base64url", re.compile(r"\b[A-Za-z0-9_-]{16,}\.[A-Za-z0-9_-]{16,}\.[A-Za-z0-9_-]{16,}\b")),
     ("hex_32", re.compile(r"\b[0-9A-Fa-f]{32,}\b")),
     ("base64_32", re.compile(r"\b(?=[A-Za-z0-9+/=]{32,}\b)(?=.*[+=])(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])[A-Za-z0-9+/]{32,}={0,2}\b")),
 ]
@@ -356,24 +369,27 @@ def check_dispatch_preflight(root: Path) -> CheckReport:
     return CheckReport(lines, [], errors)
 
 
-def expand_shell_token(value: str) -> str:
+def expand_shell_token(value: str, *, use_env: bool = True) -> str:
     def replace(match: re.Match[str]) -> str:
         name = match.group("name")
         default = match.group("default")
         if default is not None:
-            return os.environ.get(name) or str(Path(default).expanduser())
-        return os.environ.get(name, "")
+            if use_env and os.environ.get(name):
+                return os.environ[name]
+            return str(Path(default).expanduser())
+        return os.environ.get(name, "") if use_env else ""
 
     expanded = re.sub(
-        r"\$\{(?P<name>[A-Za-z_][A-Za-z0-9_]*)(?::-((?P<default>[^}]*)))?\}",
+        r"(?<!\\)\$\{(?P<name>[A-Za-z_][A-Za-z0-9_]*)(?::-((?P<default>[^}]*)))?\}",
         replace,
         value,
     )
+    expanded = expanded.replace(r"\${", "${")
     return str(Path(expanded).expanduser()) if expanded.startswith("~") else expanded
 
 
 def resolve_registry_path(root: Path, raw_path: str) -> Path:
-    expanded = expand_shell_token(raw_path)
+    expanded = expand_shell_token(raw_path, use_env=True)
     path = Path(expanded).expanduser()
     if not path.is_absolute():
         path = root / path
@@ -432,13 +448,15 @@ def load_drift_registry(path: Path) -> tuple[list[dict[str, object]], list[str]]
             errors.append(f"drift registry entry {entry_id} blocking_wave must be an int")
         if "pending" in entry and not isinstance(entry["pending"], str):
             errors.append(f"drift registry entry {entry_id} pending must be a string")
+        if "git_ref" in entry and not isinstance(entry["git_ref"], str):
+            errors.append(f"drift registry entry {entry_id} git_ref must be a string")
         entries.append(entry)
     return entries, errors
 
 
 def pattern_matches(text: str, pattern: str, match_type: str, normalization: str) -> tuple[bool, str]:
     comparable_text = normalize_match_text(text, normalization)
-    comparable_pattern = normalize_match_text(expand_shell_token(pattern), normalization)
+    comparable_pattern = normalize_match_text(expand_shell_token(pattern, use_env=False), normalization)
     if comparable_pattern == "":
         return False, "empty pattern"
     if match_type == "literal":
@@ -448,6 +466,55 @@ def pattern_matches(text: str, pattern: str, match_type: str, normalization: str
     except re.error as exc:
         return False, f"invalid regex: {exc}"
     return found, "regex not found"
+
+
+def find_git_repo_root(path: Path) -> Path | None:
+    """Find a containing repo without invoking git."""
+    start = path if path.is_dir() else path.parent
+    start = start.expanduser().resolve(strict=False)
+    for candidate in [start, *start.parents]:
+        if (candidate / ".git").exists():
+            return candidate
+    return None
+
+
+def read_drift_target(target_path: Path, git_ref: str) -> tuple[str | None, bool, str, list[str], str | None]:
+    """Read a drift target, optionally from a git ref.
+
+    Returns text, exists, source, notes, error.
+    """
+    notes: list[str] = []
+    if git_ref:
+        repo_root = find_git_repo_root(target_path)
+        if repo_root is not None:
+            try:
+                rel = target_path.expanduser().resolve(strict=False).relative_to(repo_root.resolve(strict=False))
+            except ValueError:
+                rel = None
+            if rel is not None:
+                try:
+                    proc = subprocess.run(
+                        ["git", "-C", str(repo_root), "show", f"{git_ref}:{rel.as_posix()}"],
+                        text=True,
+                        capture_output=True,
+                        check=False,
+                        timeout=20,
+                    )
+                except (OSError, subprocess.TimeoutExpired) as exc:
+                    notes.append(f"git_ref fallback ref={git_ref} repo={repo_root} detail={exc}")
+                else:
+                    if proc.returncode == 0:
+                        return proc.stdout, True, f"git_ref({git_ref})", notes, None
+                    detail = (proc.stderr or proc.stdout or "").strip().splitlines()
+                    suffix = detail[0] if detail else f"exit {proc.returncode}"
+                    notes.append(f"git_ref fallback ref={git_ref} repo={repo_root} detail={suffix}")
+
+    if not target_path.exists():
+        return None, False, "working_tree", notes, None
+    try:
+        return target_path.read_text(), True, "working_tree", notes, None
+    except UnicodeDecodeError as exc:
+        return None, True, "working_tree", notes, f"unreadable text: {exc}"
 
 
 def check_doctrine_drift(root: Path, *, registry_path: Path | None = None) -> CheckReport:
@@ -465,6 +532,7 @@ def check_doctrine_drift(root: Path, *, registry_path: Path | None = None) -> Ch
         severity = str(entry["severity"])
         blocking_wave = entry["blocking_wave"]
         pending = str(entry.get("pending") or "")
+        git_ref = str(entry.get("git_ref") or "")
         allowed_absences = set(entry["allowed_absences"])  # type: ignore[arg-type]
         target_paths = entry["target_paths"]  # type: ignore[assignment]
         for raw_target in target_paths:
@@ -473,7 +541,10 @@ def check_doctrine_drift(root: Path, *, registry_path: Path | None = None) -> Ch
                 f"id={entry_id} target={raw_target} adoption_state={adoption_state} "
                 f"severity={severity} blocking_wave={blocking_wave}"
             )
-            if not target_path.exists():
+            text, target_exists, source, notes, read_error = read_drift_target(target_path, git_ref)
+            for note in notes:
+                lines.append(f"NOTE {detail_prefix} {note}")
+            if not target_exists:
                 allowed = raw_target in allowed_absences
                 status = "ABSENT(allowed)" if allowed else "ABSENT(not)"
                 detail = f"{status} {detail_prefix} resolved={target_path}"
@@ -483,10 +554,8 @@ def check_doctrine_drift(root: Path, *, registry_path: Path | None = None) -> Ch
                 if adoption_state == "blocking" and not allowed:
                     blocking_failures.append(detail)
                 continue
-            try:
-                text = target_path.read_text()
-            except UnicodeDecodeError as exc:
-                detail = f"DIVERGED {detail_prefix} detail=unreadable text: {exc}"
+            if read_error is not None or text is None:
+                detail = f"DIVERGED {detail_prefix} source={source} detail={read_error or 'unreadable text'}"
                 lines.append(detail)
                 if adoption_state == "blocking":
                     blocking_failures.append(detail)
@@ -499,11 +568,11 @@ def check_doctrine_drift(root: Path, *, registry_path: Path | None = None) -> Ch
                 str(entry["normalization"]),
             )
             if matched:
-                lines.append(f"MATCH {detail_prefix}")
+                lines.append(f"MATCH {detail_prefix} source={source}")
             else:
                 allowed = raw_target in allowed_absences and str(entry["pattern"]) == ""
                 status = "ABSENT(allowed)" if allowed else "DIVERGED"
-                detail = f"{status} {detail_prefix} detail={miss_detail}"
+                detail = f"{status} {detail_prefix} source={source} detail={miss_detail}"
                 if pending:
                     detail += f" pending={pending}"
                 lines.append(detail)
@@ -603,8 +672,26 @@ def shannon_entropy(value: str) -> float:
     return -sum((count / total) * math.log2(count / total) for count in counts.values())
 
 
+def inside_backticks(line: str, start: int) -> bool:
+    return line[:start].count("`") % 2 == 1
+
+
+def preceded_by_commit(line: str, start: int) -> bool:
+    prefix = line[max(0, start - 24) : start]
+    return re.search(r"\bcommit\s+$", prefix, flags=re.I) is not None
+
+
+def allowed_hex_reference(line: str, match: re.Match[str]) -> bool:
+    value = match.group(0)
+    if len(value) != 40:
+        return False
+    return inside_backticks(line, match.start()) or preceded_by_commit(line, match.start())
+
+
 def pattern_hits(name: str, pattern: re.Pattern[str], line: str) -> bool:
     for match in pattern.finditer(line):
+        if name == "hex_32" and allowed_hex_reference(line, match):
+            continue
         if name == "base64_32" and shannon_entropy(match.group(0)) < 4.2:
             continue
         return True

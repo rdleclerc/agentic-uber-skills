@@ -53,6 +53,28 @@ class FailureCaseValidatorTests(unittest.TestCase):
         self.assertNotEqual(result.returncode, 0)
         self.assertIn("unsanitized user path", result.stderr)
 
+    def test_nonexistent_target_fails_cleanly(self) -> None:
+        result = run_validator(FIXTURES / "invalid" / "does-not-exist.md")
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("FAIL: failure case validation failed", result.stderr)
+        self.assertIn("cannot read case file", result.stderr)
+        self.assertNotIn("Traceback", result.stderr)
+
+    def test_unsanitized_title_fails(self) -> None:
+        result = run_validator(FIXTURES / "invalid" / "unsanitized-title.md")
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("title contains unsanitized user path", result.stderr)
+
+    def test_unsanitized_cost_fails(self) -> None:
+        result = run_validator(FIXTURES / "invalid" / "unsanitized-cost.md")
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("cost contains unsanitized user path", result.stderr)
+
+    def test_unsanitized_body_fails(self) -> None:
+        result = run_validator(FIXTURES / "invalid" / "unsanitized-body.md")
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("body contains unsanitized user path", result.stderr)
+
     def test_machine_path_elsewhere_on_parameterized_line_fails(self) -> None:
         result = run_validator(FIXTURES / "invalid" / "parameterized-default-plus-user-path.md")
         self.assertNotEqual(result.returncode, 0)
