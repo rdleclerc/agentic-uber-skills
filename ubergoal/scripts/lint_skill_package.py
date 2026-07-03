@@ -20,6 +20,11 @@ REQUIRED_FILES = [
     "scripts/validate_uber_run_receipt.py",
     "evals/golden_skill_invocations.json",
 ]
+REQUIRED_PACK_FILES = [
+    "references/operational-states.md",
+    "references/claude-adversary.md",
+    "references/loop-engineering.md",
+]
 FORBIDDEN_MONOLITH_FILES = [
     "templates/plan-contract.md",
     "templates/final-acceptance.md",
@@ -34,18 +39,17 @@ REQUIRED_PHRASES = [
     "bounded review-board coordinator",
     "create or bind",
     "specialist review-board agents",
-    "Uber run receipt",
-    "refactor campaign",
+    "templates/uber-run-receipt.md",
+    "Refactor campaign",
     "ubercampaign",
     "campaign-profile",
-    "max_threads=6",
-    "max_depth=2",
+    "../references/operational-states.md",
     "$uberplan",
     "$uberaccept",
     "$uberskillevolver",
     "$ubersimplify",
     "$uberassess",
-    "benefit is **clearly much greater than**",
+    "Benefit >> cost",
     "five consecutive failures",
     "material unexpected test failures",
     "user expectation / surprise assessment",
@@ -67,6 +71,9 @@ def main() -> int:
     for rel in REQUIRED_FILES:
         if not (root / rel).exists():
             errors.append(f"missing required file: {rel}")
+    for rel in REQUIRED_PACK_FILES:
+        if not (root.parent / rel).exists():
+            errors.append(f"missing required pack file: {rel}")
     for rel in FORBIDDEN_MONOLITH_FILES:
         if (root / rel).exists():
             errors.append(f"monolith resource should live in subskills, not ubergoal: {rel}")

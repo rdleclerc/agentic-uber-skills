@@ -12,6 +12,8 @@ REQUIRED_FILES = [
     "SKILL.md",
     "agents/openai.yaml",
     "templates/plan-contract.md",
+    "templates/plan-tier1.md",
+    "templates/plan-tier3.md",
     "templates/confidence-gate.md",
     "templates/planning-review-board.md",
     "templates/exploration-trail.md",

@@ -2,7 +2,7 @@
 
 Use this reference when an Uber skill invocation explicitly asks for Claude or cross-model review, for example: `with Claude`, `Claude review`, `Claude debate`, `Claude adversarial review`, `Claude for 2 rounds`, or `Codex review of Claude work`.
 
-Do **not** invoke the adversary from task similarity, from a generic need for quality, or from ordinary use of an Uber skill. A prompt without an explicit adversary phrase should not mention adversary invocation. Skill bodies intentionally inline the key rules from this reference because runtime skill readers may not auto-load shared references.
+Do **not** invoke the adversary from task similarity, from a generic need for quality, or from ordinary use of an Uber skill. A prompt without an explicit adversary phrase should not mention adversary invocation. Skill bodies keep only the skill-specific hot questions plus a pointer here when subprocess reference-following is proven; this file owns the shared contract.
 
 ## Trigger examples
 

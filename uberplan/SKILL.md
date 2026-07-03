@@ -106,7 +106,7 @@ Return thread highlights plus a durable `.md` plan path. Before showing either, 
 
 ## Output contract
 
-Use `templates/plan-contract.md` for the durable plan. It must cover, as applicable:
+Use `templates/plan-tier1.md` for contained Tier 1 plans and `templates/plan-tier3.md` for the full Tier 3 contract; `templates/plan-contract.md` is a compatibility tombstone. It must cover, as applicable:
 
 - goal posture, checkpoints, `.md` path, thread highlights, tier, objective, scope, assumptions, non-goals
 - Task Understanding Review / micro-intent fast path decision, including real problem, clear requirements, ambiguities, likely misunderstandings, execution plan, acceptance criteria, and out-of-scope boundaries for Tier 0/1 work
@@ -209,7 +209,7 @@ For `uberplan`, ask exactly:
 
 ## Helpful resources
 
-- `templates/plan-contract.md` — durable plan contract.
+- `templates/plan-tier1.md` — contained Tier 1 plan; `templates/plan-tier3.md` — full Tier 3 contract; `templates/plan-contract.md` — compatibility tombstone.
 - `templates/tier3-expensive-proof-plan-tree.md` — required preflight for Tier 3 expensive-proof/replacement/runtime proofs.
 - `templates/confidence-gate.md` — adversarial confidence gate.
 - `templates/planning-review-board.md`, `templates/exploration-trail.md`, `templates/agent-failure-rca.md`, `templates/architecture-steward-report.md`, `templates/first-principles-simplifier-report.md`, `templates/agent-brief.md` — optional lane/worker artifacts.

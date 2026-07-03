@@ -137,8 +137,6 @@ pattern = '''| Tier | Work class | Required review |
 | 3 | production/runtime services; live-injected context surfaces; provider routing; security/data-subject surfaces; major refactor/deletion | full 4-phase ladder (plan review, exact-diff, adversarial, acceptance) on the highest-capability Claude lane + review-board lanes |'''
 normalization = "whitespace"
 allowed_absences = [
-  "ubergoal/SKILL.md",
 ]
 severity = "warn"
 blocking_wave = 2
-pending = "ubergoal condensed table lands at R6; full-table fingerprint per amendment E"

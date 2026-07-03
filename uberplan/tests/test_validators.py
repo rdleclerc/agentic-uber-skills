@@ -30,6 +30,14 @@ class PlanValidatorTests(unittest.TestCase):
     def test_tier0_plan_stays_lightweight(self) -> None:
         self.assertPasses(str(PLAN), str(FIX / "valid" / "tier0_plan.md"), "--tier", "0")
 
+    def test_tier1_plan_shape_passes(self) -> None:
+        self.assertPasses(str(PLAN), str(FIX / "valid" / "tier1_plan.md"), "--tier", "tier1")
+
+    def test_tier1_missing_operator_ask_fails(self) -> None:
+        result = run_cmd(str(PLAN), str(FIX / "invalid" / "tier1_missing_operator_ask.md"), "--tier", "tier1")
+        self.assertNotEqual(result.returncode, 0, "unexpected pass\n" + result.stdout)
+        self.assertIn("operator-original ask", result.stderr)
+
     def test_tier2_agent_plan_passes_with_agent_behavior(self) -> None:
         self.assertPasses(str(PLAN), str(FIX / "valid" / "tier2_agent_plan.md"), "--tier", "2", "--agent-behavior")
 
@@ -488,8 +496,9 @@ Not applicable because this plan only edits existing files inside their current 
             self.assertPasses(str(PLAN), str(plan), "--tier", "2", "--agent-behavior")
 
     def test_templates_need_allow_template_mode(self) -> None:
-        self.assertFails(str(PLAN), str(ROOT / "templates" / "plan-contract.md"), "--tier", "2")
-        self.assertPasses(str(PLAN), str(ROOT / "templates" / "plan-contract.md"), "--tier", "2", "--allow-template")
+        self.assertFails(str(PLAN), str(ROOT / "templates" / "plan-tier3.md"), "--tier", "2")
+        self.assertPasses(str(PLAN), str(ROOT / "templates" / "plan-tier3.md"), "--tier", "2", "--allow-template")
+        self.assertPasses(str(PLAN), str(ROOT / "templates" / "plan-tier1.md"), "--tier", "tier1", "--allow-template")
 
 
 class PackageTests(unittest.TestCase):
@@ -529,11 +538,12 @@ class PackageTests(unittest.TestCase):
 
     def test_key_templates_exist(self) -> None:
         for rel in [
+            "templates/plan-tier1.md",
+            "templates/plan-tier3.md",
             "templates/plan-contract.md",
             "templates/confidence-gate.md",
             "templates/exploration-trail.md",
             "templates/first-principles-simplifier-report.md",
-            "templates/plan-contract.md",
             "templates/tier3-expensive-proof-plan-tree.md",
             "references/plan-tree-artifact-layout.md",
         ]:

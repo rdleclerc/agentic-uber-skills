@@ -29,6 +29,9 @@ PACK_SKILLS = [
 UBER_PHASE_SKILLS = ["uberplan", "uberaccept", "uberskillevolver", "ubersimplify", "uberassess", "uberarchitect"]
 UTILITY_IMPLICIT_SKILLS = ["uberrca", "uber-skill-creator", "ubershow"]
 ROOT_REQUIRED_FILES = ["AGENTS.md", "CLAUDE.md", "README.md", "ROADMAP.md"]
+SKILL_WORD_BUDGETS = {
+    "ubergoal/SKILL.md": 800,
+}
 FORBIDDEN_FRONTMATTER_KEYS = {"model", "effort"}
 MODEL_ID_RE = re.compile(
     r"\b(?:claude-[A-Za-z0-9][A-Za-z0-9_.-]*-\d+(?:[.-]\d+)*|gpt-\d+(?:[.-]\d+)*(?:-[A-Za-z0-9_.-]+)?)\b",
@@ -224,6 +227,17 @@ def validate_frontmatter_policy(root: Path, errors: list[str]) -> None:
         model_match = MODEL_ID_RE.search(meta)
         if model_match:
             errors.append(f"{skill} SKILL.md frontmatter must not hardcode model id `{model_match.group(0)}`")
+
+
+def validate_skill_word_budgets(root: Path, errors: list[str]) -> None:
+    for rel, budget in SKILL_WORD_BUDGETS.items():
+        path = root / rel
+        if not path.exists():
+            errors.append(f"word budget target missing: {rel}")
+            continue
+        count = len(path.read_text().split())
+        if count > budget:
+            errors.append(f"{rel} word budget exceeded: {count} > {budget}")
 
 
 def validate_portability_oracle(root: Path, errors: list[str]) -> None:
@@ -680,6 +694,7 @@ def main() -> int:
             errors.append(f"missing root contract file: {rel}")
 
     validate_frontmatter_policy(root, errors)
+    validate_skill_word_budgets(root, errors)
 
     implicit = {skill: policy_value(root, skill) for skill in ["ubergoal", *UBER_PHASE_SKILLS]}
     if implicit.get("ubergoal") != "true":

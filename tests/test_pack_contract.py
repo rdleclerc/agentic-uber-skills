@@ -103,6 +103,15 @@ class PackContractTests(unittest.TestCase):
             self.assertNotEqual(proc.returncode, 0)
             self.assertIn("/Users/other/secret", proc.stderr)
 
+    def test_pack_contract_lint_rejects_ubergoal_word_budget_overrun(self) -> None:
+        with tempfile.TemporaryDirectory() as td:
+            lint_root = copy_lint_root(Path(td))
+            skill = lint_root / "ubergoal" / "SKILL.md"
+            skill.write_text(skill.read_text() + "\n" + " ".join(["budgetword"] * 900))
+            proc = run_pack_lint(lint_root)
+            self.assertNotEqual(proc.returncode, 0)
+            self.assertIn("ubergoal/SKILL.md word budget exceeded", proc.stderr)
+
     def test_dispatch_preflight_fixture_passes_with_writable_git_and_tmpdir(self) -> None:
         with tempfile.TemporaryDirectory() as td:
             temp = Path(td)
@@ -273,7 +282,7 @@ class PackContractTests(unittest.TestCase):
             self.assertIn(phrase, reference)
 
         expected_hooks = {
-            "ubergoal/SKILL.md": ["Recurring loop mode", "loop_mode", "Do not create or invoke `uberloop`"],
+            "ubergoal/SKILL.md": ["Recurring loop mode", "loop_mode", "do not create `uberloop`"],
             "uberplan/SKILL.md": ["Loop Engineering Contract", "trigger/cadence", "no-progress rule", "idempotency"],
             "uberaccept/SKILL.md": ["Loop acceptance lens", "per-iteration receipts", "maker-only self-review", "budget/time/retry kill-switches"],
             "uberskillevolver/SKILL.md": ["Loop-learning gate", "Never let a self-improving loop silently rewrite", "standalone `uberloop` remains a candidate"],
@@ -285,7 +294,7 @@ class PackContractTests(unittest.TestCase):
                 self.assertIn(phrase, body, rel)
 
         templates = {
-            "uberplan/templates/plan-contract.md": ["Loop Engineering Contract", "Token/time/cost/retry caps", "Learning/eval promotion path"],
+            "uberplan/templates/plan-tier3.md": ["Loop Engineering Contract", "Token/time/cost/retry caps", "Learning/eval promotion path"],
             "uberaccept/templates/final-acceptance.md": ["Loop acceptance lens", "Durable state replay proof", "Loop acceptance verdict"],
             "uberskillevolver/templates/post-run-learning.md": ["Loop-learning check", "Does this contribute to the ≥3-real-run `uberloop` extraction trigger?"],
         }
@@ -300,7 +309,7 @@ class PackContractTests(unittest.TestCase):
             "Do **not** invoke the adversary from task similarity",
             "A prompt without an explicit adversary phrase should not mention adversary invocation",
             "The authoring/orchestrating agent remains owner and reconciler",
-            "Skill bodies intentionally inline the key rules",
+            "Skill bodies keep only the skill-specific hot questions plus a pointer here",
             "Non-trigger example: `use uberassess on this plan` should run ordinary `uberassess` without Claude adversary language",
             "Default to one challenge round",
             "Cross-model symmetry: if Codex authored the artifact, Claude may review; if Claude authored it, Codex may review",
@@ -353,21 +362,24 @@ class PackContractTests(unittest.TestCase):
         for skill, questions in expected_questions.items():
             body = (ROOT / skill / "SKILL.md").read_text()
             self.assertIn("## Optional Claude adversary", body, skill)
-            self.assertIn("explicitly asks for Claude review or cross-model review", body, skill)
             self.assertIn("Do not invoke Claude or alternate reviewer from task similarity", body, skill)
             self.assertIn("../references/claude-adversary.md", body, skill)
-            self.assertIn("references may not auto-load", body, skill)
-            self.assertIn("Default to one challenge round", body, skill)
-            self.assertIn("Each adversary challenge must name", body, skill)
-            self.assertIn("Owning-agent reconciliation must classify each challenge", body, skill)
-            self.assertIn("first two challenges must use distinct causal layers", body, skill)
-            self.assertIn("`No material impact` is non-evidence: it proves a review ran, not that the artifact is acceptable", body, skill)
-            self.assertIn("Frame-independence / anti-roleplay check", body, skill)
-            self.assertIn("the reviewer must stop and flag the review as invalid", body, skill)
-            self.assertIn("accepts, modifies, or refuses that role", body, skill)
-            self.assertIn("three concrete reject conditions", body, skill)
-            self.assertIn("rubber-stamp warnings, not proof of quality", body, skill)
-            self.assertIn("reduced-noise, not zero-noise", body, skill)
+            if skill == "ubergoal":
+                self.assertIn("explicit Claude review or cross-model review", body, skill)
+                self.assertIn("subprocess reference-following proven", body, skill)
+            else:
+                self.assertIn("explicitly asks for Claude review or cross-model review", body, skill)
+                self.assertIn("Default to one challenge round", body, skill)
+                self.assertIn("Each adversary challenge must name", body, skill)
+                self.assertIn("Owning-agent reconciliation must classify each challenge", body, skill)
+                self.assertIn("first two challenges must use distinct causal layers", body, skill)
+                self.assertIn("`No material impact` is non-evidence: it proves a review ran, not that the artifact is acceptable", body, skill)
+                self.assertIn("Frame-independence / anti-roleplay check", body, skill)
+                self.assertIn("the reviewer must stop and flag the review as invalid", body, skill)
+                self.assertIn("accepts, modifies, or refuses that role", body, skill)
+                self.assertIn("three concrete reject conditions", body, skill)
+                self.assertIn("rubber-stamp warnings, not proof of quality", body, skill)
+                self.assertIn("reduced-noise, not zero-noise", body, skill)
             self.assertEqual(body.count("## Optional Claude adversary"), 1, skill)
             for question in questions:
                 self.assertIn(question, body, skill)
@@ -386,13 +398,18 @@ class PackContractTests(unittest.TestCase):
             self.assertIn(phrase, reference)
 
         goal = (ROOT / "ubergoal" / "SKILL.md").read_text()
+        operational = (ROOT / "references" / "operational-states.md").read_text()
         for phrase in [
-            "Decision-changing ambiguity gate",
-            "Root orchestrator owns scope, decomposition, integration, and acceptance",
-            "return digest-only receipts",
-            "never counts as independent review evidence",
+            "bounded specialist review-board agents/lenses",
+            "references/operational-states.md",
         ]:
             self.assertIn(phrase, goal)
+        for phrase in [
+            "root orchestrator owns scope, decomposition, integration, acceptance",
+            "digest-only receipts",
+            "independent_review true/false",
+        ]:
+            self.assertIn(phrase, operational)
 
         plan = (ROOT / "uberplan" / "SKILL.md").read_text()
         for phrase in [
@@ -403,7 +420,7 @@ class PackContractTests(unittest.TestCase):
         ]:
             self.assertIn(phrase, plan)
 
-        plan_template = (ROOT / "uberplan" / "templates" / "plan-contract.md").read_text()
+        plan_template = (ROOT / "uberplan" / "templates" / "plan-tier3.md").read_text()
         for phrase in [
             "Decision-changing ambiguity questions asked before coding",
             "Root orchestrator/subagent split",
@@ -444,7 +461,7 @@ class PackContractTests(unittest.TestCase):
             "approval evidence",
             "Scope fidelity",
         ]
-        for skill in ["ubergoal", "uberplan", "uberassess", "uberaccept"]:
+        for skill in ["uberplan", "uberassess", "uberaccept"]:
             body = (ROOT / skill / "SKILL.md").read_text()
             for phrase in required_skill_phrases:
                 self.assertIn(phrase, body, f"{skill}: {phrase}")
@@ -452,6 +469,11 @@ class PackContractTests(unittest.TestCase):
             self.assertIn("operator-approved plan", body, skill)
             self.assertIn("modularity, thin harness / fat skills/tools, and agentic affordance", body, skill)
             self.assertIn("Frame-independence / anti-roleplay check", body, skill)
+
+        goal = (ROOT / "ubergoal" / "SKILL.md").read_text()
+        for phrase in required_skill_phrases:
+            self.assertIn(phrase, goal, f"ubergoal: {phrase}")
+        self.assertIn("../references/claude-adversary.md", goal)
 
         evolver = (ROOT / "uberskillevolver" / "SKILL.md").read_text()
         self.assertIn("Regression lessons from scope-fidelity failures", evolver)
@@ -461,7 +483,7 @@ class PackContractTests(unittest.TestCase):
         self.assertIn("invited role named", evolver)
 
         templates = {
-            "uberplan/templates/plan-contract.md": "Scope Fidelity Ledger",
+            "uberplan/templates/plan-tier3.md": "Scope Fidelity Ledger",
             "uberaccept/templates/final-acceptance.md": "Scope fidelity against operator-original instruction",
             "uberassess/templates/assessment-packet.md": "Scope fidelity for plan/artifact assessments",
             "ubergoal/templates/uber-run-receipt.md": "Scope fidelity",
@@ -473,7 +495,7 @@ class PackContractTests(unittest.TestCase):
             self.assertIn("Operator original instruction", text, rel)
             self.assertIn("Approval evidence", text, rel)
 
-        plan_template = (ROOT / "uberplan" / "templates" / "plan-contract.md").read_text()
+        plan_template = (ROOT / "uberplan" / "templates" / "plan-tier3.md").read_text()
         self.assertIn("Frame-independence / anti-roleplay check", plan_template)
         self.assertIn("Reviewer prompt begins with Operator original instruction, verbatim", plan_template)
         self.assertIn("Three concrete reject conditions before any approval language", plan_template)
@@ -508,7 +530,7 @@ class PackContractTests(unittest.TestCase):
         self.assertIn("locally polished micro-feature success that did not advance the basic working spine is a soft rejection signal", accept)
         self.assertIn("complex top-down harness", accept)
 
-        template = (ROOT / "uberplan" / "templates" / "plan-contract.md").read_text()
+        template = (ROOT / "uberplan" / "templates" / "plan-tier3.md").read_text()
         self.assertIn("Gall's Law / Basic Spine First adversary", template)
         self.assertIn("What success is NOT", template)
 
@@ -518,8 +540,8 @@ class PackContractTests(unittest.TestCase):
         evals = (ROOT / "ubergoal" / "evals" / "golden_skill_invocations.json").read_text()
         combined = "\n".join([body, meta, evals])
 
-        self.assertIn("`ubergoal` is a superset of the platform goal primitive", body)
-        self.assertIn("If no goal exists and the user explicitly invoked `ubergoal`, call `create_goal`", body)
+        self.assertIn("platform goal primitive", body)
+        self.assertIn("create or bind", body)
         self.assertIn("create or bind a Codex/platform goal", meta)
 
         obsolete_phrases = [
@@ -537,9 +559,7 @@ class PackContractTests(unittest.TestCase):
         evals = (ROOT / "ubergoal" / "evals" / "golden_skill_invocations.json").read_text()
 
         self.assertIn("bounded review-board coordinator", body)
-        self.assertIn("Tier 2 is valuable because it changes the decision shape", body)
-        self.assertIn("launch 2-3 bounded review lanes", body)
-        self.assertIn("Codebase/State Scout, Architecture/Contract Steward, and Black-box Tester / Quality-Eval Auditor", body)
+        self.assertIn("Tier 2+ uses bounded specialist review-board agents/lenses", body)
         self.assertIn("specialist review-board agents", meta)
         self.assertIn("run specialist review-board agents or lenses for Tier 2+ work", evals)
         self.assertIn("ubercampaign", body)
@@ -556,12 +576,14 @@ class PackContractTests(unittest.TestCase):
             "evidence will prove this worked",
             "misunderstanding-prevention step",
         ]
-        for rel in ["ubergoal/SKILL.md", "uberplan/SKILL.md"]:
-            body = (ROOT / rel).read_text()
-            for phrase in required:
-                self.assertIn(phrase, body, rel)
+        plan_body = (ROOT / "uberplan" / "SKILL.md").read_text()
+        for phrase in required:
+            self.assertIn(phrase, plan_body, "uberplan/SKILL.md")
+        goal_body = (ROOT / "ubergoal" / "SKILL.md").read_text()
+        self.assertIn("$uberplan` Task Understanding Review", goal_body)
+        self.assertIn("misunderstanding-prevention", goal_body)
 
-        template = (ROOT / "uberplan" / "templates" / "plan-contract.md").read_text()
+        template = (ROOT / "uberplan" / "templates" / "plan-tier3.md").read_text()
         for phrase in [
             "Task Understanding Review required before implementation",
             "Real problem the operator wants solved",
@@ -574,7 +596,7 @@ class PackContractTests(unittest.TestCase):
 
     def test_uberplan_architecture_focus_is_not_uberengineering(self) -> None:
         body = (ROOT / "uberplan" / "SKILL.md").read_text()
-        template = (ROOT / "uberplan" / "templates" / "plan-contract.md").read_text()
+        template = (ROOT / "uberplan" / "templates" / "plan-tier3.md").read_text()
         meta = (ROOT / "uberplan" / "agents" / "openai.yaml").read_text()
 
         for phrase in [
@@ -646,7 +668,7 @@ class PackContractTests(unittest.TestCase):
         self.assertEqual(text.count(loop), 3)
 
     def test_operational_outcome_completion_claim_contract_is_pack_wide(self) -> None:
-        plan_template = (ROOT / "uberplan" / "templates" / "plan-contract.md").read_text()
+        plan_template = (ROOT / "uberplan" / "templates" / "plan-tier3.md").read_text()
         expensive_template = (ROOT / "uberplan" / "templates" / "tier3-expensive-proof-plan-tree.md").read_text()
         goal_receipt = (ROOT / "ubergoal" / "templates" / "uber-run-receipt.md").read_text()
         accept_template = (ROOT / "uberaccept" / "templates" / "final-acceptance.md").read_text()
@@ -673,7 +695,7 @@ class PackContractTests(unittest.TestCase):
         self.assertIn("Production implementation blocker gate", goal_receipt)
         self.assertIn("Production implementation blocker gate", accept_template)
         self.assertIn("Safe-work exhaustion adversarial review", accept_template)
-        self.assertIn("active_blocked", (ROOT / "ubergoal" / "SKILL.md").read_text())
+        self.assertIn("active_blocked", (ROOT / "references" / "operational-states.md").read_text())
         self.assertIn("hard_blocked_after_safe_action_exhaustion", (ROOT / "uberaccept" / "SKILL.md").read_text())
         self.assertIn("plausible safe next actions", (ROOT / "uberaccept" / "SKILL.md").read_text())
         self.assertIn("runnable safe next actions", learning_template)
@@ -687,7 +709,7 @@ class PackContractTests(unittest.TestCase):
     def test_intent_driven_verification_fast_path_is_pack_wide(self) -> None:
         goal = (ROOT / "ubergoal" / "SKILL.md").read_text()
         plan = (ROOT / "uberplan" / "SKILL.md").read_text()
-        plan_template = (ROOT / "uberplan" / "templates" / "plan-contract.md").read_text()
+        plan_template = (ROOT / "uberplan" / "templates" / "plan-tier3.md").read_text()
         accept = (ROOT / "uberaccept" / "SKILL.md").read_text()
         accept_template = (ROOT / "uberaccept" / "templates" / "final-acceptance.md").read_text()
         learning = (ROOT / "uberskillevolver" / "SKILL.md").read_text()
@@ -699,7 +721,7 @@ class PackContractTests(unittest.TestCase):
 
         self.assertIn("Micro-intent fast path", goal)
         self.assertIn("2-3 sentences of scope / intent", goal)
-        self.assertIn("Do not use the fast path to bypass tests", goal)
+        self.assertIn("failure_case_id | case_updated | not_applicable_with_reason", goal)
         self.assertIn("Micro-intent / spec-first fast path", plan)
         self.assertIn("spec review catches missing requirements", plan)
         self.assertIn("Micro-intent / Intent Review Fast Path", plan_template)

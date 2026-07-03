@@ -86,6 +86,18 @@ TIER_REQUIREMENTS = {
         "pre-launch confidence gate",
     ],
 }
+TIER1_SECTIONS = [
+    "objective",
+    "operator-original ask (verbatim) + scope echo",
+    "acceptance criteria (checkable)",
+    "out of scope",
+    "proof plan (commands/fixtures)",
+    "risks + rollback",
+    "verification results",
+    "failure intake field",
+    "receipts/links",
+    "open questions",
+]
 
 PLACEHOLDER_PATTERNS = [
     r"\byes/no\b",
@@ -199,6 +211,51 @@ def require_field(text: str, label: str, errors: list[str]) -> str:
     if not value or value.lower() in {"yes/no", "n/a", "tbd", "todo", "none?"}:
         errors.append(f"empty or placeholder field: {label}")
     return value
+
+
+def require_any_field(text: str, labels: list[str], errors: list[str], context: str) -> str:
+    for label in labels:
+        escaped = re.escape(label)
+        pattern = re.compile(rf"^[ \t]*-[ \t]*{escaped}[ \t]*:[ \t]*(.+?)[ \t]*$", re.I | re.M)
+        match = pattern.search(text)
+        if not match:
+            continue
+        value = match.group(1).strip()
+        if value and value.lower() not in {"n/a", "tbd", "todo", "none", "not applicable"}:
+            return value
+    errors.append(f"{context} missing non-empty field: {' | '.join(labels)}")
+    return ""
+
+
+def normalize_plan_tier(value: str | None) -> str:
+    if value in {None, "", "tier3"}:
+        return "3"
+    return value
+
+
+def validate_tier1_plan(found: dict[str, str], *, allow_template: bool, errors: list[str]) -> None:
+    for section in TIER1_SECTIONS:
+        if section not in found:
+            errors.append(f"missing required tier1 section: {section}")
+    if allow_template or errors:
+        return
+    for section in TIER1_SECTIONS:
+        if not section_has_substance(found[section]):
+            errors.append(f"required tier1 section lacks completed substance: {section}")
+    operator = found.get("operator-original ask (verbatim) + scope echo", "")
+    require_any_field(
+        operator,
+        ["Operator original ask (verbatim)", "Operator-original ask (verbatim)"],
+        errors,
+        "tier1 operator-original ask",
+    )
+    intake = found.get("failure intake field", "")
+    require_any_field(
+        intake,
+        ["failure_case_id", "case_updated", "not_applicable_with_reason"],
+        errors,
+        "tier1 failure intake field",
+    )
 
 
 def table_meaningful_rows(section: str) -> list[list[str]]:
@@ -1348,7 +1405,12 @@ def validate_agent_boundary_contract(found: dict[str, str], behavior_scope: bool
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("path", type=Path, help="Markdown plan contract path")
-    parser.add_argument("--tier", choices=["0", "1", "2", "3"], help="Expected tier")
+    parser.add_argument(
+        "--tier",
+        choices=["0", "1", "2", "3", "tier1", "tier3"],
+        default="tier3",
+        help="Expected tier; tier1 validates the compact Tier 1 shape, tier3 is the default full contract",
+    )
     parser.add_argument("--agent-behavior", action="store_true", help="Require Agent Advocate / Agent RCA evidence")
     parser.add_argument("--openclaw", action="store_true", help="Require OpenClaw / Platform Steward evidence")
     parser.add_argument("--allow-template", action="store_true", help="Validate template structure without filled-in evidence")
@@ -1359,6 +1421,20 @@ def main() -> int:
     found = sections(text)
     errors: list[str] = []
     warnings: list[str] = []
+    args.tier = normalize_plan_tier(args.tier)
+
+    if args.tier == "tier1":
+        validate_tier1_plan(found, allow_template=args.allow_template, errors=errors)
+        if errors:
+            print("FAIL: tier1 plan validation failed", file=sys.stderr)
+            for error in errors:
+                print(f"- {error}", file=sys.stderr)
+            return 1
+        if args.allow_template:
+            print("PASS: tier1 plan template structure checks passed")
+        else:
+            print("PASS: tier1 plan sanity checks passed")
+        return 0
 
     required = TIER_REQUIREMENTS.get(args.tier or "1", TIER_REQUIREMENTS["1"])
     for section in required:
