@@ -22,6 +22,8 @@ REQUIRED_SKILL_PHRASES = [
     "convergence test",
     "depth floor",
     "RCA ladder",
+    "Mitigation only — RCA incomplete",
+    "do not rename containment as RCA",
     "lowest enforceable layer",
     "five consecutive clear failures",
 ]

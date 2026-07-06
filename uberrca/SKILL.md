@@ -17,6 +17,18 @@ If you cannot answer that, say: **"RCA incomplete — still proximate. Do not pa
 
 Safe mitigations are reversible operational actions that stop current damage without claiming to fix the class.
 
+## Mitigation boundary — do not rename containment as RCA
+
+If mitigating before RCA is complete, label status:
+
+> **"Mitigation only — RCA incomplete."**
+
+Include the unproven invariant/falsifier still needed. Restart, pause, kill, timeout, retry, config flip, quota reset, manual unblock, local patch, or green health check is not RCA completion.
+
+- **Do:** separate symptom health from class recovery; resume the ladder before durable fix.
+- **Fallback:** emergency reversible action plus `durable RCA pending`.
+- **Invalid:** saying fixed/resolved/working/root cause found/RCA complete because the metric recovered.
+
 ## Everyday defect boundary
 
 Ordinary defects use `../references/debug-loop.md`; repeated same-class failures, incidents, and architecture-shaped symptoms escalate here. `uberrca` is class-level/incident authority and never auto-triggers from ordinary bug similarity.
@@ -85,6 +97,7 @@ Treat these as incomplete until traced deeper:
 - "It timed out." → Why did timeout recovery not transition, retry safely, or log a blocker?
 - "The UI showed the wrong stage." → What state model conflates terminal/display/operational states?
 - "We hit the cap." → What terminal path should own capped/exhausted work?
+- "The restart/kill/timeout/local patch fixed it." → Did it prove the absent invariant and falsifier, or only contain the current instance?
 
 ## Repeated test failure trigger
 
@@ -116,6 +129,7 @@ Human attention is for infrastructure impossibility or genuine policy ambiguity 
 ## Required output shape
 
 - **Current status / mitigation** — if live damage exists
+- **Status label** — `Mitigation only — RCA incomplete`, `RCA complete`, or `durable fix proposed`; do not mix these states
 - **Evidence trail** — concrete timestamps, IDs, commands, files, logs
 - **RCA ladder** — with proximate / enabling / class-level causes distinguished
 - **Self-challenge result** — what you tried and why it failed (proves you went deep enough)

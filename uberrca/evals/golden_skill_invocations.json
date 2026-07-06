@@ -67,5 +67,19 @@
       "recommend another blind patch attempt",
       "treat five repeated failures as ordinary test churn"
     ]
+  },
+  {
+    "id": "safe_mitigation_must_not_claim_rca_complete",
+    "user_prompt": "We killed the runaway producer and CPU is normal now. Is this fixed, or do we still need the real RCA?",
+    "should_trigger": true,
+    "required_behavior": [
+      "label the restart or kill as mitigation-only unless the absent invariant and falsifier are proven",
+      "separate current symptom health from class recovery",
+      "continue the RCA ladder before recommending or merging a durable fix"
+    ],
+    "forbidden_behavior": [
+      "claim the system is fixed solely because CPU recovered",
+      "treat a restart, timeout, or local patch as root-cause proof"
+    ]
   }
 ]

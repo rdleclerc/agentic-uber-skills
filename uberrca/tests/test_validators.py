@@ -30,6 +30,21 @@ class UberRcaPackageTests(unittest.TestCase):
         self.assertIn("$uberrca", meta)
         self.assertIn("proximate cause", meta)
 
+    def test_mitigation_boundary_prevents_false_fixed_claims(self) -> None:
+        body = (ROOT / "SKILL.md").read_text()
+        for phrase in [
+            "## Mitigation boundary — do not rename containment as RCA",
+            "Mitigation only — RCA incomplete",
+            "unproven invariant/falsifier still needed",
+            "Restart, pause, kill, timeout, retry, config flip, quota reset, manual unblock, local patch, or green health check is not RCA completion.",
+            "separate symptom health from class recovery",
+            "durable RCA pending",
+            "saying fixed/resolved/working/root cause found/RCA complete because the metric recovered",
+            "Did it prove the absent invariant and falsifier, or only contain the current instance?",
+            "`Mitigation only — RCA incomplete`, `RCA complete`, or `durable fix proposed`; do not mix these states",
+        ]:
+            self.assertIn(phrase, body)
+
     def test_golden_eval_schema_and_trigger_mix(self) -> None:
         cases = json.loads((ROOT / "evals" / "golden_skill_invocations.json").read_text())
         self.assertGreaterEqual(len(cases), 4)
