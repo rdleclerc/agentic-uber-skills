@@ -118,7 +118,7 @@ Use `templates/plan-tier1.md` for contained Tier 1 plans and `templates/plan-tie
 - code-health/dead-code tool plan for Tier 2/3 work, refactors, deletions, new modules, and package moves; tool findings are candidates, not deletion authority
 - deterministic harness responsibilities vs adaptive model policy; for agentic systems, thin harness / fat agent rubric and source-convention check
 - source authority, side effects, approval, rollback, adoption-state policy, risk-to-evidence map, acceptance rubric, and decision/surprise register
-- pre-presentation over-orchestration review, plan acceptance gate, and **confidence gate** verdict after trying to falsify the plan
+- pre-presentation over-orchestration review, final **Value Adversary / cautious-theater gate**, plan acceptance gate, and **confidence gate** verdict after trying to falsify the plan
 
 ## Tier selection
 
@@ -172,6 +172,18 @@ For agentic systems or fixes to agent mistakes, inspect what the agent experienc
 ## Plan acceptance and confidence gates
 
 Before implementation or launch, compare the plan against the operator-original instruction, not only the agent's summary. If the plan narrows scope, name the narrowing and require explicit operator approval or mark it as `re_scoped_with_approval`/deferred rather than done. Final plan review must include `Scope fidelity: pass/fail/uncertain`.
+
+### Final Value Adversary / cautious-theater gate
+
+Immediately before plan acceptance, run one narrow adversarial value review against the final plan. For Tier 2/3, use one fresh-context independent reviewer when available; give it only the operator instruction, final plan, and decisive evidence, and require `BLOCK` or `APPROVE`. This is one review turn, not another review board or reconciliation loop.
+
+The reviewer must classify every material slice or added mechanism as:
+
+1. **Strictly necessary now** — omission would violate an explicit requirement or leave a named, evidenced failure class unprevented.
+2. **Evidence-contingent** — useful only if a named trigger occurs; remove it from the initial plan and record the trigger.
+3. **Cautious theater** — ceremony, speculative generalization, redundant proof, or defense against no evidenced risk; delete it.
+
+Require the reviewer to propose the smallest linear plan that preserves the operational outcome, quantify what it removes (slices, files, agents/reviews, production surface, or operator steps), and identify the first independently valuable checkpoint. A plan is blocked if cautious-theater work remains, evidence-contingent work is scheduled before its trigger, or the author justifies machinery with generic caution rather than a named failure and proof. Trust-boundary validation, data-loss protection, security, source authority, irreversible side-effect gates, and explicit operator requirements are not theater.
 
 Before implementation or launch, try to reject the plan against OpenClaw/agentic architecture, thin-harness/fat-agent policy, topology, dead-code, source-authority, side effects, and evidence. Then run the scoped verdict from `templates/confidence-gate.md`; do not say “100% confident” while a material blocker remains.
 

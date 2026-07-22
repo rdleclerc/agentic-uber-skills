@@ -680,6 +680,7 @@ Score only relevant dimensions. Use 0 = blocker, 1 = weak/unresolved, 2 = accept
 | Rollback | Revert/adoption-state plan exists | rollback note |  |
 | Decision/tradeoff register | Issues, tradeoffs, implementation choices, and surprising decisions are explicit | Decision / tradeoff / surprise register |  |
 | Over-orchestration review | Plan was simplified before presentation and unnecessary agents/files/templates/process were removed | Pre-presentation over-orchestration review |  |
+| Value Adversary | Final plan separates strictly necessary work from evidence-contingent work and deletes cautious theater before acceptance | Final Value Adversary / cautious-theater gate |  |
 | Plan acceptance | Plan was rejected or accepted against OpenClaw/agentic architecture, thin-harness/fat-agent policy, topology, dead-code, and evidence gates | Plan acceptance gate |  |
 | Acceptance evidence | Commands, outputs, screenshots/traces/gaps recorded | final acceptance report |  |
 
@@ -703,6 +704,23 @@ Required before presenting the thread highlights or final plan file. Hunt for ad
 - Plan revisions made before presenting:
 - Review verdict: present? yes/no
 
+## Final Value Adversary / cautious-theater gate
+
+Required immediately before Tier 2/3 plan acceptance. Use one fresh-context independent reviewer when available; provide only the operator instruction, final plan, and decisive evidence. Require `BLOCK` or `APPROVE`. Do not start another review board or reconciliation loop.
+
+| Classification | Material slice/mechanism | Explicit requirement or named failure | Disposition |
+|---|---|---|---|
+| Strictly necessary now |  |  | retain |
+| Evidence-contingent |  | Trigger:  | remove until trigger |
+| Cautious theater |  | No evidenced requirement/failure | delete |
+
+- Smallest linear plan that preserves the operational outcome:
+- Slices/files/agents/reviews/production surface/operator steps removed:
+- First independently valuable checkpoint:
+- Trust-boundary/security/data-loss/source-authority/irreversible-side-effect protections preserved:
+- Reviewer verdict: APPROVE/BLOCK
+- Blockers or required deletions before acceptance:
+
 ## Plan acceptance gate
 
 Required for Tier 2/3 before implementation. Try to reject the plan before launch, especially for OpenClaw/agentic architecture drift and fat-harness creep.
@@ -714,6 +732,7 @@ Required for Tier 2/3 before implementation. Try to reject the plan before launc
 - Source authority / tool-contract / context-affordance gaps:
 - File-tree/topology/dead-code plan adequate:
 - Issues/tradeoffs/surprises recorded:
+- Value Adversary verdict and deletions incorporated:
 - Material blockers:
 - Acceptance verdict: proceed? yes/no
 

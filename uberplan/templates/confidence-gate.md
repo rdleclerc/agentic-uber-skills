@@ -33,11 +33,32 @@ Check:
 - Is the rubric measurable rather than aspirational?
 - Did the steward challenge unnecessary complexity, subagent cost, and over-tiering?
 
+## Final Value Adversary / cautious-theater gate
+
+For Tier 2/3, run one fresh-context independent review of the final plan immediately before acceptance. Give the reviewer only the operator instruction, final plan, and decisive evidence. Require `BLOCK` or `APPROVE`, not another open-ended review round.
+
+The review must return:
+
+- **Strictly necessary now:** each retained material slice/mechanism and the explicit requirement or named failure it protects.
+- **Evidence-contingent:** work removed from the initial plan, with the exact trigger that would justify restoring it.
+- **Cautious theater:** ceremony, speculative generalization, redundant proof/review, or machinery not tied to an evidenced risk; delete it.
+- **Smallest linear alternative:** the least-branched plan that preserves the operational outcome.
+- **Reduction:** slices, files, agents/reviews, production surface, and operator steps removed.
+- **First valuable checkpoint:** the earliest result useful even if later work stops.
+
+Block acceptance when cautious-theater work remains, evidence-contingent work is scheduled before its trigger, or generic caution is the only justification. Do not classify explicit requirements, trust-boundary validation, data-loss protection, security, source authority, or irreversible side-effect gates as theater.
+
 Verdict:
 
 ```text
 Confidence verdict:
 - 100% confident within scope? yes/no
+- Value Adversary verdict: APPROVE/BLOCK
+- Strictly necessary now:
+- Evidence-contingent and trigger:
+- Cautious theater deleted:
+- Smallest linear plan / reduction:
+- First valuable checkpoint:
 - Scope:
 - Material blockers:
 - Non-blocking residual risks:
