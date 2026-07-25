@@ -1,0 +1,176 @@
+{
+  "schema_version": 1,
+  "suite_id": "uberplan-behavioral-conformance-v1",
+  "receipt_kind": "historical_composite",
+  "evaluation_date": "2026-07-24",
+  "run_configuration": {
+    "model": "gpt-5.6-sol",
+    "reasoning_effort": "max",
+    "runtime": "codex exec",
+    "runtime_version": "codex-cli 0.145.0-alpha.13",
+    "platform": "Darwin arm64",
+    "fresh_context_per_case": true,
+    "subject_sandbox": "read-only",
+    "tool_configuration": "Local shell and configured MCP tools were available; exact MCP server versions were not recorded.",
+    "known_environment_limit": "Subject pytest runs lacked a writable temporary directory; equivalent no-write baselines were recorded where needed."
+  },
+  "skill_revisions": {
+    "champion_sha256_chunks": [
+      "2c04b6ac7aa71bf3",
+      "508e630538d90a21",
+      "1499ac1f2e9cdc96",
+      "8fea2bacb1f3758b"
+    ],
+    "working_and_holdout_candidate_sha256_chunks": [
+      "fe6ac7a08e316c8a",
+      "b82162ee1649e3f4",
+      "ff2b48da74e11abc",
+      "b1a7d3a81a4b0455"
+    ],
+    "forward_and_promoted_candidate_sha256_chunks": [
+      "188b2a48354b7668",
+      "49c2127db3cc822d",
+      "c55d09062bdbb3c0",
+      "4aa48b33545012a9"
+    ]
+  },
+  "results": {
+    "working": {
+      "candidate_skill_revision": "working_and_holdout_candidate_sha256_chunks",
+      "champion_skill_revision": "champion_sha256_chunks",
+      "cases": [
+        {
+          "id": "scheduled_email_retry_existing_owner",
+          "candidate_substantive_verdict": "pass",
+          "champion": {
+            "output_words": 301,
+            "total_tokens": 553271,
+            "completed_tool_calls": 9
+          },
+          "candidate": {
+            "output_words": 199,
+            "total_tokens": 328409,
+            "completed_tool_calls": 12
+          }
+        },
+        {
+          "id": "small_destructive_config_guard",
+          "candidate_substantive_verdict": "pass",
+          "champion": {
+            "output_words": 693,
+            "total_tokens": 356370,
+            "completed_tool_calls": 7
+          },
+          "candidate": {
+            "output_words": 278,
+            "total_tokens": 333756,
+            "completed_tool_calls": 8
+          }
+        },
+        {
+          "id": "cross_boundary_worker_failure",
+          "candidate_substantive_verdict": "pass",
+          "champion": {
+            "output_words": 1018,
+            "total_tokens": 715650,
+            "completed_tool_calls": 13
+          },
+          "candidate": {
+            "output_words": 520,
+            "total_tokens": 263718,
+            "completed_tool_calls": 7
+          }
+        },
+        {
+          "id": "missing_owner_evidence",
+          "candidate_substantive_verdict": "pass",
+          "champion": {
+            "output_words": 505,
+            "total_tokens": 341730,
+            "completed_tool_calls": 9
+          },
+          "candidate": {
+            "output_words": 109,
+            "total_tokens": 209718,
+            "completed_tool_calls": 4
+          }
+        }
+      ],
+      "recorded_variance": "Two candidate cases used more focused calls than champion; independent review found no broader or shallower behavior."
+    },
+    "holdout": {
+      "candidate_skill_revision": "working_and_holdout_candidate_sha256_chunks",
+      "champion_skill_revision": "champion_sha256_chunks",
+      "cases": [
+        {
+          "id": "tenant_cache_isolation",
+          "champion_substantive_verdict": "fail",
+          "candidate_substantive_verdict": "pass",
+          "champion": {
+            "output_words": 899,
+            "total_tokens": 360889,
+            "completed_tool_calls": 8
+          },
+          "candidate": {
+            "output_words": 272,
+            "total_tokens": 283938,
+            "completed_tool_calls": 8
+          }
+        },
+        {
+          "id": "provider_settlement_owner_missing",
+          "champion_substantive_verdict": "fail",
+          "candidate_substantive_verdict": "pass",
+          "champion": {
+            "output_words": 977,
+            "total_tokens": 328805,
+            "completed_tool_calls": 6
+          },
+          "candidate": {
+            "output_words": 101,
+            "total_tokens": 182791,
+            "completed_tool_calls": 5
+          }
+        }
+      ]
+    },
+    "forward": {
+      "candidate_skill_revision": "forward_and_promoted_candidate_sha256_chunks",
+      "cases": [
+        {
+          "id": "agentic_semantic_router",
+          "candidate_substantive_verdict": "pass",
+          "candidate": {
+            "output_words": 385,
+            "total_tokens": 303508,
+            "completed_tool_calls": 8
+          }
+        },
+        {
+          "id": "new_unattended_reconciliation_loop",
+          "candidate_substantive_verdict": "pass",
+          "candidate": {
+            "output_words": 710,
+            "total_tokens": 284115,
+            "completed_tool_calls": 8
+          }
+        },
+        {
+          "id": "external_release_write",
+          "candidate_substantive_verdict": "pass",
+          "candidate": {
+            "output_words": 578,
+            "total_tokens": 370016,
+            "completed_tool_calls": 12
+          }
+        }
+      ],
+      "recorded_variance": "The external-write answer exceeded its diagnostic word target by 28 words without omitting or adding a safety boundary."
+    }
+  },
+  "independent_review": {
+    "model": "gpt-5.6-sol",
+    "reasoning_effort": "max",
+    "verdict": "APPROVE_CANDIDATE"
+  }
+}

@@ -15,13 +15,20 @@ Review and acceptance lanes use the highest-capability available Claude lane; re
 | [uberrca](uberrca/) | Utility skill for general class-level root cause analysis before patches; Agent Advocate remains the agent-behavior RCA lens inside Uber planning/acceptance |
 | [uber-skill-creator](uber-skill-creator/) | Portable Uber skill authoring guide for Codex, Claude, and SKILL.md-compatible agents, with legacy alias migration support, read-only shape lint, eval-driven iteration, HTML review reports, and trigger-description tuning |
 | [ubergoal](ubergoal/) | Thin lifecycle wrapper for substantial agentic coding workflows: classify, route, launch goals, assess user expectation/surprise risk, adapt on repeated or material unexpected test failures, enforce final policy-adherence acceptance, report tradeoffs/surprises and skills invoked, learn |
-| [uberplan](uberplan/) | Rigorous lean planning for long-running goals with thread highlights plus a `.md` plan file, user expectation/surprise assessment, review lanes, verifiable subgoals, Mermaid task graphs, Codex-to-OpenClaw proof ladders, RCA-driven testing adaptation and scope append gates, confidence gates, and benefit >> cost pressure |
+| [uberplan](uberplan/) | Source-grounded planning that reads decisive owners and proof, returns the smallest complete linear plan, and loads durable artifacts, architecture, loop, agentic-safety, or review machinery only when current evidence requires it |
 | [uberaccept](uberaccept/) | Adversarial final acceptance with evidence audits, expected-vs-actual user surprise checks, architecture drift checks, and completion proof |
 | [uberskillevolver](uberskillevolver/) | Captures post-run skill lessons and promotes only evidence-backed evals, validators, templates, or deletions |
 | [ubersimplify](ubersimplify/) | Opt-in complexity/modularity/dead-code audits with timestamped trails; Patch mode is conservative/experimental until dogfooded |
 | [uberassess](uberassess/) | Explicit source-to-recommendation assessment for X/GitHub/arXiv/articles/videos before adoption; preserves source authority and approval boundaries |
 | [uberarchitect](uberarchitect/) | Architecture stepback gate for concurrency, queue/worker, gateway, orchestration, backpressure, repeated-timeout, and symptom-patching failures before local code patches harden |
 | [ubershow](ubershow/) | Browser-first static visual artifacts for high-bandwidth decision boards, plans, maps, timelines, and visual briefs with copyable decision receipts |
+
+## Behavioral conformance
+
+The [UberPlan Behavioral Conformance Suite](evals/uberplan-v3/README.md) is the
+model-agnostic regression pack for lean planning behavior. It preserves working,
+holdout, and safety cases plus sanitized baseline receipts so GPT, Claude, and
+future models can be compared without committing raw traces or grader context.
 
 ## Loop engineering mode
 

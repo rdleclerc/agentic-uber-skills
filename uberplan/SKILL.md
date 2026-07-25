@@ -1,213 +1,171 @@
 ---
 name: uberplan
-description: Do not auto-trigger from task similarity. Use only when explicitly named by the user or routed by ubergoal. Plans substantial coding, refactoring, UI, prompt/skill/workflow, or agentic-system work as a long-running goal plan with architecture stepback, thread highlights, a durable .md file, operational outcome/Definition of Done contract, recursive pseudocode for hierarchical plan trees, proof ladders, review lanes, topology seams, and confidence gates without treating planning as permission to over-engineer.
+description: Do not auto-trigger from task similarity. Use only when explicitly named by the user or routed by ubergoal. Produces the smallest source-grounded implementation plan that completely addresses the evidenced problem, with proportional proof and evidence-gated escalation.
 ---
 
 # Uberplan
 
-## Core rule
+## Purpose
 
-Create the smallest **long-running goal** plan that makes the work safe. Planning has cost: add lanes, subagents, templates, evals, or harness only when **benefit >> cost**.
+Measure three times, cut once. Use planning effort to understand the real problem, current ownership, change boundary, and failure proof before proposing work. The result is the smallest **complete** plan supported by the evidence, not the smallest-looking patch and not the largest process that the task category permits.
 
-`uberplan` owns planning only. It does not execute patches or accept completion; route final proof to `uberaccept` and post-run lessons to `uberskillevolver`. Do not collapse substantial work into a default 20-minute slice unless the user explicitly asks for a slice.
+`uberplan` plans; it does not implement or accept completion. Route a substantial long-running goal through the owning workflow and final proof through `uberaccept`.
 
-If a Coding Agent Work Contract already captures objective, scope, orientation, evidence, stop conditions, and gaps, use or extend it. Do not create duplicate bureaucracy.
+## The planning loop
 
-## Architecture focus, not uberengineering
+Follow this order.
 
-`uberplan` buys extra thinking time/tokens to see the architecture and the terrain before cutting, not to make the system bigger. Use the extra pass to map viable avenues, blockers, second-order implications, pitfalls, package seams, adoption/rollback concerns, and likely false-closure traps before choosing a path.
+### 1. Understand the requested outcome
 
-Measure three times, cut once: after the architecture stepback, prefer the simplest plan that still sees the big picture. If the bigger-picture review only adds ceremony, files, agents, harness, or abstraction without changing the decision or reducing a named risk, delete it.
+Run a short **Task Understanding Review**:
 
-The output should make the operator more confident that the agent is not blindly closing on the first plausible route. It should not make the repo heavier merely because the word "architecture" appeared.
+- What is the real problem the operator wants solved?
+- Which requirements are clear?
+- What is ambiguous, underspecified, or most likely to misunderstand?
+- What is the execution plan, what is explicitly out of scope, and what evidence will prove this worked?
 
-For deliberate refactors, define "satisfactory" before editing: module boundaries, dependency direction, observable behavior, tests, performance, and rollback. Plan one meaningful checkpoint at a time: change, live-test or run the closest black-box check, run an independent review/lens when risk warrants it, then record the checkpoint before continuing.
+This is a misunderstanding-prevention step, not an output checklist.
 
-## Micro-intent / spec-first fast path with Task Understanding Review
+**Decision-changing ambiguity gate:** resolve uncertainty from repository evidence when possible. Ask the operator only when the answer would materially change behavior, ownership, side effects, acceptance, write scope, or architecture. If a required authority is unavailable, return a bounded evidence-acquisition step; do not fill the gap with a guessed design.
 
-For Tier 0/1 work, the smallest safe plan may be a **micro-intent** instead of this full contract. Capture:
+### 2. Read the decisive sources
 
-1. 2-3 sentences of scope / intent;
-2. checkable acceptance criteria;
-3. explicit out-of-scope note;
-4. verification command or evidence note.
+Before selecting a solution, read:
 
-Before implementation, run a **Task Understanding Review** when the task is more than a trivial edit or the operator's request is vague, context-heavy, high-agency, or not fully thought through. Answer:
+1. the governing instruction, contract, issue, or incident;
+2. the current owner of the behavior or state;
+3. the direct caller, consumer, or integration boundary affected;
+4. the focused test, trace, or observable proof.
 
-1. What is the real problem the operator wants solved?
-2. Which requirements are clear?
-3. What is ambiguous, underspecified, or likely to change the implementation?
-4. Where are you most likely to misunderstand if you start writing directly?
-5. What is the execution plan?
-6. What is explicitly out of scope?
-7. What evidence will prove this worked?
+Read source bodies, not only filenames, summaries, or search snippets. Start with this minimum evidence set, then widen only when it leaves a decision-changing conflict or gap. Do not inventory the repository first. Archived proposals, old plans, broad history, and unrelated architecture are not evidence unless active sources conflict or provenance is the decision.
 
-Decision-changing ambiguity gate: if ambiguity could change implementation, acceptance, side effects, write scope, or architecture, ask up to three concrete questions with recommended defaults before coding. If guessing is unsafe, stop and request the answer; do not bury the ambiguity only in a risk table.
+Stop source reading when all four questions have evidence-backed answers:
 
-Use this fast path to make intent first-class without adding ceremony. Keep the review short for Tier 0/1 work; it is a misunderstanding-prevention step, not a full plan. Escalate to the Coding Agent Work Contract or this full `uberplan` template when the review exposes cross-boundary behavior, runtime/agentic risk, irreversible side effects, vague requirements, broad refactors, or enough acceptance criteria that a table/plan tree would reduce risk.
+- What behavior is wrong or missing?
+- Which current component owns it—or, for explicitly new behavior, which active
+  contract defines the owner to create?
+- What is the minimum complete change surface?
+- What focused evidence would fail before the change and pass after it?
 
-Spec review and code review are separate layers: spec review catches missing requirements, underspecified features, scope and design mismatches before code exists; code review catches repo conventions, naming, module seams, integration details, and maintainability after code exists. Keep both when both risks apply.
+If one remains unknown, enter **terminal evidence-gap mode** and stop planning. Output only the decision that is blocked, the missing authority or evidence, one bounded acquisition or non-mutating falsification step, and the exact evidence that would unblock planning. Do not outline downstream implementation, tests, rollout, files, or conditional task maps while the owner or causal boundary is guessed.
 
-## Pre-PRD interrogation and domain capture
+The expected absence of a component in an explicitly new feature is not by
+itself an evidence gap. When an active contract establishes that component's
+responsibilities and boundaries, plan the smallest new owner and keep concrete
+integration bindings as named evidence gates. Stop only when the missing
+evidence could materially change ownership, the safety contract, or the change
+surface—not merely because those bounded integrations have not been selected.
 
-Before hardening a PRD or task map for vague product, refactor, or workflow ideas, run the smallest useful interrogation loop: ask one blocking question at a time, include your recommended answer, and answer it yourself by inspecting code/docs when the repo can resolve it. Stop when the next planning decision no longer depends on unresolved user intent, domain language, or test seams. Do not turn this into a generic questionnaire; if more than three unanswered questions remain, record them as plan risks or scope gaps instead of stalling.
+### 3. Choose the smallest complete change
 
-When terminology crystallizes during that interrogation, capture only durable domain language or hard-to-reverse decisions. A glossary/context doc should define terms and rejected meanings; an ADR should record a surprising, costly-to-reverse tradeoff. Do not use glossary/context docs as PRDs, scratchpads, implementation plans, or status logs.
+Apply the Lazy Senior Dev ladder:
 
-## Gall's Law / Basic Spine First gate
+1. Can the requirement be narrowed, deleted, or satisfied by current behavior?
+2. Does an existing owner, helper, dependency, platform primitive, skill, or
+   tool already cover it?
+3. Can the change remain one line, one function, or one file?
+4. What additional layer is strictly necessary to prevent the evidenced
+   failure or produce an honest terminal state?
 
-For product/rewrite/agentic-system work, first name the minimum user-visible product spine, the canonical command/live-safe check that proves it, and current result: `pass`, `fail`, or `not available`. If it is not green, plan only to create/fix that spine or explicitly scope a non-readiness spike. Do not add architecture, agents, routers, monitors, or eval frameworks until the spine is green or the user accepts the spike.
+Do not confuse implementation minimality with causal incompleteness. If one incident proves two independent failed contracts, the plan must repair both. Conversely, a severe consequence strengthens validation and rollout proof; it does not by itself justify new services, abstractions, agents, or artifacts.
 
-For plans that introduce new agentic behavior, new harness, new coordination layer, or meaningful architecture, require a Gall's Law / Basic Spine First review before implementation. This does not auto-invoke Claude by task similarity; when Claude/second-review is in use, use `../references/claude-adversary.md`. Locally polished micro-feature progress is not a substitute for a basic working spine.
+Prefer one linear path and one independently valuable checkpoint. Branches are allowed only when a named unresolved fact genuinely changes the implementation; record the fact and its decision gate instead of scheduling both branches.
 
-## Scope fidelity artifact gate
+### 4. Attach proportional proof
 
-Tier 1+ durable plans must include a `## Scope fidelity` block that links or quotes `coordination/<task-slug>/scope.md`, names the plan scope, states `Narrowing? yes/no`, and cites `Operator approved narrowing in:` whenever narrowed. Unapproved narrowing makes the plan invalid and cannot later count as completion; record it as blocked, deferred, or ask the operator to approve the narrower scope.
+Every plan names checkable acceptance criteria and the closest proof that would catch the failure:
 
-## Loop Engineering Contract
-For recurring, scheduled, event-triggered, queue-driven, watch-and-fix, or unattended work, read `../references/loop-engineering.md` for trigger/cadence, discovery, isolation, verification, durable state, stop/no-progress rule, budgets, idempotency, human gates, attention policy, and learning path; keep it in the plan, not a standalone `uberloop`.
+- the pre-change failure or baseline;
+- the focused unit, contract, integration, or black-box check;
+- trust-boundary, data-loss, security, source-authority, or irreversible-action cases when implicated;
+- exact-diff review for contained changes;
+- runtime or user-visible readback only when runtime behavior is in scope.
 
-## Operational outcome contract
+For behavior changes, keep a compact **Red/green proof ledger**: baseline, expected red, first green, black-box or user-visible proof when applicable, false-green risk, and skipped layers with reasons. Test count is not proof quality. Do not create a harness, eval framework, canary program, or review board unless a named failure mode cannot be tested safely with existing means.
 
-Tier 1+ plans must include a **Definition of Done / Operational Outcome Contract** naming intended outcome, what counts as implemented/operational, evidence, non-implementation examples, and terminal state. Runtime topology, child terminal states, active/hard blockers, and parent completion rules live in `../references/operational-states.md`.
+### 5. Delete planning theater and return
 
-## Recursive / hierarchical execution pseudocode
+Before presenting the plan, run an over-orchestration deletion review: remove every slice, file, abstraction, reviewer, template, and operator step that does not change the decision or mitigate a named risk. Mark useful-but-untriggered work as evidence-contingent rather than scheduling it.
 
-For multi-plan goals, subplans, plan-making plans, or “execute all plans,” include **Recursive / Hierarchical Execution Pseudocode**. Use a plan-making plan when the final plan depends on multi-source synthesis such as transcripts, source docs, codebase conventions, or ambiguous strategy/architecture work. Output only the sources to inspect, evidence map, questions the final plan must answer, constraints, shallow-synthesis risks, and stop condition before writing the real plan; do not solve the final deliverable yet. Skip this for Tier 0/1 edits, one-file fixes, or cases where micro-intent already captures the work. Example: “Plan how you will read this transcript, repo context, and source docs before writing the actual implementation plan.” It must show child iteration, recursion, proof before parent return, and rejection of superficial completion; use `../references/operational-states.md` for child terminal-state and parent-proof rules.
+Compare the final plan with the **operator original instruction**: agent-interpreted scope, proposed narrowed scope, explicit deferrals/non-goals, and approval evidence for any material narrowing. Include a compact **User expectation / surprise assessment** and report **Scope fidelity: pass/fail/uncertain**. Do not let a polished plan hide an unapproved scope reduction.
 
-For large plan trees, use `references/plan-tree-artifact-layout.md`: root `index.md`, child plan files, `status-ledger.md`, receipts, and final acceptance. Bound recursion; create child plans only when they reduce risk or separate operational outcomes.
+## Output shape
 
-For Tier 3 agentic/runtime/production-replacement or other expensive-proof work, load `templates/tier3-expensive-proof-plan-tree.md` and run `scripts/validate_plan_contract.py`. A single flat plan must not launch burn-in/final proof unless the plan records an explicit flat-plan exception, approval, and validator-bypass reason.
+Default to a concise inline plan:
 
-## Agent execution proof ladder
+1. decision and why;
+2. decisive evidence and any remaining gap;
+3. smallest linear implementation steps;
+4. acceptance/proof;
+5. explicit non-goals and escalation triggers.
 
-For OpenClaw or agentic-system plans, the **Agent execution proof ladder** is strategy, not a final wish:
+Use these ceilings unless the operator requests more detail or a material requirement would otherwise be hidden: about 200 words for terminal evidence-gap mode, 350 for a contained plan, and 750 for a genuine cross-boundary plan. Reuse evidence already read; do not reopen sources solely to collect line numbers, repeat citations, or reformat the answer.
 
-1. Prove a Codex subagent with the intended skills/tools/source/context can execute the activity.
-2. If it fails, improve skill/tool/context affordances before adding orchestration.
-3. Prove the same activity through OpenClaw or target runtime.
-4. Do not call ready until two target-runtime parity proofs pass or the missing proof is a blocker/spike.
+For a contained change, this may be a **Micro-intent / spec-first fast path**: 2-3 sentences of scope / intent, acceptance criteria, out-of-scope note, and a verification command or evidence note. A spec review catches missing requirements; code review catches implementation defects.
 
-## PRD-to-issue slicing
+Create a durable `.md` plan only when the operator requests it or execution is long-running, multi-owner, resumable, or needs a handoff. Do not create a coordination tree merely because `uberplan` is active. Use `templates/plan-tier1.md` only for a durable contained plan and `templates/plan-tier3.md` only after the Tier 3 evidence gate below passes. Do not read either template for an inline plan.
 
-For plans that will be handed to coding agents, convert PRD/task work into vertical tracer-bullet issues rather than horizontal layer tickets. Each issue should deliver a narrow end-to-end behavior through the relevant layers, carry acceptance criteria, name dependencies/blockers, and be demoable or verifiable on its own. Put any prefactor or seam-making work before the dependent behavior slice, and mark whether an issue is safe for AFK execution or needs HITL approval/tool access. Avoid file-path-heavy issue bodies unless a prototype produced a decision-rich snippet that would be less precise as prose.
+## Evidence-gated riders
 
-## Delivery format
+These are protections, not keyword triggers. The presence of words such as retry, scheduled, queue, worker, production, destructive, prompt, skill, or agentic does not activate them. Load a rider only when current evidence establishes its condition.
 
-Return thread highlights plus a durable `.md` plan path. Before showing either, run an over-orchestration deletion review for accidental slices, expectation mismatch, unnecessary agents/templates/files, duplicate artifacts, deterministic harness creep, regex/router semantic authority, and places where better skills/tools/context/source authority beat more process.
+### Tier selection
 
-## Output contract
-
-Use `templates/plan-tier1.md` for contained Tier 1 plans and `templates/plan-tier3.md` for the full Tier 3 contract; `templates/plan-contract.md` is a compatibility tombstone. It must cover, as applicable:
-
-- goal posture, checkpoints, `.md` path, thread highlights, tier, objective, scope, assumptions, non-goals
-- Task Understanding Review / micro-intent fast path decision, including real problem, clear requirements, ambiguities, likely misunderstandings, execution plan, acceptance criteria, and out-of-scope boundaries for Tier 0/1 work
-- **User expectation / surprise assessment** and final handoff proof against material mismatch
-- **Scope Fidelity Ledger**: operator original instruction, verbatim or exact artifact path; agent-interpreted scope; proposed narrowed scope; explicit deferrals/non-goals; approval evidence for narrowing; and diff between original and proposed scope
-- **Gall's Law / Basic Spine First adversary** for agentic-system, harness, coordination-layer, or architecture-changing plans: smallest end-to-end working spine, not micro-feature slices or top-down architecture; evals that prove the spine works and stay green while it evolves
-- **Architecture stepback / measure-three-times review**: system shape, viable avenues, blockers, implications, pitfalls, package seams, adoption/rollback, what not to build, and the simplest path after seeing the whole terrain
-- Definition of Done / Operational Outcome Contract, allowed terminal state, and non-implementation examples
-- Loop Engineering Contract for recurring/watch-and-fix/scheduled/unattended work: trigger, discovery, isolation, verification, durable state, stop/no-progress/budget controls, idempotency, human gates, attention policy, and learning path
-- Recursive / Hierarchical Execution Pseudocode plus Plan Tree Artifact Layout for child/subplans
-- Unattended production/runtime approval and safe-predecessor plan when production/runtime work could hit external/unsafe/irreversible steps
-- Tier 3 expensive-proof plan-tree preflight for agentic/runtime/production-replacement, burn-in, soak, canary expansion, or final-proof work
-- checkable PRD checklist, task map, stable IDs, owners, dependencies, done conditions, Mermaid graph, and parallelization/write-scope policy
-- **Red/green proof ledger** for code, skill, prompt, workflow, or agent-behavior changes: baseline/result before patch, expected red/failing fixture when applicable, first green proof, black-box/user-visible check, false-green risks, and skipped evidence layers
-- testing adaptation gate: stop before or at **five consecutive clear failures** of the same command/failure family, or immediately for material unexpected failures; run RCA; if scope changes, create a focused **child/sub-`uberplan` appendix**, merge/append it as **RCA-driven scope expansion**, correction, or blocker, then continue only after new hypothesis/evidence gate is named
-- affected repos/files, protected-file constraints, codebase exploration trails, architecture options, and repository topology/package-seam plan for new/moved/reorganized code
-- code-health/dead-code tool plan for Tier 2/3 work, refactors, deletions, new modules, and package moves; tool findings are candidates, not deletion authority
-- deterministic harness responsibilities vs adaptive model policy; for agentic systems, thin harness / fat agent rubric and source-convention check
-- source authority, side effects, approval, rollback, adoption-state policy, risk-to-evidence map, acceptance rubric, and decision/surprise register
-- pre-presentation over-orchestration review, final **Value Adversary / cautious-theater gate**, plan acceptance gate, and **confidence gate** verdict after trying to falsify the plan
-
-## Tier selection
-
-| Tier | Use for | Planning machinery |
-|---|---|---|
-| Tier 0 | Small isolated deterministic edits | concise plan/test note |
-| Tier 1 | Long but contained work | plan contract + loophole/simplifier check |
-| Tier 2 | Medium/high-risk work | Architecture Steward plus most relevant extra lane |
-| Tier 3 | Cross-repo, agentic-system, runtime/prod, major refactor/deletion, prompt/skill/eval, concurrency/security, complex UI | full review board, evidence rubric, optional subagents only when authorized |
+- **Tier 0/1:** one established owner and a contained change. Use a micro-intent or short linear plan. Consequence can strengthen proof without changing tier.
+- **Tier 2:** multiple real ownership seams, a meaningful migration, or a material approval/security/runtime risk that cannot be closed locally. Add only the most relevant review lens.
+- **Tier 3:** evidence proves a cross-repo or production replacement, irreversible migration, concurrency/durability redesign, broad agentic behavior change, or another change whose safe proof genuinely needs the full contract. Prompt/skill/eval work is not automatically Tier 3.
 
 Choose the lower tier unless a concrete risk requires escalation.
 
-## Planning review lanes
+### Architecture stepback
 
-Choose lanes by risk, not ceremony: Architecture Steward; **Agent Advocate / Agent Failure RCA** with **human counterfactual**; Loophole Hunter / Red Team; **First-Principles** Simplifier / Complexity Auditor; Codebase Scout; OpenClaw / Platform Steward; **Black-box Tester / Quality-Eval Auditor**; Cost/Risk Governor. The black-box lane challenges whether green tests actually prove the user-visible outcome and names false-green risks. Use `templates/planning-review-board.md` only when synthesis must be durable.
+For Tier 2/3 work, route to `$uberarchitect` only when evidence shows that a local fix cannot close a cross-boundary concurrency, queue, worker, backpressure, durability, gateway, orchestration, scaling, or repeated-timeout contract. The required **Architecture stepback / measure-three-times review** names the system class, current mismatch, viable avenues, blockers, second-order implications, pitfalls, smallest transition, proof, and what not to build. This is **Architecture focus, not uberengineering**: use extra thinking time/tokens to see the architecture and the terrain before cutting, not to make the plan bigger. If the bigger-picture review only adds ceremony, delete it; the point is to avoid blindly closing on the first plausible route.
 
-Do not create a standalone `ubertesting`/`ubereval` plan lane merely because testing is important; use the red/green proof ledger and Black-box Tester / Quality-Eval Auditor first, and extract only after repeated failures prove benefit >> cost.
+For new agentic behavior, a new harness, or a new coordination layer, require a Gall's Law / Basic Spine First review before implementation. Name the smallest working end-to-end spine and its current proof. This does not auto-invoke Claude by task similarity. Locally polished micro-feature progress is not a substitute for a basic working spine.
 
-## V0 plan premortem / failure dispositions
+### Loop Engineering Contract
 
-For Tier 2/3 plans, after drafting the first concrete plan and before the confidence gate, run an explicit premortem against that V0 plan. This is a required plan artifact, not a reminder. Ask the adversary questions even when no separate reviewer is available; if Claude or another adversarial reviewer is requested or available for the plan review, use that reviewer and save the prompt/output with the coordination artifacts.
+Read `../references/loop-engineering.md` only when the plan changes or creates the loop itself: trigger/cadence, discovery, isolation, durable state, verification, stop/no-progress rule, budgets, idempotency, human gates, attention policy, or learning path. For a new unattended loop, account for every Loop Contract field or mark it inapplicable with a reason; learning means human-reviewed promotion of recurring failures into focused evals or fixtures, never loop self-modification. A contained defect inside an existing scheduled, recurring, event-triggered, or queue-driven owner does not activate the rider.
 
-The premortem must assume the V0 plan failed, then name: the most likely execution failure, missing affordance/context/tool/source, overengineering or code-bloat failure mode, files/modules/abstractions proposed, what can be deleted/merged/avoided, and the 80/50 alternative that gets most value with much less surface area. Every material failure mode needs a failure disposition: either a concrete plan revision, or an explicit accepted-risk rationale; accepted-risk-only disposition tables are valid when every row has a rationale. Do not pass the confidence gate with unresolved premortem blockers or with findings that did not mutate the plan or risk ledger.
+### Operational and hierarchical work
 
-## Parallel exploration and execution planning
+Use a **Definition of Done / Operational Outcome Contract** when work changes runtime state, external side effects, deployment, or multi-owner completion. Load `../references/operational-states.md` only when terminal-state or parent/child semantics are actually in scope.
 
-Map the critical path before parallel work. If subagents are authorized, split exploration, implementation, verification, and detail work into non-overlapping slices and require digest-only receipts: outcome, independent_review true/false, agent/session id, changed files, commands, receipts, key findings, risks, and next decision. Root orchestrator keeps scope/decomposition/integration/acceptance; workers keep disjoint write scopes and raw detail in artifacts instead of polluting the root context. Even without subagents, identify parallelizable work, serial blockers, disjoint write scopes, and batching/max-concurrency policy. Do not spawn duplicate agents over the same context.
+Use **Recursive / Hierarchical Execution Pseudocode** and `references/plan-tree-artifact-layout.md` only when independently completable child plans reduce risk. For Tier 3 replacement or expensive production proof, use `templates/tier3-expensive-proof-plan-tree.md` and `scripts/validate_plan_contract.py`; do not apply them to a flat contained change.
 
-## Runtime thread caps
+### Review and execution lanes
 
-Runtime topology presets, including standard `max_threads=6`, `max_depth=2`, approval/restore rules, cap-hit lanes, and digest-only worker receipts, live in `../references/operational-states.md`.
+For Tier 2/3, choose the smallest independent lens that challenges the named risk. A same-agent pass is a useful internal lens but not independent evidence. Do not create a full review board by default.
 
-## Repository topology and code health
+If subagents are authorized, split exploration, implementation, verification, and detail work into non-overlapping slices with digest-only receipts. The Root orchestrator keeps scope/decomposition/integration/acceptance. No plan should spawn duplicate agents over the same context.
 
-For new, moved, or meaningfully reorganized code, propose target file tree before implementation, name package/module destination, separate public seams from private implementation, state tests/evals location, and name the repo-local topology/dependency gate. Avoid root dumps, helper piles, mixed-concern folders, and orphan generated artifacts.
+If repeated test attempts hit **five consecutive clear failures** in the same family, or one material unexpected failure changes the model of the problem, stop and run RCA. Use a focused **child/sub-`uberplan` appendix** only for **RCA-driven scope expansion**.
 
-For Tier 2/3, refactors, deletions, new modules, or package moves, name repo-local checks first, then language tools such as `vulture`, `ruff`, `pyright`/`mypy`, `pytest`, `knip`, `ts-prune`, `depcheck`, `eslint`, `tsc`, `git grep`, topology tests, import-boundary checks, generated-artifact audits, and dynamic-reference review. Deletion still needs Chesterton/dynamic-reference/rollback proof.
+Rare riders stay evidence-gated: use an **Agent Advocate** and **human counterfactual** for proven agent-affordance failures; the **Agent execution proof ladder** for a real cross-runtime agentic change; and a **First-Principles** lens, premortem, or **confidence gate** only when its benefit >> cost. When evidence proves agentic behavior, a model-output boundary, or an external side effect is in scope, read `references/agentic-architecture-checklist.md` and apply only the relevant protections: component classification; adaptive-policy versus deterministic-harness ownership; typed tools, permissions, approvals, and idempotency; checkpoints and replay; source/memory/context authority; and positive/negative evals. At a model/tool boundary, state what the model may decide and what the deterministic harness must validate and execute. Runtime topology defaults such as `max_threads=6` and `max_depth=2` come from `../references/operational-states.md` only when that rider is active.
 
-## Agentic system planning bias
+## Final value check
 
-Prefer thin harness / fat agent. Harness owns schemas, tool contracts, state, permissions, budgets, source authority, replay, traces, and evals. Agents own ambiguous intent, context selection, tool choice, decomposition, recovery, synthesis, and judgment. Reject deterministic monolith drift: giant routers, regex/keyword semantic authority, broad blob files, hidden state bags, and tools that absorb agent policy.
+For Tier 0/1, perform this check directly. For Tier 2/3, use one fresh-context
+reviewer when available:
 
-## First-principles simplification
+- **Strictly necessary now:** omission leaves an explicit requirement or named
+  failure unaddressed.
+- **Evidence-contingent:** remove from initial work and record its trigger.
+- **Cautious theater:** delete it.
 
-Before hardening the plan, ask what requirement, artifact, abstraction, process, or agent can be deleted; whether the outcome can be achieved by removing a moving part; whether benefit clearly exceeds implementation, maintenance, debugging, context, coordination, eval, latency, rollback, and operator-attention cost; and what direct experiment could disprove an expensive assumption. Use `templates/first-principles-simplifier-report.md` when durable.
-
-## Agent Advocate / failure RCA
-
-For agentic systems or fixes to agent mistakes, inspect what the agent experienced: traces, prompts, loaded context, tools/errors, state, memory, source conflicts, handoffs, retries, feedback, stop conditions, and authority. Ask the human counterfactual: would a competent human with normal context/tools have erred? If not, fix missing context, affordance, feedback, source authority, memory, handoff, approval boundary, or deterministic guard. Use `templates/agent-failure-rca.md`.
-
-## Plan acceptance and confidence gates
-
-Before implementation or launch, compare the plan against the operator-original instruction, not only the agent's summary. If the plan narrows scope, name the narrowing and require explicit operator approval or mark it as `re_scoped_with_approval`/deferred rather than done. Final plan review must include `Scope fidelity: pass/fail/uncertain`.
-
-### Final Value Adversary / cautious-theater gate
-
-Immediately before plan acceptance, run one narrow adversarial value review against the final plan. For Tier 2/3, use one fresh-context independent reviewer when available; give it only the operator instruction, final plan, and decisive evidence, and require `BLOCK` or `APPROVE`. This is one review turn, not another review board or reconciliation loop.
-
-The reviewer must classify every material slice or added mechanism as:
-
-1. **Strictly necessary now** — omission would violate an explicit requirement or leave a named, evidenced failure class unprevented.
-2. **Evidence-contingent** — useful only if a named trigger occurs; remove it from the initial plan and record the trigger.
-3. **Cautious theater** — ceremony, speculative generalization, redundant proof, or defense against no evidenced risk; delete it.
-
-Require the reviewer to propose the smallest linear plan that preserves the operational outcome, quantify what it removes (slices, files, agents/reviews, production surface, or operator steps), and identify the first independently valuable checkpoint. A plan is blocked if cautious-theater work remains, evidence-contingent work is scheduled before its trigger, or the author justifies machinery with generic caution rather than a named failure and proof. Trust-boundary validation, data-loss protection, security, source authority, irreversible side-effect gates, and explicit operator requirements are not theater.
-
-Before implementation or launch, try to reject the plan against OpenClaw/agentic architecture, thin-harness/fat-agent policy, topology, dead-code, source-authority, side effects, and evidence. Then run the scoped verdict from `templates/confidence-gate.md`; do not say “100% confident” while a material blocker remains.
-
-
-## Architecture stepback gate
-
-For Tier 2/3 plans involving concurrency, scaling, queues, workers, long-running jobs, gateways, orchestration, workflow durability, backpressure, repeated timeouts, or suspected symptom-patching, route to `$uberarchitect` before the task map hardens. The plan must not proceed on local patches alone until it includes an Architecture Stepback Packet: system class, normal industry architecture, fresh-start architecture, current mismatch, symptom patches demoted, smallest transition path, proof gate, and human counterfactual.
+The plan passes only if it is the smallest linear plan that preserves the complete operational outcome and its proof. Keep trust-boundary validation, data-loss protection, security, source authority, irreversible-action gates, and explicit operator requirements.
 
 ## Optional Claude adversary
 
 Contract: `../references/claude-adversary.md` (opt-in only on explicit request; reconciliation + frame-independence rules there).
 
-For `uberplan`, ask exactly:
+Ask exactly:
 
-1. **Most likely execution failure.** Causal layer: failure prediction. Name the single most likely execution failure and its mitigation, not just acknowledgment. Evidence: tie it to a prior failure/source constraint. Minimum impact: add a stop gate or remove the risky branch.
-2. **Missing affordance.** Causal layer: agent affordance/tooling. What skill, tool, source, or context does this plan depend on that does not exist or is unproven? Evidence: identify the exact missing affordance. Minimum impact: add proof/fallback or remove dependency.
-3. **Overengineering / code-bloat failure.** Causal layer: complexity and topology. If this plan fails by adding too much machinery, too many files, or the wrong abstraction, what caused it? Evidence: name proposed files/modules/abstractions and what can be deleted, merged, or avoided. Minimum impact: simplify the plan or explicitly accept the bloat risk.
-4. **Linear 80/50 alternative.** Causal layer: simplification. Is there a linear no-branch version that gets at least 80% of the value with at most 50% of the surface? Evidence: describe it. Minimum impact: replace the plan or justify complexity.
-
-## Helpful resources
-
-- `templates/plan-tier1.md` — contained Tier 1 plan; `templates/plan-tier3.md` — full Tier 3 contract; `templates/plan-contract.md` — compatibility tombstone.
-- `templates/tier3-expensive-proof-plan-tree.md` — required preflight for Tier 3 expensive-proof/replacement/runtime proofs.
-- `templates/confidence-gate.md` — adversarial confidence gate.
-- `templates/planning-review-board.md`, `templates/exploration-trail.md`, `templates/agent-failure-rca.md`, `templates/architecture-steward-report.md`, `templates/first-principles-simplifier-report.md`, `templates/agent-brief.md` — optional lane/worker artifacts.
-- `references/tiering-and-rubric.md`, `references/agentic-architecture-checklist.md`, `references/plan-tree-artifact-layout.md` — tiering, architecture, and nested-plan layout.
-- `scripts/validate_plan_contract.py` — deterministic plan sanity checks.
+1. **Most likely execution failure.** What evidence predicts it, and what
+   smallest plan change prevents it?
+2. **Missing affordance.** Which required skill, tool, source, or context is
+   absent or unproven?
+3. **Overengineering / code-bloat failure.** Which proposed mechanism can be
+   deleted, merged, or deferred?
+4. **Linear 80/50 alternative.** Can a linear version deliver most of the value
+   with half the surface?

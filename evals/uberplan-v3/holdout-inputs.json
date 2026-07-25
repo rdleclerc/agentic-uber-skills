@@ -1,0 +1,21 @@
+{
+  "schema_version": 1,
+  "cases": [
+    {
+      "id": "tenant_cache_isolation",
+      "skills": [
+        "uberplan"
+      ],
+      "workspace": "evals/uberplan-v3/fixtures/tenant-cache-isolation",
+      "user_prompt": "Plan the repair for the cross-tenant report leak in incident.md. Verify the current cache ownership before accepting the proposed service, preserve security proof, and keep the implementation no larger than the evidence requires."
+    },
+    {
+      "id": "provider_settlement_owner_missing",
+      "skills": [
+        "uberplan"
+      ],
+      "workspace": "evals/uberplan-v3/fixtures/provider-settlement-owner-missing",
+      "user_prompt": "Plan the provider-settlement repair described in issue.md. Use the repository's authority rules, and do not guess the implementation owner if the decisive deployment evidence is unavailable."
+    }
+  ]
+}

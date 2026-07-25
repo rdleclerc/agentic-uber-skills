@@ -5,7 +5,7 @@ This roadmap keeps the skill pack evolving without turning it into bureaucracy. 
 ## Current architecture
 
 - `ubergoal` — goal-owning lifecycle wrapper: create/bind the platform goal, classify, run Tier 2+ specialist review boards, route, ledger, user expectation/surprise assessment, RCA-driven test-failure adaptation, final policy-adherence acceptance, tradeoff/surprise and skills-invoked reporting, learning.
-- `uberplan` — rigorous planning for long-running goal execution: thread highlights plus durable `.md` plan contracts, user expectation/surprise assessment, review lanes, verifiable subgoals, Mermaid task graphs, target file trees, parallelization maps, Codex-subagent to OpenClaw/target-runtime proof ladders, RCA-driven testing adaptation and child-plan scope append gates, code-health/dead-code plans, Agent Advocate RCA, first-principles simplifier, pre-presentation over-orchestration review, confidence gate.
+- `uberplan` — source-grounded planning for the smallest complete implementation: concise inline plans for contained work; durable artifacts and proportional architecture, loop, topology, agentic-safety, review, runtime proof, and RCA-driven testing adaptation riders only when current evidence activates them.
 - `uberaccept` — adversarial final proof: evidence audit, expected-vs-actual user surprise delta, architecture drift, Agent Advocate final check, completion recommendation.
 - `uberskillevolver` — post-run learning loop: learning records, lesson candidates, promotion batches, anti-bloat gate.
 - `uberrca` — class-level root cause analysis before patches.
@@ -28,6 +28,7 @@ This roadmap keeps the skill pack evolving without turning it into bureaucracy. 
 ## Near-term priorities
 
 1. **Fresh-agent behavioral evals**
+   - Keep the model-agnostic UberPlan Behavioral Conformance Suite as the first durable pack-level regression corpus; add cases only for distinct recurring failure classes.
    - Build a small pack-level harness before creating a standalone `ubereval` skill; do not create `ubertesting` as a parallel alias.
    - Verify a fresh agent routes `ubergoal → uberplan → uberaccept → uberskillevolver` correctly.
    - Turn golden eval seeds into an executable or semi-automated harness, including false-green and missing-black-box-proof cases.

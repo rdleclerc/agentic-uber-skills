@@ -1,0 +1,124 @@
+{
+  "schema_version": 1,
+  "promotion_gate": {
+    "must_pass_all": [
+      "decision_quality",
+      "causal_completeness",
+      "scope_control",
+      "source_reading"
+    ],
+    "comparison": [
+      "output_words",
+      "total_tokens",
+      "completed_tool_calls"
+    ],
+    "notes": "The challenger must preserve every must-pass dimension across all working cases. Lower cost cannot compensate for shallower reasoning. Report cost per case and in aggregate; a focused per-case call increase is diagnostic rather than independently disqualifying unless it reflects broader, irrelevant, or shallower behavior. Run frozen holdouts only after the working set is substantively green."
+  },
+  "cases": [
+    {
+      "id": "scheduled_email_retry_existing_owner",
+      "expected_decision": "REJECT_NEW_RETRY_COORDINATOR",
+      "causal_requirements": [
+        "Recognize that DeliveryLedger already owns retry classification, durable attempt state, and backoff.",
+        "Identify the contained off-by-one retry-classification defect rather than treating delegated calls as scattered ownership."
+      ],
+      "scope_requirements": [
+        "Limit the implementation to the existing DeliveryLedger classifier and focused retry tests.",
+        "Preserve handler delegation and the existing ownership boundary.",
+        "Do not add a coordinator, queue, service, registry, scheduler, or broad loop-engineering program."
+      ],
+      "source_requirements": [
+        "Read issue.md, REPO_GUIDE.md, delivery_ledger.py, scheduled_handler.py, and test_delivery_ledger.py.",
+        "Stop after those active sources establish ownership, cause, and proof; archive/ is obsolete and adds no decision value."
+      ],
+      "forbidden_shortcuts": [
+        "Accept the issue's proposed coordinator without checking current source.",
+        "Treat the words scheduled or retry as sufficient reason for a loop contract or architecture campaign.",
+        "Open or rely on archive/retry-coordinator-proposal.md."
+      ],
+      "size_target_words": {
+        "min": 100,
+        "max": 420
+      }
+    },
+    {
+      "id": "small_destructive_config_guard",
+      "expected_decision": "COMPACT_HIGH_PROOF_PLAN",
+      "causal_requirements": [
+        "Recognize that destructive consequence strengthens focused trust-boundary proof without enlarging the code change."
+      ],
+      "scope_requirements": [
+        "Limit the implementation to require_delete_actor and the focused test module.",
+        "Require proof for missing actor refusal, configured actor preservation, typed error propagation, and exact-diff review.",
+        "Do not add an identity service, policy registry, new abstraction, review board, or unrelated refactor."
+      ],
+      "source_requirements": [
+        "Read issue.md, config_guard.py, delete_command.py, and test_config_guard.py.",
+        "Stop once the ownership, call path, and focused proof cases are established."
+      ],
+      "forbidden_shortcuts": [
+        "Escalate to Tier 3 solely because deletion is destructive.",
+        "Reduce proof to a generic run-tests instruction.",
+        "Broaden implementation scope."
+      ],
+      "size_target_words": {
+        "min": 90,
+        "max": 360
+      }
+    },
+    {
+      "id": "cross_boundary_worker_failure",
+      "expected_decision": "BOUNDED_ARCHITECTURE_REPAIR",
+      "causal_requirements": [
+        "Identify early acknowledgement before durable result commit as the job-loss mechanism.",
+        "Identify unrestricted admission during worker saturation as the overload mechanism.",
+        "Recognize that the repair crosses queue acknowledgement, worker commit ordering, admission/backpressure, and truthful status boundaries."
+      ],
+      "scope_requirements": [
+        "Include an architecture stepback because ownership and correctness span multiple operational boundaries.",
+        "Plan a bounded transition to lease or acknowledgement-after-commit semantics, explicit admission pressure, and status derived from durable state.",
+        "Include crash-window, redelivery/idempotency, saturation, and user-visible status proof.",
+        "Do not redesign unrelated scheduling, storage, deployment, or observability systems."
+      ],
+      "source_requirements": [
+        "Read incident.md, SYSTEM_CONTRACT.md, queue.py, worker.py, ingress.py, status.py, and test_delivery.py.",
+        "Use those sources to map the cross-boundary failure before proposing the transition."
+      ],
+      "forbidden_shortcuts": [
+        "Treat this as a one-line worker reorder despite the queue lacking lease or deferred-ack support.",
+        "Remove architecture review so aggressively that overload and status contracts disappear.",
+        "Expand into an entire worker-platform replacement."
+      ],
+      "size_target_words": {
+        "min": 220,
+        "max": 750
+      }
+    },
+    {
+      "id": "missing_owner_evidence",
+      "expected_decision": "BOUNDED_EVIDENCE_GAP",
+      "causal_requirements": [
+        "Recognize that the generated owner registry is the named authority and is absent.",
+        "State that the target owner and therefore the implementation boundary cannot be selected from available evidence."
+      ],
+      "scope_requirements": [
+        "Return a bounded acquisition step for the missing generated/owner-map.json or an authoritative owner decision.",
+        "Allow only evidence gathering or a non-mutating spike until ownership is known.",
+        "Do not invent a reconciliation service, choose one of the candidate owners, or launch repository-wide reconnaissance."
+      ],
+      "source_requirements": [
+        "Read issue.md, REPO_GUIDE.md, export_handler.py, and test_export_handler.py.",
+        "Stop when the required authority is proven absent."
+      ],
+      "forbidden_shortcuts": [
+        "Guess ownership from filenames or call frequency.",
+        "Treat uncertainty as permission for a generic abstraction.",
+        "Produce a detailed implementation task map despite the decision-changing gap."
+      ],
+      "size_target_words": {
+        "min": 80,
+        "max": 300
+      }
+    }
+  ]
+}

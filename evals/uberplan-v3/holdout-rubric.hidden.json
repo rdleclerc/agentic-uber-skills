@@ -1,0 +1,70 @@
+{
+  "schema_version": 1,
+  "promotion_gate": {
+    "must_pass_all": [
+      "decision_quality",
+      "causal_completeness",
+      "scope_control",
+      "source_reading"
+    ],
+    "comparison": [
+      "output_words",
+      "total_tokens",
+      "completed_tool_calls"
+    ],
+    "notes": "The frozen candidate must preserve substantive quality on both unseen cases. Cost is reported per case and in aggregate; a focused-call increase is not independently disqualifying when aggregate cost improves and source reading is more disciplined."
+  },
+  "cases": [
+    {
+      "id": "tenant_cache_isolation",
+      "expected_decision": "REJECT_NEW_CACHE_SERVICE",
+      "causal_requirements": [
+        "Identify the missing tenant dimension in ReportStore.cache_key as the cross-tenant leak mechanism.",
+        "Recognize ReportStore as the existing cache owner and preserve handler delegation."
+      ],
+      "scope_requirements": [
+        "Limit the repair to the existing cache key and focused isolation/regression tests.",
+        "Require cross-tenant separation, same-tenant cache reuse, and exact-diff review.",
+        "Do not add a cache service, key registry, migration framework, review board, or unrelated security redesign."
+      ],
+      "source_requirements": [
+        "Read incident.md, REPO_GUIDE.md, report_store.py, report_handler.py, and test_report_store.py.",
+        "Stop after active sources prove ownership, mechanism, and focused proof; archive/ is obsolete."
+      ],
+      "forbidden_shortcuts": [
+        "Trust the service proposal over current ownership evidence.",
+        "Treat security severity as automatic Tier 3 scope.",
+        "Open or rely on archive/cache-service-proposal.md."
+      ],
+      "size_target_words": {
+        "min": 100,
+        "max": 400
+      }
+    },
+    {
+      "id": "provider_settlement_owner_missing",
+      "expected_decision": "TERMINAL_EVIDENCE_GAP",
+      "causal_requirements": [
+        "Recognize that the deployment binding is the named authority and is absent.",
+        "State that the provider adapter, settlement ledger, or webhook handler cannot be selected as owner from available call order."
+      ],
+      "scope_requirements": [
+        "Return only the blocked decision, missing authority, one bounded acquisition step, and unblock evidence.",
+        "Do not outline downstream implementation, tests, files, rollout, or conditional task maps."
+      ],
+      "source_requirements": [
+        "Read issue.md, REPO_GUIDE.md, settlement_router.py, and test_settlement_router.py.",
+        "Stop once the required deployment binding is proven absent."
+      ],
+      "forbidden_shortcuts": [
+        "Guess from the router fallback order.",
+        "Invent a new reconciliation owner or abstraction.",
+        "Continue into an implementation plan after declaring the owner unknown."
+      ],
+      "size_target_words": {
+        "min": 70,
+        "max": 230
+      }
+    }
+  ]
+}

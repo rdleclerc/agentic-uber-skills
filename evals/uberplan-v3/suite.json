@@ -1,0 +1,72 @@
+{
+  "schema_version": 1,
+  "suite_id": "uberplan-behavioral-conformance-v1",
+  "name": "UberPlan Behavioral Conformance Suite",
+  "subject": "uberplan",
+  "groups": [
+    {
+      "id": "working",
+      "role": "known_iteration_cases",
+      "inputs": "working-inputs.json",
+      "rubric": "working-rubric.hidden.json",
+      "case_count": 4
+    },
+    {
+      "id": "holdout",
+      "role": "frozen_promotion_cases",
+      "inputs": "holdout-inputs.json",
+      "rubric": "holdout-rubric.hidden.json",
+      "case_count": 2
+    },
+    {
+      "id": "forward",
+      "role": "retained_safety_regressions",
+      "inputs": "forward-inputs.json",
+      "rubric": "forward-rubric.hidden.json",
+      "case_count": 3
+    }
+  ],
+  "hard_gate_dimensions": [
+    "decision_quality",
+    "causal_or_protection_completeness",
+    "scope_control",
+    "source_reading"
+  ],
+  "subject_bundle": {
+    "include": [
+      "AGENTS.md",
+      "CLAUDE.md",
+      "README.md",
+      "ROADMAP.md",
+      "uberplan/SKILL.md",
+      "uberplan/agents/openai.yaml",
+      "uberplan/references/**",
+      "uberplan/scripts/**",
+      "uberplan/templates/**",
+      "references/loop-engineering.md",
+      "references/operational-states.md",
+      "<selected_case_workspace>/**"
+    ],
+    "exclude": [
+      "evals/uberplan-v3/*-inputs.json",
+      "evals/uberplan-v3/*rubric*",
+      "evals/uberplan-v3/baselines/**",
+      "evals/uberplan-v3/fixtures/<sibling_case>/**",
+      "uberplan/evals/**",
+      "uberplan/tests/**",
+      ".uberlearn-local/**",
+      "prior outputs, grader reports, and external repositories"
+    ]
+  },
+  "diagnostic_metrics": [
+    "output_words",
+    "total_tokens",
+    "completed_tool_calls"
+  ],
+  "metric_definitions": {
+    "output_words": "wc -w over the final answer",
+    "total_tokens": "input_tokens plus output_tokens from the terminal usage record",
+    "completed_tool_calls": "terminal completed command or MCP records, including failed invocations"
+  },
+  "raw_artifact_policy": "Store raw outputs and traces under .uberlearn-local; commit only sanitized baseline receipts."
+}

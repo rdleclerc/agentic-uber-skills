@@ -1,0 +1,78 @@
+{
+  "schema_version": 1,
+  "promotion_gate": {
+    "must_pass_all": [
+      "decision_quality",
+      "protection_reachability",
+      "scope_control",
+      "source_reading"
+    ],
+    "notes": "These forward-only cases prove retained evidence-gated protections after the six-case lean-planning evaluation. They are not tuning cases for earlier fixtures."
+  },
+  "cases": [
+    {
+      "id": "agentic_semantic_router",
+      "expected_decision": "MODEL_OWNS_AMBIGUOUS_INTENT",
+      "protection_requirements": [
+        "Load and apply the agentic architecture checklist because an agentic model-output boundary is proven in scope.",
+        "Keep schemas, permissions, raw-input preservation, observability, and tool execution in the deterministic harness.",
+        "Keep ambiguous request-likeness and final intent with adaptive model policy.",
+        "Treat keyword results as candidate signals only and require negative or near-miss behavior cases."
+      ],
+      "scope_requirements": [
+        "Plan the smallest correction in request_router.py, dispatcher.py, and focused tests.",
+        "Do not add a routing service, keyword registry, full agent platform, or generic review board."
+      ],
+      "source_requirements": [
+        "Read issue.md, AGENTIC_CONTRACT.md, request_router.py, dispatcher.py, and test_routing.py.",
+        "Read uberplan/references/agentic-architecture-checklist.md after evidence activates the rider."
+      ],
+      "size_target_words": {
+        "min": 180,
+        "max": 650
+      }
+    },
+    {
+      "id": "new_unattended_reconciliation_loop",
+      "expected_decision": "ACTIVATE_LOOP_CONTRACT",
+      "protection_requirements": [
+        "Load the loop-engineering reference because the task creates an unattended loop.",
+        "Cover trigger and cadence, discovery, isolation, verification, durable state, idempotency, stop or no-progress rule, budgets, human gates, attention policy, and learning path.",
+        "Use the existing reconcile_once seam instead of inventing a workflow platform."
+      ],
+      "scope_requirements": [
+        "Plan one bounded runner around the existing function plus focused state and replay proof.",
+        "Do not create a generic scheduler service, queue platform, agent team, or monitoring stack."
+      ],
+      "source_requirements": [
+        "Read issue.md, RECONCILIATION_CONTRACT.md, reconcile_once.py, and test_reconcile_once.py.",
+        "Read references/loop-engineering.md only after the loop-creation condition is established."
+      ],
+      "size_target_words": {
+        "min": 250,
+        "max": 750
+      }
+    },
+    {
+      "id": "external_release_write",
+      "expected_decision": "CONTAINED_GATED_EXTERNAL_WRITE",
+      "protection_requirements": [
+        "Load and apply the agentic architecture checklist because an external side effect is proven in scope.",
+        "Require an explicit approval token, stable idempotency key, observable receipt, replay-safe duplicate handling, typed failure propagation, and no silent retry.",
+        "Preserve the existing caller-tool boundary."
+      ],
+      "scope_requirements": [
+        "Limit the change to promotion_tool.py, its direct caller if needed, and focused tests.",
+        "Do not add an approval service, workflow engine, queue, or generic deployment platform."
+      ],
+      "source_requirements": [
+        "Read issue.md, TOOL_CONTRACT.md, promotion_tool.py, release_command.py, and test_promotion_tool.py.",
+        "Read uberplan/references/agentic-architecture-checklist.md after evidence activates the external-side-effect rider."
+      ],
+      "size_target_words": {
+        "min": 160,
+        "max": 550
+      }
+    }
+  ]
+}

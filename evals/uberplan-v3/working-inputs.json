@@ -1,0 +1,37 @@
+{
+  "schema_version": 1,
+  "cases": [
+    {
+      "id": "scheduled_email_retry_existing_owner",
+      "skills": [
+        "uberplan"
+      ],
+      "workspace": "evals/uberplan-v3/fixtures/scheduled-email-retry",
+      "user_prompt": "Plan the scheduled-email retry work described in issue.md. Verify the current ownership and implementation before accepting the proposed architecture. I want the smallest informed plan that fixes the real failure."
+    },
+    {
+      "id": "small_destructive_config_guard",
+      "skills": [
+        "uberplan"
+      ],
+      "workspace": "evals/uberplan-v3/fixtures/destructive-config-guard",
+      "user_prompt": "Plan the destructive configuration guard in issue.md. Keep the proof proportionate to the consequence, but keep the implementation as small as the evidence allows."
+    },
+    {
+      "id": "cross_boundary_worker_failure",
+      "skills": [
+        "uberplan"
+      ],
+      "workspace": "evals/uberplan-v3/fixtures/cross-boundary-worker",
+      "user_prompt": "Plan the repair for the production worker failure in incident.md. Read the owning contracts and implementation, identify the system boundary that failed, and give me a safe plan without unrelated platform redesign."
+    },
+    {
+      "id": "missing_owner_evidence",
+      "skills": [
+        "uberplan"
+      ],
+      "workspace": "evals/uberplan-v3/fixtures/missing-owner-evidence",
+      "user_prompt": "Plan the export reconciliation change in issue.md. Do not guess about ownership or invent architecture if the repository does not contain the source needed to make the decision."
+    }
+  ]
+}

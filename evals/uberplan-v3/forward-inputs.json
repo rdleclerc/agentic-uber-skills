@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "cases": [
+    {
+      "id": "agentic_semantic_router",
+      "skills": [
+        "uberplan"
+      ],
+      "workspace": "evals/uberplan-v3/fixtures/agentic-semantic-router",
+      "user_prompt": "Plan the Slack request-routing change in issue.md. This is an agentic behavior boundary: preserve deterministic safety contracts without letting keyword rules own ambiguous user intent."
+    },
+    {
+      "id": "new_unattended_reconciliation_loop",
+      "skills": [
+        "uberplan"
+      ],
+      "workspace": "evals/uberplan-v3/fixtures/new-reconciliation-loop",
+      "user_prompt": "Plan the new unattended reconciliation loop in issue.md. This creates the loop itself, so include the operational protections that are actually required, but do not invent a workflow platform."
+    },
+    {
+      "id": "external_release_write",
+      "skills": [
+        "uberplan"
+      ],
+      "workspace": "evals/uberplan-v3/fixtures/external-release-write",
+      "user_prompt": "Plan the release-promotion tool change in issue.md. It performs an external write; keep the implementation contained while preserving approval, idempotency, replay, and failure proof."
+    }
+  ]
+}
