@@ -14,7 +14,7 @@ Review and acceptance lanes use the highest-capability available Claude lane; re
 |-------|-------------|
 | [uberrca](uberrca/) | Utility skill for general class-level root cause analysis before patches; Agent Advocate remains the agent-behavior RCA lens inside Uber planning/acceptance |
 | [uber-skill-creator](uber-skill-creator/) | Portable Uber skill authoring guide for Codex, Claude, and SKILL.md-compatible agents, with legacy alias migration support, read-only shape lint, eval-driven iteration, HTML review reports, and trigger-description tuning |
-| [ubergoal](ubergoal/) | Thin lifecycle wrapper for substantial agentic coding workflows: classify, route, launch goals, assess user expectation/surprise risk, adapt on repeated or material unexpected test failures, enforce final policy-adherence acceptance, report tradeoffs/surprises and skills invoked, learn |
+| [ubergoal](ubergoal/) | Thin lifecycle wrapper for substantial agentic coding workflows: classify, route, launch goals, assess expectation/surprise risk, adapt on plan-invalidating failures, route final acceptance, and record proof/status plus skills invoked when a durable receipt is activated |
 | [uberplan](uberplan/) | Source-grounded planning that reads decisive owners and proof, returns the smallest complete linear plan, and loads durable artifacts, architecture, loop, agentic-safety, or review machinery only when current evidence requires it |
 | [uberaccept](uberaccept/) | Adversarial final acceptance with evidence audits, expected-vs-actual user surprise checks, architecture drift checks, and completion proof |
 | [uberskillevolver](uberskillevolver/) | Captures post-run skill lessons and promotes only evidence-backed evals, validators, templates, or deletions |

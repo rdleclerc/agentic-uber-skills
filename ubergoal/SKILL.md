@@ -1,39 +1,74 @@
 ---
 name: ubergoal
-description: "Use when an agent needs the goal-owning lifecycle wrapper for substantial coding or agentic-system work: create or bind a Codex/platform goal by default when available, classify risk, route to uberplan for rigorous planning, run Tier 2+ specialist review-board agents when available, coordinate execution at the right tier, route to uberaccept for final proof, and route to uberskillevolver for post-run learning. Trigger for explicit goal/objective work, long plans, goal ledgers, multi-agent coding sessions, agentic-system changes, rigorous-multiagent-coding, the former monolithic ubergoal workflow, 100% confident strategy checks, final completion orchestration, or deciding which Uber subskill to use."
+description: "Use when coding or agentic-system work runs as a goal/objective; needs a long plan, goal ledger, multi-agent session, 100%-confidence strategy check, final completion orchestration, or the former monolithic UberGoal workflow; or asks which Uber subskill to use. Binds plan authority and routes proof to UberAccept."
 ---
 
 # Ubergoal
 
-## Core Rule
+## Core rule
 
-`ubergoal` is the thin lifecycle wrapper, goal owner, and bounded review-board coordinator. When invoked, create/bind the platform goal, classify risk, then route. Loop: observe, choose one action, act, verify evidence, record `proved`/`weak`/`missing`/`contradicted`, and continue only if the next action changes a decision or closes a gap. Benefit >> cost.
+`ubergoal` is the thin lifecycle wrapper and goal owner. When invoked, create or bind
+the goal, classify risk, bind `$uberplan` or a Tier 0/1 micro-intent by
+path/revision, execute only that authority, then send diff/evidence to
+`$uberaccept`. Benefit >> cost.
 
-## Routing Table
+## Routing
 
-| Need | Use |
+| Need | Route |
 |---|---|
 | Goal/objective launch | platform goal primitive; `references/goal-objective.md`; validate with `scripts/validate_goal_objective.py --target-chars 3400 --strict-target` |
-| Coding Agent Work Contract | guide `${UBER_GUIDE_ROOT:-~/repos/agentic-architecture-guide}/docs/coding-agent-work-contract.md`; template `${UBER_GUIDE_ROOT:-~/repos/agentic-architecture-guide}/.agentic/coding_agent_work_contract_template.md` |
-| misunderstanding-prevention review | `$uberplan` Task Understanding Review |
-| Rigorous planning, review-board lanes, codebase exploration, confidence gate, user expectation / surprise assessment | `$uberplan` |
-| Architecture-shaped failures: concurrency, queues, workers, orchestration, backpressure, repeated timeouts, symptom patches | route to `$uberarchitect` before `$uberplan` |
-| Execution coordination | main agent; Tier 2+ uses bounded specialist review-board agents/lenses |
-| Dispatch / parallel sessions | `../references/dispatch-and-sessions.md` |
-| Everyday defect / bug fix | `../references/debug-loop.md`; repeats or incidents -> `$uberrca` |
-| Final acceptance, policy-adherence, architecture drift, dead-code/test/eval proof, surprises | `$uberaccept` |
-| Complexity/modularity/dead-code campaign | `$ubersimplify` |
-| Source/research/internal-artifact assessment before adoption | `$uberassess` |
-| Post-run learning for skills/prompts/workflows/agentic systems | `$uberskillevolver` |
-| Reword a fingerprinted rule | update `references/drift-fingerprints.toml` same commit; drift check gates |
-| Repeated or material unexpected test failures | stop before five consecutive failures; `$uberrca`; revise via `$uberplan`; append/merge child scope change |
-| Refactor campaign / HOT-file audit | `references/refactor-campaign-profile.md` |
-| `ubercampaign`, product campaign, multi-feature/feature-list/plan-tree campaign | `references/campaign-profile.md` |
-| Tier 3 agentic/runtime/production-replacement expensive proof, burn-in, soak, canary expansion, final proof | `$uberplan` with `templates/tier3-expensive-proof-plan-tree.md` validator |
-| Recurring loop mode: watch, monitor, rerun, keep fixing, scheduled, unattended | mark `loop_mode`; read `../references/loop-engineering.md`; contract `$uberplan`; acceptance `$uberaccept`; lessons `$uberskillevolver`; do not create `uberloop` |
-| Runtime topology, parent/child terminal states, active/hard blockers | `../references/operational-states.md` |
+| Tier 0/1 plan | `${UBER_GUIDE_ROOT:-~/repos/agentic-architecture-guide}/docs/coding-agent-work-contract.md` |
+| misunderstanding-prevention | `$uberplan` Task Understanding Review |
+| Rigorous plan, code reading, confidence, user expectation / surprise assessment | `$uberplan` |
+| Everyday defect; repeated incident | `../references/debug-loop.md`; repeated -> `$uberrca` |
+| Architecture-shaped failure | route to `$uberarchitect` before `$uberplan` |
+| policy-adherence / final proof | `$uberaccept` |
+| Complexity/dead code | `$ubersimplify` |
+| Source or artifact adoption research | `$uberassess` |
+| Post-run learning | `$uberskillevolver` |
+| Dispatch or runtime states | `../references/dispatch-and-sessions.md`; `../references/operational-states.md` |
+| Refactor campaign / `ubercampaign` | `references/refactor-campaign-profile.md`; `references/campaign-profile.md` |
 
-## Review Ladder
+For material unexpected test failures, stop before five consecutive failures,
+run `$uberrca`, revise through `$uberplan`, and merge any changed scope. For
+Recurring loop mode: set `loop_mode`, read `../references/loop-engineering.md`,
+and do not create `uberloop`. Use `templates/uber-run-receipt.md` only when a
+durable receipt is activated.
+
+## Approved-plan execution boundary
+
+Before editing, record plan identity, scope, non-goals, criteria, proof, and
+surfaces. Read sources named by operator/plan, then owner, caller/consumer, and
+focused proof. Read any stated conflict/evidence artifact; contradiction
+requires replanning.
+
+- Execute planned work, repository-mandatory gates, and evidence-activated
+  safety protections.
+- `fix_within_scope` permits only a bounded correction already authorized.
+- `replan` applies when evidence changes the implementation contract without
+  changing operator authority.
+- `user_decision` applies before changing operator-owned product scope,
+  ownership, architecture/dependency commitments, public behavior, acceptance,
+  or external-action authority; internal contract changes stay `replan`.
+- Planning never authorizes an external action. Preserve exact target,
+  authorization, idempotency, rollback, receipt, and authoritative readback.
+- Do not add generic docs, refactors, broad tests/evals, reviewers, subagents,
+  or lifecycle artifacts unless the plan, repository contract, or observed risk
+  activates them.
+
+After each step, record proof and the next state: `continue`,
+`fix_within_scope`, `ready_for_acceptance`, `replan`, `user_decision`, or
+`blocked`. Use `continue` only when the next approved step is runnable and no
+required gate is missing. Missing operator authority is `user_decision`;
+missing or unavailable review, rollback, canary, runtime readback, or another
+proof gate is `blocked`. Return the literal state; do not rename either as
+paused or a generic blocker. Name the barrier and list safe next actions.
+
+`ubergoal` never issues `accepted`, `complete`, or `SHIP`. No reviewer verdict
+is UberAccept. After plan, proof, and tier review pass, return
+`ready_for_acceptance` and invoke `$uberaccept`.
+
+## Review ladder
 
 | Tier | Work class | Required review |
 |---|---|---|
@@ -42,35 +77,33 @@ description: "Use when an agent needs the goal-owning lifecycle wrapper for subs
 | 2 | cross-repo doctrine/pointer edits; behavior surfaces (prompts/skills/evals); medium-risk code | exact-diff review + independent adversarial lane (different vendor or fresh context) + scope-fidelity verdict |
 | 3 | production/runtime services; live-injected context surfaces; provider routing; security/data-subject surfaces; major refactor / mass deletion | full 4-phase ladder (plan review, exact-diff, adversarial, acceptance) on the highest-capability Claude lane + review-board lanes |
 
-Riders + audit rule: spine §Review ladder is canonical; receipts record tier + one-line justification; reviewer's first check is tier correctness. If uncertain, take the higher tier. Effort scales with tier; xhigh only where a smaller slice cannot preserve safety.
-
+Tier 2 uses one independent risk-specific lane, not a default board. Tier 3
+keeps its review-board lanes; specialist lenses are risk-activated. The
+repository ladder is canonical; if uncertain, take the higher tier.
+Effort scales with tier; xhigh only where a smaller slice cannot preserve safety.
 
 ## Micro-intent fast path
 
-For Tier 0/1 low-risk work, use one micro-intent artifact when no runtime/provider/security/data-subject surface or cross-boundary ambiguity is present: 2-3 sentences of scope / intent, acceptance criteria, explicit out-of-scope note, and verification evidence. Escalate ambiguity, agentic/runtime risk, irreversible side effects, or many criteria to `$uberplan`. Micro-intent artifacts carry `failure_case_id | case_updated | not_applicable_with_reason`.
+For Tier 0/1 low-risk work without runtime/provider/security/data-subject or
+cross-boundary ambiguity, use 2-3 sentences of scope / intent, criteria,
+non-goals, and verification. Include
+`failure_case_id | case_updated | not_applicable_with_reason`.
 
-## Scope fidelity gate
+## Scope fidelity and completion
 
-For Tier 1+ or explicit `ubergoal`, create/update `coordination/<task-slug>/scope.md` from `templates/scope.md`. Preserve operator original instruction, agent-interpreted scope, proposed narrowed scope, explicit deferrals/non-goals, approval evidence, constraints, and dated changes.
+Preserve the operator original instruction, agent-interpreted scope,
+proposed narrowed scope, explicit deferrals/non-goals, approval evidence, and Scope
+fidelity verdict in the plan/micro-intent. Use a separate ledger only for
+requested, long-running, resumable, multi-owner, or handoff work.
 
-## Completion Rule
-
-Do not call `update_goal(status="complete")` until `$uberaccept` says done, failure intake is filed, every touched repo is committed/reverted/approved-dirty, and final handoff includes git status, Skills invoked summary, receipt path, and unresolved gaps.
+Do not call `update_goal(status="complete")` until `$uberaccept` returns
+`accepted`, each touched repo is committed/reverted/approved-dirty, and the
+handoff reports git state and gaps. Other states remain non-complete. File
+failure intake only when the terminal state requires it.
 
 ## Optional Claude adversary
 
-Use only on explicit Claude review or cross-model review. Do not invoke Claude or alternate reviewer from task similarity. Contract: references/claude-adversary.md (`../references/claude-adversary.md`; subprocess reference-following proven — `coordination/process-rearchitecture-202607/wave2-v3-probe.md`).
+Use only for explicit Claude review or cross-model review. Do not invoke Claude or alternate reviewer from task similarity. Contract (subprocess reference-following proven):
+`../references/claude-adversary.md`.
 
-For `ubergoal`, ask exactly:
-
-1. **Load-bearing goal?** Is this goal actually load-bearing, or a routing artifact?
-2. **Skip test.** What is lost if we skip the goal wrapper and execute directly?
-3. **Testable decomposition.** Does this decompose into three or fewer testable sub-outcomes?
-
-## Helpful Resources
-
-- `templates/uber-run-receipt.md`
-- `templates/scope.md`
-- `references/goal-objective.md`
-- `references/refactor-campaign-profile.md`, `references/campaign-profile.md`
-- `../references/operational-states.md`, `../references/loop-engineering.md`, `../references/claude-adversary.md`
+Ask: **Load-bearing goal?** **Skip test.** **Testable decomposition.**

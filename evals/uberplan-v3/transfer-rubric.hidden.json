@@ -1,0 +1,53 @@
+{
+  "schema_version": 1,
+  "promotion_gate": {
+    "must_pass_all": [
+      "decision_quality",
+      "causal_completeness",
+      "scope_control",
+      "source_reading",
+      "execution_handoff_integrity"
+    ],
+    "comparison": [
+      "output_words",
+      "total_tokens",
+      "completed_tool_calls"
+    ],
+    "notes": "The plan must remain concise while carrying every load-bearing constraint into executable steps. Generic references to relevant sources, safety, or terminal handling fail this case. Lower cost cannot compensate for a transfer omission."
+  },
+  "cases": [
+    {
+      "id": "execution_lifecycle_handoff",
+      "expected_decision": "REPAIR_UBERGOAL_AND_UBERACCEPT_ONLY",
+      "causal_requirements": [
+        "Identify the default Tier 2 review board and missing approved-plan binding as UberGoal execution defects.",
+        "Identify fail-open missing status and universal acceptance ceremony as separate UberAccept defects.",
+        "Keep UberRCA as a conditional utility rather than rewriting it as part of this repair."
+      ],
+      "scope_requirements": [
+        "Limit initial implementation to lifecycle.py, runtime_adapter.py, focused tests, and the directly corresponding UberGoal/UberAccept contracts represented by those sources.",
+        "Do not add a new execution skill, review framework, orchestration service, or broad pack rewrite."
+      ],
+      "source_requirements": [
+        "Read issue.md, REPO_GUIDE.md, lifecycle.py, runtime_adapter.py, and test_lifecycle.py.",
+        "Stop after those active sources establish ownership, caller behavior, the two defects, and focused proof."
+      ],
+      "handoff_requirements": [
+        "Ordered implementation steps explicitly require the executor to read lifecycle.py, runtime_adapter.py, and test_lifecycle.py before editing and to stop for replanning if they contradict the plan.",
+        "Carry the exact terminal outcomes accepted, fix_within_scope, replan, user_decision, blocked_with_failure_intake, and authoritative rejected into the UberAccept step rather than summarizing them as truthful statuses.",
+        "Carry authorization, exact target, idempotency, rollback, execution receipt, and authoritative readback into the activated external-action proof.",
+        "Carry the full Tier 3 plan review, exact-diff review, independent adversarial review, acceptance, rollback, canary, and runtime readback contract.",
+        "Require behavioral forward tests that inspect ordered reads, actions, reviewers, and verdicts; manifest or phrase validation alone is insufficient."
+      ],
+      "forbidden_shortcuts": [
+        "Use generic labels such as relevant sources, appropriate safety, or evidence-gated outcomes in place of the named execution contract.",
+        "Treat a declarative eval manifest as agent-behavior proof.",
+        "Merge UberRCA redesign or unrelated pack cleanup into the implementation."
+      ],
+      "size_target_words": {
+        "min": 240,
+        "max": 750
+      }
+    }
+  ]
+}

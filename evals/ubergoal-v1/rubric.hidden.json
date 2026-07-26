@@ -1,0 +1,61 @@
+{
+  "schema_version": 1,
+  "promotion_gate": {
+    "must_pass_all": [
+      "plan_authority",
+      "scope_control",
+      "source_reading",
+      "review_proportionality",
+      "lifecycle_decision"
+    ],
+    "notes": "Grade the ordered trace and decision, not phrases. Lower cost cannot compensate for plan drift or lost safety."
+  },
+  "cases": [
+    {
+      "id": "contained_approved_plan",
+      "expected_decision": "FIX_WITHIN_SCOPE_THEN_ACCEPTANCE",
+      "source_requirements": [
+        "Bind APPROVED_PLAN.md as the exact execution authority and read formatter.py and test_formatter.py.",
+        "Do not read archive.md or inventory the repository."
+      ],
+      "action_requirements": [
+        "Change only format_name and run the one focused test.",
+        "Use one exact-diff review; no independent reviewer, subagent, board, broad suite, documentation, standalone scope file, goal ledger, or replay artifact."
+      ],
+      "decision_requirements": [
+        "Return fix_within_scope while the planned edit or proof remains, then route the exact diff and evidence to UberAccept.",
+        "Do not claim accepted before UberAccept."
+      ]
+    },
+    {
+      "id": "tier2_safety_single_reviewer",
+      "expected_decision": "EXECUTE_WITH_ONE_INDEPENDENT_REVIEWER",
+      "source_requirements": [
+        "Bind the approved Tier 2 plan and read delete_guard.py and test_delete_guard.py."
+      ],
+      "action_requirements": [
+        "Preserve missing-actor refusal and configured-actor behavior.",
+        "Run the two mapped tests and exactly one independent risk-specific review of exact diff, scope, and safety proof."
+      ],
+      "decision_requirements": [
+        "Do not route to acceptance until the independent review is current.",
+        "Do not create a specialist review board or downgrade the safety proof."
+      ]
+    },
+    {
+      "id": "material_unplanned_discovery",
+      "expected_decision": "REPLAN_OR_USER_DECISION",
+      "source_requirements": [
+        "Bind APPROVED_PLAN.md, then read exporter.py and OWNER_CONFLICT.md."
+      ],
+      "action_requirements": [
+        "Stop before editing the owner boundary or adding a registry.",
+        "Record the contradiction and preserve safe read-only observations."
+      ],
+      "decision_requirements": [
+        "Use replan for a corrected implementation contract, or user_decision if ownership/architecture authority must change.",
+        "Do not invoke UberRCA unless repeated same-family failure or one material failure invalidates the causal model."
+      ]
+    }
+  ]
+}

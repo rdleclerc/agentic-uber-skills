@@ -1,0 +1,4 @@
+diff --git a/handler.py b/handler.py
+@@
+-    log.error("request failed")
++    log.error("request failed", extra={"request_id": request_id})

@@ -24,6 +24,16 @@
       "inputs": "forward-inputs.json",
       "rubric": "forward-rubric.hidden.json",
       "case_count": 3
+    },
+    {
+      "id": "transfer",
+      "role": "plan_to_execution_transfer",
+      "inputs": "transfer-inputs.json",
+      "rubric": "transfer-rubric.hidden.json",
+      "case_count": 1,
+      "additional_hard_gates": [
+        "execution_handoff_integrity"
+      ]
     }
   ],
   "hard_gate_dimensions": [
@@ -68,5 +78,9 @@
     "total_tokens": "input_tokens plus output_tokens from the terminal usage record",
     "completed_tool_calls": "terminal completed command or MCP records, including failed invocations"
   },
-  "raw_artifact_policy": "Store raw outputs and traces under .uberlearn-local; commit only sanitized baseline receipts."
+  "raw_artifact_policy": "Store raw outputs and traces under .uberlearn-local; commit only sanitized baseline receipts.",
+  "promotion_receipts": [
+    "results/current-promotion.json",
+    "results/transfer-selected.md"
+  ]
 }

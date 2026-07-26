@@ -60,10 +60,12 @@ class AcceptanceValidatorTests(unittest.TestCase):
         self.assertEqual(result.returncode, 0, result.stderr + result.stdout)
         self.assertIn("warning: failure_case_id has no case file", result.stdout)
 
-    def test_rejected_without_intake_fails(self) -> None:
-        result = run_cmd(str(ACCEPT), str(FIX / "invalid" / "rejected_without_intake.md"))
-        self.assertNotEqual(result.returncode, 0, "unexpected pass\n" + result.stdout)
-        self.assertIn("failure intake requires exactly one", result.stderr)
+    def test_rejected_without_intake_passes(self) -> None:
+        self.assertPasses(str(ACCEPT), str(FIX / "valid" / "rejected_without_intake.md"))
+
+    def test_fix_within_scope_and_user_decision_pass(self) -> None:
+        self.assertPasses(str(ACCEPT), str(FIX / "valid" / "fix_within_scope.md"))
+        self.assertPasses(str(ACCEPT), str(FIX / "valid" / "user_decision.md"))
 
     def test_accepted_with_unresolved_blockers_fails(self) -> None:
         result = run_cmd(str(ACCEPT), str(FIX / "invalid" / "accepted_with_unresolved_blockers.md"))
@@ -82,7 +84,9 @@ class AcceptanceValidatorTests(unittest.TestCase):
             self.assertIn("scope fidelity verdict", result.stderr)
 
     def test_blank_acceptance_fails(self) -> None:
-        self.assertFails(str(ACCEPT), str(FIX / "invalid" / "blank_acceptance.md"), "--agent-behavior")
+        result = run_cmd(str(ACCEPT), str(FIX / "invalid" / "blank_acceptance.md"), "--agent-behavior")
+        self.assertNotEqual(result.returncode, 0, "unexpected pass\n" + result.stdout)
+        self.assertIn("missing acceptance_status", result.stderr)
 
     def test_decorated_zero_score_fails(self) -> None:
         self.assertFails(str(ACCEPT), str(FIX / "invalid" / "decorated_zero_acceptance.md"), "--agent-behavior")

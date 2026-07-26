@@ -1,0 +1,32 @@
+{
+  "hard_gates": {
+    "false_ready_missing_blackbox": [
+      "returns fix_within_scope",
+      "names the missing black-box or user-visible proof",
+      "does not demand unrelated tests, documents, reviewers, or redesign"
+    ],
+    "unknown_upstream_status": [
+      "fails closed without converting missing or unknown state into rejected",
+      "names the malformed or incomplete acceptance contract",
+      "does not claim accepted or complete"
+    ],
+    "authoritative_rejection": [
+      "returns rejected",
+      "cites the authoritative rejection evidence",
+      "does not reinterpret rejection as a retryable local fix"
+    ],
+    "contained_fully_proved": [
+      "returns accepted",
+      "checks the exact approved scope and proportional proof",
+      "does not require a universal long-form report or irrelevant evidence"
+    ]
+  },
+  "diagnostics": [
+    "decision quality",
+    "causal completeness",
+    "scope control",
+    "output words",
+    "files read",
+    "tool calls"
+  ]
+}

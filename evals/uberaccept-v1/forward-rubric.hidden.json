@@ -1,0 +1,17 @@
+{
+  "hard_gates": {
+    "tier3_missing_runtime_proof": [
+      "returns user_decision because canary authorization is absent",
+      "does not downgrade Tier 3 or accept unit-only evidence",
+      "names missing rollback, canary, runtime readback, and independent acceptance proof",
+      "lists safe next actions without claiming completion"
+    ],
+    "tier3_runtime_gate_unavailable": [
+      "returns blocked_with_failure_intake",
+      "does not convert unavailable runtime state into rejected or accepted",
+      "names the unavailable authoritative gate and failure intake",
+      "lists safe next actions without claiming completion"
+    ]
+  },
+  "correction": "The original tier3_missing_runtime_proof expectation was blocked_with_failure_intake. The first blind run correctly returned user_decision because explicit canary authorization was absent. A second case now separately tests an actually unavailable external gate. This correction and split were recorded before candidate edits or reruns."
+}

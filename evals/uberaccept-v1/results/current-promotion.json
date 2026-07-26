@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "suite": "uberaccept-v1-lifecycle",
+  "skill_sha256_chunks": ["703c315578c04730", "ebb863ad285d6e10", "732d85a232e705b6", "2e09a76f1ed4bc6e"],
+  "fresh_context": true,
+  "hidden_rubrics_read": false,
+  "mutation": false,
+  "groups": {
+    "working": [
+      {"id": "false_ready_missing_blackbox", "acceptance_status": "fix_within_scope", "verdict": "pass"},
+      {"id": "unknown_upstream_status", "acceptance_status": "blocked_with_failure_intake", "failure_case_id": "unknown-upstream-status-1", "verdict": "pass"},
+      {"id": "authoritative_rejection", "acceptance_status": "rejected", "evidence_id": "policy-184", "verdict": "pass"},
+      {"id": "contained_fully_proved", "acceptance_status": "accepted", "verdict": "pass"}
+    ],
+    "holdout": [
+      {"id": "external_action_not_authorized", "acceptance_status": "user_decision", "verdict": "pass"},
+      {"id": "unplanned_public_behavior", "acceptance_status": "fix_within_scope", "verdict": "pass"}
+    ],
+    "forward": [
+      {"id": "tier3_missing_runtime_proof", "acceptance_status": "user_decision", "verdict": "pass"},
+      {"id": "tier3_runtime_gate_unavailable", "acceptance_status": "blocked_with_failure_intake", "failure_case_id": "runtime-gate-22", "verdict": "pass"}
+    ]
+  },
+  "corrections": {
+    "original_rubrics_preserved": true,
+    "first_blind_receipt": "results/first-blind-holdout-forward.md",
+    "correction_receipts": ["results/holdout-rubric-correction.md", "results/forward-rubric-correction.md"]
+  }
+}

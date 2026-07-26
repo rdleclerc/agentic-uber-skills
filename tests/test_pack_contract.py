@@ -653,7 +653,7 @@ blocking_wave = 1
         goal = (ROOT / "ubergoal" / "SKILL.md").read_text()
         operational = (ROOT / "references" / "operational-states.md").read_text()
         for phrase in [
-            "bounded specialist review-board agents/lenses",
+            "one independent risk-specific lane",
             "references/operational-states.md",
         ]:
             self.assertIn(phrase, goal)
@@ -811,7 +811,7 @@ blocking_wave = 1
 
         self.assertIn("platform goal primitive", body)
         self.assertIn("create or bind", body)
-        self.assertIn("create or bind a Codex/platform goal", meta)
+        self.assertIn("create or bind a platform goal", meta)
 
         obsolete_phrases = [
             "Do not create a platform goal merely because this skill is active",
@@ -822,15 +822,15 @@ blocking_wave = 1
         for phrase in obsolete_phrases:
             self.assertNotIn(phrase, combined)
 
-    def test_ubergoal_tier2_requires_specialist_review_board(self) -> None:
+    def test_ubergoal_scales_review_without_default_board(self) -> None:
         body = (ROOT / "ubergoal" / "SKILL.md").read_text()
         meta = (ROOT / "ubergoal" / "agents" / "openai.yaml").read_text()
         evals = (ROOT / "ubergoal" / "evals" / "golden_skill_invocations.json").read_text()
 
-        self.assertIn("bounded review-board coordinator", body)
-        self.assertIn("Tier 2+ uses bounded specialist review-board agents/lenses", body)
-        self.assertIn("specialist review-board agents", meta)
-        self.assertIn("run specialist review-board agents or lenses for Tier 2+ work", evals)
+        self.assertIn("one independent risk-specific lane", body)
+        self.assertIn("one independent risk-specific lane, not a board", meta)
+        self.assertIn("one independent risk-specific lane", evals)
+        self.assertNotIn("run specialist review-board agents or lenses for Tier 2+ work", evals)
         self.assertIn("ubercampaign", body)
 
     def test_task_understanding_review_is_first_class(self) -> None:

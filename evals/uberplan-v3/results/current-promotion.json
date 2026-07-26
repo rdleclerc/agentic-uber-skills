@@ -1,0 +1,44 @@
+{
+  "schema_version": 1,
+  "suite_id": "uberplan-behavioral-conformance-v1",
+  "skill_sha256_chunks": ["d03b6a48f0a735d8", "b18a21986990a7f9", "38c0e040cbcc7a8c", "dd57fd97fedaf248"],
+  "fresh_context": true,
+  "hidden_rubrics_read": false,
+  "mutation": false,
+  "raw_trace_receipt": {
+    "storage": ".uberlearn-local/uberplan-v3/2026-07-26/manifest.md",
+    "committed": false,
+    "portable_reproduction": "rerun_committed_suite",
+    "coverage": ["working", "holdout", "forward", "transfer"],
+    "artifact_sha256_chunks": {
+      "working": ["6e2e37fd833b60e6", "5eefdedca14ae04c", "2c2351241f355a98", "ede81323ef95c862"],
+      "holdout_forward": ["3272ba71dc580e37", "9d7392f1aae0e2d6", "ca5e400bdf92eaca", "039b8a203487fc11"],
+      "transfer": ["1be8d6d000155b91", "d07bd65aafb99212", "58952d960adfa7b8", "935f2cefb00d1ef6"]
+    }
+  },
+  "total_completed_tool_calls": 14,
+  "groups": {
+    "working": [
+      {"id": "scheduled_email_retry_existing_owner", "verdict": "pass", "output_words_estimate": 130, "causal_or_protection_completeness": "pass", "scope_control": "pass"},
+      {"id": "small_destructive_config_guard", "verdict": "pass", "output_words_estimate": 150, "causal_or_protection_completeness": "pass", "scope_control": "pass"},
+      {"id": "cross_boundary_worker_failure", "verdict": "pass", "output_words_estimate": 550, "causal_or_protection_completeness": "pass", "scope_control": "pass"},
+      {"id": "missing_owner_evidence", "verdict": "pass", "output_words_estimate": 100, "causal_or_protection_completeness": "pass", "scope_control": "pass"}
+    ],
+    "holdout": [
+      {"id": "tenant_cache_isolation", "verdict": "pass", "output_words_estimate": 150, "causal_or_protection_completeness": "pass", "scope_control": "pass"},
+      {"id": "provider_settlement_owner_missing", "verdict": "pass", "output_words_estimate": 100, "causal_or_protection_completeness": "pass", "scope_control": "pass"}
+    ],
+    "forward": [
+      {"id": "agentic_semantic_router", "verdict": "pass", "output_words_estimate": 360, "causal_or_protection_completeness": "pass", "scope_control": "pass"},
+      {"id": "new_unattended_reconciliation_loop", "verdict": "pass", "output_words_estimate": 550, "causal_or_protection_completeness": "pass", "scope_control": "pass"},
+      {"id": "external_release_write", "verdict": "pass", "output_words_estimate": 420, "causal_or_protection_completeness": "pass", "scope_control": "pass"}
+    ],
+    "transfer": [
+      {"id": "execution_lifecycle_handoff", "verdict": "pass", "output_words_estimate": 720, "completed_tool_calls": 3, "total_tokens": "UNKNOWN", "causal_or_protection_completeness": "pass", "scope_control": "pass"}
+    ]
+  },
+  "notes": [
+    "The two missing-owner cases pass because they stop at the authoritative evidence boundary.",
+    "Transfer output exceeded the preferred diagnostic size but introduced no unrelated implementation scope."
+  ]
+}

@@ -1,4 +1,5 @@
 import json
+import hashlib
 import unittest
 from pathlib import Path
 
@@ -10,6 +11,8 @@ HOLDOUT_INPUTS = ROOT / "evals" / "uberplan-v3" / "holdout-inputs.json"
 HOLDOUT_RUBRIC = ROOT / "evals" / "uberplan-v3" / "holdout-rubric.hidden.json"
 FORWARD_INPUTS = ROOT / "evals" / "uberplan-v3" / "forward-inputs.json"
 FORWARD_RUBRIC = ROOT / "evals" / "uberplan-v3" / "forward-rubric.hidden.json"
+TRANSFER_INPUTS = ROOT / "evals" / "uberplan-v3" / "transfer-inputs.json"
+TRANSFER_RUBRIC = ROOT / "evals" / "uberplan-v3" / "transfer-rubric.hidden.json"
 SUITE_MANIFEST = ROOT / "evals" / "uberplan-v3" / "suite.json"
 BASELINES = ROOT / "evals" / "uberplan-v3" / "baselines"
 
@@ -18,6 +21,7 @@ GRADER_ONLY_KEYS = {
     "expected_decision",
     "causal_requirements",
     "protection_requirements",
+    "handoff_requirements",
     "scope_requirements",
     "source_requirements",
     "forbidden_shortcuts",
@@ -40,7 +44,7 @@ def all_keys(value):
 
 class UberplanV3EvalBoundaryTest(unittest.TestCase):
     def test_agent_inputs_do_not_contain_grader_fields(self):
-        for path in (INPUTS, HOLDOUT_INPUTS, FORWARD_INPUTS):
+        for path in (INPUTS, HOLDOUT_INPUTS, FORWARD_INPUTS, TRANSFER_INPUTS):
             inputs = json.loads(path.read_text())
             leaked = GRADER_ONLY_KEYS.intersection(all_keys(inputs))
             self.assertEqual(set(), leaked, path.name)
@@ -55,7 +59,7 @@ class UberplanV3EvalBoundaryTest(unittest.TestCase):
         self.assertEqual(len(input_ids), len(set(input_ids)))
 
     def test_agent_workspaces_exist_and_hide_grader_data(self):
-        for input_path in (INPUTS, HOLDOUT_INPUTS, FORWARD_INPUTS):
+        for input_path in (INPUTS, HOLDOUT_INPUTS, FORWARD_INPUTS, TRANSFER_INPUTS):
             inputs = json.loads(input_path.read_text())
             for case in inputs["cases"]:
                 workspace = ROOT / case["workspace"]
@@ -86,6 +90,22 @@ class UberplanV3EvalBoundaryTest(unittest.TestCase):
         self.assertEqual(input_ids, rubric_ids)
         self.assertEqual(len(input_ids), len(set(input_ids)))
 
+    def test_transfer_case_and_hidden_rubric_match(self):
+        inputs = json.loads(TRANSFER_INPUTS.read_text())
+        rubric = json.loads(TRANSFER_RUBRIC.read_text())
+        manifest = json.loads(SUITE_MANIFEST.read_text())
+        input_ids = [case["id"] for case in inputs["cases"]]
+        rubric_ids = [case["id"] for case in rubric["cases"]]
+        self.assertEqual(1, len(input_ids))
+        self.assertEqual(input_ids, rubric_ids)
+        transfer_group = next(
+            group for group in manifest["groups"] if group["id"] == "transfer"
+        )
+        self.assertEqual(
+            ["execution_handoff_integrity"],
+            transfer_group["additional_hard_gates"],
+        )
+
     def test_suite_manifest_resolves_every_group(self):
         manifest = json.loads(SUITE_MANIFEST.read_text())
         self.assertEqual("uberplan-behavioral-conformance-v1", manifest["suite_id"])
@@ -93,6 +113,7 @@ class UberplanV3EvalBoundaryTest(unittest.TestCase):
             "working": (INPUTS, RUBRIC),
             "holdout": (HOLDOUT_INPUTS, HOLDOUT_RUBRIC),
             "forward": (FORWARD_INPUTS, FORWARD_RUBRIC),
+            "transfer": (TRANSFER_INPUTS, TRANSFER_RUBRIC),
         }
         seen_case_ids = set()
         for group in manifest["groups"]:
@@ -117,9 +138,11 @@ class UberplanV3EvalBoundaryTest(unittest.TestCase):
         self.assertTrue(any("rubric" in item for item in subject_bundle["exclude"]))
         self.assertIn("uberplan/evals/**", subject_bundle["exclude"])
 
-    def test_sanitized_baselines_match_suite(self):
+    def test_sanitized_baselines_reference_valid_suite_groups(self):
         baseline_paths = sorted(BASELINES.glob("*.json"))
         self.assertTrue(baseline_paths)
+        manifest = json.loads(SUITE_MANIFEST.read_text())
+        groups_by_id = {group["id"]: group for group in manifest["groups"]}
         for path in baseline_paths:
             baseline = json.loads(path.read_text())
             self.assertEqual(
@@ -129,10 +152,18 @@ class UberplanV3EvalBoundaryTest(unittest.TestCase):
             for chunks in baseline["skill_revisions"].values():
                 self.assertEqual(4, len(chunks))
                 self.assertTrue(all(len(chunk) == 16 for chunk in chunks))
-            manifest = json.loads(SUITE_MANIFEST.read_text())
             metric_names = set(manifest["diagnostic_metrics"])
-            for group in manifest["groups"]:
-                result = baseline["results"][group["id"]]
+            self.assertTrue(baseline["results"])
+            self.assertEqual(
+                set(baseline["coverage_scope"]),
+                set(baseline["results"]),
+                path.name,
+            )
+            self.assertLessEqual(
+                set(baseline["coverage_scope"]), set(groups_by_id), path.name
+            )
+            for group_id, result in baseline["results"].items():
+                group = groups_by_id[group_id]
                 inputs = json.loads(
                     (SUITE_MANIFEST.parent / group["inputs"]).read_text()
                 )
@@ -145,7 +176,7 @@ class UberplanV3EvalBoundaryTest(unittest.TestCase):
                     self.assertEqual(
                         metric_names,
                         set(case["candidate"]),
-                        (path.name, group["id"], case["id"]),
+                        (path.name, group_id, case["id"]),
                     )
                     self.assertTrue(
                         all(value > 0 for value in case["candidate"].values())
@@ -154,6 +185,51 @@ class UberplanV3EvalBoundaryTest(unittest.TestCase):
                 "APPROVE_CANDIDATE",
                 baseline["independent_review"]["verdict"],
                 path.name,
+            )
+
+    def test_current_promotion_receipt_covers_every_group(self):
+        manifest = json.loads(SUITE_MANIFEST.read_text())
+        self.assertIn(
+            "results/current-promotion.json", manifest["promotion_receipts"]
+        )
+        receipt = json.loads(
+            (SUITE_MANIFEST.parent / "results" / "current-promotion.json").read_text()
+        )
+        self.assertEqual(
+            hashlib.sha256((ROOT / "uberplan" / "SKILL.md").read_bytes()).hexdigest(),
+            "".join(receipt["skill_sha256_chunks"]),
+        )
+        raw = receipt["raw_trace_receipt"]
+        self.assertFalse(raw["committed"])
+        self.assertEqual("rerun_committed_suite", raw["portable_reproduction"])
+        self.assertEqual(
+            ["working", "holdout", "forward", "transfer"], raw["coverage"]
+        )
+        self.assertEqual(
+            {"working", "holdout_forward", "transfer"},
+            set(raw["artifact_sha256_chunks"]),
+        )
+        self.assertTrue(
+            all(
+                len(chunks) == 4 and all(len(chunk) == 16 for chunk in chunks)
+                for chunks in raw["artifact_sha256_chunks"].values()
+            )
+        )
+        groups = {group["id"]: group for group in manifest["groups"]}
+        self.assertEqual(set(groups), set(receipt["groups"]))
+        for group_id, group in groups.items():
+            inputs = json.loads(
+                (SUITE_MANIFEST.parent / group["inputs"]).read_text()
+            )
+            self.assertEqual(
+                [case["id"] for case in inputs["cases"]],
+                [case["id"] for case in receipt["groups"][group_id]],
+            )
+            self.assertTrue(
+                all(
+                    case["verdict"] == "pass"
+                    for case in receipt["groups"][group_id]
+                )
             )
 
 

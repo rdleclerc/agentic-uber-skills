@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "cases": [
+    {
+      "id": "execution_lifecycle_handoff",
+      "skills": [
+        "uberplan"
+      ],
+      "workspace": "evals/uberplan-v3/fixtures/execution-lifecycle-handoff",
+      "user_prompt": "Plan the execution-lifecycle repair in issue.md. The plan will be handed to a separate coding agent, so keep it lean while preserving every implementation-critical source, decision boundary, and safety contract needed for a one-shot implementation."
+    }
+  ]
+}

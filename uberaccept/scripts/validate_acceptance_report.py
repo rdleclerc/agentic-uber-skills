@@ -71,7 +71,14 @@ PROOF_ONLY_TOKENS = [
     "plan-only",
     "eval fixture",
 ]
-ACCEPTANCE_STATUSES = {"accepted", "rejected", "blocked_with_failure_intake"}
+ACCEPTANCE_STATUSES = {
+    "accepted",
+    "fix_within_scope",
+    "replan",
+    "user_decision",
+    "blocked_with_failure_intake",
+    "rejected",
+}
 INTAKE_FIELDS = ["failure_case_id", "case_updated", "not_applicable_with_reason"]
 INTAKE_PLACEHOLDERS = {"", "todo", "tbd", "n/a", "none", "<id>", "<text>"}
 HIGH_STATE_PROOF_TERMS = {
@@ -164,7 +171,8 @@ def red_receipt_is_usable(value: str) -> bool:
 def acceptance_status(text: str, errors: list[str]) -> str:
     value = optional_field(text, "acceptance_status")
     if not value:
-        return "accepted"
+        errors.append("missing acceptance_status; missing or unknown state is not accepted or rejected")
+        return "unknown"
     normalized = normalize(value)
     if normalized not in ACCEPTANCE_STATUSES:
         errors.append(f"invalid acceptance_status: {value}")
@@ -178,25 +186,19 @@ def validate_failure_intake(text: str, status: str, errors: list[str]) -> tuple[
         value = optional_field(text, field)
         if value and normalize(value) not in INTAKE_PLACEHOLDERS:
             present.append((field, value))
-    allowed = INTAKE_FIELDS
     if status == "blocked_with_failure_intake":
         allowed = ["failure_case_id", "case_updated"]
         disallowed = [field for field, _value in present if field not in allowed]
         if disallowed:
             errors.append("blocked_with_failure_intake requires failure_case_id or case_updated, not not_applicable_with_reason")
-    if len(present) != 1:
-        grammar = "failure_case_id | case_updated"
-        if status != "blocked_with_failure_intake":
-            grammar = "failure_case_id | case_updated | not_applicable_with_reason"
-        errors.append(
-            "failure intake requires exactly one non-empty field: "
-            f"{grammar}"
-        )
+        if len(present) != 1:
+            errors.append("failure intake requires exactly one non-empty field: failure_case_id | case_updated")
+            return None
+        return present[0]
+    if len(present) > 1:
+        errors.append("failure intake fields are optional for non-blocked states but must not conflict")
         return None
-    field, value = present[0]
-    if field not in allowed:
-        return None
-    return field, value
+    return present[0] if present else None
 
 
 def warn_missing_failure_case(referenced: tuple[str, str] | None, cases_dir: Path | None, warnings: list[str]) -> None:
@@ -235,7 +237,7 @@ def validate_interface_shape_receipt(text: str, errors: list[str]) -> None:
 
 
 def validate_terminal_failure_report(found: dict[str, str], full_text: str, status: str, errors: list[str]) -> None:
-    if status not in {"rejected", "blocked_with_failure_intake"}:
+    if status not in {"fix_within_scope", "replan", "user_decision", "rejected", "blocked_with_failure_intake"}:
         return
     status_line = optional_field(full_text, "acceptance_status")
     if not status_line:
@@ -252,7 +254,7 @@ def validate_terminal_failure_report(found: dict[str, str], full_text: str, stat
         errors.append("terminal failure report needs a truthful blocker/finding section")
         return
     lower = normalize(combined)
-    if not any(term in lower for term in ["blocker", "finding", "reject", "rejected", "blocked", "fail", "missing"]):
+    if not any(term in lower for term in ["blocker", "finding", "reject", "rejected", "blocked", "fail", "missing", "fix", "replan", "approval", "decision"]):
         errors.append("terminal failure report blocker/finding section must name the blocker or finding")
     if status == "rejected" and "no material blockers" in lower:
         errors.append("rejected acceptance report cannot claim no material blockers")
@@ -877,7 +879,7 @@ def main() -> int:
     warn_missing_failure_case(referenced_failure, args.cases_dir, warnings)
     validate_defect_fix_receipt(text, errors)
     validate_interface_shape_receipt(text, errors)
-    if status in {"rejected", "blocked_with_failure_intake"}:
+    if status in {"fix_within_scope", "replan", "user_decision", "rejected", "blocked_with_failure_intake"}:
         validate_terminal_failure_report(found, text, status, errors)
         if errors:
             print("FAIL: acceptance report validation failed", file=sys.stderr)

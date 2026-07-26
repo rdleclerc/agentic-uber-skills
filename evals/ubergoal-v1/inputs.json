@@ -1,0 +1,23 @@
+{
+  "schema_version": 1,
+  "cases": [
+    {
+      "id": "contained_approved_plan",
+      "skills": ["ubergoal"],
+      "workspace": "evals/ubergoal-v1/fixtures/contained-approved-plan",
+      "user_prompt": "Use UberGoal to execute APPROVED_PLAN.md exactly. Keep reads, work, proof, review, and artifacts proportional to that approved plan, then state the next lifecycle decision."
+    },
+    {
+      "id": "tier2_safety_single_reviewer",
+      "skills": ["ubergoal"],
+      "workspace": "evals/ubergoal-v1/fixtures/tier2-safety-single-reviewer",
+      "user_prompt": "Use UberGoal to execute the approved Tier 2 safety plan. Preserve its trust-boundary proof and use the required independent review without creating a review board."
+    },
+    {
+      "id": "material_unplanned_discovery",
+      "skills": ["ubergoal"],
+      "workspace": "evals/ubergoal-v1/fixtures/material-unplanned-discovery",
+      "user_prompt": "Use UberGoal to execute APPROVED_PLAN.md. The repository contains a newly discovered ownership conflict; do not silently widen or rewrite the plan."
+    }
+  ]
+}

@@ -22,7 +22,18 @@ REQUIRED_FILES = [
 ]
 FORBIDDEN_SUFFIXES = {".pyc", ".pyo"}
 FORBIDDEN_DIRS = {"__pycache__", ".pytest_cache", ".mypy_cache"}
-REQUIRED_PHRASES = ["adversarial acceptance", "Agent Advocate", "benefit >> cost", "Architecture Steward", "uberskillevolver", "user expectation / surprise delta", "max_threads", "max_depth"]
+REQUIRED_PHRASES = [
+    "adversarial acceptance",
+    "spec fidelity",
+    "repo/architecture fitness",
+    "Risk-activated riders",
+    "false-green risk",
+    "fix_within_scope",
+    "user_decision",
+    "blocked_with_failure_intake",
+    "Missing or unknown status is not `rejected`",
+    "uberskillevolver",
+]
 
 
 def main() -> int:
@@ -46,8 +57,9 @@ def main() -> int:
         if not (root / match).exists():
             errors.append(f"SKILL.md references missing resource: {match}")
     meta = (root / "agents" / "openai.yaml").read_text() if (root / "agents" / "openai.yaml").exists() else ""
-    if "$uberaccept" not in meta or "benefit >> cost" not in meta:
-        errors.append("agents/openai.yaml default prompt must mention $uberaccept and benefit >> cost")
+    for phrase in ["$uberaccept", "typed acceptance_status", "missing or unknown state into rejected", "Scale proof with activated risk"]:
+        if phrase not in meta:
+            errors.append(f"agents/openai.yaml missing behavior contract: {phrase}")
     for path in root.rglob("*"):
         if any(part in FORBIDDEN_DIRS for part in path.parts):
             errors.append(f"forbidden cache path present: {path.relative_to(root)}")

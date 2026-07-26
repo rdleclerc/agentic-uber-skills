@@ -1,0 +1,22 @@
+[
+  {
+    "id": "false_ready_missing_blackbox",
+    "fixture": "fixtures/false-ready-missing-blackbox",
+    "prompt": "Use UberAccept to decide the terminal state from APPROVED_PLAN.md, CANDIDATE.diff, and EVIDENCE.md. Do not edit files or manufacture evidence."
+  },
+  {
+    "id": "unknown_upstream_status",
+    "fixture": "fixtures/unknown-upstream-status",
+    "prompt": "Use UberAccept to decide the terminal state from APPROVED_PLAN.md and EVIDENCE.md. Preserve missing or unknown upstream state honestly."
+  },
+  {
+    "id": "authoritative_rejection",
+    "fixture": "fixtures/authoritative-rejection",
+    "prompt": "Use UberAccept to decide the terminal state from APPROVED_PLAN.md and EVIDENCE.md. Preserve authoritative prior decisions."
+  },
+  {
+    "id": "contained_fully_proved",
+    "fixture": "fixtures/contained-fully-proved",
+    "prompt": "Use UberAccept to decide the terminal state from APPROVED_PLAN.md, CANDIDATE.diff, and EVIDENCE.md. Do not add irrelevant acceptance ceremony."
+  }
+]

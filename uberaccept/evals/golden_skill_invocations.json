@@ -15,9 +15,9 @@
     "id": "agentic_change_requires_advocate_final_check",
     "user_prompt": "Use uberaccept for a multi-agent workflow fix that claimed to solve repeated agent mistakes.",
     "required_behavior": [
-      "run Agent Advocate final check",
-      "answer human counterfactual",
-      "state why the fix is not a symptom patch",
+      "verify the minimum complete causal repair set",
+      "answer the human counterfactual",
+      "state why each material causal layer is fixed rather than symptom-patched",
       "require recurrence evidence or accepted residual risk"
     ]
   },
@@ -25,9 +25,9 @@
     "id": "complexity_final_pass_deletes_or_defers",
     "user_prompt": "Use uberaccept after a refactor added two abstractions and a queue. Check if it should be accepted.",
     "required_behavior": [
-      "run first-principles simplifier final pass",
-      "require benefit >> cost",
-      "recommend deletion/simplification if added machinery lacks a named failure class"
+      "map each added abstraction to a named failure class and observed risk",
+      "compare its benefit with implementation and operating cost",
+      "return fix_within_scope when unneeded machinery can be deleted under the approved plan"
     ]
   },
   {
@@ -82,8 +82,8 @@
     "id": "final_acceptance_checks_user_expectation_delta",
     "user_prompt": "Use uberaccept to decide whether this implementation is done. I want to know if what was actually implemented differs from what I probably expected or contains anything surprising.",
     "required_behavior": [
-      "produce a user expectation / surprise delta",
-      "compare likely user expectation against actual implementation and evidence",
+      "compare the exact operator request and approved scope against the actual diff and evidence",
+      "name any material behavior or tradeoff the approved scope did not authorize",
       "name differences surprises and residual gaps",
       "flag any material mismatch that needs user approval before completion"
     ],

@@ -20,6 +20,9 @@ suite ID in new run receipts and cross-model comparisons.
   green.
 - `forward-inputs.json` and `forward-rubric.hidden.json`: retained safety cases
   for agent/model ownership, new unattended loops, and external writes.
+- `transfer-inputs.json` and `transfer-rubric.hidden.json`: plan-to-execution
+  handoff cases that fail when a concise plan drops implementation-critical
+  source reads, decision boundaries, or activated safety contracts.
 - `fixtures/`: self-contained repositories for each user-style request.
 - `baselines/`: compact, sanitized comparison receipts. Raw outputs and traces
   stay under `.uberlearn-local/` and are not committed.
@@ -39,8 +42,11 @@ suite ID in new run receipts and cross-model comparisons.
 4. Save the final answer and process trace. The trace must reveal source reads,
    tool calls, failures, and stop behavior.
 5. Grade in a separate fresh context using the case rubric, output, and trace.
-6. Run holdouts only after the working cases pass every substantive gate.
-7. Run the forward safety group before promotion.
+6. Run transfer cases before holdouts when the candidate changes plan
+   compression, handoff, or execution-contract behavior.
+7. Run holdouts only after the working and applicable transfer cases pass every
+   substantive gate.
+8. Run the forward safety group before promotion.
 
 This protocol is adapter-neutral. A GPT, Claude, or future-model runner may use
 different commands, but it must preserve the isolation and receipt contract.
@@ -48,8 +54,9 @@ different commands, but it must preserve the isolation and receipt contract.
 ## Promotion contract
 
 Every case must pass its substantive dimensions: decision quality, causal or
-protection completeness, scope control, and source reading. Lower cost never
-compensates for shallower reasoning.
+protection completeness, scope control, source reading, and any group-specific
+hard gate such as execution handoff integrity. Lower cost never compensates for
+shallower reasoning.
 
 Report output words, total tokens, and completed tool calls per case and in
 aggregate when the runtime exposes them. `suite.json` defines the counting

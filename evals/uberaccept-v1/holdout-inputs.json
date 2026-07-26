@@ -1,0 +1,12 @@
+[
+  {
+    "id": "external_action_not_authorized",
+    "fixture": "fixtures/external-action-not-authorized",
+    "prompt": "Use UberAccept to decide the terminal state. Do not infer authorization."
+  },
+  {
+    "id": "unplanned_public_behavior",
+    "fixture": "fixtures/unplanned-public-behavior",
+    "prompt": "Use UberAccept to decide the terminal state. Distinguish a local repair from a material scope or authority decision."
+  }
+]

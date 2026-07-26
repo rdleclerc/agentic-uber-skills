@@ -1,167 +1,177 @@
 ---
 name: uberaccept
-description: Do not auto-trigger from task similarity. Use only when explicitly named by the user or routed by ubergoal. Performs adversarial final acceptance for substantial coding, refactoring, UI, prompt/skill/workflow, or agentic-system work before completion, merge, commit, push, or ship claims.
+description: Do not auto-trigger from task similarity. Use only when explicitly named by the user or routed by ubergoal. Performs proportional adversarial acceptance against the exact approved scope, candidate diff, and risk-mapped proof before completion or ship claims.
 ---
 
 # Uberaccept
 
 ## Core rule
 
-Try to prove the work is **not** ready. Accept only when material blockers are gone, evidence matches the risks, and added complexity still has benefit **clearly much greater than** total cost.
+Try to prove the candidate is not ready. Accept only the exact claim whose
+material requirements are proved. Expand proof with evidenced risk, not with a
+universal checklist. Unit green, polished prose, or a validator cannot stand in
+for required black-box, integration, runtime, or user-visible evidence.
 
-`uberaccept` owns final proof in the Uber skill family. It does not write the initial plan; use `uberplan` for planning and `uberskillevolver` for post-run learning.
+`uberaccept` owns the terminal acceptance decision. It does not plan or repair
+the work. Use `$uberplan` for changed implementation contracts, `$ubergoal` for
+bounded execution, and `$uberskillevolver` for post-run learning.
 
+## Authority and inputs
 
-## Architecture stepback acceptance blocker
+Read the operator request and exact approved plan or micro-intent, candidate
+diff/touched files, evidence receipts, and relevant repository contract. Record
+their path and revision or digest when available.
 
-If the completed work claims to fix a system-scale concurrency, queue/worker, gateway, orchestration, workflow durability, backpressure, repeated-timeout, or symptom-patching failure, final acceptance must look for an `$uberarchitect` Architecture Stepback Packet or equivalent. Soft-reject completion when the evidence only proves local timeout/context/config patches and never answers the system class, normal industry architecture, current mismatch, smallest transition path, and proof gate.
+Scope fidelity compares the operator original instruction, agent-interpreted scope, proposed narrowed scope, explicit deferrals/non-goals, and approval evidence. Unapproved narrowing or expansion blocks acceptance.
 
-## Basic Spine First acceptance blocker
+- The plan defines intended scope; the diff defines actual implementation;
+  evidence proves claims. None may silently redefine another.
+- Use `UNKNOWN` or `not provided` for an absent input. Never reconstruct missing
+  state from summaries, fixtures, source-adjacent data, or a green local test.
+- Preserve an authoritative upstream terminal decision and its evidence id.
+  Missing or unknown status is not `rejected`.
+- Material edits make earlier diff review stale; same-agent review can be recorded as a lens but must not count as independent evidence.
+- When independent review is required, record reviewer identity/model/runtime and `independent_review: true/false`.
 
-For product/rewrite/agentic-system work, check the `uberplan` Gall's Law / Basic Spine First gate and `../references/claude-adversary.md`; locally polished micro-feature success that did not advance the basic working spine is a soft rejection signal, and a complex top-down harness without planned spine proof is not acceptable unless the user scoped that artifact/non-readiness spike as final.
+## Decision contract
 
-## Red/green and black-box proof audit
+Return exactly one `acceptance_status`:
 
-For any plan, review, or acceptance claim, same-agent review can be recorded as a lens but must not count as independent evidence. Final acceptance must record reviewer identity/model/runtime, author identity/model/runtime, `independent_review: true/false`, round number, and whether material edits made earlier review stale.
+- `accepted` — every material requirement for the scoped claim is proved, or a
+  named residual gap has exact operator approval.
+- `fix_within_scope` — a bounded defect or missing proof is already authorized
+  by the approved plan and can be corrected without changing scope or authority.
+- `replan` — evidence changes the implementation contract, causal repair set,
+  architecture, or proof strategy without requiring a new product decision.
+- `user_decision` — proceeding requires approval for product scope, public
+  behavior, ownership, dependency, irreversible tradeoff, acceptance, or an
+  external action.
+- `blocked_with_failure_intake` — a required gate cannot currently run or an
+  external/environmental barrier prevents acceptance. Name safe next actions
+  and file or update the failure case.
+- `rejected` — preserve an authoritative terminal rejection, or reject a
+  candidate whose evidenced contradiction cannot honestly be represented by
+  one of the repair/replan/decision states above.
 
-For code, prompt, skill, workflow, UI, or agent-behavior changes, final acceptance must inspect a **red/green proof ledger**: baseline result before the change, expected red/failing fixture when applicable, first green proof, black-box or user-visible check, false-green risks, and skipped evidence layers. Unit tests or package validators alone do not prove operational readiness when the plan required integration, browser, eval, live-safe replay, or target-system evidence.
+Do not convert missing, malformed, or unknown status into `rejected`. Do not
+average a blocker away. Only `accepted` authorizes completion or ship language.
 
-If the ledger is missing, stale, or maps green checks to the wrong risk, score the relevant evidence layer 0/1 and do not recommend completion unless the user explicitly accepts the residual gap. Do not create a standalone `ubertesting` skill as a shortcut for this final audit; route recurring lessons to `uberskillevolver` and keep future `ubereval` extraction behind the roadmap promotion gate.
+## Acceptance kernel
 
-## Loop acceptance lens
-For recurring, scheduled, watch-and-fix, queue-driven, or unattended loops, read `../references/loop-engineering.md` and require per-iteration receipts, independent verification instead of maker-only self-review, correct-stop proof, durable replay, budget/time/retry kill-switches, idempotency, duplicate suppression, and human gates.
+1. Echo the exact claim, tier, approved scope, and explicit non-goals.
+2. Compare plan to diff on two axes: spec fidelity and repo/architecture fitness.
+   Either can block acceptance.
+3. Map each material requirement to exact diff and proof. Mark it `proved`,
+   `weak`, `missing`, or `contradicted`.
+4. Identify the concrete false-green risk for each activated risk: what could
+   still fail despite the evidence shown?
+5. Apply only the riders triggered by the plan, diff, claim, or repository
+   contract. Check repository-mandatory gates even when the plan omitted them.
+6. Return the typed decision, material blocker or residual, and smallest safe
+   next action. Never edit the implementation during acceptance.
 
-## Claim-language and operational outcome audit
+Require a meaningful red-before/green-after result when it is practical and
+diagnostic. Do not manufacture a red phase, broad suite, extra reviewer, or
+artifact merely to fill a field. Tests must map to a concrete failure mode.
 
-Final acceptance must prevent claim blur. Check every use of: `implemented`, `operational`, `live`, `adopted`, `tested`, `ready`, `wired`, `proof-only`, `blocked`, and `shadow-only`.
+### Acceptance-criteria verification
 
-If a report claims `implemented`, `operational`, `live`, or `adopted`, require evidence that the work reached the plan's Operational Outcome Contract: real/target-system wiring, appropriate tests/evals, and live or target-runtime proof unless the plan explicitly scoped a local artifact as the final outcome.
+Check every material criterion; block completion on any `fail`. A partial or
+residual result needs exact operator approval. Keep spec/intent fidelity
+separate from code and repository standards.
 
-Reject completion when the evidence is only a readiness gate, safe adoption spine, registry, plan, eval fixture, local safe proof, shadow-only proof, or shared parent proof spine unless the plan explicitly named that as the final outcome; inspect `../references/operational-states.md` for child terminal states, active/hard blockers, safe-work exhaustion review, parent completion rules, and runtime topology including `max_threads`/`max_depth`.
+## Risk-activated riders
 
-If `uberplan` used a Plan Tree Artifact Layout, final acceptance must inspect the root index, status ledger, child receipts, and final acceptance receipt; a single parent summary is not sufficient proof.
+Activate a rider only when its trigger is present; record trigger, required
+proof, observed proof, false-green risk, and verdict.
 
-For Tier 3 agentic/runtime/production-replacement expensive proofs, final acceptance must inspect the expensive-proof plan validator result, risk/failure inventory, observability/telemetry preflight, phase-boundary/contract-fuzz preflight, burn-in vs final-proof separation, stop/replan evidence, and child/status ledger. Reject flat-plan readiness unless the report names a recorded approval and validator-bypass reason.
+- **Black-box/UI/user-visible behavior:** exercise the actual boundary and, for
+  UI, rendered interaction and relevant accessibility behavior.
+- **Operational/live/adopted claim:** prove target wiring and authoritative
+  target-system or user-visible readback. A registry, scaffold, shadow result,
+  or local proof supports only that lower claim.
+- **External action/security/privacy:** require exact target, authorization,
+  boundary negatives, idempotency, rollback, execution receipt, and
+  authoritative readback. Planning never grants execution authority.
+- **Concurrency/retries/loops:** require race and duplicate-suppression proof,
+  durable replay, correct stop, budgets/kill switches, per-iteration receipts,
+  and independent verification as applicable; read
+  `../references/loop-engineering.md`.
+- **Agentic or multi-agent failure:** verify the minimum complete causal repair
+  set, upstream contract, human counterfactual, and behavior eval. Do not accept
+  one repaired layer when another material user-visible failure remains.
+- **System-scale architecture:** require a `$uberarchitect` Architecture Stepback Packet for
+  concurrency, queue/worker, gateway, orchestration, durability, backpressure,
+  repeated-timeout, or symptom-patching claims. Local timeout/config patches do
+  not prove the system class fixed.
+- **Product/rewrite/agentic-system spine:** locally polished micro-feature success that did not advance the basic working spine is a soft rejection signal. Reject a complex top-down harness unless the approved scope explicitly makes a non-readiness spike the final outcome.
+- **Tier 3/runtime/replacement:** retain the stated tier; require plan review,
+  exact-diff review, independent adversarial review, security negatives,
+  telemetry preflight, rollback rehearsal, authorized canary, authoritative
+  runtime readback, and final acceptance as activated by the plan.
+- **Multi-child or plan tree:** inspect authoritative child states and receipts.
+  Parent completion requires every required child operational,
+  re-scoped-with-approval, or hard-blocked after safe work is exhausted.
+- **Repository topology/dependencies:** run the relevant boundary checks and
+  distinguish unrelated known failures from candidate-caused failures.
 
-## Acceptance-criteria verification
+### Loop acceptance lens
 
-When a task used a micro-intent, work contract, PRD, ticket, or `uberplan` with acceptance criteria, final acceptance must verify each criterion explicitly:
+For an activated loop rider, use per-iteration receipts and independent
+verification rather than maker-only self-review. Require durable replay,
+correct-stop proof, idempotency, and budget/time/retry kill-switches.
 
-- list every acceptance criterion
-- mark `pass`, `fail`, or `partial`
-- cite file paths, commands, artifacts, or a clear not-applicable reason
-- block completion on any `fail`
-- allow `partial` only with named residual risk and explicit user-accepted scope or follow-up owner
+## Output
 
-This is not a replacement for the Operational Outcome Contract. Acceptance criteria prove the stated intent was checked; the Operational Outcome Contract proves the final state being claimed. For AI-generated code, also check whether spec/intent review caught design and scope issues before code, and whether code review still covered repo conventions, naming, module seams, integration details, and maintainability.
+Default to a compact decision receipt:
 
-For branches, PRs, or implemented work that originated from an issue, PRD, work contract, or explicit user request, keep two review axes separate:
+1. `acceptance_status`
+2. exact claim and inputs read
+3. material requirement-to-evidence findings
+4. activated riders and false-green risks
+5. blocker/residual and smallest safe next action
+6. scoped confidence and completion recommendation
 
-- **Spec fidelity** — did the diff implement what the originating spec, PRD, issue, or operator instruction asked for, and did it avoid unapproved scope creep?
-- **Repo standards** — did the diff follow documented project standards, naming, module seams, tests, and maintainability expectations?
+Produce a durable report only when requested or when Tier 3, multi-child,
+long-running, resumable, or handoff work needs it. In that case use
+`templates/final-acceptance.md`, complete the core and activated rider sections,
+mark inactive template sections with one concise not-applicable reason, and
+validate with `scripts/validate_acceptance_report.py`. Failure intake is
+mandatory only for `blocked_with_failure_intake`, using the grammar in
+`evals/failures/README.md`.
 
-Do not merge these into one generic review verdict. A change can satisfy the spec while violating standards, or follow standards while implementing the wrong behavior; either axis can block acceptance. If no spec source exists, state that explicitly and do not let standards-only review stand in for product correctness.
+Report `git status --short --branch` for each touched repository when accepting
+code work. A dirty state is acceptable only when it is exactly the reviewed
+candidate or the operator explicitly approved it.
 
-Final reports should include a compact requirement-to-evidence table. Valid statuses are `proved`, `weak`, `missing`, or `contradicted`. Treat `weak`, `missing`, and `contradicted` as explicit residual risk; completion is allowed only when the plan/user accepts that status or the row is fixed. Do not let one green command stand in for every requirement when it only proves a narrower layer.
+## Completion and learning
 
-## Scope fidelity verdict gate
+Call `update_goal(status="complete")` only after `accepted` and only when no
+required work remains. All other statuses remain non-complete.
 
-Before any `SHIP`, completion, ready, or goal-complete language, final acceptance must include `## Scope fidelity verdict`. It must quote/link `coordination/<task-slug>/scope.md`, check the operator original instruction, agent-interpreted scope, proposed narrowed scope, explicit deferrals/non-goals, and approval evidence, answer whether implemented scope satisfies original scope, and block unapproved narrowing.
-
-## Output contract
-
-Produce a final acceptance report that names every relevant layer explicitly:
-
-1. implementation summary and files changed
-2. rubric scores with evidence and residual gaps
-3. commands/artifacts proving unit, regression, integration, UI/browser, eval, security/privacy, concurrency/idempotency, architecture, repository-topology/dependency boundaries, dead-code, rollback, and observability layers as applicable
-4. Acceptance-criteria verification: criterion-by-criterion pass/fail/partial evidence
-5. Loop acceptance lens when recurring/watch-and-fix/scheduled/unattended work is claimed: per-iteration receipts, independent verification, correct-stop proof, durable state replay, no-progress/budget controls, idempotent side effects, and human gates
-6. Requirement-to-evidence ledger: each material requirement marked proved/weak/missing/contradicted with evidence
-7. Claim-state ledger: claim language, Operational Outcome Contract evidence, and child terminal states for multi-child goals
-8. Production implementation blocker gate: active blockers vs hard blockers, runnable safe next actions, safe-predecessor exhaustion, and parent completion rule
-9. Safe-work exhaustion adversarial review: blocked children inspected for plausible safe next actions before parent completion
-10. Tier 3 expensive-proof acceptance when the work involved burn-in, soak, canary expansion, replacement proof, or final proof
-11. planning-board reconciliation
-12. user expectation / surprise delta: what the user likely expected, what was actually implemented, what changed, what may surprise them, and whether any mismatch needs explicit approval
-13. scope fidelity verdict: quote/link `coordination/<task-slug>/scope.md`, compare original scope to implemented scope, cite approved narrowing, and block unapproved narrowing
-14. Agent Advocate final check for agentic work or agent failures
-15. Architecture Steward final check
-16. first-principles simplification and cost/complexity verdict, including any Basic Spine First veto
-17. adversarial acceptance check
-18. post-run learning decision for skill/workflow/agentic-system changes
-19. confidence verdict and completion recommendation
-
-'100% confident' means scoped confidence after actively trying to disprove the work and finding no material unresolved blocker.
-
-Use `templates/final-acceptance.md` and validate with `scripts/validate_acceptance_report.py` when producing durable artifacts.
-Acceptance reports must include the mandatory failure-intake field; use the grammar in `evals/failures/README.md`.
-`acceptance_status` values are `accepted`, `rejected`, and `blocked_with_failure_intake`; blocked reports must file or update a failure case with `failure_case_id:` or `case_updated:`.
-
-## Acceptance scoring
-
-Use 0–3 scores:
-
-- **0** = blocker
-- **1** = weak/unresolved
-- **2** = acceptable only with named residual risk or explicit not-applicable evidence
-- **3** = strong evidence
-
-Do not hide missing evidence behind generic “checks passed.” If a layer is not relevant, state why it is not applicable.
-
-## Required final lenses
-
-- **Adversarial acceptance**: actively look for reasons the work is not ready.
-- **First-Principles Simplifier**: ask what can be deleted or simplified now that the implementation exists; block complexity without benefit >> cost.
-- **Architecture Steward**: check implementation drift from plan, architecture-guide constraints, repository topology/package seams, source authority, harness/policy split, durable execution, adoption/rollback, budgets, and human approvals when relevant.
-- **Agent Advocate**: for multi-agent/agent-error work, confirm the upstream reason the agent erred is fixed and answer the human counterfactual.
-- **Black-box Tester / Quality-Eval audit**: map tests/evals/audits to risks and user-visible behavior, not to a generic checklist; call out false-green evidence explicitly.
-
-## Completion rules
-
-Only recommend completion when:
-
-- no material blocker remains
-- required evidence is present or explicitly accepted as a residual gap by the user
-- red/green proof ledger and black-box/user-visible evidence match the plan's risk map where applicable; unit-green-only or validator-green-only claims are not enough for broader operational claims
-- any claim of implemented/operational/live/adopted is backed by the plan's Operational Outcome Contract, not merely proof-only or shadow-only evidence
-- repeated clear failures of the same test command/failure family did not exceed five attempts without an RCA, `uberplan` revision, and resumed `ubergoal` evidence
-- expected-vs-actual user surprise was checked, and any material mismatch is either fixed or explicitly flagged for user approval
-- scope fidelity was checked against the operator-original instruction, and any narrowed scope is either operator-approved, marked deferred/not done, or blocks completion
-- product/rewrite/agentic-system spine proof is green, or the scope is explicitly limited to a spine-check fix/non-readiness spike accepted by the user
-- any repo-local topology/dependency gate relevant to changed code files was run, or its absence is named as a blocker/gap
-- score 0/1 rows are absent
-- score 2 rows have named residual risks or clear not-applicable evidence
-- rollback/adoption and external side effects are understood
-- every touched repo is clean, locally committed with only claimed files, reverted, stashed with a descriptive name, or explicitly user-approved as uncommitted
-- the final response/report includes `git status --short --branch` for every touched repo
-- the final confidence verdict is yes within a stated scope
-
-When running in Codex, call `update_goal(status="complete")` only when the objective is achieved and no required work remains, or the user explicitly accepts named residual gaps.
-
-## Post-run learning
-
-For Tier 2/3 skill, prompt, workflow, multi-agent protocol, or agentic-system changes, invoke or recommend `uberskillevolver` before final handoff. Capture what should become evals, validators, templates, deletions, or no change. Never allow silent self-modification.
+For Tier 2/3 skill, prompt, workflow, multi-agent protocol, or agentic-system
+changes, route the observed lesson and eval evidence to `$uberskillevolver`.
+Never silently self-modify the skill.
 
 ## Optional Claude adversary
 
 Contract: `../references/claude-adversary.md` (opt-in only on explicit request; reconciliation + frame-independence rules there).
 
-For `uberaccept`, ask exactly:
+Ask:
 
-1. **Receipt reproducibility.** Causal layer: evidence. Are receipts reproducible by deterministic tool output, or are they model summaries? Evidence: command/log/diff path. Minimum impact: rerun or downgrade evidence.
-2. **Scope/diff match.** Causal layer: modularity/seams. Does the diff match stated scope? Name any out-of-scope change. Evidence: git diff/status. Minimum impact: revert, split, or explicitly re-scope.
-3. **Inherited assumption.** Causal layer: future-agent collision. What assumption does the next task inherit that could be wrong? Evidence: named downstream dependency. Minimum impact: document/test/rollback or block acceptance.
+1. **Receipt reproducibility.** Are receipts deterministic tool output or model summaries?
+2. **Scope/diff match.** Does the exact diff match the approved scope?
+3. **Inherited assumption.** What could the next task inherit incorrectly?
 
-Then answer the separate final gate: **Ship: yes/no, one sentence.** This ship gate is not one of the three Claude questions.
+Then answer: **Ship: yes/no, one sentence.**
 
 ## Helpful resources
 
-- `templates/final-acceptance.md` — full acceptance report.
-- `templates/architecture-steward-report.md` — final architecture check.
-- `templates/first-principles-simplifier-report.md` — simplification/cost report.
-- `templates/agent-failure-rca.md` — agent RCA/human counterfactual.
-- `references/agentic-architecture-checklist.md` — architecture checklist.
-- `../references/loop-engineering.md` — loop-mode acceptance lens and anti-bloat trigger.
-- `scripts/validate_acceptance_report.py` — final report sanity checks.
-- `scripts/validate_architecture_steward_report.py` — architecture report checks.
+- `templates/final-acceptance.md`
+- `templates/architecture-steward-report.md`
+- `templates/first-principles-simplifier-report.md`
+- `templates/agent-failure-rca.md`
+- `references/agentic-architecture-checklist.md`
+- `../references/operational-states.md`
+- `../references/loop-engineering.md`
+- `../references/claude-adversary.md`

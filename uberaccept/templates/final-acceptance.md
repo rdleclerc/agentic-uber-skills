@@ -2,10 +2,10 @@
 
 ## Implementation summary
 
-- acceptance_status: accepted | rejected | blocked_with_failure_intake
-- failure_case_id: <id>
-- case_updated: <id>
-- not_applicable_with_reason: <text>
+- acceptance_status: accepted | fix_within_scope | replan | user_decision | blocked_with_failure_intake | rejected
+- failure_case_id: <id, required only when blocked and no case_updated>
+- case_updated: <id, required only when blocked and no failure_case_id>
+- not_applicable_with_reason: <optional legacy field>
 
 ## Files changed
 

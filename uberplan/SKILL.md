@@ -49,12 +49,13 @@ Stop source reading when all four questions have evidence-backed answers:
 
 If one remains unknown, enter **terminal evidence-gap mode** and stop planning. Output only the decision that is blocked, the missing authority or evidence, one bounded acquisition or non-mutating falsification step, and the exact evidence that would unblock planning. Do not outline downstream implementation, tests, rollout, files, or conditional task maps while the owner or causal boundary is guessed.
 
-The expected absence of a component in an explicitly new feature is not by
-itself an evidence gap. When an active contract establishes that component's
-responsibilities and boundaries, plan the smallest new owner and keep concrete
-integration bindings as named evidence gates. Stop only when the missing
-evidence could materially change ownership, the safety contract, or the change
-surface—not merely because those bounded integrations have not been selected.
+An unimplemented mechanism is not itself an evidence gap when an active
+contract already fixes responsibility, required behavior, safety semantics,
+and observable proof. Plan the smallest change and keep concrete integration
+bindings as named implementation evidence gates. Stop only when missing
+authority could materially change ownership, authorization, the safety
+contract, or the change surface—not when evidence merely confirms that a
+mechanism must satisfy a complete contract.
 
 ### 3. Choose the smallest complete change
 
@@ -71,6 +72,10 @@ Do not confuse implementation minimality with causal incompleteness. If one inci
 
 Prefer one linear path and one independently valuable checkpoint. Branches are allowed only when a named unresolved fact genuinely changes the implementation; record the fact and its decision gate instead of scheduling both branches.
 
+### Execution handoff
+
+**Trigger:** another agent will implement the plan. **Do:** bind the handoff to the operator instruction and exact approved plan path plus revision or digest. In ordered steps, require the executor to reread the named owner, direct caller or consumer, and focused proof before editing, and stop for replanning if they contradict the plan. Preserve distinct replan versus user-authority decisions and activated external-action or Tier 3 contracts by exact citation. For skill/workflow behavior, require a fresh-context trace of ordered reads, actions, review, and verdict using the existing eval substrate. **Invalid:** generic “relevant sources/safety,” phrase-only proof, a new harness without need, or widening implementation scope merely to preserve a constraint.
+
 ### 4. Attach proportional proof
 
 Every plan names checkable acceptance criteria and the closest proof that would catch the failure:
@@ -81,7 +86,7 @@ Every plan names checkable acceptance criteria and the closest proof that would 
 - exact-diff review for contained changes;
 - runtime or user-visible readback only when runtime behavior is in scope.
 
-For behavior changes, keep a compact **Red/green proof ledger**: baseline, expected red, first green, black-box or user-visible proof when applicable, false-green risk, and skipped layers with reasons. Test count is not proof quality. Do not create a harness, eval framework, canary program, or review board unless a named failure mode cannot be tested safely with existing means.
+For behavior changes, keep a compact **Red/green proof ledger**: baseline, expected red, first green, black-box or user-visible proof when applicable, false-green risk, and justified skips. Test count is not proof quality. Reuse existing proof machinery; add a harness, canary, or review board only when a named failure cannot be tested safely without it.
 
 ### 5. Delete planning theater and return
 

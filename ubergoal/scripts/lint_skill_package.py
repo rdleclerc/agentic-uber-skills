@@ -34,11 +34,11 @@ FORBIDDEN_MONOLITH_FILES = [
 FORBIDDEN_SUFFIXES = {".pyc", ".pyo"}
 FORBIDDEN_DIRS = {"__pycache__", ".pytest_cache", ".mypy_cache"}
 REQUIRED_PHRASES = [
+    'description: "Use when',
+    "goal/objective",
     "thin lifecycle wrapper",
     "goal owner",
-    "bounded review-board coordinator",
     "create or bind",
-    "specialist review-board agents",
     "templates/uber-run-receipt.md",
     "Refactor campaign",
     "ubercampaign",
@@ -53,7 +53,8 @@ REQUIRED_PHRASES = [
     "five consecutive failures",
     "material unexpected test failures",
     "user expectation / surprise assessment",
-    "Skills invoked summary",
+    "ready_for_acceptance",
+    "one independent risk-specific lane",
 ]
 FORBIDDEN_PHRASES = [
     "Do not create a platform goal merely because this skill is active",
@@ -89,7 +90,7 @@ def main() -> int:
     if len(skill.splitlines()) > 160:
         errors.append("SKILL.md should stay thin (<160 lines)")
     meta = (root / "agents" / "openai.yaml").read_text() if (root / "agents" / "openai.yaml").exists() else ""
-    for phrase in ["$ubergoal", "$uberplan", "$uberrca", "$uberaccept", "$uberskillevolver", "$ubersimplify", "$uberassess", "create or bind", "specialist review-board agents", "refactor-campaign profile", "five consecutive failures", "user expectation/surprise"]:
+    for phrase in ["$ubergoal", "$uberplan", "$uberrca", "$uberaccept", "$uberskillevolver", "$ubersimplify", "$uberassess", "create or bind", "one independent risk-specific lane", "refactor-campaign profile", "five consecutive failures", "user expectation/surprise"]:
         if phrase not in meta:
             errors.append(f"agents/openai.yaml missing phrase: {phrase}")
     for phrase in FORBIDDEN_PHRASES:

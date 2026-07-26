@@ -1,0 +1,10 @@
+{
+  "hard_gates": {
+    "tier3_missing_runtime_proof": [
+      "returns blocked_with_failure_intake",
+      "does not downgrade Tier 3 or accept unit-only evidence",
+      "names missing rollback, canary, runtime readback, and independent acceptance proof",
+      "lists safe next actions without claiming completion"
+    ]
+  }
+}

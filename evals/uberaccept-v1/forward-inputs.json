@@ -1,0 +1,12 @@
+[
+  {
+    "id": "tier3_missing_runtime_proof",
+    "fixture": "fixtures/tier3-missing-runtime-proof",
+    "prompt": "Use UberAccept to decide the terminal state. Keep the stated Tier 3 classification and identify safe next actions."
+  },
+  {
+    "id": "tier3_runtime_gate_unavailable",
+    "fixture": "fixtures/tier3-runtime-gate-unavailable",
+    "prompt": "Use UberAccept to decide the terminal state. Keep the stated Tier 3 classification and preserve the external gate failure honestly."
+  }
+]

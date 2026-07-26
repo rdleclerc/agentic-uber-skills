@@ -1,0 +1,10 @@
+{
+  "name": "uberaccept-v1-lifecycle",
+  "working": "inputs.json",
+  "working_rubric": "rubric.hidden.json",
+  "holdouts": "holdout-inputs.json",
+  "holdout_rubric": "holdout-rubric.hidden.json",
+  "forward": "forward-inputs.json",
+  "forward_rubric": "forward-rubric.hidden.json",
+  "promotion_receipt": "results/current-promotion.json"
+}

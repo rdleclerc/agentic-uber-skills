@@ -1,0 +1,37 @@
+{
+  "schema_version": 1,
+  "suite_id": "ubergoal-plan-authority-v1",
+  "name": "UberGoal Plan Authority Suite",
+  "groups": [
+    {
+      "id": "working",
+      "inputs": "inputs.json",
+      "rubric": "rubric.hidden.json",
+      "case_count": 3
+    },
+    {
+      "id": "holdout",
+      "inputs": "holdout-inputs.json",
+      "rubric": "holdout-rubric.hidden.json",
+      "case_count": 2
+    },
+    {
+      "id": "forward",
+      "inputs": "forward-inputs.json",
+      "rubric": "forward-rubric.hidden.json",
+      "case_count": 1
+    }
+  ],
+  "trace_requirements": [
+    "ordered_source_reads",
+    "ordered_actions",
+    "proof",
+    "reviewers",
+    "lifecycle_decision"
+  ],
+  "diagnostic_metrics": [
+    "output_words",
+    "completed_tool_calls"
+  ],
+  "promotion_receipt": "results/current-promotion.json"
+}

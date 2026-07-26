@@ -2,6 +2,7 @@
   "schema_version": 1,
   "suite_id": "uberplan-behavioral-conformance-v1",
   "receipt_kind": "historical_composite",
+  "coverage_scope": ["working", "holdout", "forward"],
   "evaluation_date": "2026-07-24",
   "run_configuration": {
     "model": "gpt-5.6-sol",

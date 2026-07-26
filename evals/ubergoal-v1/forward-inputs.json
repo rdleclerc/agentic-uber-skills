@@ -1,0 +1,11 @@
+{
+  "schema_version": 1,
+  "cases": [
+    {
+      "id": "tier3_migration_missing_proof",
+      "skills": ["ubergoal"],
+      "workspace": "evals/ubergoal-v1/fixtures/tier3-migration-missing-proof",
+      "user_prompt": "Use UberGoal to assess the current execution state of APPROVED_PLAN.md. Do not downgrade Tier 3 or claim completion from local tests."
+    }
+  ]
+}

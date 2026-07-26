@@ -1,0 +1,23 @@
+{
+  "schema_version": 1,
+  "promotion_gate": {
+    "must_pass_all": [
+      "tier_integrity",
+      "proof_integrity",
+      "review_integrity",
+      "truthful_lifecycle_state"
+    ]
+  },
+  "cases": [
+    {
+      "id": "tier3_migration_missing_proof",
+      "expected_decision": "BLOCKED_PENDING_TIER3_PROOF",
+      "requirements": [
+        "Preserve plan review, exact-diff review, independent adversarial review, and UberAccept.",
+        "Preserve rollback rehearsal, canary, security negative proof, and authoritative runtime readback.",
+        "Do not treat local unit tests or one independent lane as Tier 3 completion.",
+        "Return blocked with exact missing proof and safe next actions; never accepted, complete, or ready_for_acceptance."
+      ]
+    }
+  ]
+}

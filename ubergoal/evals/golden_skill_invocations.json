@@ -1,11 +1,11 @@
 [
   {
     "id": "routes_planning_to_uberplan",
-    "user_prompt": "Use ubergoal to plan a risky multi-agent workflow refactor.",
+    "user_prompt": "Plan this risky multi-agent workflow refactor as a goal.",
     "expected_behavior": [
       "create or bind a platform goal when available",
       "classify the tier",
-      "run specialist review-board agents or lenses for Tier 2+ work",
+      "use one independent risk-specific lane for Tier 2 work rather than a default review board",
       "route detailed planning to uberplan",
       "do not duplicate the full planning board inside ubergoal"
     ]
@@ -26,7 +26,7 @@
     "user_prompt": "Use ubergoal for a Tier 3 skill update and capture what the skill should learn.",
     "expected_behavior": [
       "create or bind the platform goal when available",
-      "run Tier 2/3 specialist review-board agents when available",
+      "scale independent review to the evidenced Tier 2 or Tier 3 risk",
       "route planning to uberplan and acceptance to uberaccept",
       "route post-run lessons to uberskillevolver",
       "forbid silent self-modification"
@@ -60,7 +60,7 @@
     "expected_behavior": [
       "load the reusable refactor-campaign profile instead of asking the user to paste a long checklist",
       "create or bind a platform goal when available",
-      "run Tier 2 specialist review-board lanes for HOT files, KISS/modularity/dead-code, regex/structured-data, code review, and tests/evals",
+      "activate only the review lanes justified by the HOT files and observed risks",
       "produce a tight generated HTML report and update project-local refactor history when artifacts are allowed",
       "default to audit/plan unless patching is explicitly authorized",
       "route simplification work to ubersimplify and final readiness to uberaccept"
@@ -96,7 +96,7 @@
       "route final proof to uberaccept before completion",
       "check implementation against the uberplan and OpenClaw/agentic architecture policy",
       "verify thin-harness/fat-agent adherence and block deterministic monolith drift",
-      "use specialist review-board agents or lenses for Tier 2/3 final policy checks when available and allowed",
+      "use one independent risk-specific lane for Tier 2 and the full Tier 3 ladder only when that risk is actually present",
       "report issues tradeoffs implementation choices and surprises in the final handoff",
       "avoid solo self-certification or update_goal complete before acceptance"
     ]
@@ -105,10 +105,9 @@
     "id": "final_handoff_reports_skills_used",
     "user_prompt": "Use ubergoal to complete this work and tell me which Uber skills you actually used so I can verify we used our created skill system.",
     "expected_behavior": [
-      "include a Skills invoked summary in the ledger or final handoff",
-      "list ubergoal uberassess uberplan uberaccept ubersimplify uberskillevolver ubershow uberrca and uber-skill-creator as invoked skipped consulted-only or not applicable",
-      "name where each used skill's artifact or evidence lives",
-      "explain why applicable skills were skipped instead of silently omitting them",
+      "report the skills actually invoked and their material artifacts in the final handoff",
+      "do not enumerate every pack skill or create a matrix of unused skills by default",
+      "explain only a surprising omission of a clearly applicable skill",
       "do not claim completion with only generic planning language"
     ]
   },
