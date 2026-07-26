@@ -110,8 +110,9 @@ No standalone `ubereval` skill is justified.
 - Shared safe proof spine: the green local suite and Sol review were treated as
   supporting evidence, not as permission to close the parent goal.
 - Operational Outcome Contract: the repository's independent Claude gate
-  passed at the current hash; installation, commit, merge, and adoption remain
-  distinct operator-controlled states.
+  passed at the current hash. The operator then authorized commit and local
+  installation; merge, push, main adoption, and other live states remain
+  distinct.
 - No child or parent was called complete while a safe next action remained.
   Local checks were exhausted before the repeated external blocker verdict.
 - Eval/template/validator candidate: the existing hash-and-coverage boundary
@@ -128,8 +129,9 @@ No standalone `ubereval` skill is justified.
   lifecycle truth and removing universal artifact/review ceremony.
 - UberAccept: promote behaviorally; all working, holdout, and split forward
   gates pass, and the durable validator now fails closed.
-- The current-hash Claude Opus gate passed. Do not claim installed, committed,
-  merged, or adopted until those separate actions are authorized and proved.
+- The current-hash Claude Opus gate passed. Implementation commit `75e323a`
+  and local Codex/Claude installation are proved; do not claim merge, push,
+  main adoption, or other live state.
 
 ## Slop register and loop checks
 
@@ -148,8 +150,10 @@ No standalone `ubereval` skill is justified.
   portable; future machines rerun the committed suite. Sanitized committed
   results remain under each suite's `results/`, with no credentials or private
   customer data retained.
-- Safe to commit: yes with explicit commit authorization; the required review
-  gate passed, but no commit was made in this run.
+- Safe to commit: yes. The operator explicitly authorized commit and install.
+  Implementation commit `75e323a` was created, all ten pack skills were linked
+  into both local Codex and Claude skill roots, strict install sync passed, and
+  all 20 installed-package shape checks passed.
 
 ## Validation / follow-up
 
@@ -158,5 +162,6 @@ No standalone `ubereval` skill is justified.
 - Validators/tests proposed: none beyond the implemented hash/coverage and
   fail-closed status checks.
 - Skill/template changes proposed: no further change.
-- Owner and deadline: root runs final UberAccept; operator separately controls
-  any install, commit, merge, or adoption action.
+- Owner and deadline: the scoped run is complete through local installation;
+  the operator separately controls any merge, push, main adoption, or broader
+  deployment action.

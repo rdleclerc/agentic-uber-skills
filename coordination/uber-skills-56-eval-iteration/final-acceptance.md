@@ -7,9 +7,11 @@
   Claude-quota case is resolved
 - Accepted claim: the selected UberPlan, UberGoal, and UberAccept candidates
   satisfy the approved bounded behavioral-evaluation scope and are
-  promotion-eligible.
-- State boundary: promotion-eligible is not installed, committed, merged,
-  adopted, or live.
+  promotion-eligible; the accepted pack is now committed and installed for
+  local Codex and Claude use.
+- State boundary: implementation commit `75e323a` is installed by symlink from
+  branch `codex/uberplan-transfer-v1`; it is not merged, pushed, adopted on
+  `main`, or live outside these local skill installations.
 
 ## Exact candidate
 
@@ -160,12 +162,13 @@
 
 - Operational Outcome Contract source: UberAccept state contract and scope
   artifact
-- Highest state claimed in final handoff: tested and promotion-eligible
-- Highest state actually proven: tested and promotion-eligible
+- Highest state claimed in final handoff: tested, committed, and locally
+  installed
+- Highest state actually proven: tested, committed, and locally installed
 - Any lower-state child limiting parent completion: none for the accepted
   behavioral claim
-- Wording that must be avoided in final handoff: installed, committed, merged,
-  adopted, live
+- Wording that must be avoided in final handoff: merged, pushed, adopted on
+  `main`, or live outside the local skill installations
 - Proof-only / shadow-only / local-safe-proof / shared-spine evidence claimed as operational? no
 - Multi-child goal? no; these are comparative evaluation groups, not release
   children
@@ -174,7 +177,7 @@
 
 | Workstream/child | Target state | Accepted state | Evidence / proof | Gap / blocker / re-scope approval |
 |---|---|---|---|---|
-| Uber skill selection | tested | tested | three promotion receipts, comparisons, reviews | Git/install/adoption are separate actions |
+| Uber skill selection | tested | tested | three promotion receipts, comparisons, reviews, implementation commit `75e323a`, strict install-sync report | merge/push/main adoption remain separate actions |
 
 ## Review independence ledger
 
@@ -208,8 +211,8 @@ each was repaired and rechecked before `accepted`.
 - Differences or surprises: evidence cleanup took additional replay rounds
   because stale and contaminated receipts were rejected rather than laundered.
 - Material mismatch requiring user approval: none for behavioral selection.
-- Final handoff wording: behaviorally validated and promotion-eligible; not
-  installed, committed, merged, adopted, or live.
+- Final handoff wording: behaviorally validated, committed, and locally
+  installed; not merged, pushed, adopted on `main`, or live elsewhere.
 
 ## Agent Advocate final check
 
@@ -263,9 +266,9 @@ skill, and universal report path remain no-change decisions.
 ```text
 Final confidence verdict:
 - 100% confident within scope? yes
-- Scope accepted: behavioral selection and promotion eligibility at the three exact hashes
+- Scope accepted: behavioral selection, commit, and local installation at the three exact hashes
 - Material blockers: none
 - Non-blocking residual risks: local raw traces are not portable; another machine reruns the committed suite
 - Explicitly accepted gaps: none
-- Goal completion recommendation: accept the scoped behavioral-evaluation goal as complete; do not infer Git, install, merge, adoption, or live state
+- Goal completion recommendation: accept the scoped goal as complete through local installation; do not infer merge, push, main adoption, or other live state
 ```
