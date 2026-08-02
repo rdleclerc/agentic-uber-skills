@@ -140,13 +140,13 @@ blocking_wave = 2
 id = "stub-canonical-path"
 owner = "pack maintainer"
 adoption_state = "report_only"
-canonical_source = "${GAIA_ROOT:-~/repos/agfunder-gaia}/AGENTIC_ARCHITECTURE.md#canonical-file"
+canonical_source = "${GAIA_ROOT:-~/repos/agfunder-gaia}/AGENTIC_ARCHITECTURE.md#canonical-entry-point"
 target_paths = [
   "${GAIA_ROOT:-~/repos/agfunder-gaia}/AGENTIC_ARCHITECTURE.md",
 ]
 git_ref = "origin/main"
 match = "literal"
-pattern = '''- **Canonical file**: `\${UBER_GUIDE_ROOT:-~/repos/agentic-architecture-guide}/agentic_architecture_singlefile.md`'''
+pattern = '''- **Canonical entry point**: `\${UBER_GUIDE_ROOT:-~/repos/agentic-architecture-guide}/AGENTS.md`'''
 normalization = "whitespace"
 allowed_absences = []
 severity = "warn"
