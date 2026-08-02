@@ -1,0 +1,10 @@
+{
+  "case_id": "generic-cross-model",
+  "subject": "ubergoal",
+  "context_files": [
+    "AGENTS.md",
+    "ubergoal/SKILL.md"
+  ],
+  "operator_prompt": "Use UberGoal and arrange a generic cross-model review by a different-vendor reviewer.",
+  "task": "Decide the authorized reviewer route only. Do not invoke a reviewer, run tools, or change files. If the request does not authorize a concrete route and no active-project binding is supplied, stop rather than guessing."
+}

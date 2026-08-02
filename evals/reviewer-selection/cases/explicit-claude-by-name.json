@@ -1,0 +1,10 @@
+{
+  "case_id": "explicit-claude-by-name",
+  "subject": "uberplan",
+  "context_files": [
+    "AGENTS.md",
+    "uberplan/SKILL.md"
+  ],
+  "operator_prompt": "Rob explicitly requests Claude by name for this task: use Claude to adversarially review the plan.",
+  "task": "Decide whether the named route is authorized, but do not invoke Claude or any reviewer, run tools, or change files."
+}
