@@ -72,6 +72,16 @@ Do not confuse implementation minimality with causal incompleteness. If one inci
 
 Prefer one linear path and one independently valuable checkpoint. Branches are allowed only when a named unresolved fact genuinely changes the implementation; record the fact and its decision gate instead of scheduling both branches.
 
+Record the decision in a compact anti-bloat contract:
+
+- `candidate_kind`: `change`, `deletion`, or `no_change`;
+- baseline or reproduction evidence and an explicit partial-fix check;
+- `change_budget`: maximum files, approximate churn (additions plus deletions), and planned count of named new mechanisms;
+- `mechanism_inventory`: name dependencies, abstractions/modules, public APIs, schema or durable state, jobs/workers, and flags/configuration; default all to none;
+- overrun action: `replan` when evidence changes the implementation contract, or `user_decision` when an operator-owned cap or commitment would change. The executing context may not waive the budget itself.
+
+`no_change` is a successful candidate when current behavior already satisfies the request and evidence proves it. Before choosing it, check whether the issue is only partially fixed; a remaining material defect requires the smallest complete change rather than abstention.
+
 ### Execution handoff
 
 **Trigger:** another agent will implement the plan. **Do:** bind the handoff to the operator instruction and exact approved plan path plus revision or digest. In ordered steps, require the executor to reread the named owner, direct caller or consumer, and focused proof before editing, and stop for replanning if they contradict the plan. Preserve distinct replan versus user-authority decisions and activated external-action or Tier 3 contracts by exact citation. For skill/workflow behavior, require a fresh-context trace of ordered reads, actions, review, and verdict using the existing eval substrate. **Invalid:** generic “relevant sources/safety,” phrase-only proof, a new harness without need, or widening implementation scope merely to preserve a constraint.
@@ -98,9 +108,9 @@ Compare the final plan with the **operator original instruction**: agent-interpr
 
 Default to a concise inline plan:
 
-1. decision and why;
+1. candidate kind, baseline, partial-fix check, and why;
 2. decisive evidence and any remaining gap;
-3. smallest linear implementation steps;
+3. change budget, mechanism inventory, and smallest linear implementation steps;
 4. acceptance/proof;
 5. explicit non-goals and escalation triggers.
 

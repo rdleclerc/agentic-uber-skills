@@ -22,6 +22,10 @@ Read the operator request and exact approved plan or micro-intent, candidate
 diff/touched files, evidence receipts, and relevant repository contract. Record
 their path and revision or digest when available.
 
+Also read planned `candidate_kind`, `change_budget`, and `mechanism_inventory`;
+bind them to the plan source; compare changed files, additions/deletions (churn),
+and mechanisms. A proved `no_change` candidate may be accepted with an empty diff.
+
 Scope fidelity compares the operator original instruction, agent-interpreted scope, proposed narrowed scope, explicit deferrals/non-goals, and approval evidence. Unapproved narrowing or expansion blocks acceptance.
 
 - The plan defines intended scope; the diff defines actual implementation;
@@ -59,8 +63,8 @@ average a blocker away. Only `accepted` authorizes completion or ship language.
 ## Acceptance kernel
 
 1. Echo the exact claim, tier, approved scope, and explicit non-goals.
-2. Compare plan to diff on two axes: spec fidelity and repo/architecture fitness.
-   Either can block acceptance.
+2. Compare plan to diff on spec fidelity, repo/architecture fitness, change
+   budget, and mechanism inventory; any mismatch can block acceptance.
 3. Map each material requirement to exact diff and proof. Mark it `proved`,
    `weak`, `missing`, or `contradicted`.
 4. Identify the concrete false-green risk for each activated risk: what could
@@ -72,7 +76,10 @@ average a blocker away. Only `accepted` authorizes completion or ship language.
 
 Require a meaningful red-before/green-after result when it is practical and
 diagnostic. Do not manufacture a red phase, broad suite, extra reviewer, or
-artifact merely to fill a field. Tests must map to a concrete failure mode.
+artifact merely to fill a field. Tests must map to a concrete failure mode. For
+`no_change`, require baseline evidence and a partial-fix check instead of a
+manufactured diff. For partially fixed behavior, require proof of the remaining
+defect and the smallest complete repair.
 
 ### Acceptance-criteria verification
 
@@ -114,6 +121,7 @@ proof, observed proof, false-green risk, and verdict.
   re-scoped-with-approval, or hard-blocked after safe work is exhausted.
 - **Repository topology/dependencies:** run the relevant boundary checks and
   distinguish unrelated known failures from candidate-caused failures.
+- **Mocked external boundary:** require real boundary proof or limit the claim to the mocked behavior; a mocked green test alone cannot prove the interaction.
 
 ### Loop acceptance lens
 
@@ -165,13 +173,8 @@ Ask:
 
 Then answer: **Ship: yes/no, one sentence.**
 
-## Helpful resources
+## Resources
 
-- `templates/final-acceptance.md`
-- `templates/architecture-steward-report.md`
-- `templates/first-principles-simplifier-report.md`
-- `templates/agent-failure-rca.md`
-- `references/agentic-architecture-checklist.md`
-- `../references/operational-states.md`
-- `../references/loop-engineering.md`
-- `../references/claude-adversary.md`
+Use `templates/final-acceptance.md`; load architecture, agent-failure,
+`../references/operational-states.md`, loop, or adversary references only when
+their rider is activated.
