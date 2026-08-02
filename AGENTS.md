@@ -18,9 +18,9 @@ Read in this order:
 
 - `$ubergoal` is the only default/implicit Uber lifecycle router.
 - All skills in this pack must be installed and exposed to Codex sessions. Exposure is not trigger authority.
-- Review and acceptance lanes use the highest-capability available Claude lane; record `lane_used` in the receipt; never silently downgrade. In gaia contexts the spine's lane policy governs (`knowledge/coding-agent-operating-spine.md` in the gaia workspace repo).
+- Review and acceptance lanes use a fresh, independent context on the strongest model and reasoning effort allowed by the active project policy; record `lane_used` in the receipt; never silently downgrade. Claude may be selected only when the operator explicitly requests Claude by name. In gaia contexts the spine's lane policy governs (`knowledge/coding-agent-operating-spine.md` in the gaia workspace repo).
 - Review rigor scales by tier: the canonical Review ladder lives in the gaia spine (same file as above); pack skills point at it and never restate it beyond ubergoal's fingerprinted condensed table.
-- Precedence with the Uber skill pack: `ubergoal` wraps this spine's lifecycle for gaia work; the uber run receipt satisfies the spine receipt contract; `uberaccept` is the acceptance review; the claude-adversary lane is the required Tier-2+ independent lane and stays opt-in below Tier 2.
+- Precedence with the Uber skill pack: `ubergoal` wraps the active project's lifecycle; the uber run receipt satisfies that project's receipt contract; `uberaccept` is the acceptance review; the active project policy binds the required Tier-2+ independent lane; the Claude adversary remains opt-in only when the operator explicitly requests Claude by name.
 - Reword a fingerprinted rule ⇒ update `references/drift-fingerprints.toml` in the same commit.
 - Phase skills are explicit or wrapper-invoked: `$uberplan`, `$uberaccept`, `$uberskillevolver`, `$ubersimplify`, and `$uberassess` should not trigger merely because a task resembles their domain. Their descriptions and OpenAI adapter prompts should say "Do not auto-trigger from task similarity" so runtime skill routers do not confuse examples with permission.
 - `$uberrca` is a utility skill, not an Uber lifecycle phase. Use it directly for general incidents, debugging, postmortems, repeated bugs, and class-level root-cause analysis.
@@ -105,6 +105,7 @@ uv run --with pyyaml python uber-skill-creator/scripts/quick_validate.py <skill>
 Before claiming ready:
 
 - Pack contract lint/tests pass.
+- A `lane-policy-spine-sha256` drift failure blocks release. Refresh its pinned digest only as an explicit pack change reviewed in a fresh, independent acceptance context; the drift linter detects byte changes and does not decide policy semantics.
 - Each touched skill lint/tests pass.
 - Installed Codex copies are synced and validated when local use is expected.
 - README/ROADMAP/AGENTS agree on routing, source authority, install policy, and maturity state.

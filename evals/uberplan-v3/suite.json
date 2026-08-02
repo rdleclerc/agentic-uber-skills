@@ -79,7 +79,8 @@
     "completed_tool_calls": "terminal completed command or MCP records, including failed invocations"
   },
   "raw_artifact_policy": "Store raw outputs and traces under .uberlearn-local; commit only sanitized baseline receipts.",
-  "promotion_receipts": [
+  "current_evaluation_status": "results/current-eval-status.json",
+  "historical_promotion_receipts": [
     "results/current-promotion.json",
     "results/transfer-selected.md"
   ]

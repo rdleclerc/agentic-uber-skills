@@ -63,7 +63,7 @@ target_paths = [
   "README.md",
 ]
 match = "regex"
-pattern = '''Review and acceptance lanes use the highest-capability available Claude lane; record `lane_used` in the receipt; never silently downgrade\.(?: In gaia contexts the spine's lane policy governs \(`knowledge/coding-agent-operating-spine\.md` in the gaia workspace repo\)\.)?'''
+pattern = '''Review and acceptance lanes use a fresh, independent context on the strongest model and reasoning effort allowed by the active project policy; record `lane_used` in the receipt; never silently downgrade\. Claude may be selected only when the operator explicitly requests Claude by name\.(?: In gaia contexts the spine's lane policy governs \(`knowledge/coding-agent-operating-spine\.md` in the gaia workspace repo\)\.)?'''
 normalization = "whitespace"
 allowed_absences = []
 severity = "error"
@@ -79,10 +79,30 @@ target_paths = [
 ]
 git_ref = "origin/main"
 match = "regex"
-pattern = '''For Tier ≥1 Gaia/OpenClaw work, use the best available Claude review lane unless Rob explicitly waives it.*claude --model opus --effort max.*record the fallback\. Do not silently downgrade\. If no Claude review lane is reachable, stop before merge, commit, or completion claims'''
+pattern = '''For Tier ≥1 Gaia/OpenClaw work, use a fresh, isolated Codex Sol review context unless Rob explicitly waives it.*model: `gpt-5\.6-sol`.*reasoning effort: `ultra`.*If that exact binding is unavailable, stop before merge, commit, or completion claims and report local-only verification unless Rob waives the gate\. Do not substitute another model or lower effort automatically\. Never invoke Claude as a fallback; use Claude only when Rob explicitly requests it for that task\.'''
 normalization = "whitespace"
 allowed_absences = []
 severity = "warn"
+blocking_wave = 2
+
+# Content address only: eafbbbb is reviewed provenance, not an enforced ref
+# identity. Current origin/main policy bytes must equal the reviewed digest, so
+# unrelated main commits pass when this file is unchanged. Refresh only after
+# an explicit pack update and independent semantic review.
+[[fingerprint]]
+id = "lane-policy-spine-sha256"
+owner = "pack maintainer"
+adoption_state = "blocking"
+canonical_source = "reviewed provenance commit eafbbbbfe0a4a7693e13bc1fd74a178373858a3f; enforced source current origin/main:knowledge/coding-agent-operating-spine.md bytes"
+target_paths = [
+  "${GAIA_ROOT:-~/repos/agfunder-gaia}/knowledge/coding-agent-operating-spine.md",
+]
+git_ref = "origin/main"
+match = "sha256"
+pattern = "sha256:98c2f294c7426841c8d4b943802713afdc595eef4b67636a3de680945347d20b"
+normalization = "none"
+allowed_absences = []
+severity = "error"
 blocking_wave = 2
 
 [[fingerprint]]
@@ -158,7 +178,7 @@ target_paths = [
 ]
 git_ref = "origin/main"
 match = "literal"
-pattern = '''Precedence with the Uber skill pack: `ubergoal` wraps this spine's lifecycle for gaia work; the uber run receipt satisfies the spine receipt contract; `uberaccept` is the acceptance review; the claude-adversary lane is the required Tier-2+ independent lane and stays opt-in below Tier 2.'''
+pattern = '''Precedence with the Uber skill pack: `ubergoal` wraps this spine's lifecycle for gaia work; the uber run receipt satisfies the spine receipt contract; `uberaccept` is the acceptance review; a fresh Codex Sol adversary context is the required Tier-2+ independent lane; the Claude adversary remains opt-in only when Rob explicitly requests it.'''
 normalization = "whitespace"
 allowed_absences = []
 severity = "warn"
@@ -173,7 +193,7 @@ target_paths = [
   "AGENTS.md",
 ]
 match = "literal"
-pattern = '''Precedence with the Uber skill pack: `ubergoal` wraps this spine's lifecycle for gaia work; the uber run receipt satisfies the spine receipt contract; `uberaccept` is the acceptance review; the claude-adversary lane is the required Tier-2+ independent lane and stays opt-in below Tier 2.'''
+pattern = '''Precedence with the Uber skill pack: `ubergoal` wraps the active project's lifecycle; the uber run receipt satisfies that project's receipt contract; `uberaccept` is the acceptance review; the active project policy binds the required Tier-2+ independent lane; the Claude adversary remains opt-in only when the operator explicitly requests Claude by name.'''
 normalization = "whitespace"
 allowed_absences = []
 severity = "warn"
@@ -192,9 +212,9 @@ match = "literal"
 pattern = '''| Tier | Work class | Required review |
 |---|---|---|
 | 0 | typo/cosmetic only — nothing that fixes observed misbehavior | none; commit carries a `tier0:` trailer |
-| 1 | contained single-surface change, clear tests | one exact-diff review pass by a capable lane, including a one-line scope echo against the operator-original ask |
-| 2 | cross-repo doctrine/pointer edits; behavior surfaces (prompts/skills/evals); medium-risk code | exact-diff review + independent adversarial lane (different vendor or fresh context) + scope-fidelity verdict |
-| 3 | production/runtime services; live-injected context surfaces; provider routing; security/data-subject surfaces; major refactor / mass deletion | full 4-phase ladder (plan review, exact-diff, adversarial, acceptance) on the highest-capability Claude lane + review-board lanes |'''
+| 1 | contained single-surface change, clear tests | one exact-diff review pass in a fresh `gpt-5.6-sol` `ultra` context, including a one-line scope echo against the operator-original ask |
+| 2 | cross-repo doctrine/pointer edits; behavior surfaces (prompts/skills/evals); medium-risk code | exact-diff review + independent fresh `gpt-5.6-sol` `ultra` adversarial context + scope-fidelity verdict |
+| 3 | production/runtime services; live-injected context surfaces; provider routing; security/data-subject surfaces; major refactor / mass deletion | full 4-phase ladder (plan review, exact-diff, adversarial, acceptance) using fresh `gpt-5.6-sol` `ultra` contexts + review-board lanes |'''
 normalization = "whitespace"
 allowed_absences = []
 severity = "warn"
@@ -214,7 +234,7 @@ pattern = '''| Tier | Work class | Required review |
 | 0 | typo/cosmetic only — nothing that fixes observed misbehavior | none; commit carries a `tier0:` trailer |
 | 1 | contained single-surface change, clear tests | one exact-diff review pass by a capable lane, including a one-line scope echo against the operator-original ask |
 | 2 | cross-repo doctrine/pointer edits; behavior surfaces (prompts/skills/evals); medium-risk code | exact-diff review + independent adversarial lane (different vendor or fresh context) + scope-fidelity verdict |
-| 3 | production/runtime services; live-injected context surfaces; provider routing; security/data-subject surfaces; major refactor / mass deletion | full 4-phase ladder (plan review, exact-diff, adversarial, acceptance) on the highest-capability Claude lane + review-board lanes |'''
+| 3 | production/runtime services; live-injected context surfaces; provider routing; security/data-subject surfaces; major refactor / mass deletion | full 4-phase ladder (plan review, exact-diff, adversarial, acceptance) using fresh independent reviewer contexts at the highest model and effort allowed by active project policy + review-board lanes |'''
 normalization = "whitespace"
 allowed_absences = []
 severity = "warn"

@@ -5,6 +5,7 @@ from __future__ import annotations
 from pathlib import Path
 import argparse
 from dataclasses import dataclass
+import hashlib
 import math
 import os
 import re
@@ -57,7 +58,7 @@ DOCTRINE_TEXT_SUFFIXES = {".md", ".txt", ".toml", ".yaml", ".yml", ".json", ".ht
 AGENTS_REQUIRED_PHRASES = [
     "$ubergoal` is the only default/implicit Uber lifecycle router",
     "All skills in this pack must be installed and exposed to Codex sessions",
-    "Review and acceptance lanes use the highest-capability available Claude lane; record `lane_used` in the receipt; never silently downgrade. In gaia contexts the spine's lane policy governs (`knowledge/coding-agent-operating-spine.md` in the gaia workspace repo).",
+    "Review and acceptance lanes use a fresh, independent context on the strongest model and reasoning effort allowed by the active project policy; record `lane_used` in the receipt; never silently downgrade. Claude may be selected only when the operator explicitly requests Claude by name. In gaia contexts the spine's lane policy governs (`knowledge/coding-agent-operating-spine.md` in the gaia workspace repo).",
     "Phase skills are explicit or wrapper-invoked",
     "uberassess` = source-to-recommendation due diligence",
     "ubershow` = visual communication utility",
@@ -75,11 +76,23 @@ AGENTS_REQUIRED_PHRASES = [
 ]
 README_REQUIRED_PHRASES = [
     "Agent-facing source authority lives in [AGENTS.md](AGENTS.md)",
-    "Review and acceptance lanes use the highest-capability available Claude lane; record `lane_used` in the receipt; never silently downgrade.",
+    "Review and acceptance lanes use a fresh, independent context on the strongest model and reasoning effort allowed by the active project policy; record `lane_used` in the receipt; never silently downgrade. Claude may be selected only when the operator explicitly requests Claude by name.",
     "invoke `$ubergoal` as the implicit lifecycle router",
     "`$uberrca` is the general incident/debugging/root-cause utility",
     "`$ubershow`",
     "skills invoked",
+]
+FORBIDDEN_AUTOMATIC_CLAUDE_PATTERNS = [
+    r"review and acceptance lanes use the highest-capability available claude lane",
+    r"claude\s+--model\s+opus\s+--effort\s+max",
+    r"on the highest-capability claude lane \+ review-board lanes",
+    r"high-tier claude lane",
+    r"explicit claude review or cross-model review",
+    r"\bcross-model (?:review )?request\b(?![^.\n]{0,80}\b(?:does not|do not|not authorized)\b)[^.\n]{0,80}\bclaude\b",
+]
+ROUTING_ANSWER_KEY_REQUIRED_PHRASES = [
+    "Production launchd service edit.",
+    "full 4-phase ladder, active-project reviewer lane, safe-predecessor approval, live/runtime proof",
 ]
 ROADMAP_REQUIRED_PHRASES = [
     "`ubergoal` is the only implicit/default Uber lifecycle router",
@@ -107,7 +120,7 @@ DRIFT_REQUIRED_FIELDS = {
 }
 DRIFT_OPTIONAL_FIELDS = {"pending", "git_ref"}
 DRIFT_ADOPTION_STATES = {"report_only", "blocking", "planned"}
-DRIFT_MATCH_TYPES = {"literal", "regex"}
+DRIFT_MATCH_TYPES = {"literal", "regex", "sha256"}
 DRIFT_NORMALIZATIONS = {"none", "whitespace"}
 DRIFT_SEVERITIES = {"error", "warn"}
 INSTALL_SYNC_IGNORED_EXTRAS = {
@@ -406,6 +419,11 @@ def normalize_match_text(value: str, normalization: str) -> str:
     return value
 
 
+def sha256_pattern_digest(pattern: str) -> str | None:
+    match = re.fullmatch(r"(?:sha256:)?([0-9a-f]{64})", pattern.strip())
+    return match.group(1) if match else None
+
+
 def load_drift_registry(path: Path) -> tuple[list[dict[str, object]], list[str]]:
     if not path.exists():
         return [], [f"drift registry missing: {path}"]
@@ -440,6 +458,15 @@ def load_drift_registry(path: Path) -> tuple[list[dict[str, object]], list[str]]
             errors.append(f"drift registry entry {entry_id} has invalid match: {entry['match']}")
         if entry["normalization"] not in DRIFT_NORMALIZATIONS:
             errors.append(f"drift registry entry {entry_id} has invalid normalization: {entry['normalization']}")
+        if entry["match"] == "sha256" and entry["normalization"] != "none":
+            errors.append(f"drift registry entry {entry_id} sha256 match requires normalization=none")
+        if entry["match"] == "sha256" and (
+            not isinstance(entry["pattern"], str) or sha256_pattern_digest(entry["pattern"]) is None
+        ):
+            errors.append(
+                f"drift registry entry {entry_id} sha256 pattern must be 64 lowercase hex characters, "
+                "optionally prefixed by sha256:"
+            )
         if entry["severity"] not in DRIFT_SEVERITIES:
             errors.append(f"drift registry entry {entry_id} has invalid severity: {entry['severity']}")
         if not isinstance(entry["target_paths"], list) or not all(isinstance(item, str) for item in entry["target_paths"]):
@@ -458,7 +485,20 @@ def load_drift_registry(path: Path) -> tuple[list[dict[str, object]], list[str]]
     return entries, errors
 
 
-def pattern_matches(text: str, pattern: str, match_type: str, normalization: str) -> tuple[bool, str]:
+def pattern_matches(content: str | bytes, pattern: str, match_type: str, normalization: str) -> tuple[bool, str]:
+    raw_content = content.encode("utf-8") if isinstance(content, str) else content
+    if match_type == "sha256":
+        if normalization != "none":
+            return False, "sha256 match requires normalization=none"
+        expected = sha256_pattern_digest(pattern)
+        if expected is None:
+            return False, "invalid sha256 pattern"
+        actual = hashlib.sha256(raw_content).hexdigest()
+        return actual == expected, f"sha256 mismatch expected={expected} actual={actual}"
+    try:
+        text = raw_content.decode("utf-8")
+    except UnicodeDecodeError as exc:
+        return False, f"unreadable text: {exc}"
     comparable_text = normalize_match_text(text, normalization)
     comparable_pattern = normalize_match_text(expand_shell_token(pattern, use_env=False), normalization)
     if comparable_pattern == "":
@@ -482,43 +522,81 @@ def find_git_repo_root(path: Path) -> Path | None:
     return None
 
 
-def read_drift_target(target_path: Path, git_ref: str) -> tuple[str | None, bool, str, list[str], str | None]:
+def read_drift_target(
+    target_path: Path,
+    git_ref: str,
+    *,
+    require_git_ref: bool = False,
+) -> tuple[bytes | None, bool, str, list[str], str | None]:
     """Read a drift target, optionally from a git ref.
 
-    Returns text, exists, source, notes, error.
+    Returns exact bytes, exists, source, notes, error.
     """
     notes: list[str] = []
     if git_ref:
         repo_root = find_git_repo_root(target_path)
-        if repo_root is not None:
+        if repo_root is None:
+            if require_git_ref:
+                return (
+                    None,
+                    True,
+                    f"git_ref({git_ref})",
+                    notes,
+                    f"required git_ref source unavailable: no containing git repository for {target_path}",
+                )
+        else:
             try:
                 rel = target_path.expanduser().resolve(strict=False).relative_to(repo_root.resolve(strict=False))
             except ValueError:
                 rel = None
-            if rel is not None:
+            if rel is None:
+                if require_git_ref:
+                    return (
+                        None,
+                        True,
+                        f"git_ref({git_ref})",
+                        notes,
+                        f"required git_ref source unavailable: {target_path} is outside {repo_root}",
+                    )
+            else:
                 try:
                     proc = subprocess.run(
                         ["git", "-C", str(repo_root), "show", f"{git_ref}:{rel.as_posix()}"],
-                        text=True,
                         capture_output=True,
                         check=False,
                         timeout=20,
                     )
                 except (OSError, subprocess.TimeoutExpired) as exc:
+                    if require_git_ref:
+                        return (
+                            None,
+                            True,
+                            f"git_ref({git_ref})",
+                            notes,
+                            f"required git_ref source unreadable: {exc}",
+                        )
                     notes.append(f"git_ref fallback ref={git_ref} repo={repo_root} detail={exc}")
                 else:
                     if proc.returncode == 0:
                         return proc.stdout, True, f"git_ref({git_ref})", notes, None
-                    detail = (proc.stderr or proc.stdout or "").strip().splitlines()
-                    suffix = detail[0] if detail else f"exit {proc.returncode}"
+                    detail = (proc.stderr or proc.stdout or b"").strip().splitlines()
+                    suffix = detail[0].decode("utf-8", errors="replace") if detail else f"exit {proc.returncode}"
+                    if require_git_ref:
+                        return (
+                            None,
+                            True,
+                            f"git_ref({git_ref})",
+                            notes,
+                            f"required git_ref source unreadable: {suffix}",
+                        )
                     notes.append(f"git_ref fallback ref={git_ref} repo={repo_root} detail={suffix}")
 
     if not target_path.exists():
         return None, False, "working_tree", notes, None
     try:
-        return target_path.read_text(), True, "working_tree", notes, None
-    except UnicodeDecodeError as exc:
-        return None, True, "working_tree", notes, f"unreadable text: {exc}"
+        return target_path.read_bytes(), True, "working_tree", notes, None
+    except OSError as exc:
+        return None, True, "working_tree", notes, f"unreadable bytes: {exc}"
 
 
 def is_remote_tracking_ref(git_ref: str) -> bool:
@@ -602,6 +680,7 @@ def check_doctrine_drift(root: Path, *, registry_path: Path | None = None) -> Ch
         blocking_wave = entry["blocking_wave"]
         pending = str(entry.get("pending") or "")
         git_ref = str(entry.get("git_ref") or "")
+        match_type = str(entry["match"])
         allowed_absences = set(entry["allowed_absences"])  # type: ignore[arg-type]
         target_paths = entry["target_paths"]  # type: ignore[assignment]
         for raw_target in target_paths:
@@ -610,7 +689,11 @@ def check_doctrine_drift(root: Path, *, registry_path: Path | None = None) -> Ch
                 f"id={entry_id} target={raw_target} adoption_state={adoption_state} "
                 f"severity={severity} blocking_wave={blocking_wave}"
             )
-            text, target_exists, source, notes, read_error = read_drift_target(target_path, git_ref)
+            content, target_exists, source, notes, read_error = read_drift_target(
+                target_path,
+                git_ref,
+                require_git_ref=adoption_state == "blocking" and match_type == "sha256" and bool(git_ref),
+            )
             for note in notes:
                 lines.append(f"NOTE {detail_prefix} {note}")
             if not target_exists:
@@ -623,17 +706,17 @@ def check_doctrine_drift(root: Path, *, registry_path: Path | None = None) -> Ch
                 if adoption_state == "blocking" and not allowed:
                     blocking_failures.append(detail)
                 continue
-            if read_error is not None or text is None:
-                detail = f"DIVERGED {detail_prefix} source={source} detail={read_error or 'unreadable text'}"
+            if read_error is not None or content is None:
+                detail = f"DIVERGED {detail_prefix} source={source} detail={read_error or 'unreadable content'}"
                 lines.append(detail)
                 if adoption_state == "blocking":
                     blocking_failures.append(detail)
                 continue
 
             matched, miss_detail = pattern_matches(
-                text,
+                content,
                 str(entry["pattern"]),
-                str(entry["match"]),
+                match_type,
                 str(entry["normalization"]),
             )
             if matched:
@@ -750,8 +833,15 @@ def preceded_by_commit(line: str, start: int) -> bool:
     return re.search(r"\bcommit\s+$", prefix, flags=re.I) is not None
 
 
+def preceded_by_sha256(line: str, start: int) -> bool:
+    prefix = line[max(0, start - 16) : start]
+    return re.search(r"\bsha-?256:$", prefix, flags=re.I) is not None
+
+
 def allowed_hex_reference(line: str, match: re.Match[str]) -> bool:
     value = match.group(0)
+    if len(value) == 64:
+        return inside_backticks(line, match.start()) or preceded_by_sha256(line, match.start())
     if len(value) != 40:
         return False
     return inside_backticks(line, match.start()) or preceded_by_commit(line, match.start())
@@ -913,6 +1003,32 @@ def main() -> int:
         skills = install_loop_skills(readme, heading)
         if skills != set(PACK_SKILLS):
             errors.append(f"{heading} loop should include exactly {', '.join(PACK_SKILLS)}; found {sorted(skills)}")
+
+    active_review_policy_paths = [
+        root / "AGENTS.md",
+        root / "README.md",
+        root / "evals" / "routing" / "answer-key.md",
+        root / "ubergoal" / "SKILL.md",
+        root / "uberplan" / "SKILL.md",
+        root / "uberassess" / "SKILL.md",
+        root / "uberrca" / "SKILL.md",
+        root / "uberaccept" / "SKILL.md",
+        root / "uberplan" / "templates" / "plan-tier3.md",
+        root / "references" / "claude-adversary.md",
+    ]
+    for policy_path in active_review_policy_paths:
+        policy_text = read(policy_path)
+        for pattern in FORBIDDEN_AUTOMATIC_CLAUDE_PATTERNS:
+            if re.search(pattern, policy_text, flags=re.IGNORECASE):
+                errors.append(
+                    "active review policy restores forbidden automatic Claude default: "
+                    f"{policy_path.relative_to(root)} matches /{pattern}/i"
+                )
+
+    routing_answer_key = read(root / "evals" / "routing" / "answer-key.md")
+    for phrase in ROUTING_ANSWER_KEY_REQUIRED_PHRASES:
+        if phrase not in routing_answer_key:
+            errors.append(f"evals/routing/answer-key.md missing phrase: {phrase}")
 
     roadmap = read(root / "ROADMAP.md")
     for phrase in ROADMAP_REQUIRED_PHRASES:

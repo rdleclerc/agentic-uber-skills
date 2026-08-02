@@ -6,5 +6,6 @@
   "holdout_rubric": "holdout-rubric.hidden.json",
   "forward": "forward-inputs.json",
   "forward_rubric": "forward-rubric.hidden.json",
-  "promotion_receipt": "results/current-promotion.json"
+  "current_evaluation_status": "results/current-eval-status.json",
+  "historical_promotion_receipt": "results/current-promotion.json"
 }

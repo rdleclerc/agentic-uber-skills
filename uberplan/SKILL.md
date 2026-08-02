@@ -162,7 +162,7 @@ The plan passes only if it is the smallest linear plan that preserves the comple
 
 ## Optional Claude adversary
 
-Contract: `../references/claude-adversary.md` (opt-in only on explicit request; reconciliation + frame-independence rules there).
+Contract: `../references/claude-adversary.md` (opt-in only when the operator explicitly requests Claude by name; reconciliation + frame-independence rules there).
 
 Ask exactly:
 

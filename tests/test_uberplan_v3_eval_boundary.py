@@ -1,5 +1,6 @@
 import json
 import hashlib
+import re
 import unittest
 from pathlib import Path
 
@@ -30,6 +31,17 @@ GRADER_ONLY_KEYS = {
     "rubric",
     "shallow_failure",
 }
+
+
+def sha256(path: Path) -> str:
+    return hashlib.sha256(path.read_bytes()).hexdigest()
+
+
+def declared_sha256(value: str) -> str:
+    prefix = "sha256:"
+    if not value.startswith(prefix):
+        raise AssertionError(f"digest is not content-addressed: {value}")
+    return value[len(prefix) :]
 
 
 def all_keys(value):
@@ -187,18 +199,39 @@ class UberplanV3EvalBoundaryTest(unittest.TestCase):
                 path.name,
             )
 
-    def test_current_promotion_receipt_covers_every_group(self):
+    def test_current_candidate_is_not_promoted_and_historical_chain_is_consistent(self):
         manifest = json.loads(SUITE_MANIFEST.read_text())
-        self.assertIn(
-            "results/current-promotion.json", manifest["promotion_receipts"]
-        )
+        self.assertEqual("results/current-eval-status.json", manifest["current_evaluation_status"])
+        self.assertIn("results/current-promotion.json", manifest["historical_promotion_receipts"])
+        self.assertIn("results/transfer-selected.md", manifest["historical_promotion_receipts"])
+        status = json.loads((SUITE_MANIFEST.parent / manifest["current_evaluation_status"]).read_text())
+        current = status["current_candidate"]
+        historical = status["historical_evidence"]
+        required = status["required_fresh_eval"]
+        current_hash = sha256(ROOT / current["skill_path"])
+        evaluated_hash = "".join(historical["promoted_skill_sha256_chunks"])
+
+        self.assertEqual("fresh_eval_required", status["evaluation_state"])
+        self.assertEqual("not_promoted", status["promotion_state"])
+        self.assertFalse(current["fresh_eval_run"])
+        self.assertFalse(current["promoted"])
+        self.assertIn("proof for the current candidate", historical["legacy_filename_note"])
+        self.assertEqual(current_hash, "".join(current["skill_sha256_chunks"]))
+        self.assertNotEqual(current_hash, evaluated_hash)
+        self.assertEqual("gpt-5.6-sol", required["model"])
+        self.assertEqual("ultra", required["reasoning_effort"])
+        self.assertIn("generic cross-model", required["coverage_gap"])
+        self.assertIn("explicit Claude-by-name", required["coverage_gap"])
+        self.assertIn("3 completed calls", historical["historical_metric_gap"])
+        self.assertIn("13 total calls", historical["historical_metric_gap"])
+
+        promotion_binding = historical["promotion_receipt"]
+        promotion_path = SUITE_MANIFEST.parent / promotion_binding["path"]
         receipt = json.loads(
-            (SUITE_MANIFEST.parent / "results" / "current-promotion.json").read_text()
+            promotion_path.read_text()
         )
-        self.assertEqual(
-            hashlib.sha256((ROOT / "uberplan" / "SKILL.md").read_bytes()).hexdigest(),
-            "".join(receipt["skill_sha256_chunks"]),
-        )
+        self.assertEqual(sha256(promotion_path), declared_sha256(promotion_binding["sha256"]))
+        self.assertEqual(evaluated_hash, "".join(receipt["skill_sha256_chunks"]))
         raw = receipt["raw_trace_receipt"]
         self.assertFalse(raw["committed"])
         self.assertEqual("rerun_committed_suite", raw["portable_reproduction"])
@@ -215,6 +248,42 @@ class UberplanV3EvalBoundaryTest(unittest.TestCase):
                 for chunks in raw["artifact_sha256_chunks"].values()
             )
         )
+
+        replay = historical["replay_binding"]
+        replay_path = SUITE_MANIFEST.parent / replay["path"]
+        replay_text = replay_path.read_text()
+        self.assertEqual(sha256(replay_path), declared_sha256(replay["sha256"]))
+        self.assertEqual(evaluated_hash, "".join(replay["skill_sha256_chunks"]))
+        self.assertIn(f"`{evaluated_hash}`", replay_text)
+        receipt_artifacts = {
+            name: "".join(chunks)
+            for name, chunks in raw["artifact_sha256_chunks"].items()
+        }
+        replay_artifacts = {
+            name: declared_sha256(value)
+            for name, value in replay["raw_artifact_sha256"].items()
+        }
+        self.assertEqual(receipt_artifacts, replay_artifacts)
+        self.assertTrue(all(f"`{digest}`" in replay_text for digest in replay_artifacts.values()))
+
+        local_raw = ROOT / ".uberlearn-local" / "uberplan-v3" / "2026-07-26"
+        local_names = {
+            "working": "working.md",
+            "holdout_forward": "holdout-forward.md",
+            "transfer": "transfer.md",
+        }
+        if local_raw.exists():
+            self.assertEqual(sha256(local_raw / "manifest.md"), sha256(replay_path))
+            for group, filename in local_names.items():
+                self.assertEqual(replay_artifacts[group], sha256(local_raw / filename), group)
+
+        comparison = historical["comparison_binding"]
+        comparison_path = SUITE_MANIFEST.parent / comparison["path"]
+        comparison_text = comparison_path.read_text()
+        self.assertEqual(sha256(comparison_path), declared_sha256(comparison["sha256"]))
+        self.assertEqual(evaluated_hash, "".join(comparison["challenger_skill_sha256_chunks"]))
+        self.assertEqual(evaluated_hash, "".join(re.findall(r"`([0-9a-f]{16})`", comparison_text)[:4]))
+
         groups = {group["id"]: group for group in manifest["groups"]}
         self.assertEqual(set(groups), set(receipt["groups"]))
         for group_id, group in groups.items():
@@ -231,6 +300,22 @@ class UberplanV3EvalBoundaryTest(unittest.TestCase):
                     for case in receipt["groups"][group_id]
                 )
             )
+
+        transfer = receipt["groups"]["transfer"][0]
+        self.assertEqual("execution_lifecycle_handoff", transfer["id"])
+        self.assertEqual(720, transfer["output_words_estimate"])
+        self.assertEqual(3, transfer["completed_tool_calls"])
+        self.assertEqual("UNKNOWN", transfer["total_tokens"])
+        self.assertIn("Case: `execution_lifecycle_handoff`", comparison_text)
+        self.assertIn("Output words: approximately 720", comparison_text)
+        self.assertIn("Completed tool calls: 3", comparison_text)
+        self.assertIn("Total tokens: `UNKNOWN`", comparison_text)
+        self.assertIn("Mutation: none", comparison_text)
+
+        pack_binding = historical["pack_acceptance_binding"]
+        pack_receipt = SUITE_MANIFEST.parent / pack_binding["path"]
+        self.assertEqual(sha256(pack_receipt), declared_sha256(pack_binding["sha256"]))
+        self.assertTrue(all(f"`{chunk}`" in pack_receipt.read_text() for chunk in historical["promoted_skill_sha256_chunks"]))
 
 
 if __name__ == "__main__":

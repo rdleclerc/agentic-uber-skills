@@ -1,0 +1,51 @@
+{
+  "schema_version": 1,
+  "suite_id": "ubergoal-plan-authority-v1",
+  "evaluation_state": "fresh_eval_required",
+  "promotion_state": "not_promoted",
+  "current_candidate": {
+    "skill_path": "ubergoal/SKILL.md",
+    "skill_sha256_chunks": ["038960b0c88f16d0", "137347c8f302bc47", "9a05056163d6ea0b", "63f5fbf19c7d87b4"],
+    "fresh_eval_run": false,
+    "promoted": false
+  },
+  "required_fresh_eval": {
+    "model": "gpt-5.6-sol",
+    "reasoning_effort": "ultra",
+    "runner_status": "not_implemented",
+    "blocking_gap": "No committed runner builds isolated subject bundles, captures ordered traces, and grades each case in a separate fresh context. No fresh evaluation ran for the current skill bytes.",
+    "coverage_gap": "The frozen suite does not test that a generic cross-model request must not select Claude or that an explicit Claude-by-name request may select it. Those negative and positive routing cases are required before promotion."
+  },
+  "historical_evidence": {
+    "legacy_filename_note": "results/current-promotion.json and results/current-promotion.md retain historical filenames and bytes; suite.json classifies the JSON receipt as historical and neither is proof for the current candidate.",
+    "provenance_commit_chunks": ["75e323aae040e980", "2499b51c926779e3", "58390d6d"],
+    "promoted_skill_sha256_chunks": ["beb917b58ed412bc", "807b03fbcd1b9cc4", "4d72b94228dad1b2", "e7a8df9ba22be1d7"],
+    "promotion_receipt": {
+      "path": "results/current-promotion.json",
+      "sha256": "sha256:3ad7a2cd6549a2566e09b13229fecaa51f12948d60f90e67aa2ec4a889a2e83d"
+    },
+    "replay_binding": {
+      "path": "results/final-hash-replay.md",
+      "sha256": "sha256:1e4d664aebff6eb373f64173be9dd458438d9b6069db2620cad9d0901b81b6a8",
+      "skill_sha256_chunks": ["beb917b58ed412bc", "807b03fbcd1b9cc4", "4d72b94228dad1b2", "e7a8df9ba22be1d7"]
+    },
+    "comparison_binding": {
+      "path": "results/champion-comparison.md",
+      "sha256": "sha256:ad2414ef386a31a6cad111e03da343ad869d703e573cbb3c2a86fcb002450f79",
+      "challenger_skill_sha256_chunks": ["beb917b58ed412bc", "807b03fbcd1b9cc4", "4d72b94228dad1b2", "e7a8df9ba22be1d7"]
+    },
+    "champion_binding": {
+      "path": "baselines/champion-c8469eec.md",
+      "sha256": "sha256:da76bb578005bb7bd3f45d34eb2146759c0d1abb09d80227fa0d111a4f1cfe09",
+      "skill_sha256_chunks": ["e4d30ffe3336d853", "193cfcda2a6cf281", "0acd018b19de5acd", "f2c290a316e0eeb3"]
+    },
+    "sanitized_promotion_receipt": {
+      "path": "results/current-promotion.md",
+      "sha256": "sha256:d847abfd9ecbded2ed093410c42c845fe6e26a47d5295252d0f1d56719e59253"
+    },
+    "pack_acceptance_binding": {
+      "path": "../../coordination/uber-skills-56-eval-iteration/final-acceptance.md",
+      "sha256": "sha256:606fefd16ffbaea1fae1dfbc15940bb1c0f1548d3554b05d2e261e4f638c7f2f"
+    }
+  }
+}

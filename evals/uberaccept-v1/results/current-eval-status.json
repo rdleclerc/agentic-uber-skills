@@ -1,0 +1,66 @@
+{
+  "schema_version": 1,
+  "suite_id": "uberaccept-v1-lifecycle",
+  "evaluation_state": "fresh_eval_required",
+  "promotion_state": "not_promoted",
+  "current_candidate": {
+    "skill_path": "uberaccept/SKILL.md",
+    "skill_sha256_chunks": ["42bc93d143324b9e", "0de1dab16cfb0445", "2ae5311019fdae28", "abe6ab3a30005838"],
+    "fresh_eval_run": false,
+    "promoted": false
+  },
+  "required_fresh_eval": {
+    "model": "gpt-5.6-sol",
+    "reasoning_effort": "ultra",
+    "runner_status": "not_implemented",
+    "blocking_gap": "No committed runner builds the documented exact allowlist, isolates hidden rubrics from subjects, captures traces, and launches separate fresh graders. No fresh evaluation ran for the current skill bytes.",
+    "coverage_gap": "The frozen suite does not test that a generic cross-model request must not select Claude or that an explicit Claude-by-name request may select it. Those negative and positive routing cases are required before promotion."
+  },
+  "historical_evidence": {
+    "legacy_filename_note": "results/current-promotion.json retains its historical filename and bytes; suite.json classifies it as historical and it is not proof for the current candidate.",
+    "provenance_commit_chunks": ["75e323aae040e980", "2499b51c926779e3", "58390d6d"],
+    "promoted_skill_sha256_chunks": ["703c315578c04730", "ebb863ad285d6e10", "732d85a232e705b6", "2e09a76f1ed4bc6e"],
+    "promotion_receipt": {
+      "path": "results/current-promotion.json",
+      "sha256": "sha256:ff9ea22c4fac2dd84a46b0120c3a4008bed395d601cafc3ebf3af153e30031dd"
+    },
+    "replay_binding": {
+      "skill_sha256_chunks": ["703c315578c04730", "ebb863ad285d6e10", "732d85a232e705b6", "2e09a76f1ed4bc6e"],
+      "artifacts": [
+        {"path": "results/working-unknown-raw.md", "sha256": "sha256:129bb0714c0adc2c462df943bfafeecf92f55189d4cee3bb84c68cbb67d78b31"},
+        {"path": "results/first-blind-holdout-forward.md", "sha256": "sha256:4635943a98bffd9dd6bd4e74188b32602fa0fc46bdfca50dfee3d30fd0dbf8fa"},
+        {"path": "results/holdout-forward-raw.md", "sha256": "sha256:ba01a653666756f683dbdb7fe249324c7119b11b07ca5d96302724625d3f93cb"},
+        {"path": "results/holdout-forward-results.md", "sha256": "sha256:fe6965db0564ef6c75170f0de7920510d8f23bd44d4cf1bb38e452d46e8cc71e"},
+        {"path": "results/holdout-rubric-correction.md", "sha256": "sha256:3bbcfe3071906323d4b4318db8a03f6c626d918078f57f147a1b8f64a9531424"},
+        {"path": "results/forward-rubric-correction.md", "sha256": "sha256:1a043d62cf0a6b241dbae58960f694116e4bc00bfec73a3a71ea4cc5a3eb2f87"}
+      ]
+    },
+    "comparison_binding": {
+      "path": "results/working-comparison.md",
+      "sha256": "sha256:de91d878aec0bcb41e145b078eccbde27186216cc832de4276ed4cea2113ab5f",
+      "challenger_skill_sha256_chunks": ["703c315578c04730", "ebb863ad285d6e10", "732d85a232e705b6", "2e09a76f1ed4bc6e"]
+    },
+    "rubric_corrections": [
+      {
+        "receipt": "results/holdout-rubric-correction.md",
+        "original_rubric": "holdout-rubric.original.hidden.json",
+        "original_sha256": "sha256:e572116bc0529784ef732ddd888462abd30e855bd13c5b149f0f46d5bdecb84a",
+        "corrected_rubric": "holdout-rubric.hidden.json",
+        "corrected_sha256": "sha256:9b615ed011836f4c38092d425a290dd88404c76cde63d8a357498657173f1192",
+        "first_blind_receipt": "results/first-blind-holdout-forward.md"
+      },
+      {
+        "receipt": "results/forward-rubric-correction.md",
+        "original_rubric": "forward-rubric.original.hidden.json",
+        "original_sha256": "sha256:94f32fdc02bf8c6fffa50ad3f17227e29c92316fd2d6dddc3438762a135039d9",
+        "corrected_rubric": "forward-rubric.hidden.json",
+        "corrected_sha256": "sha256:c59533cd2edaa3b28c83dfd5fa546f1ad179a3de07c25233c49410dd90a9e8c7",
+        "first_blind_receipt": "results/first-blind-holdout-forward.md"
+      }
+    ],
+    "pack_acceptance_binding": {
+      "path": "../../coordination/uber-skills-56-eval-iteration/final-acceptance.md",
+      "sha256": "sha256:606fefd16ffbaea1fae1dfbc15940bb1c0f1548d3554b05d2e261e4f638c7f2f"
+    }
+  }
+}

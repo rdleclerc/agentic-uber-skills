@@ -75,12 +75,12 @@ is UberAccept. After plan, proof, and tier review pass, return
 | 0 | typo/cosmetic only — nothing that fixes observed misbehavior | none; commit carries a `tier0:` trailer |
 | 1 | contained single-surface change, clear tests | one exact-diff review pass by a capable lane, including a one-line scope echo against the operator-original ask |
 | 2 | cross-repo doctrine/pointer edits; behavior surfaces (prompts/skills/evals); medium-risk code | exact-diff review + independent adversarial lane (different vendor or fresh context) + scope-fidelity verdict |
-| 3 | production/runtime services; live-injected context surfaces; provider routing; security/data-subject surfaces; major refactor / mass deletion | full 4-phase ladder (plan review, exact-diff, adversarial, acceptance) on the highest-capability Claude lane + review-board lanes |
+| 3 | production/runtime services; live-injected context surfaces; provider routing; security/data-subject surfaces; major refactor / mass deletion | full 4-phase ladder (plan review, exact-diff, adversarial, acceptance) using fresh independent reviewer contexts at the highest model and effort allowed by active project policy + review-board lanes |
 
-Tier 2 uses one independent risk-specific lane, not a default board. Tier 3
-keeps its review-board lanes; specialist lenses are risk-activated. The
-repository ladder is canonical; if uncertain, take the higher tier.
-Effort scales with tier; xhigh only where a smaller slice cannot preserve safety.
+Tier 2 uses one independent risk-specific lane. Tier 3 keeps review-board lanes; risk
+activates specialists. Effort scales with tier; active project policy binds
+model and effort. Repository ladder is canonical; if uncertain, take the
+higher tier.
 
 ## Micro-intent fast path
 
@@ -103,7 +103,7 @@ failure intake only when the terminal state requires it.
 
 ## Optional Claude adversary
 
-Use only for explicit Claude review or cross-model review. Do not invoke Claude or alternate reviewer from task similarity. Contract (subprocess reference-following proven):
+Use only when the operator explicitly requests Claude by name. A generic cross-model request does not authorize selecting Claude. Do not invoke Claude or alternate reviewer from task similarity. Contract (subprocess reference-following proven):
 `../references/claude-adversary.md`.
 
 Ask: **Load-bearing goal?** **Skip test.** **Testable decomposition.**

@@ -110,7 +110,7 @@ Before recommending implementation for a system-scale question involving concurr
 
 ## Optional Claude adversary
 
-Contract: `../references/claude-adversary.md` (opt-in only on explicit request; reconciliation + frame-independence rules there).
+Contract: `../references/claude-adversary.md` (opt-in only when the operator explicitly requests Claude by name; reconciliation + frame-independence rules there).
 
 For `uberassess`, ask exactly:
 

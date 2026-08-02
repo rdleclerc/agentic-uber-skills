@@ -1,0 +1,48 @@
+{
+  "schema_version": 1,
+  "suite_id": "uberplan-behavioral-conformance-v1",
+  "evaluation_state": "fresh_eval_required",
+  "promotion_state": "not_promoted",
+  "current_candidate": {
+    "skill_path": "uberplan/SKILL.md",
+    "skill_sha256_chunks": ["d4d69fd7615ab236", "02385db8d9694f17", "c34cd52fd2f83286", "d59676d2eb89ca6a"],
+    "fresh_eval_run": false,
+    "promoted": false
+  },
+  "required_fresh_eval": {
+    "model": "gpt-5.6-sol",
+    "reasoning_effort": "ultra",
+    "runner_status": "not_implemented",
+    "blocking_gap": "The documented protocol is adapter-neutral and has no committed runner for disposable exact-allowlist subjects, separate hidden-rubric graders, and raw trace capture. No fresh evaluation ran for the current skill bytes.",
+    "coverage_gap": "The frozen suite does not test that a generic cross-model request must not select Claude or that an explicit Claude-by-name request may select it. Those negative and positive routing cases are required before promotion."
+  },
+  "historical_evidence": {
+    "legacy_filename_note": "results/current-promotion.json and results/transfer-selected.md retain historical filenames and bytes; suite.json classifies them as historical and neither is proof for the current candidate.",
+    "provenance_commit_chunks": ["75e323aae040e980", "2499b51c926779e3", "58390d6d"],
+    "promoted_skill_sha256_chunks": ["d03b6a48f0a735d8", "b18a21986990a7f9", "38c0e040cbcc7a8c", "dd57fd97fedaf248"],
+    "promotion_receipt": {
+      "path": "results/current-promotion.json",
+      "sha256": "sha256:b2b1c613d7e8b7f4b4a93773952afa776976c1f9ba26d080014aa3889ea6eb3c"
+    },
+    "replay_binding": {
+      "path": "results/historical-replay-manifest-d03b6a48.md",
+      "sha256": "sha256:e4f95a8249dfb16ba477cb34705fd0c7c799fb3adfc7bd96e4365bee4d7608a9",
+      "skill_sha256_chunks": ["d03b6a48f0a735d8", "b18a21986990a7f9", "38c0e040cbcc7a8c", "dd57fd97fedaf248"],
+      "raw_artifact_sha256": {
+        "working": "sha256:6e2e37fd833b60e65eefdedca14ae04c2c2351241f355a98ede81323ef95c862",
+        "holdout_forward": "sha256:3272ba71dc580e379d7392f1aae0e2d6ca5e400bdf92eaca039b8a203487fc11",
+        "transfer": "sha256:1be8d6d000155b91d07bd65aafb9921258952d960adfa7b8935f2cefb00d1ef6"
+      }
+    },
+    "comparison_binding": {
+      "path": "results/transfer-selected.md",
+      "sha256": "sha256:c2db2ca3d350efec8bca35671273eaec42e25ec632e3cd4aef8b55efefe32d2e",
+      "challenger_skill_sha256_chunks": ["d03b6a48f0a735d8", "b18a21986990a7f9", "38c0e040cbcc7a8c", "dd57fd97fedaf248"]
+    },
+    "historical_metric_gap": "The tracked transfer summary records 3 completed calls while the ignored raw trace records 13 total calls under a different or unclear accounting boundary. Preserve both; a fresh rerun must use suite.json metric definitions consistently.",
+    "pack_acceptance_binding": {
+      "path": "../../coordination/uber-skills-56-eval-iteration/final-acceptance.md",
+      "sha256": "sha256:606fefd16ffbaea1fae1dfbc15940bb1c0f1548d3554b05d2e261e4f638c7f2f"
+    }
+  }
+}

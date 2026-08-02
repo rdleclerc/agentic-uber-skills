@@ -1,6 +1,11 @@
-# Cross-model adversary opt-in contract
+# Claude adversary explicit opt-in contract
 
-Use this reference when an Uber skill invocation explicitly asks for Claude or cross-model review, for example: `with Claude`, `Claude review`, `Claude debate`, `Claude adversarial review`, `Claude for 2 rounds`, or `Codex review of Claude work`.
+Use this reference to invoke Claude only when an Uber skill invocation
+explicitly asks for Claude by name, for example: `with Claude`, `Claude review`,
+`Claude debate`, `Claude adversarial review`, or `Claude for 2 rounds`. A
+generic `cross-model review` request does not authorize selecting Claude. If the
+operator asks for `Codex review of Claude work`, apply the same role and
+reconciliation rules but invoke Codex, not Claude.
 
 Do **not** invoke the adversary from task similarity, from a generic need for quality, or from ordinary use of an Uber skill. A prompt without an explicit adversary phrase should not mention adversary invocation. Skill bodies keep only the skill-specific hot questions plus a pointer here when subprocess reference-following is proven; this file owns the shared contract.
 
@@ -8,6 +13,8 @@ Do **not** invoke the adversary from task similarity, from a generic need for qu
 
 - Trigger: `use uberplan with Claude to review this plan`.
 - Trigger: `use uberaccept with Claude for 2 rounds`.
+- Non-trigger example: `run a cross-model review` requires a provider choice or
+  project-policy route; it does not authorize Claude.
 - Non-trigger example: `use uberassess on this plan` should run ordinary `uberassess` without Claude adversary language.
 
 ## Role contract

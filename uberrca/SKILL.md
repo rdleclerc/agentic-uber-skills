@@ -70,7 +70,7 @@ You've overshot when:
 
 When you hit the depth floor: **back up 1–2 rungs on the ladder** and present that level as the practical root cause. Note that deeper causes exist but are outside practical fix scope.
 
-The right depth is: the deepest rung where the answer still names something you can actually enforce.
+The right depth is: the deepest rung where the answer still names something you can enforce.
 
 ## RCA ladder
 
@@ -101,7 +101,7 @@ Treat these as incomplete until traced deeper:
 
 ## Repeated test failure trigger
 
-If a coding run hits clear repeated failures from the same test command or failure family, do not keep patching through the loop. At or before five consecutive clear failures, preserve the command output, build the RCA ladder, name the missing invariant, and hand the revised hypothesis back to `uberplan`/`ubergoal` before implementation resumes.
+If a run hits clear repeated failures from the same test command or failure family, do not keep patching through the loop. At or before five consecutive clear failures, preserve the command output, build the RCA ladder, name the missing invariant, and hand the hypothesis back to `uberplan`/`ubergoal` before implementation resumes.
 
 ## Architecture stepback route
 
@@ -124,7 +124,7 @@ Avoid: special cases, prompt scolding, longer timeouts, manual cleanup, one-inst
 
 For autonomous agent workflows, do not default to human escalation for ordinary editorial or operational judgment. Exhaustion means: exit the normal loop and enter an autonomous resolution path owned by the responsible role. If the incident reveals a system bug, log it as a side effect, then still make the decision and move on.
 
-Human attention is for infrastructure impossibility or genuine policy ambiguity — not ordinary operational taste.
+Human attention is for infrastructure impossibility or policy ambiguity — not operational taste.
 
 ## Required output shape
 
@@ -142,7 +142,7 @@ Human attention is for infrastructure impossibility or genuine policy ambiguity 
 
 ## Optional Claude adversary
 
-Contract: `../references/claude-adversary.md` (opt-in only on explicit request; reconciliation + frame-independence rules there).
+Contract: `../references/claude-adversary.md` (opt-in only when the operator explicitly requests Claude by name; reconciliation + frame-independence rules there).
 
 For `uberrca`, ask exactly:
 

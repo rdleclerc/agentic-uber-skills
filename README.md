@@ -6,7 +6,7 @@ The pack is not tied to Claude or Codex. Some skills include optional adapter no
 
 Agent-facing source authority lives in [AGENTS.md](AGENTS.md). The default routing rule is: invoke `$ubergoal` as the implicit lifecycle router; invoke utility skills like `$uberrca` and `$ubershow` directly when their specific trigger applies; invoke phase skills directly only when explicitly named or when `$ubergoal` routes to them. Codex sessions should expose every skill in this pack; phase-skill descriptions intentionally say not to auto-trigger from task similarity, which prevents ceremony creep from broad descriptions without hiding the skills from direct use.
 
-Review and acceptance lanes use the highest-capability available Claude lane; record `lane_used` in the receipt; never silently downgrade.
+Review and acceptance lanes use a fresh, independent context on the strongest model and reasoning effort allowed by the active project policy; record `lane_used` in the receipt; never silently downgrade. Claude may be selected only when the operator explicitly requests Claude by name.
 
 ## Skills
 

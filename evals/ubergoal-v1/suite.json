@@ -33,5 +33,6 @@
     "output_words",
     "completed_tool_calls"
   ],
-  "promotion_receipt": "results/current-promotion.json"
+  "current_evaluation_status": "results/current-eval-status.json",
+  "historical_promotion_receipt": "results/current-promotion.json"
 }

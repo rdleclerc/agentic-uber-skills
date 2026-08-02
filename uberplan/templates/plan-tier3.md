@@ -305,7 +305,7 @@ Required for Tier 2/3 after the first concrete plan/task map is drafted and befo
 
 - V0 plan artifact/version reviewed:
 - Premortem reviewer: main agent / Claude / other adversarial reviewer:
-- If Claude/reviewer was requested or available, prompt/output path:
+- If Claude was explicitly requested by name, or another reviewer was selected by active project policy, prompt/output path:
 - Assumed failure summary:
 - Most likely execution failure:
 - Missing affordance/context/tool/source:

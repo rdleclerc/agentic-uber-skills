@@ -1,7 +1,9 @@
 from __future__ import annotations
 
+import hashlib
 import os
 import json
+import re
 import subprocess
 import shutil
 import sys
@@ -10,7 +12,7 @@ import tomllib
 import unittest
 from pathlib import Path
 
-from scripts.lint_pack_contract import check_doctrine_drift
+from scripts.lint_pack_contract import check_doctrine_drift, pattern_matches
 
 ROOT = Path(__file__).resolve().parents[1]
 SHAPE_LINT = ROOT / "uber-skill-creator" / "scripts" / "lint_skill_shape.py"
@@ -31,7 +33,7 @@ PACK_SKILLS = [
 def copy_lint_root(destination: Path) -> Path:
     lint_root = destination / "pack"
     lint_root.mkdir()
-    for rel in ["AGENTS.md", "CLAUDE.md", "README.md", "ROADMAP.md", "references"]:
+    for rel in ["AGENTS.md", "CLAUDE.md", "README.md", "ROADMAP.md", "evals/routing", "references"]:
         src = ROOT / rel
         dst = lint_root / rel
         if src.is_dir():
@@ -69,6 +71,19 @@ def write_fake_git_show(bin_dir: Path, content: str) -> None:
         "if [ \"$1\" = \"-C\" ] && [ \"$3\" = \"show\" ]; then\n"
         f"  printf '%s\\n' {content!r}\n"
         "  exit 0\n"
+        "fi\n"
+        "exit 1\n"
+    )
+    fake_git.chmod(0o755)
+
+
+def write_fake_git_show_failure(bin_dir: Path, detail: str) -> None:
+    fake_git = bin_dir / "git"
+    fake_git.write_text(
+        "#!/bin/sh\n"
+        "if [ \"$1\" = \"-C\" ] && [ \"$3\" = \"show\" ]; then\n"
+        f"  printf '%s\\n' {detail!r} >&2\n"
+        "  exit 128\n"
         "fi\n"
         "exit 1\n"
     )
@@ -114,15 +129,94 @@ def drift_patterns_by_id(registry_path: Path) -> dict[str, str]:
     }
 
 
-def assert_tier_ladder_mirror_matches(testcase: unittest.TestCase, registry_path: Path) -> None:
+def tier_ladder_rows(pattern: str) -> dict[int, tuple[str, str]]:
+    return {
+        int(match.group(1)): (match.group(2).strip(), match.group(3).strip())
+        for match in re.finditer(r"\|\s*([0-3])\s*\|\s*([^|]+?)\s*\|\s*([^|]+?)\s*\|", pattern)
+    }
+
+
+def assert_tier_ladder_project_bindings(testcase: unittest.TestCase, registry_path: Path) -> None:
     patterns = drift_patterns_by_id(registry_path)
-    testcase.assertEqual(patterns["tier-ladder-table"], patterns["tier-ladder-table-pack"])
+    gaia_rows = tier_ladder_rows(patterns["tier-ladder-table"])
+    pack_rows = tier_ladder_rows(patterns["tier-ladder-table-pack"])
+    testcase.assertEqual(set(gaia_rows), {0, 1, 2, 3})
+    testcase.assertEqual(set(pack_rows), {0, 1, 2, 3})
+    testcase.assertEqual(
+        {tier: work_class for tier, (work_class, _) in gaia_rows.items()},
+        {tier: work_class for tier, (work_class, _) in pack_rows.items()},
+    )
+    testcase.assertEqual(gaia_rows[0][1], pack_rows[0][1])
+    for tier in (1, 2, 3):
+        testcase.assertIn("gpt-5.6-sol", gaia_rows[tier][1])
+        testcase.assertIn("ultra", gaia_rows[tier][1])
+        testcase.assertNotIn("gpt-5.6-sol", pack_rows[tier][1])
+    testcase.assertIn("capable lane", pack_rows[1][1])
+    testcase.assertIn("different vendor or fresh context", pack_rows[2][1])
+    testcase.assertIn("active project policy", pack_rows[3][1])
 
 
 class PackContractTests(unittest.TestCase):
     def test_pack_contract_lint_passes(self) -> None:
         proc = run_pack_lint(ROOT)
         self.assertEqual(proc.returncode, 0, proc.stderr + proc.stdout)
+
+    def test_pack_contract_lint_rejects_restored_automatic_claude_default(self) -> None:
+        with tempfile.TemporaryDirectory() as td:
+            lint_root = copy_lint_root(Path(td))
+            agents = lint_root / "AGENTS.md"
+            agents.write_text(
+                agents.read_text()
+                + "\nReview and acceptance lanes use the highest-capability available Claude lane.\n"
+            )
+            proc = run_pack_lint(lint_root)
+
+        self.assertNotEqual(proc.returncode, 0)
+        self.assertIn("forbidden automatic Claude default", proc.stderr)
+
+    def test_pack_contract_lint_rejects_cross_model_claude_loophole_in_skill(self) -> None:
+        with tempfile.TemporaryDirectory() as td:
+            lint_root = copy_lint_root(Path(td))
+            skill = lint_root / "ubergoal" / "SKILL.md"
+            skill.write_text(
+                skill.read_text()
+                + "\nUse only for explicit Claude review or cross-model review.\n"
+            )
+            proc = run_pack_lint(lint_root)
+
+        self.assertNotEqual(proc.returncode, 0)
+        self.assertIn("forbidden automatic Claude default", proc.stderr)
+        self.assertIn("ubergoal/SKILL.md", proc.stderr)
+
+    def test_pack_contract_lint_rejects_cross_model_claude_loophole_in_reference(self) -> None:
+        with tempfile.TemporaryDirectory() as td:
+            lint_root = copy_lint_root(Path(td))
+            reference = lint_root / "references" / "claude-adversary.md"
+            reference.write_text(
+                reference.read_text()
+                + "\nA cross-model review request may invoke Claude.\n"
+            )
+            proc = run_pack_lint(lint_root)
+
+        self.assertNotEqual(proc.returncode, 0)
+        self.assertIn("forbidden automatic Claude default", proc.stderr)
+        self.assertIn("references/claude-adversary.md", proc.stderr)
+
+    def test_pack_contract_lint_rejects_automatic_claude_lane_in_routing_eval(self) -> None:
+        with tempfile.TemporaryDirectory() as td:
+            lint_root = copy_lint_root(Path(td))
+            answer_key = lint_root / "evals" / "routing" / "answer-key.md"
+            answer_key.write_text(
+                answer_key.read_text().replace(
+                    "active-project reviewer lane",
+                    "high-tier Claude lane",
+                )
+            )
+            proc = run_pack_lint(lint_root)
+
+        self.assertNotEqual(proc.returncode, 0)
+        self.assertIn("forbidden automatic Claude default", proc.stderr)
+        self.assertIn("evals/routing/answer-key.md", proc.stderr)
 
     def test_pack_contract_lint_rejects_model_pinned_frontmatter(self) -> None:
         with tempfile.TemporaryDirectory() as td:
@@ -264,6 +358,8 @@ class PackContractTests(unittest.TestCase):
         report = check_doctrine_drift(ROOT)
         detail = "\n".join([*report.lines, *report.blocking_failures, *report.errors])
         self.assertEqual(report.exit_code(strict=True), 0, detail)
+        self.assertIn("MATCH id=lane-policy-spine-sha256", detail)
+        self.assertIn("source=git_ref(origin/main)", detail)
 
     def test_full_strict_lint_fails_seeded_blocking_drift(self) -> None:
         with tempfile.TemporaryDirectory() as td:
@@ -297,10 +393,125 @@ blocking_wave = 1
             self.assertIn("DIVERGED id=strict-fixture-drift", strict.stdout)
             self.assertIn("doctrine drift: DIVERGED id=strict-fixture-drift", strict.stderr)
 
-    def test_tier_ladder_registry_patterns_are_mirrored(self) -> None:
-        assert_tier_ladder_mirror_matches(self, ROOT / "references" / "drift-fingerprints.toml")
+    def test_gaia_lane_policy_fingerprint_rejects_model_or_effort_fallback(self) -> None:
+        pattern = drift_patterns_by_id(ROOT / "references" / "drift-fingerprints.toml")["lane-policy-spine"]
+        canonical_policy = """
+For Tier ≥1 Gaia/OpenClaw work, use a fresh, isolated Codex Sol review context
+unless Rob explicitly waives it. The current default binding is:
+- model: `gpt-5.6-sol`
+- reasoning effort: `ultra`
+If that exact binding is unavailable, stop before merge, commit, or completion
+claims and report local-only verification unless Rob waives the gate. Do not
+substitute another model or lower effort automatically. Never invoke Claude as
+a fallback; use Claude only when Rob explicitly requests it for that task.
+"""
+        matched, detail = pattern_matches(canonical_policy, pattern, "regex", "whitespace")
+        self.assertTrue(matched, detail)
+
+        replacement_cases = {
+            "other-model": canonical_policy.replace("gpt-5.6-sol", "gpt-5.5"),
+            "lower-effort": canonical_policy.replace("`ultra`", "`xhigh`"),
+            "automatic-fallback": canonical_policy.replace(
+                "If that exact binding is unavailable, stop before merge, commit, or completion\n"
+                "claims and report local-only verification unless Rob waives the gate. Do not\n"
+                "substitute another model or lower effort automatically.",
+                "If that exact binding is unavailable, use the highest-capability Codex model "
+                "and reasoning effort available and record the fallback.",
+            ),
+        }
+        for name, policy in replacement_cases.items():
+            with self.subTest(name=name):
+                matched, _ = pattern_matches(policy, pattern, "regex", "whitespace")
+                self.assertFalse(matched)
+
+    def test_sha256_fingerprint_matches_exact_blob_and_rejects_any_byte_change(self) -> None:
+        with tempfile.TemporaryDirectory() as td:
+            root = Path(td)
+            target = root / "spine.md"
+            canonical_blob = b"# Authoritative policy\nSol Ultra is required.\n\x00\xff"
+            digest = hashlib.sha256(canonical_blob).hexdigest()
+            target.write_bytes(canonical_blob)
+            registry = root / "registry.toml"
+            registry.write_text(
+                f"""
+[[fingerprint]]
+id = "fixture-spine-sha256"
+owner = "pack maintainer"
+adoption_state = "blocking"
+canonical_source = "fixture"
+target_paths = ["spine.md"]
+match = "sha256"
+pattern = "sha256:{digest}"
+normalization = "none"
+allowed_absences = []
+severity = "error"
+blocking_wave = 1
+""".lstrip()
+            )
+            exact = check_doctrine_drift(root, registry_path=registry)
+            exact_detail = "\n".join([*exact.lines, *exact.blocking_failures, *exact.errors])
+            self.assertEqual(exact.exit_code(strict=True), 0, exact_detail)
+            self.assertIn("MATCH id=fixture-spine-sha256", exact_detail)
+
+            changed_blobs = {
+                "additive": canonical_blob + b"\nAny additive policy text changes the blob.\n",
+                "mutating": canonical_blob.replace(b"required", b"optional", 1),
+                "single-byte": canonical_blob[:-1] + b"\xfe",
+            }
+            for name, changed_blob in changed_blobs.items():
+                with self.subTest(name=name):
+                    target.write_bytes(changed_blob)
+                    changed = check_doctrine_drift(root, registry_path=registry)
+                    changed_detail = "\n".join([*changed.lines, *changed.blocking_failures, *changed.errors])
+                    self.assertEqual(changed.exit_code(strict=True), 1, changed_detail)
+                    self.assertIn("DIVERGED id=fixture-spine-sha256", changed_detail)
+                    self.assertIn("sha256 mismatch", changed_detail)
+
+    def test_blocking_sha256_fingerprint_fails_closed_when_declared_ref_is_missing(self) -> None:
+        with tempfile.TemporaryDirectory() as td:
+            temp = Path(td)
+            repo = temp / "repo"
+            repo.mkdir()
+            (repo / ".git").mkdir()
+            canonical_blob = b"working tree bytes match the reviewed digest exactly\n"
+            target = repo / "spine.md"
+            target.write_bytes(canonical_blob)
+            digest = hashlib.sha256(canonical_blob).hexdigest()
+
+            bin_dir = temp / "bin"
+            bin_dir.mkdir()
+            write_fake_git_show_failure(bin_dir, "fatal: invalid object name 'missing-ref'")
+            registry = temp / "registry.toml"
+            registry.write_text(
+                f"""
+[[fingerprint]]
+id = "fixture-required-ref-sha256"
+owner = "pack maintainer"
+adoption_state = "blocking"
+canonical_source = "fixture"
+target_paths = ["{target.as_posix()}"]
+git_ref = "missing-ref"
+match = "sha256"
+pattern = "sha256:{digest}"
+normalization = "none"
+allowed_absences = []
+severity = "error"
+blocking_wave = 1
+""".lstrip()
+            )
+            env = {"PATH": f"{bin_dir}{os.pathsep}{os.environ['PATH']}"}
+            proc = run_pack_lint(ROOT, "--drift", "--strict", "--drift-registry", str(registry), env=env)
+
+            self.assertNotEqual(proc.returncode, 0, proc.stderr + proc.stdout)
+            self.assertIn("DIVERGED id=fixture-required-ref-sha256", proc.stdout)
+            self.assertIn("source=git_ref(missing-ref)", proc.stdout)
+            self.assertIn("required git_ref source unreadable", proc.stdout)
+            self.assertNotIn("MATCH id=fixture-required-ref-sha256", proc.stdout)
+
+    def test_tier_ladder_registry_keeps_gaia_pinned_and_pack_portable(self) -> None:
+        assert_tier_ladder_project_bindings(self, ROOT / "references" / "drift-fingerprints.toml")
         with self.assertRaises(AssertionError):
-            assert_tier_ladder_mirror_matches(
+            assert_tier_ladder_project_bindings(
                 self,
                 ROOT / "tests" / "fixtures" / "drift" / "tier-mirror-diverged.toml",
             )
@@ -623,11 +834,12 @@ blocking_wave = 1
             self.assertIn("../references/claude-adversary.md", body, skill)
             if skill == "ubergoal":
                 self.assertIn("Do not invoke Claude or alternate reviewer from task similarity", body, skill)
-                self.assertIn("explicit Claude review or cross-model review", body, skill)
+                self.assertIn("explicitly requests Claude by name", body, skill)
+                self.assertIn("generic cross-model request does not authorize selecting Claude", body, skill)
                 self.assertIn("subprocess reference-following proven", body, skill)
             else:
                 self.assertIn(
-                    "Contract: `../references/claude-adversary.md` (opt-in only on explicit request; reconciliation + frame-independence rules there).",
+                    "Contract: `../references/claude-adversary.md` (opt-in only when the operator explicitly requests Claude by name; reconciliation + frame-independence rules there).",
                     body,
                     skill,
                 )
