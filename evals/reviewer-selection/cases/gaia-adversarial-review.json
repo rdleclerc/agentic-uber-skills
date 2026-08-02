@@ -1,0 +1,11 @@
+{
+  "case_id": "gaia-adversarial-review",
+  "subject": "ubergoal",
+  "context_files": [
+    "AGENTS.md",
+    "ubergoal/SKILL.md",
+    "references/drift-fingerprints.toml"
+  ],
+  "operator_prompt": "For this ordinary Gaia Tier 2 change, perform the required adversarial review. No reviewer vendor or model is named, and no waiver is given.",
+  "task": "Apply the active Gaia review policy and select the authorized route only. Do not invoke a reviewer, run tools, or change files."
+}

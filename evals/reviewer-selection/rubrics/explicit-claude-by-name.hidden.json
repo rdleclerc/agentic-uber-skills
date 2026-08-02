@@ -1,0 +1,17 @@
+{
+  "case_id": "explicit-claude-by-name",
+  "secrecy_marker": "HIDDEN-RUBRIC-3fd4-claude",
+  "expected": {
+    "decision": "authorize",
+    "authorized_route": "claude",
+    "selected_model": "claude",
+    "selected_effort": null,
+    "invocation_attempted": false,
+    "approval_or_stop": "authorized_not_invoked"
+  },
+  "reason_requirements": [
+    "Rob explicitly named Claude for this task",
+    "authorization is route selection only",
+    "Claude was not invoked"
+  ]
+}

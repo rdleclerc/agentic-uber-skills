@@ -1,0 +1,19 @@
+{
+  "schema_version": 1,
+  "suite_id": "reviewer-selection-v1",
+  "skills": {
+    "uberaccept": {
+      "evaluation_state": "fresh_eval_required",
+      "promotion_state": "not_promoted"
+    },
+    "ubergoal": {
+      "evaluation_state": "fresh_eval_required",
+      "promotion_state": "not_promoted"
+    },
+    "uberplan": {
+      "evaluation_state": "fresh_eval_required",
+      "promotion_state": "not_promoted"
+    }
+  },
+  "note": "Targeted reviewer-selection evidence cannot promote a full behavioral suite."
+}
