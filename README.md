@@ -4,7 +4,7 @@ A platform-neutral skill pack for agentic coding workflows. These are portable `
 
 The pack is not tied to Claude or Codex. Some skills include optional adapter notes for specific runtimes, such as Codex goals, but the core workflows are general agentic engineering protocols.
 
-Agent-facing source authority lives in [AGENTS.md](AGENTS.md). The default routing rule is: invoke `$ubergoal` as the implicit lifecycle router; invoke utility skills like `$uberrca` and `$ubershow` directly when their specific trigger applies; invoke phase skills directly only when explicitly named or when `$ubergoal` routes to them. Codex sessions should expose every skill in this pack; phase-skill descriptions intentionally say not to auto-trigger from task similarity, which prevents ceremony creep from broad descriptions without hiding the skills from direct use.
+Agent-facing source authority lives in [AGENTS.md](AGENTS.md). The default routing rule is: invoke `$ubergoal` as the implicit lifecycle router; invoke utility skills like `$uberrca` and `$ubershow` directly when their specific trigger applies; let `$testing-strategy` run automatically when work includes a test or product-validation decision; invoke phase skills directly only when explicitly named or when `$ubergoal` routes to them. Codex sessions should expose every skill in this pack; phase-skill descriptions intentionally say not to auto-trigger from task similarity, which prevents ceremony creep from broad descriptions without hiding the skills from direct use.
 
 Review and acceptance lanes use a fresh, independent context on the strongest model and reasoning effort allowed by the active project policy; record `lane_used` in the receipt; never silently downgrade. Claude may be selected only when the operator explicitly requests Claude by name.
 
@@ -22,6 +22,7 @@ Review and acceptance lanes use a fresh, independent context on the strongest mo
 | [uberassess](uberassess/) | Explicit source-to-recommendation assessment for X/GitHub/arXiv/articles/videos before adoption; preserves source authority and approval boundaries |
 | [uberarchitect](uberarchitect/) | Architecture stepback gate for concurrency, queue/worker, gateway, orchestration, backpressure, repeated-timeout, and symptom-patching failures before local code patches harden |
 | [ubershow](ubershow/) | Browser-first static visual artifacts for high-bandwidth decision boards, plans, maps, timelines, and visual briefs with copyable decision receipts |
+| [testing-strategy](testing-strategy/) | Automatic utility for choosing the smallest contract-preserving test or product-validation proof, including package artifacts and duplicate-test cleanup |
 
 ## Behavioral conformance
 
@@ -50,7 +51,7 @@ Copy or symlink the skill directories into your agent runtime's local skill dire
 ```bash
 # Example: install the Uber family into a generic local skill dir
 mkdir -p ~/.agent/skills
-for s in uberrca uber-skill-creator ubergoal uberplan uberaccept uberskillevolver ubersimplify uberassess uberarchitect ubershow; do
+for s in uberrca uber-skill-creator ubergoal uberplan uberaccept uberskillevolver ubersimplify uberassess uberarchitect ubershow testing-strategy; do
   rm -rf "$HOME/.agent/skills/$s"
   ln -s "$PWD/$s" "$HOME/.agent/skills/$s"
 done
@@ -60,19 +61,19 @@ done
 
 ```bash
 mkdir -p ~/.codex/skills
-for s in uberrca uber-skill-creator ubergoal uberplan uberaccept uberskillevolver ubersimplify uberassess uberarchitect ubershow; do
+for s in uberrca uber-skill-creator ubergoal uberplan uberaccept uberskillevolver ubersimplify uberassess uberarchitect ubershow testing-strategy; do
   rm -rf "$HOME/.codex/skills/$s"
   ln -s "$PWD/$s" "$HOME/.codex/skills/$s"
 done
 ```
 
-Invoke the wrapper with `$ubergoal` by default. Call `$uberrca` for general RCA, call `$uberarchitect` when a system-scale failure needs an architecture stepback before patches, call `$ubershow` when a browser-first visual decision surface will materially improve understanding, and call phase skills directly only when you explicitly want `$uberplan`, `$uberaccept`, `$uberskillevolver`, `$ubersimplify`, `$uberassess`, or `$uberarchitect`.
+Invoke the wrapper with `$ubergoal` by default. `$testing-strategy` runs automatically for test or product-validation decisions inside or outside that lifecycle; it does not replace it. Call `$uberrca` for general RCA, call `$uberarchitect` when a system-scale failure needs an architecture stepback before patches, call `$ubershow` when a browser-first visual decision surface will materially improve understanding, and call phase skills directly only when you explicitly want `$uberplan`, `$uberaccept`, `$uberskillevolver`, `$ubersimplify`, `$uberassess`, or `$uberarchitect`.
 
 ### Claude Code-compatible install
 
 ```bash
 mkdir -p ~/.claude/skills
-for s in uberrca uber-skill-creator ubergoal uberplan uberaccept uberskillevolver ubersimplify uberassess uberarchitect ubershow; do
+for s in uberrca uber-skill-creator ubergoal uberplan uberaccept uberskillevolver ubersimplify uberassess uberarchitect ubershow testing-strategy; do
   rm -rf "$HOME/.claude/skills/$s"
   ln -s "$PWD/$s" "$HOME/.claude/skills/$s"
 done
@@ -103,7 +104,7 @@ Keep raw learning records local/private. Commit only sanitized learning packets 
 
 ## Utility skills and deprecated aliases
 
-Not every directory in this pack is an Uber lifecycle phase. `uber-skill-creator`, `uberrca`, and `ubershow` are bundled utilities used by the Uber workflow ecosystem. `uber-skill-creator` is the canonical creator/migration skill for general portable SKILL.md skills. Older local installs named `skill-creator` or `skill-creator-pro` should redirect to `uber-skill-creator` for general skills, or to `openclaw-agentic-skill-creator` for OpenClaw/Gaia/Type0/Soho-specific skills; do not keep parallel creator implementations with overlapping trigger descriptions.
+Not every directory in this pack is an Uber lifecycle phase. `uber-skill-creator`, `uberrca`, `ubershow`, and `testing-strategy` are bundled utilities used by the Uber workflow ecosystem. `testing-strategy` runs automatically for test-selection decisions inside or outside `$ubergoal`; it does not replace lifecycle routing or acceptance. `uber-skill-creator` is the canonical creator/migration skill for general portable SKILL.md skills. Older local installs named `skill-creator` or `skill-creator-pro` should redirect to `uber-skill-creator` for general skills, or to `openclaw-agentic-skill-creator` for OpenClaw/Gaia/Type0/Soho-specific skills; do not keep parallel creator implementations with overlapping trigger descriptions.
 
 ## Update
 

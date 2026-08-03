@@ -1,0 +1,6 @@
+interface:
+  display_name: "Testing Strategy"
+  short_description: "Choose sharp, contract-preserving tests"
+  default_prompt: "Use $testing-strategy to decide whether a change needs proof, select the smallest current-checkout or installed-artifact test, state skipped tests and the escalation reason, and avoid duplicate branches or broad-suite ceremony."
+policy:
+  allow_implicit_invocation: true

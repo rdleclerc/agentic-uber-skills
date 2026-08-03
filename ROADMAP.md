@@ -13,6 +13,7 @@ This roadmap keeps the skill pack evolving without turning it into bureaucracy. 
 - `uberassess` = source-to-recommendation due diligence — explicit assessment for X/GitHub/arXiv/articles/videos/Hermes signals before adoption; produces packets, not implementation.
 - `ubershow` — browser-first visual communication utility for decision boards, implementation plans, maps, timelines, questionnaires, and visual briefs; produces generated HTML views with copyable decision receipts, not source-of-truth records.
 - `uber-skill-creator` — portable Uber skill authoring and migration utility for Codex, Claude, and SKILL.md-compatible agents; keeps general skill-authoring guidance under version control and adds legacy alias deprecation support, read-only shape lint, eval-driven iteration, HTML review reports, and trigger-description tuning without runtime-specific commands.
+- `testing-strategy` — automatic portable test-selection utility that runs inside or outside `ubergoal` when an agent must decide whether and how to test or validate a change; it keeps one owner per contract, favors current-checkout or installed-artifact proof, and is not a lifecycle phase or test runner.
 - Loop engineering mode — recurring/watch-and-fix/scheduled loops stay inside the existing lifecycle: `ubergoal` marks/routes, `uberplan` owns the Loop Contract, `uberaccept` owns loop acceptance, and `uberskillevolver` owns reviewed learning. `references/loop-engineering.md` is the shared source; `uberloop` remains uncreated until at least three real loop-building runs prove extraction benefit >> cost.
 
 ## Routing and source-authority policy
@@ -23,6 +24,7 @@ This roadmap keeps the skill pack evolving without turning it into bureaucracy. 
 - `uberassess` is explicit or routed by `ubergoal` for source/artifact assessment only. Its portable validator requires completed project rows but does not hardcode Rob-local project names; local adapter references may provide Type0/Gaia/Soho/Hermes defaults.
 - `uberrca` is the general incident RCA utility. Agent Advocate is the agent-behavior RCA lens inside planning/acceptance/simplification. If both apply, use the `uberrca` ladder plus Agent Advocate human-counterfactual evidence.
 - `ubershow` is a utility skill, not a lifecycle phase. It may be used when the user needs visual compression; source authority stays in Markdown/session logs/ADRs and decisions register via pasted receipts.
+- `testing-strategy` is an automatic utility, not an implicit lifecycle router. It may sharpen a test or product-validation decision inside or outside `ubergoal`; lifecycle, authorization, and final acceptance remain with the existing owners.
 - Pack-level drift tests should enforce routing metadata, root agent contracts, install consistency, and RCA authority wording.
 
 ## Near-term priorities
@@ -34,33 +36,38 @@ This roadmap keeps the skill pack evolving without turning it into bureaucracy. 
    - Turn golden eval seeds into an executable or semi-automated harness, including false-green and missing-black-box-proof cases.
    - Test de-escalation: tiny tasks should not trigger the full machine.
 
-2. **Cross-machine learning loop**
+2. **Testing strategy dogfooding**
+   - Use `testing-strategy` on at least three real test-selection or cleanup changes, including a package boundary and a duplicate-branch case.
+   - Keep its fixture corpus data-only; do not add a runner, framework, coverage quota, or global suite selector without separate repeated evidence.
+   - Retirement trigger: if three real runs show it adds ceremony without reducing duplicate execution, wrong-artifact proof, or redundant branches, fold the useful checklist into `ubergoal`/`uberplan` and retire the standalone utility.
+
+3. **Cross-machine learning loop**
    - Keep raw learning records local/private by default.
    - Share only sanitized learning packets through Git.
    - Periodically review shared packets and promote repeated/high-severity lessons into evals, validators, templates, or deletions.
 
-3. **Real-project dogfooding**
+4. **Real-project dogfooding**
    - Use the pack on several non-trivial coding/agentic-system tasks.
    - Record where it made work faster, where it slowed work down, and where it prevented tech debt.
    - Prefer removing or simplifying instructions that do not pay for themselves.
 
-4. **Second-pass architecture review**
+5. **Second-pass architecture review**
    - Re-review boundaries between `ubergoal`, `uberplan`, `uberaccept`, and `uberskillevolver`.
    - Check whether any duplicated wording should move to a shared reference or be deleted.
    - Keep Work Contract and Uberplan precedence clear: Tier 1 should usually use the work contract as the plan artifact; Tier 2/3 can extend it.
    - Confirm that the Agent Advocate and First-Principles Simplifier lanes are strong enough without becoming ceremony.
 
-5. **Uberassess dogfooding**
+6. **Uberassess dogfooding**
    - Use `uberassess` on real X bookmarks, GitHub repos, arXiv papers, articles, and Hermes findings.
    - Promote only repeated, evidence-backed assessment lessons into validators/evals/templates.
    - Retirement trigger: if three real assessment batches show it adds ceremony without preventing shallow-source, over-adoption, or approval-boundary failures, fold the useful checklist back into `ubergoal`/`uberplan` and remove the standalone skill.
 
-6. **Ubershow dogfooding**
+7. **Ubershow dogfooding**
    - Use `ubershow` only when it materially increases decision speed or comprehension.
    - Keep artifacts static and self-contained; do not add a callback server or component library until repeated receipt-copy friction proves the need.
    - Track whether visual artifacts reduce user back-and-forth or hide missing evidence. If they become decorative ceremony, fold the useful templates back into prose examples and retire the standalone skill.
 
-7. **Ubersimplify dogfooding**
+8. **Ubersimplify dogfooding**
    - Run `ubersimplify` Audit mode on real codebases before trusting Patch mode.
    - Promote only simplification patterns that survive tests/evals and rollback review.
    - Watch for undersimplification (reports only, no code removal) and oversimplification (deleting hidden invariants).
@@ -72,7 +79,7 @@ Do not build these until real usage proves benefit >> cost:
 
 - `ubercode` — execution-wave orchestration.
 - `ubergit` / `ubership` — commit, PR, release, and GitHub-management workflows.
-- `ubereval` — dedicated eval design/execution workflow. `ubertesting` remains intentionally uncreated; testing stays a red/green proof ledger and Black-box Tester / Quality-Eval Auditor lane until repeated failures justify extraction.
+- `ubereval` — dedicated eval design/execution workflow. `ubertesting` remains intentionally uncreated as a runner or harness; `testing-strategy` is only a compact test-selection utility, while broad testing stays a red/green proof ledger and Black-box Tester / Quality-Eval Auditor lane until repeated failures justify extraction.
 - `uberui` — UI/browser verification workflow, distinct from `ubershow` visual communication artifacts.
 - standalone specialist skills for Codebase Scout, Architecture Steward, Agent Advocate, Loophole Hunter, Black-box Tester / Quality-Eval Auditor.
 
