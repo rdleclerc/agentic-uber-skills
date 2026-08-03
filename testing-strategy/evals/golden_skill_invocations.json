@@ -1,0 +1,175 @@
+{
+  "schema_version": 1,
+  "trigger_examples": [
+    {
+      "id": "packaging_change_requires_artifact_proof",
+      "user_prompt": "I changed how our CLI package is assembled. What test should we run before merging?",
+      "should_trigger": true,
+      "required_behavior": [
+        "decide that package-boundary proof is needed",
+        "select a built or cleanly installed artifact and its first real call",
+        "avoid treating source-file or mocked-resolver checks as sufficient",
+        "name why a broad suite is skipped or what would escalate to it"
+      ],
+      "forbidden_behavior": [
+        "run every suite by default",
+        "test an unrelated workspace or hard-coded local runtime"
+      ]
+    },
+    {
+      "id": "duplicate_rejection_matrix_cleanup",
+      "user_prompt": "This test file has twenty slightly different invalid-input cases that all hit the same rejection. Clean it up safely.",
+      "should_trigger": true,
+      "required_behavior": [
+        "identify the shared failure class",
+        "table-drive equivalent values or retain one canonical proof owner",
+        "preserve independently meaningful authorization, authority, or destructive-effect cases",
+        "name successor proof before deleting a case"
+      ],
+      "forbidden_behavior": [
+        "delete all variants only because they look repetitive",
+        "collapse a security or tenant-isolation boundary into an ordinary value table"
+      ]
+    },
+    {
+      "id": "test_failure_scope_selection",
+      "user_prompt": "A focused resolver test failed after my refactor. Do I need to add more tests or rerun the full repository suite?",
+      "should_trigger": true,
+      "required_behavior": [
+        "identify the changed seam and distinct failure class",
+        "start with the focused current-checkout proof",
+        "state a concrete escalation trigger before suggesting a broader suite"
+      ],
+      "forbidden_behavior": [
+        "treat one focused failure as automatic justification for every suite",
+        "add cases without naming the missing contract"
+      ]
+    },
+    {
+      "id": "ci_ownership_overlap_review",
+      "user_prompt": "Review our CI tests: the root workflow and several feature workflows execute the same unit modules. Which ones should remain?",
+      "should_trigger": true,
+      "required_behavior": [
+        "map each contract to one CI owner",
+        "preserve a successor or focused owner before removing duplicate execution",
+        "state any path or release risk that prevents consolidation"
+      ],
+      "forbidden_behavior": [
+        "remove tests without preserving the contract",
+        "add another aggregation runner as the default answer"
+      ]
+    }
+  ],
+  "non_trigger_examples": [
+    {
+      "id": "implementation_only_no_validation_decision",
+      "user_prompt": "Sketch the implementation API for this feature only; do not decide tests or product validation yet.",
+      "should_trigger": false,
+      "required_behavior": [
+        "do not inject a test-selection workflow into an explicitly implementation-only design task"
+      ],
+      "forbidden_behavior": [
+        "produce a test matrix or test commands without a testing decision"
+      ]
+    },
+    {
+      "id": "rca_only_no_test_decision",
+      "user_prompt": "Explain the root cause of this outage from the logs; do not propose a patch or test plan yet.",
+      "should_trigger": false,
+      "required_behavior": [
+        "keep the work in root-cause analysis until a validation decision is requested"
+      ],
+      "forbidden_behavior": [
+        "turn the RCA into test selection before a change or proof decision exists"
+      ]
+    },
+    {
+      "id": "code_review_only_no_test_scope",
+      "user_prompt": "Review this function's naming and readability only. Do not assess tests or validation.",
+      "should_trigger": false,
+      "required_behavior": [
+        "limit the review to the stated code-review scope"
+      ],
+      "forbidden_behavior": [
+        "expand a readability review into a testing strategy"
+      ]
+    },
+    {
+      "id": "ordinary_validation_without_test_decision",
+      "user_prompt": "Run the formatter and report the result; there is no test or product-validation decision to make.",
+      "should_trigger": false,
+      "required_behavior": [
+        "perform the requested ordinary validation without a test-selection ceremony"
+      ],
+      "forbidden_behavior": [
+        "add tests or recommend broad suites when the request is only a formatter run"
+      ]
+    },
+    {
+      "id": "specified_test_command_only",
+      "user_prompt": "Run python3 -m unittest test_widget.py and report whether it passes. The test target is already selected; do not change or debug it.",
+      "should_trigger": false,
+      "required_behavior": [
+        "execute only the already selected command without adding a test-selection preamble"
+      ],
+      "forbidden_behavior": [
+        "reopen test strategy when no selection, debugging, or escalation decision remains"
+      ]
+    }
+  ],
+  "output_behavior_cases": [
+    {
+      "id": "tiny_nonbehavioral_edit",
+      "scenario": "A comment-only change leaves runtime behavior and package contents unchanged.",
+      "must_include": [
+        "test needed: no",
+        "one-sentence reason",
+        "skipped proof"
+      ],
+      "must_not_include": [
+        "a new unit test solely to increase coverage",
+        "a broad suite without a named escalation reason"
+      ]
+    },
+    {
+      "id": "package_delivery_change",
+      "scenario": "A build manifest changes which resolver is delivered to consumers.",
+      "must_include": [
+        "changed seam",
+        "installed artifact or real package boundary smoke",
+        "selected proof",
+        "escalation trigger"
+      ],
+      "must_not_include": [
+        "source-only proof as the sole package validation",
+        "a hard-coded alternate workspace"
+      ]
+    },
+    {
+      "id": "duplicated_rejection_cases",
+      "scenario": "Several tests differ only by invalid input while asserting the same rejection branch.",
+      "must_include": [
+        "distinct failure class",
+        "table-drive or canonical owner decision",
+        "successor proof before deletion",
+        "independent security or authority dimensions preserved"
+      ],
+      "must_not_include": [
+        "deletion based only on line-count reduction",
+        "collapse of tenant or privilege isolation into an ordinary variant"
+      ]
+    },
+    {
+      "id": "unchanged_broad_proof",
+      "scenario": "A targeted test is green and no changed dependency can reach a previously green broad suite.",
+      "must_include": [
+        "skipped proof",
+        "reuse unchanged evidence",
+        "named condition that would require rerun"
+      ],
+      "must_not_include": [
+        "repeat broad proof solely because it was run before"
+      ]
+    }
+  ]
+}

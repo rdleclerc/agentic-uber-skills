@@ -27,6 +27,7 @@ PACK_SKILLS = [
     "uberassess",
     "uberarchitect",
     "ubershow",
+    "testing-strategy",
 ]
 
 
@@ -1110,6 +1111,13 @@ blocking_wave = 1
         self.assertIn("Do **not** turn every answer into HTML", body)
         self.assertIn("HTML artifacts are generated **views**, not canonical truth", body)
 
+        testing_meta = (ROOT / "testing-strategy" / "agents" / "openai.yaml").read_text()
+        testing_body = (ROOT / "testing-strategy" / "SKILL.md").read_text()
+        self.assertIn("allow_implicit_invocation: true", testing_meta)
+        self.assertIn("$testing-strategy", testing_meta)
+        self.assertIn("inside or outside", testing_body)
+        self.assertIn("not an Uber lifecycle phase", testing_body)
+
     def test_root_agent_contract_declares_rca_authority(self) -> None:
         text = (ROOT / "AGENTS.md").read_text()
         self.assertIn("uberrca` = general incident/root-cause authority", text)
@@ -1145,7 +1153,7 @@ blocking_wave = 1
 
     def test_install_docs_include_full_pack(self) -> None:
         text = (ROOT / "README.md").read_text()
-        loop = "for s in uberrca uber-skill-creator ubergoal uberplan uberaccept uberskillevolver ubersimplify uberassess uberarchitect ubershow; do"
+        loop = "for s in uberrca uber-skill-creator ubergoal uberplan uberaccept uberskillevolver ubersimplify uberassess uberarchitect ubershow testing-strategy; do"
         self.assertEqual(text.count(loop), 3)
 
     def test_operational_outcome_completion_claim_contract_is_pack_wide(self) -> None:

@@ -27,9 +27,10 @@ PACK_SKILLS = [
     "uberassess",
     "uberarchitect",
     "ubershow",
+    "testing-strategy",
 ]
 UBER_PHASE_SKILLS = ["uberplan", "uberaccept", "uberskillevolver", "ubersimplify", "uberassess", "uberarchitect"]
-UTILITY_IMPLICIT_SKILLS = ["uberrca", "uber-skill-creator", "ubershow"]
+UTILITY_IMPLICIT_SKILLS = ["uberrca", "uber-skill-creator", "ubershow", "testing-strategy"]
 ROOT_REQUIRED_FILES = ["AGENTS.md", "CLAUDE.md", "README.md", "ROADMAP.md"]
 SKILL_WORD_BUDGETS = {
     "ubergoal/SKILL.md": 800,
@@ -42,6 +43,7 @@ SKILL_WORD_BUDGETS = {
     "uber-skill-creator/SKILL.md": 1350,
     "uberskillevolver/SKILL.md": 1550,
     "ubersimplify/SKILL.md": 700,
+    "testing-strategy/SKILL.md": 900,
 }
 FORBIDDEN_FRONTMATTER_KEYS = {"model", "effort"}
 MODEL_ID_RE = re.compile(
@@ -62,6 +64,7 @@ AGENTS_REQUIRED_PHRASES = [
     "Phase skills are explicit or wrapper-invoked",
     "uberassess` = source-to-recommendation due diligence",
     "ubershow` = visual communication utility",
+    "testing-strategy` = automatic portable test-selection utility",
     "uberarchitect` = architecture stepback gate",
     "uberrca` = general incident/root-cause authority",
     "Agent Advocate = agent-behavior-specific RCA lens",
@@ -80,6 +83,7 @@ README_REQUIRED_PHRASES = [
     "invoke `$ubergoal` as the implicit lifecycle router",
     "`$uberrca` is the general incident/debugging/root-cause utility",
     "`$ubershow`",
+    "`$testing-strategy`",
     "skills invoked",
 ]
 FORBIDDEN_AUTOMATIC_CLAUDE_PATTERNS = [
@@ -102,6 +106,7 @@ ROADMAP_REQUIRED_PHRASES = [
     "Build a small pack-level harness before creating a standalone `ubereval` skill",
     "Uberassess dogfooding",
     "Ubershow dogfooding",
+    "Testing strategy dogfooding",
     "RCA-driven testing adaptation",
 ]
 DRIFT_REGISTRY = "references/drift-fingerprints.toml"
