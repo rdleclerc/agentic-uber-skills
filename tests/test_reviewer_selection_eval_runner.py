@@ -179,8 +179,14 @@ class StaticContractTests(RunnerTestCase):
     def test_subject_bundle_is_exact_allowlist_and_rubric_is_secret(self) -> None:
         case_path = self.suite_path.parent / "cases" / "generic-cross-model.json"
         bundle = self.root / "bundle"
-        case, bindings = RUNNER.copy_subject_bundle(self.repo, case_path, bundle)
-        prompt, prompt_bindings = RUNNER.inline_payload(bundle, "subject")
+        case_bytes = case_path.read_bytes()
+        case = RUNNER.json_object(case_bytes, str(case_path))
+        snapshots = {
+            RUNNER.safe_path(self.repo, str(relative)): RUNNER.safe_path(self.repo, str(relative)).read_bytes()
+            for relative in case["context_files"]
+        }
+        files, bindings = RUNNER.copy_subject_bundle(case, case_bytes, snapshots, self.repo, bundle)
+        prompt, prompt_bindings = RUNNER.inline_payload(files, "subject")
         expected = set(case["context_files"]) | {"case.json"}
         self.assertEqual(expected, set(RUNNER.tree_snapshot(bundle)))
         self.assertEqual(expected, {item["path"] for item in bindings})
@@ -239,6 +245,8 @@ class SuccessfulRunTests(RunnerTestCase):
             self.assertEqual("fresh_eval_required", receipt["evaluation_state"])
             self.assertEqual("not_promoted", receipt["promotion_state"])
             self.assertEqual(expected_harness_sha256, receipt["harness_sha256"])
+            status_path = self.suite_path.parent / "results" / "current-eval-status.json"
+            self.assertEqual(RUNNER.sha(status_path.read_bytes()), receipt["current_evaluation_status_sha256"])
             self.assertEqual(expected_harness_sha256, first["harness_sha256"])
             self.assertEqual(receipt["harness_sha256"], first["harness_sha256"])
             for phase in ("subject", "grader"):
@@ -378,15 +386,23 @@ class FailureTests(RunnerTestCase):
                 self.assertEqual(before, RUNNER.tree_snapshot(canonical_results))
         RUNNER.write_json(self.suite_path, suite)
 
-    def test_canonical_mode_accepts_current_manifest_with_fake_codex(self) -> None:
+    def test_canonical_mode_rejects_path_spoofed_codex(self) -> None:
         bin_dir = self.root / "bin"
         bin_dir.mkdir()
         fake = write_fake(bin_dir / "codex", "pass", self.repo)
         with mock.patch.dict(os.environ, {"PATH": str(bin_dir) + os.pathsep + os.environ.get("PATH", "")}):
-            summary = RUNNER.run_suite(self.repo, self.suite_path, "codex", "gpt-5.6-sol", "ultra")
-        self.assertEqual(RUNNER.EXPECTED_INPUT_MANIFEST_SHA256, summary["input_manifest_sha256"])
-        self.assertEqual(RUNNER.sha(fake.read_bytes()), summary["runner_sha256"])
-        self.assertEqual(RUNNER.sha(RUNNER.HARNESS_PATH.read_bytes()), summary["harness_sha256"])
+            with self.assertRaisesRegex(RUNNER.EvalFailure, "explicit absolute Codex executable path"):
+                RUNNER.run_suite(self.repo, self.suite_path, "codex", "gpt-5.6-sol", "ultra")
+        self.assertTrue(fake.is_file())
+        failure = RUNNER.load_json(self.suite_path.parent / "results" / "last-failure.json")
+        self.assertEqual({"subject": 0, "grader": 0}, failure["call_count"])
+
+    def test_canonical_mode_rejects_absolute_script_fake(self) -> None:
+        fake = write_fake(self.root / "codex", "pass", self.repo).resolve()
+        with self.assertRaisesRegex(RUNNER.EvalFailure, "native Codex executable"):
+            RUNNER.run_suite(self.repo, self.suite_path, str(fake), "gpt-5.6-sol", "ultra")
+        failure = RUNNER.load_json(self.suite_path.parent / "results" / "last-failure.json")
+        self.assertEqual({"subject": 0, "grader": 0}, failure["call_count"])
 
     def test_canonical_mode_rejects_each_of_five_policy_input_drifts_before_calls(self) -> None:
         self.assertEqual(5, len(RUNNER.EXPECTED_POLICY_INPUT_PATHS))
@@ -433,15 +449,114 @@ class FailureTests(RunnerTestCase):
         failure = RUNNER.load_json(self.suite_path.parent / "results" / "last-failure.json")
         self.assertIn("case, rubric, or context manifest digest mismatch", failure["reason"])
 
+    def test_current_status_is_manifest_bound_and_must_remain_unpromoted(self) -> None:
+        self.trim_cases("generic-cross-model")
+        status_path = self.suite_path.parent / "results" / "current-eval-status.json"
+        status = RUNNER.load_json(status_path)
+        status["skills"]["ubergoal"]["promotion_state"] = "promoted"
+        RUNNER.write_json(status_path, status)
+        fake = write_fake(self.root / "fake-never-called", "pass", self.repo)
+        with self.assertRaisesRegex(RUNNER.EvalFailure, "fresh_eval_required/not_promoted"):
+            RUNNER.run_suite(self.repo, self.suite_path, str(fake), "gpt-5.6-sol", "ultra", test_runner=True)
+        failure = RUNNER.load_json(self.suite_path.parent / "results" / "last-failure.json")
+        self.assertEqual({"subject": 0, "grader": 0}, failure["call_count"])
+
+    def test_post_hash_source_drift_cannot_change_delivered_snapshot(self) -> None:
+        self.trim_cases("generic-cross-model")
+        source = self.repo / "AGENTS.md"
+        original = source.read_bytes()
+        delivered: list[bytes] = []
+        copy_bundle = RUNNER.copy_subject_bundle
+
+        def drift_after_snapshot(case, case_bytes, snapshots, repo, bundle):
+            source.write_bytes(b"post-hash attacker bytes\n")
+            files, bindings = copy_bundle(case, case_bytes, snapshots, repo, bundle)
+            delivered.append(files["AGENTS.md"])
+            return files, bindings
+
+        with mock.patch.object(RUNNER, "copy_subject_bundle", side_effect=drift_after_snapshot):
+            summary = self.run_fake()
+        self.assertEqual("passed", summary["status"])
+        self.assertEqual([original], delivered)
+        self.assertEqual(b"post-hash attacker bytes\n", source.read_bytes())
+
+    def test_result_and_raw_symlink_components_are_rejected_without_touching_victims(self) -> None:
+        for target in ("results", "raw"):
+            with self.subTest(target=target):
+                with self.setUpSubTestRepo():
+                    victim = self.root / f"{target}-victim"
+                    victim.mkdir()
+                    marker = victim / "targeted-run.json"
+                    marker.write_text("keep", encoding="utf-8")
+                    if target == "results":
+                        canonical = self.suite_path.parent / "results"
+                        canonical.rename(self.root / "saved-results")
+                        canonical.symlink_to(victim, target_is_directory=True)
+                    else:
+                        local = self.repo / ".uberlearn-local"
+                        local.symlink_to(victim, target_is_directory=True)
+                    with self.assertRaises(RUNNER.EvalFailure):
+                        self.run_fake()
+                    self.assertEqual("keep", marker.read_text(encoding="utf-8"))
+                    self.assertEqual(["targeted-run.json"], sorted(path.name for path in victim.iterdir()))
+
+    def test_result_symlink_swap_before_cleanup_cannot_delete_victim(self) -> None:
+        victim = self.root / "result-swap-victim"
+        victim.mkdir()
+        marker = victim / "targeted-run.json"
+        marker.write_text("keep", encoding="utf-8")
+        canonical = self.suite_path.parent / "results"
+        detached = self.root / "detached-results"
+        original_names = RUNNER.AnchoredDirectory.names
+        swapped = False
+
+        def swap_then_list(directory):
+            nonlocal swapped
+            if not swapped and directory.relative == RUNNER.RESULT_DIR_RELATIVE:
+                swapped = True
+                canonical.rename(detached)
+                canonical.symlink_to(victim, target_is_directory=True)
+            return original_names(directory)
+
+        with mock.patch.object(RUNNER.AnchoredDirectory, "names", swap_then_list):
+            with self.assertRaisesRegex(RUNNER.EvalFailure, "canonical directory component|changed during run"):
+                self.run_fake()
+        self.assertEqual("keep", marker.read_text(encoding="utf-8"))
+
+    def test_raw_symlink_swap_before_write_cannot_write_victim(self) -> None:
+        self.trim_cases("generic-cross-model")
+        victim = self.root / "raw-swap-victim"
+        victim.mkdir()
+        marker = victim / "subject.stdout.jsonl"
+        marker.write_text("keep", encoding="utf-8")
+        canonical = self.repo / RUNNER.RAW_ARTIFACT_ROOT_RELATIVE
+        detached = self.root / "detached-raw"
+        original_write = RUNNER.AnchoredDirectory.write_bytes
+        swapped = False
+
+        def swap_then_write(directory, name, data):
+            nonlocal swapped
+            if not swapped and directory.relative.parts[:len(RUNNER.RAW_ARTIFACT_ROOT_RELATIVE.parts)] == RUNNER.RAW_ARTIFACT_ROOT_RELATIVE.parts:
+                swapped = True
+                canonical.rename(detached)
+                canonical.symlink_to(victim, target_is_directory=True)
+            return original_write(directory, name, data)
+
+        with mock.patch.object(RUNNER.AnchoredDirectory, "write_bytes", swap_then_write):
+            with self.assertRaisesRegex(RUNNER.EvalFailure, "canonical directory component|changed during run"):
+                self.run_fake()
+        self.assertEqual("keep", marker.read_text(encoding="utf-8"))
+
     def test_success_receipt_marks_fake_runner_and_binds_executable(self) -> None:
         self.trim_cases("generic-cross-model")
         fake = write_fake(self.root / "fake-pass", "pass", self.repo)
         summary = RUNNER.run_suite(self.repo, self.suite_path, str(fake), "gpt-5.6-sol", "ultra", test_runner=True)
         receipt = RUNNER.load_json(self.suite_path.parent / "results" / "generic-cross-model.receipt.json")
-        self.assertEqual("test_runner", receipt["runner_mode"])
+        self.assertEqual("test_fake", receipt["runner_mode"])
+        self.assertEqual("explicit_test_only_path", receipt["runner_provenance"]["attestation"])
         self.assertEqual(RUNNER.sha(fake.read_bytes()), receipt["runner_sha256"])
         self.assertEqual(RUNNER.sha(RUNNER.HARNESS_PATH.read_bytes()), receipt["harness_sha256"])
-        self.assertEqual("test_runner", summary["runner_mode"])
+        self.assertEqual("test_fake", summary["runner_mode"])
 
 
 class BlackBoxRoutingTests(RunnerTestCase):
