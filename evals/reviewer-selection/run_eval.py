@@ -17,10 +17,17 @@ from typing import Any
 
 ROOT = Path(__file__).resolve().parents[2]
 SUITE_PATH = Path(__file__).with_name("suite.json")
+HARNESS_PATH = Path(__file__).resolve()
+SUITE_RELATIVE = Path("evals/reviewer-selection/suite.json")
+RESULT_DIR_RELATIVE = Path("evals/reviewer-selection/results")
+RAW_ARTIFACT_ROOT_RELATIVE = Path(".uberlearn-local/reviewer-selection-v1")
 EXPECTED_SUITE_SHA256 = "sha256:9f5bef7e1f96f4a4fa282ffe65c0f7d92f2fabcede7384efff36e3c402705142"
 EXPECTED_BASE_SHA256 = "sha256:29ef5d6aea15c18143187c79df4d57e104df1a5b848cdfa427b0275be2e0a914"
-EXPECTED_INPUT_MANIFEST_SHA256 = "sha256:14da4a1d3e0d7aeb43d50faf4079b4bfd05e5eb325c42f3952243d654be26884"
+EXPECTED_INPUT_MANIFEST_SHA256 = "sha256:7873c17ceae7a3bf9f4fc2199d5150e5328d98c940a93f2d3d060f91c59f2167"
 EXPECTED_CASE_IDS = {"generic-cross-model", "required-sol-ultra-unavailable", "explicit-claude-by-name", "gaia-adversarial-review"}
+EXPECTED_POLICY_INPUT_PATHS = {
+    "AGENTS.md", "references/drift-fingerprints.toml", "uberaccept/SKILL.md", "ubergoal/SKILL.md", "uberplan/SKILL.md",
+}
 ALLOWED_ITEMS = {"agent_message", "reasoning"}
 DISABLED_FEATURES = (
     "apps", "auth_elicitation", "browser_use", "browser_use_external", "browser_use_full_cdp_access",
@@ -252,30 +259,44 @@ def invoke(
 
 
 def run_suite(repo: Path, suite_path: Path, codex_bin: str, model: str, effort: str, test_runner: bool = False) -> dict[str, Any]:
+    repo = repo.resolve()
+    suite_path = suite_path.resolve()
     suite: dict[str, Any] = {}
     run_id = str(uuid.uuid4())
-    results = repo / "evals/reviewer-selection/results"
-    cleaned = False
+    results = (repo / RESULT_DIR_RELATIVE).resolve()
+    raw_root = (repo / RAW_ARTIFACT_ROOT_RELATIVE).resolve()
+    outputs_validated = False
     calls = {"subject": 0, "grader": 0}
     receipts: list[dict[str, Any]] = []
     runtime_ids: set[str] = set()
     current_case = current_phase = "preflight"
     published_paths: list[Path] = []
     try:
+        if suite_path != (repo / SUITE_RELATIVE).resolve():
+            raise EvalFailure("preflight", "canonical suite path is required")
         suite = load_json(suite_path)
         suite_digest = sha(suite_path.read_bytes())
-        results = confined_path(repo, str(suite["result_dir"]))
-        raw_root = confined_path(repo, str(suite["raw_artifact_root"]))
-        if not raw_root.is_relative_to((repo / ".uberlearn-local").resolve()):
-            raise ValueError("raw artifact root must stay under .uberlearn-local")
-        results.mkdir(parents=True, exist_ok=True)
-        for stale in [results / "targeted-run.json", results / "last-failure.json", *results.glob("*.receipt.json")]:
-            stale.unlink(missing_ok=True)
-        cleaned = True
+        fixed_bindings = {
+            "suite_id": "reviewer-selection-v1",
+            "base_manifest": "base.json",
+            "model": "gpt-5.6-sol",
+            "reasoning_effort": "ultra",
+            "raw_artifact_root": str(RAW_ARTIFACT_ROOT_RELATIVE),
+            "result_dir": str(RESULT_DIR_RELATIVE),
+            "current_evaluation_status": "results/current-eval-status.json",
+        }
+        mismatched = [key for key, expected in fixed_bindings.items() if suite.get(key) != expected]
+        if mismatched:
+            raise EvalFailure("preflight", "fixed suite binding mismatch: " + ", ".join(sorted(mismatched)))
+        if confined_path(repo, str(suite["result_dir"])) != results:
+            raise EvalFailure("preflight", "canonical result path is required")
+        if confined_path(repo, str(suite["raw_artifact_root"])) != raw_root:
+            raise EvalFailure("preflight", "canonical raw artifact path is required")
+        outputs_validated = True
         if (model, effort) != (suite.get("model"), suite.get("reasoning_effort")):
             raise EvalFailure("preflight", f"model binding mismatch: requested {model}/{effort}")
-        if not test_runner and (codex_bin != "codex" or results != (repo / "evals/reviewer-selection/results").resolve()):
-            raise EvalFailure("preflight", "canonical runner, suite, and result paths are required")
+        if not test_runner and codex_bin != "codex":
+            raise EvalFailure("preflight", "canonical Codex executable binding is required")
         base_path = safe_path(suite_path.parent, str(suite["base_manifest"]))
         base_digest = sha(base_path.read_bytes())
         if not test_runner and (suite_digest, base_digest) != (EXPECTED_SUITE_SHA256, EXPECTED_BASE_SHA256):
@@ -295,8 +316,23 @@ def run_suite(repo: Path, suite_path: Path, codex_bin: str, model: str, effort: 
             case = load_json(case_path)
             manifest_paths.extend(safe_path(repo, str(relative)) for relative in case.get("context_files", []))
         input_digest = input_manifest_digest(manifest_paths, repo)
-        if not test_runner and input_digest != EXPECTED_INPUT_MANIFEST_SHA256:
-            raise EvalFailure("preflight", "case, rubric, or context manifest digest mismatch")
+        if not test_runner:
+            policy_inputs = {
+                str(path.relative_to(repo)) for path in manifest_paths
+                if path.is_relative_to(repo) and str(path.relative_to(repo)) in EXPECTED_POLICY_INPUT_PATHS
+            }
+            if policy_inputs != EXPECTED_POLICY_INPUT_PATHS:
+                raise EvalFailure("preflight", "canonical policy input set mismatch")
+            if input_digest != EXPECTED_INPUT_MANIFEST_SHA256:
+                raise EvalFailure("preflight", "case, rubric, or context manifest digest mismatch")
+        harness_sha256 = sha(HARNESS_PATH.read_bytes())
+        runner_path = Path(codex_bin).resolve() if test_runner else Path(shutil.which("codex") or "")
+        if not runner_path.is_file():
+            raise EvalFailure("preflight", "Codex executable is unavailable")
+        runner_sha256 = sha(runner_path.read_bytes())
+        results.mkdir(parents=True, exist_ok=True)
+        for stale in [results / "targeted-run.json", results / "last-failure.json", *results.glob("*.receipt.json")]:
+            stale.unlink(missing_ok=True)
         run_raw_root = raw_root / run_id
         run_raw_root.mkdir(parents=True)
         for case_path in case_paths:
@@ -351,7 +387,7 @@ def run_suite(repo: Path, suite_path: Path, codex_bin: str, model: str, effort: 
                     "status": "passed", "binding": bindings,
                     "suite_sha256": suite_digest, "base_manifest_sha256": base_digest, "input_manifest_sha256": input_digest,
                     "runner_mode": "test_runner" if test_runner else "codex",
-                    "runner_sha256": sha(Path(codex_bin).resolve().read_bytes()) if test_runner else sha(Path(shutil.which("codex")).resolve().read_bytes()),
+                    "runner_sha256": runner_sha256, "harness_sha256": harness_sha256,
                     "process": {"subject": subject_trace, "grader": grader_trace},
                     "promotion_state": "not_promoted", "evaluation_state": "fresh_eval_required",
                 }
@@ -368,7 +404,7 @@ def run_suite(repo: Path, suite_path: Path, codex_bin: str, model: str, effort: 
             "suite_sha256": suite_digest, "base_manifest_sha256": base_digest,
             "input_manifest_sha256": input_digest,
             "runner_mode": "test_runner" if test_runner else "codex",
-            "runner_sha256": sha(Path(codex_bin).resolve().read_bytes()) if test_runner else sha(Path(shutil.which("codex")).resolve().read_bytes()),
+            "runner_sha256": runner_sha256, "harness_sha256": harness_sha256,
             "promotion_state": "not_promoted", "evaluation_state": "fresh_eval_required",
             "remaining_gap": "Full UberAccept, UberGoal, and UberPlan behavioral suites still require fresh evaluation.",
         }
@@ -376,6 +412,8 @@ def run_suite(repo: Path, suite_path: Path, codex_bin: str, model: str, effort: 
         published_paths.append(results / "targeted-run.json")
         return summary
     except (EvalFailure, KeyError, ValueError, OSError) as exc:
+        if not outputs_validated:
+            raise
         results.mkdir(parents=True, exist_ok=True)
         for stale in [*published_paths, results / "targeted-run.json", *results.glob("*.receipt.json")]:
             stale.unlink(missing_ok=True)

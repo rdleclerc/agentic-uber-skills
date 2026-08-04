@@ -73,10 +73,11 @@
       },
       "promotion_state": "not_promoted",
       "reasoning_effort": "ultra",
-      "receipt_hash": "sha256:d16471fbdcbf902c5c1dbeb07035dff583c37c6d040aa120ef27ff3ac6c7ecec",
+      "receipt_hash": "sha256:169563a0411d33b4e8540560702b6468423848e6281660e9410610e77f6bb489",
       "rubric_sha256": "sha256:2a7f7fa6a13155c2e413f31385822469d14b482a075ad7eee30295eebebb9ec5",
       "run_id": "c4433203-5f44-4898-9053-eec3ca5e6759",
       "runner_sha256": "sha256:2474979ee47624eaaa9bc258a1e945dc4ec70ee8ea3a6d6b4e3af90d714ec425",
+      "harness_sha256": "sha256:c0c77c0de9b7883de2f180fbb40ebb8eaa78b9a2620ce227d51c956dc471e4a8",
       "status": "passed"
     },
     {
@@ -150,10 +151,11 @@
       },
       "promotion_state": "not_promoted",
       "reasoning_effort": "ultra",
-      "receipt_hash": "sha256:86006867c6575116544ee1f2ed45e2c3a0f8024578074149c131bb4b08ad3ae0",
+      "receipt_hash": "sha256:85a5d9917b8cab336bcffd9e93769ee29989d959fe06dfb62645773abd38e3b5",
       "rubric_sha256": "sha256:ade507a07a60ad76cd08960d1f16693e329d37230071e76798e6c6386ffe9461",
       "run_id": "c4433203-5f44-4898-9053-eec3ca5e6759",
       "runner_sha256": "sha256:2474979ee47624eaaa9bc258a1e945dc4ec70ee8ea3a6d6b4e3af90d714ec425",
+      "harness_sha256": "sha256:c0c77c0de9b7883de2f180fbb40ebb8eaa78b9a2620ce227d51c956dc471e4a8",
       "status": "passed"
     },
     {
@@ -242,10 +244,11 @@
       },
       "promotion_state": "not_promoted",
       "reasoning_effort": "ultra",
-      "receipt_hash": "sha256:6e7cea6a294daa362e78f911a3b7ff84f24e551941839a988a144007d0c4b663",
+      "receipt_hash": "sha256:85cf7168068d807ef22c2604af5cd26b656696d3e654e55415a55dd24cfa0ba2",
       "rubric_sha256": "sha256:6fe5b1dfaae2e68d4f7eb0d5435c72fd2be16fb0a3f183b97851f4b237e5fa46",
       "run_id": "c4433203-5f44-4898-9053-eec3ca5e6759",
       "runner_sha256": "sha256:2474979ee47624eaaa9bc258a1e945dc4ec70ee8ea3a6d6b4e3af90d714ec425",
+      "harness_sha256": "sha256:c0c77c0de9b7883de2f180fbb40ebb8eaa78b9a2620ce227d51c956dc471e4a8",
       "status": "failed_closed"
     },
     {
@@ -330,10 +333,11 @@
       },
       "promotion_state": "not_promoted",
       "reasoning_effort": "ultra",
-      "receipt_hash": "sha256:486ebc28f14d87c436707a8a4dbf9d95608b40c5db3963c4a2fb42713f881515",
+      "receipt_hash": "sha256:a94aa174c84d4ecc9b890febd5cbf56b218a33d9778521e4bf8b5eb540a5cefe",
       "rubric_sha256": "sha256:3251077a707331f331cecd164bae2927c5a135bb45fff1ac7dea6a87a9267e0b",
       "run_id": "8066407b-1e04-4e2e-95f8-3d71b78c1e43",
       "runner_sha256": "sha256:2474979ee47624eaaa9bc258a1e945dc4ec70ee8ea3a6d6b4e3af90d714ec425",
+      "harness_sha256": "sha256:c0c77c0de9b7883de2f180fbb40ebb8eaa78b9a2620ce227d51c956dc471e4a8",
       "status": "passed"
     }
   ],
@@ -351,12 +355,13 @@
     "subject": 4
   },
   "failure": "explicit-claude-by-name authorized Claude without invocation but reported selected_effort=ultra; the hidden grader required null.",
-  "manifest_hash": "sha256:bca371d68181016a2cc358cc71536468140fc253cc79ff91ea019dbe0c6c7720",
+  "manifest_hash": "sha256:acf840a297dc13cfd1b99886719943b680ebecc0340ea4cfa0aee9f8a5cfda78",
   "model": "gpt-5.6-sol",
   "promotion_state": "not_promoted",
   "reasoning_effort": "ultra",
   "remaining_gap": "The strict explicit-Claude case failed, and the full UberAccept, UberGoal, and UberPlan suites still require fresh evaluation.",
   "runner_sha256_at_evidence": "sha256:2474979ee47624eaaa9bc258a1e945dc4ec70ee8ea3a6d6b4e3af90d714ec425",
+  "harness_sha256_at_evidence": "sha256:c0c77c0de9b7883de2f180fbb40ebb8eaa78b9a2620ce227d51c956dc471e4a8",
   "schema_version": 1,
   "setup_rejection_call_count": {
     "grader": 0,

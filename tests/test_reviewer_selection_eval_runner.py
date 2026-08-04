@@ -10,6 +10,7 @@ import subprocess
 import sys
 import tempfile
 import unittest
+from unittest import mock
 
 ROOT = Path(__file__).resolve().parents[1]
 RUNNER_PATH = ROOT / "evals" / "reviewer-selection" / "run_eval.py"
@@ -199,6 +200,7 @@ class StaticContractTests(RunnerTestCase):
         self.assertEqual("failed_closed", summary["case_results"]["explicit-claude-by-name"])
         self.assertEqual(0, summary["claude_invocation_count"])
         self.assertEqual({summary["runner_sha256_at_evidence"]}, {item["runner_sha256"] for item in summary["case_receipts"]})
+        self.assertEqual({summary["harness_sha256_at_evidence"]}, {item["harness_sha256"] for item in summary["case_receipts"]})
         self.assertFalse((results / "last-failure.json").exists())
         runtime_ids = set()
         for receipt in summary["case_receipts"]:
@@ -228,12 +230,17 @@ class SuccessfulRunTests(RunnerTestCase):
         self.assertEqual(2, len(list((self.repo / ".uberlearn-local" / "reviewer-selection-v1").iterdir())))
         self.assertFalse(list((self.repo / ".uberlearn-local").rglob("case.json")))
         runtime_ids = set()
+        expected_harness_sha256 = RUNNER.sha(RUNNER.HARNESS_PATH.read_bytes())
         for case_id in SUBJECT_OUTPUTS:
             receipt = RUNNER.load_json(self.suite_path.parent / "results" / f"{case_id}.receipt.json")
             claimed = receipt.pop("run_hash")
             self.assertEqual(claimed, RUNNER.sha(RUNNER.packed(receipt)))
+            self.assertEqual(claimed, second["receipt_hashes"][case_id])
             self.assertEqual("fresh_eval_required", receipt["evaluation_state"])
             self.assertEqual("not_promoted", receipt["promotion_state"])
+            self.assertEqual(expected_harness_sha256, receipt["harness_sha256"])
+            self.assertEqual(expected_harness_sha256, first["harness_sha256"])
+            self.assertEqual(receipt["harness_sha256"], first["harness_sha256"])
             for phase in ("subject", "grader"):
                 trace = receipt["process"][phase]
                 self.assertEqual(1, trace["schema_version"])
@@ -247,6 +254,9 @@ class SuccessfulRunTests(RunnerTestCase):
                 runtime_ids.add(trace["runtime_thread_id"])
             tampered = copy.deepcopy(receipt)
             tampered["binding"]["model"] = "other"
+            self.assertNotEqual(claimed, RUNNER.sha(RUNNER.packed(tampered)))
+            tampered = copy.deepcopy(receipt)
+            tampered["harness_sha256"] = "sha256:" + "0" * 64
             self.assertNotEqual(claimed, RUNNER.sha(RUNNER.packed(tampered)))
         self.assertEqual(8, len(runtime_ids))
 
@@ -336,35 +346,72 @@ class FailureTests(RunnerTestCase):
         self.assertFalse((results / "targeted-run.json").exists())
         self.assertFalse(list(results.glob("*.receipt.json")))
 
-    def test_malformed_suite_clears_prior_success_artifacts(self) -> None:
+    def test_malformed_suite_performs_no_output_writes(self) -> None:
         self.run_fake()
+        results = self.suite_path.parent / "results"
+        prior_summary = (results / "targeted-run.json").read_bytes()
         self.suite_path.write_text("{", encoding="utf-8")
         with self.assertRaises(ValueError):
             RUNNER.run_suite(self.repo, self.suite_path, "codex", "gpt-5.6-sol", "ultra", test_runner=True)
-        results = self.suite_path.parent / "results"
-        self.assertFalse((results / "targeted-run.json").exists())
-        self.assertFalse(list(results.glob("*.receipt.json")))
-        failure = RUNNER.load_json(results / "last-failure.json")
-        self.assertEqual("preflight", failure["phase"])
+        self.assertEqual(prior_summary, (results / "targeted-run.json").read_bytes())
+        self.assertFalse((results / "last-failure.json").exists())
 
-    def test_output_paths_cannot_escape_repository_or_raw_root(self) -> None:
+    def test_fixed_output_path_drift_cannot_touch_victim_or_results(self) -> None:
         suite = RUNNER.load_json(self.suite_path)
-        external = self.root / "external-output"
-        external.mkdir()
-        marker = external / "sentinel.txt"
+        victim = self.repo / "unrelated-receipts"
+        victim.mkdir()
+        marker = victim / "targeted-run.json"
         marker.write_text("keep", encoding="utf-8")
-        for raw_root in (str(external), "evals/reviewer-selection/raw-not-ignored"):
-            with self.subTest(raw_root=raw_root):
+        canonical_results = self.suite_path.parent / "results"
+        before = RUNNER.tree_snapshot(canonical_results)
+        for field, value in (
+            ("result_dir", "unrelated-receipts"),
+            ("raw_artifact_root", "evals/reviewer-selection/raw-not-ignored"),
+        ):
+            with self.subTest(field=field):
                 candidate = dict(suite)
-                candidate["result_dir"] = "evals/reviewer-selection/results"
-                candidate["raw_artifact_root"] = raw_root
+                candidate[field] = value
                 RUNNER.write_json(self.suite_path, candidate)
-                with self.assertRaises(ValueError):
+                with self.assertRaises(RUNNER.EvalFailure):
                     RUNNER.run_suite(self.repo, self.suite_path, "codex", "gpt-5.6-sol", "ultra", test_runner=True)
                 self.assertEqual("keep", marker.read_text(encoding="utf-8"))
-                failure = RUNNER.load_json(self.suite_path.parent / "results" / "last-failure.json")
-                expected = "path escapes repository" if raw_root == str(external) else "raw artifact root must stay under .uberlearn-local"
-                self.assertIn(expected, failure["reason"])
+                self.assertEqual(before, RUNNER.tree_snapshot(canonical_results))
+        RUNNER.write_json(self.suite_path, suite)
+
+    def test_canonical_mode_accepts_current_manifest_with_fake_codex(self) -> None:
+        bin_dir = self.root / "bin"
+        bin_dir.mkdir()
+        fake = write_fake(bin_dir / "codex", "pass", self.repo)
+        with mock.patch.dict(os.environ, {"PATH": str(bin_dir) + os.pathsep + os.environ.get("PATH", "")}):
+            summary = RUNNER.run_suite(self.repo, self.suite_path, "codex", "gpt-5.6-sol", "ultra")
+        self.assertEqual(RUNNER.EXPECTED_INPUT_MANIFEST_SHA256, summary["input_manifest_sha256"])
+        self.assertEqual(RUNNER.sha(fake.read_bytes()), summary["runner_sha256"])
+        self.assertEqual(RUNNER.sha(RUNNER.HARNESS_PATH.read_bytes()), summary["harness_sha256"])
+
+    def test_canonical_mode_rejects_each_of_five_policy_input_drifts_before_calls(self) -> None:
+        self.assertEqual(5, len(RUNNER.EXPECTED_POLICY_INPUT_PATHS))
+        bin_dir = self.root / "bin"
+        bin_dir.mkdir()
+        marker = self.root / "codex-invoked"
+        fake = bin_dir / "codex"
+        fake.write_text(f"#!/bin/sh\nprintf invoked > {marker}\nexit 99\n", encoding="utf-8")
+        fake.chmod(0o755)
+        env = {"PATH": str(bin_dir) + os.pathsep + os.environ.get("PATH", "")}
+        for relative in sorted(RUNNER.EXPECTED_POLICY_INPUT_PATHS):
+            with self.subTest(relative=relative):
+                path = self.repo / relative
+                original = path.read_bytes()
+                path.write_bytes(original + b"\n")
+                try:
+                    with mock.patch.dict(os.environ, env):
+                        with self.assertRaises(RUNNER.EvalFailure):
+                            RUNNER.run_suite(self.repo, self.suite_path, "codex", "gpt-5.6-sol", "ultra")
+                    self.assertFalse(marker.exists())
+                    failure = RUNNER.load_json(self.suite_path.parent / "results" / "last-failure.json")
+                    self.assertIn("case, rubric, or context manifest digest mismatch", failure["reason"])
+                    self.assertEqual({"subject": 0, "grader": 0}, failure["call_count"])
+                finally:
+                    path.write_bytes(original)
 
     def test_canonical_mode_rejects_suite_digest_or_case_set_drift(self) -> None:
         suite = RUNNER.load_json(self.suite_path)
@@ -393,6 +440,7 @@ class FailureTests(RunnerTestCase):
         receipt = RUNNER.load_json(self.suite_path.parent / "results" / "generic-cross-model.receipt.json")
         self.assertEqual("test_runner", receipt["runner_mode"])
         self.assertEqual(RUNNER.sha(fake.read_bytes()), receipt["runner_sha256"])
+        self.assertEqual(RUNNER.sha(RUNNER.HARNESS_PATH.read_bytes()), receipt["harness_sha256"])
         self.assertEqual("test_runner", summary["runner_mode"])
 
 
