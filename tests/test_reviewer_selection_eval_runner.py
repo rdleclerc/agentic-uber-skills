@@ -328,6 +328,51 @@ class FailureTests(RunnerTestCase):
         self.assertFalse((results / "targeted-run.json").exists())
         self.assertFalse([path for path in results.glob("*.receipt.json")])
 
+    def test_status_change_during_publication_fails_closed(self) -> None:
+        self.trim_cases("generic-cross-model")
+        status_path = self.suite_path.parent / "results" / "current-eval-status.json"
+        original_write = RUNNER.AnchoredDirectory.write_bytes
+        changed = False
+
+        def change_status_after_receipt(directory, name, data):
+            nonlocal changed
+            original_write(directory, name, data)
+            if not changed and name.endswith(".receipt.json"):
+                changed = True
+                status = RUNNER.load_json(status_path)
+                status["skills"]["ubergoal"]["promotion_state"] = "promoted"
+                RUNNER.write_json(status_path, status)
+
+        with mock.patch.object(RUNNER.AnchoredDirectory, "write_bytes", new=change_status_after_receipt):
+            with self.assertRaisesRegex(RUNNER.EvalFailure, "input changed during run"):
+                self.run_fake()
+        results = self.suite_path.parent / "results"
+        self.assertFalse((results / "targeted-run.json").exists())
+        self.assertFalse(list(results.glob("*.receipt.json")))
+
+    def test_result_directory_replacement_after_final_write_fails_closed(self) -> None:
+        self.trim_cases("generic-cross-model")
+        canonical = self.suite_path.parent / "results"
+        detached = self.root / "detached-results-after-publication"
+        original_write = RUNNER.AnchoredDirectory.write_bytes
+        replaced = False
+
+        def replace_after_summary(directory, name, data):
+            nonlocal replaced
+            original_write(directory, name, data)
+            if not replaced and name == "targeted-run.json":
+                replaced = True
+                canonical.rename(detached)
+                canonical.mkdir()
+
+        with mock.patch.object(RUNNER.AnchoredDirectory, "write_bytes", new=replace_after_summary):
+            with self.assertRaisesRegex(RUNNER.EvalFailure, "input became unsafe|changed during run"):
+                self.run_fake()
+        self.assertFalse((canonical / "targeted-run.json").exists())
+        self.assertFalse(list(canonical.glob("*.receipt.json")))
+        self.assertFalse((detached / "targeted-run.json").exists())
+        self.assertFalse(list(detached.glob("*.receipt.json")))
+
     def setUpSubTestRepo(self):
         outer = self
 
@@ -403,6 +448,20 @@ class FailureTests(RunnerTestCase):
             RUNNER.run_suite(self.repo, self.suite_path, str(fake), "gpt-5.6-sol", "ultra")
         failure = RUNNER.load_json(self.suite_path.parent / "results" / "last-failure.json")
         self.assertEqual({"subject": 0, "grader": 0}, failure["call_count"])
+
+    def test_darwin_attestation_requires_codex_designated_identifier(self) -> None:
+        verified = subprocess.CompletedProcess([], 0, "", "")
+        wrong_identifier = subprocess.CompletedProcess(
+            [], 0, "", "Identifier=bare-modifier-monitor\n"
+            "Authority=Developer ID Application: OpenAI OpCo, LLC (2DC432GLL2)\n"
+            "TeamIdentifier=2DC432GLL2\n",
+        )
+        with mock.patch.object(RUNNER.subprocess, "run", side_effect=[verified, wrong_identifier]) as mocked:
+            with self.assertRaisesRegex(RUNNER.EvalFailure, "Codex designated code-signing identity"):
+                RUNNER.attest_darwin_signature(self.root / "signed-helper")
+        verify_command = mocked.call_args_list[0].args[0]
+        self.assertIn("--test-requirement", verify_command)
+        self.assertIn(RUNNER.DARWIN_CODEX_REQUIREMENT, verify_command)
 
     def test_non_darwin_forged_native_and_package_provenance_fail_closed(self) -> None:
         package_root = self.root / "forged" / "@openai" / "codex-linux-arm64"
@@ -515,7 +574,7 @@ class FailureTests(RunnerTestCase):
         failure = RUNNER.load_json(self.suite_path.parent / "results" / "last-failure.json")
         self.assertEqual({"subject": 0, "grader": 0}, failure["call_count"])
 
-    def test_post_hash_context_symlink_retarget_cannot_change_delivered_snapshot(self) -> None:
+    def test_post_hash_context_symlink_retarget_fails_final_validation(self) -> None:
         self.trim_cases("generic-cross-model")
         source = self.repo / "AGENTS.md"
         original = source.read_bytes()
@@ -532,15 +591,15 @@ class FailureTests(RunnerTestCase):
             return files, bindings
 
         with mock.patch.object(RUNNER, "copy_subject_bundle", side_effect=retarget_after_snapshot):
-            summary = self.run_fake()
-        self.assertEqual("passed", summary["status"])
+            with self.assertRaisesRegex(RUNNER.EvalFailure, "input became unsafe or unavailable"):
+                self.run_fake()
         self.assertEqual([original], delivered)
         self.assertTrue(source.is_symlink())
-        receipt = RUNNER.load_json(self.suite_path.parent / "results" / "generic-cross-model.receipt.json")
-        context_binding = next(item for item in receipt["binding"]["context_files"] if item["path"] == "AGENTS.md")
-        self.assertEqual(RUNNER.sha(original), context_binding["sha256"])
+        results = self.suite_path.parent / "results"
+        self.assertFalse((results / "targeted-run.json").exists())
+        self.assertFalse(list(results.glob("*.receipt.json")))
 
-    def test_post_hash_rubric_symlink_retarget_cannot_change_grader_snapshot(self) -> None:
+    def test_post_hash_rubric_symlink_retarget_fails_final_validation(self) -> None:
         self.trim_cases("generic-cross-model")
         rubric_path = self.suite_path.parent / "rubrics" / "generic-cross-model.hidden.json"
         original = rubric_path.read_bytes()
@@ -562,12 +621,13 @@ class FailureTests(RunnerTestCase):
 
         with mock.patch.object(RUNNER, "copy_subject_bundle", side_effect=retarget_after_snapshot):
             with mock.patch.object(RUNNER, "inline_payload", side_effect=capture_payload):
-                summary = self.run_fake()
-        self.assertEqual("passed", summary["status"])
+                with self.assertRaisesRegex(RUNNER.EvalFailure, "input became unsafe or unavailable"):
+                    self.run_fake()
         self.assertEqual([original], delivered)
         self.assertTrue(rubric_path.is_symlink())
-        receipt = RUNNER.load_json(self.suite_path.parent / "results" / "generic-cross-model.receipt.json")
-        self.assertEqual(RUNNER.sha(original), receipt["binding"]["rubric_sha256"])
+        results = self.suite_path.parent / "results"
+        self.assertFalse((results / "targeted-run.json").exists())
+        self.assertFalse(list(results.glob("*.receipt.json")))
 
     def test_result_and_raw_symlink_components_are_rejected_without_touching_victims(self) -> None:
         for target in ("results", "raw"):

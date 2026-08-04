@@ -28,6 +28,7 @@ EXPECTED_CASE_IDS = {"generic-cross-model", "required-sol-ultra-unavailable", "e
 EXPECTED_POLICY_INPUT_PATHS = {
     "AGENTS.md", "references/drift-fingerprints.toml", "uberaccept/SKILL.md", "ubergoal/SKILL.md", "uberplan/SKILL.md",
 }
+DARWIN_CODEX_REQUIREMENT = '=identifier "codex" and anchor apple generic and certificate leaf[subject.OU] = "2DC432GLL2"'
 ALLOWED_ITEMS = {"agent_message", "reasoning"}
 DISABLED_FEATURES = (
     "apps", "auth_elicitation", "browser_use", "browser_use_external", "browser_use_full_cdp_access",
@@ -46,6 +47,10 @@ class EvalFailure(RuntimeError):
 
 def packed(value: Any) -> bytes:
     return json.dumps(value, sort_keys=True, separators=(",", ":"), ensure_ascii=False).encode()
+
+
+def pretty_json(value: Any) -> bytes:
+    return json.dumps(value, indent=2, sort_keys=True, ensure_ascii=False).encode() + b"\n"
 
 
 def sha(data: bytes) -> str:
@@ -149,10 +154,24 @@ class AnchoredDirectory:
         self.revalidate()
         return sorted(os.listdir(self.fd))
 
+    def anchored_names(self) -> list[str]:
+        """List only the directory held by fd, including after canonical-name drift."""
+        return sorted(os.listdir(self.fd))
+
     def unlink(self, name: str, *, missing_ok: bool = True) -> None:
         if Path(name).name != name:
             raise EvalFailure("output", f"unsafe output filename: {name}")
         self.revalidate()
+        try:
+            os.unlink(name, dir_fd=self.fd)
+        except FileNotFoundError:
+            if not missing_ok:
+                raise
+
+    def anchored_unlink(self, name: str, *, missing_ok: bool = True) -> None:
+        """Remove from only the directory held by fd during failure cleanup."""
+        if Path(name).name != name:
+            raise EvalFailure("output", f"unsafe output filename: {name}")
         try:
             os.unlink(name, dir_fd=self.fd)
         except FileNotFoundError:
@@ -181,7 +200,7 @@ class AnchoredDirectory:
                 pass
 
     def write_json(self, name: str, value: Any) -> None:
-        self.write_bytes(name, json.dumps(value, indent=2, sort_keys=True, ensure_ascii=False).encode() + b"\n")
+        self.write_bytes(name, pretty_json(value))
 
     def read_bytes(self, name: str) -> bytes:
         if Path(name).name != name:
@@ -216,14 +235,23 @@ def native_magic(data: bytes) -> bool:
 
 def attest_darwin_signature(path: Path) -> None:
     verified = subprocess.run(
-        ["/usr/bin/codesign", "--verify", "--strict", str(path)], capture_output=True, text=True, check=False,
+        [
+            "/usr/bin/codesign", "--verify", "--strict", "--test-requirement",
+            DARWIN_CODEX_REQUIREMENT, str(path),
+        ],
+        capture_output=True, text=True, check=False,
     )
     details = subprocess.run(
         ["/usr/bin/codesign", "-dv", "--verbose=4", str(path)], capture_output=True, text=True, check=False,
     )
     signature = details.stdout + details.stderr
-    if verified.returncode or "Authority=Developer ID Application: OpenAI OpCo, LLC (2DC432GLL2)" not in signature or "TeamIdentifier=2DC432GLL2" not in signature:
-        raise EvalFailure("preflight", "canonical runner lacks the OpenAI code-signing identity")
+    if (
+        verified.returncode
+        or "Identifier=codex" not in signature.splitlines()
+        or "Authority=Developer ID Application: OpenAI OpCo, LLC (2DC432GLL2)" not in signature
+        or "TeamIdentifier=2DC432GLL2" not in signature
+    ):
+        raise EvalFailure("preflight", "canonical runner lacks the Codex designated code-signing identity")
 
 
 def file_identity(info: os.stat_result) -> tuple[int, int, int, int, int]:
@@ -278,6 +306,7 @@ class PreparedRunner:
             "execution": "private_secure_immutable_copy",
             "executed_copy_mode": "0500",
             "private_directory_mode": "0700",
+            "code_requirement": DARWIN_CODEX_REQUIREMENT,
         }
 
     def revalidate(self) -> None:
@@ -346,9 +375,11 @@ def resolve_runner(codex_bin: str, test_runner: bool) -> PreparedRunner:
         raise EvalFailure("preflight", "canonical runner changed during signature and byte verification")
     provenance = {
         "mode": "canonical_native_codex", "verified_source_path": str(resolved),
-        "package_manifest": str(package_path), "package_manifest_sha256": sha(package_bytes),
-        "package_version": package.get("version"),
-        "attestation": "openai_developer_id_signature_and_package_manifest",
+        "untrusted_package_metadata": {
+            "manifest": str(package_path), "manifest_sha256": sha(package_bytes),
+            "version": package.get("version"),
+        },
+        "attestation": "openai_developer_id_codex_designated_requirement",
     }
     return PreparedRunner(resolved, runner_bytes, provenance, test_runner=False)
 
@@ -365,7 +396,17 @@ def tree_snapshot(root: Path, excluded: set[str] | None = None) -> dict[str, str
 
 def write_json(path: Path, value: Any) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_bytes(json.dumps(value, indent=2, sort_keys=True, ensure_ascii=False).encode() + b"\n")
+    path.write_bytes(pretty_json(value))
+
+
+def revalidate_input_snapshots(repo: Path, snapshots: dict[str, bytes]) -> None:
+    for logical, expected in sorted(snapshots.items()):
+        try:
+            current = safe_path(repo, logical).read_bytes()
+        except (OSError, ValueError) as exc:
+            raise EvalFailure("output", f"input became unsafe or unavailable during run: {logical}") from exc
+        if current != expected:
+            raise EvalFailure("output", f"input changed during run: {logical}")
 
 
 def copy_subject_bundle(
@@ -721,9 +762,16 @@ def run_suite(repo: Path, suite_path: Path, codex_bin: str, model: str, effort: 
                     receipts.append(receipt)
         run_raw_root.close()
         run_raw_root = None
+        current_case = current_phase = "output"
+        revalidate_input_snapshots(repo, input_bytes_by_logical_path)
+        runner.revalidate()
+        if sha(HARNESS_PATH.read_bytes()) != harness_sha256:
+            raise EvalFailure("output", "eval harness changed during run")
+        expected_outputs: dict[str, bytes] = {}
         for receipt in receipts:
             name = f"{receipt['case_id']}.receipt.json"
-            results_dir.write_json(name, receipt)
+            expected_outputs[name] = pretty_json(receipt)
+            results_dir.write_bytes(name, expected_outputs[name])
             published_names.append(name)
         summary = {
             "schema_version": 1, "suite_id": suite["suite_id"], "run_id": run_id,
@@ -738,8 +786,22 @@ def run_suite(repo: Path, suite_path: Path, codex_bin: str, model: str, effort: 
             "promotion_state": "not_promoted", "evaluation_state": "fresh_eval_required",
             "remaining_gap": "Full UberAccept, UberGoal, and UberPlan behavioral suites still require fresh evaluation.",
         }
-        results_dir.write_json("targeted-run.json", summary)
+        expected_outputs["targeted-run.json"] = pretty_json(summary)
+        results_dir.write_bytes("targeted-run.json", expected_outputs["targeted-run.json"])
         published_names.append("targeted-run.json")
+        revalidate_input_snapshots(repo, input_bytes_by_logical_path)
+        runner.revalidate()
+        if sha(HARNESS_PATH.read_bytes()) != harness_sha256:
+            raise EvalFailure("output", "eval harness changed during run")
+        relevant_names = {
+            name for name in results_dir.names()
+            if name in {"targeted-run.json", "last-failure.json"} or name.endswith(".receipt.json")
+        }
+        if relevant_names != set(expected_outputs):
+            raise EvalFailure("output", "canonical result set changed during publication")
+        for name, expected in expected_outputs.items():
+            if results_dir.read_bytes(name) != expected:
+                raise EvalFailure("output", f"canonical output changed during publication: {name}")
         return summary
     except (EvalFailure, KeyError, ValueError, OSError) as exc:
         if not outputs_validated or results_dir is None:
@@ -751,9 +813,10 @@ def run_suite(repo: Path, suite_path: Path, codex_bin: str, model: str, effort: 
             "call_count": calls, "status": "failed_closed",
         }
         try:
-            for stale in results_dir.names():
+            for stale in results_dir.anchored_names():
                 if stale in set(published_names) | {"targeted-run.json"} or stale.endswith(".receipt.json"):
-                    results_dir.unlink(stale)
+                    results_dir.anchored_unlink(stale)
+            results_dir.revalidate()
             results_dir.write_json("last-failure.json", failure)
         except (EvalFailure, OSError):
             pass
