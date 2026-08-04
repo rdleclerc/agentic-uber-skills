@@ -58,10 +58,9 @@ def json_object(data: bytes, label: str) -> dict[str, Any]:
     return value
 
 
-def input_manifest_digest(paths: list[Path], root: Path, snapshots: dict[Path, bytes]) -> str:
-    root = root.resolve()
+def input_manifest_digest(paths: list[str], snapshots: dict[str, bytes]) -> str:
     entries = [
-        {"path": str(path.relative_to(root)), "sha256": sha(snapshots[path])}
+        {"path": path, "sha256": sha(snapshots[path])}
         for path in sorted(set(paths))
     ]
     return sha(packed(entries))
@@ -196,32 +195,132 @@ class AnchoredDirectory:
             os.close(fd)
 
 
-def snapshot_once(path: Path, snapshots: dict[Path, bytes]) -> bytes:
-    if path in snapshots:
-        return snapshots[path]
-    data = path.read_bytes()
-    snapshots[path] = data
-    return data
+def snapshot_logical(
+    repo: Path, anchor: Path, relative: str, snapshots: dict[str, bytes],
+) -> str:
+    requested = Path(relative)
+    if requested.is_absolute() or any(part in {"", ".", ".."} for part in requested.parts):
+        raise ValueError(f"unsafe input path: {relative}")
+    lexical = Path(os.path.abspath(anchor / requested))
+    if not lexical.is_relative_to(repo):
+        raise ValueError(f"input path escapes repository: {relative}")
+    logical = str(lexical.relative_to(repo))
+    if logical not in snapshots:
+        snapshots[logical] = safe_path(anchor, relative).read_bytes()
+    return logical
 
 
 def native_magic(data: bytes) -> bool:
     return data.startswith((b"\x7fELF", b"MZ", b"\xfe\xed\xfa\xce", b"\xfe\xed\xfa\xcf", b"\xce\xfa\xed\xfe", b"\xcf\xfa\xed\xfe"))
 
 
-def resolve_runner(codex_bin: str, test_runner: bool) -> tuple[Path, dict[str, Any]]:
+def attest_darwin_signature(path: Path) -> None:
+    verified = subprocess.run(
+        ["/usr/bin/codesign", "--verify", "--strict", str(path)], capture_output=True, text=True, check=False,
+    )
+    details = subprocess.run(
+        ["/usr/bin/codesign", "-dv", "--verbose=4", str(path)], capture_output=True, text=True, check=False,
+    )
+    signature = details.stdout + details.stderr
+    if verified.returncode or "Authority=Developer ID Application: OpenAI OpCo, LLC (2DC432GLL2)" not in signature or "TeamIdentifier=2DC432GLL2" not in signature:
+        raise EvalFailure("preflight", "canonical runner lacks the OpenAI code-signing identity")
+
+
+def file_identity(info: os.stat_result) -> tuple[int, int, int, int, int]:
+    return info.st_dev, info.st_ino, info.st_size, info.st_mtime_ns, stat.S_IMODE(info.st_mode)
+
+
+class PreparedRunner:
+    """An explicit test fake or a private immutable copy of an attested native runner."""
+
+    def __init__(self, source: Path, source_bytes: bytes, provenance: dict[str, Any], *, test_runner: bool):
+        self._temporary: tempfile.TemporaryDirectory[str] | None = None
+        self._directory_fd: int | None = None
+        if test_runner:
+            self.path = source
+            self.provenance = provenance
+            return
+        temporary_root = Path(tempfile.gettempdir()).resolve()
+        self._temporary = tempfile.TemporaryDirectory(prefix="uber-eval-verified-codex-", dir=temporary_root)
+        directory = Path(self._temporary.name)
+        os.chmod(directory, 0o700)
+        directory_info = os.lstat(directory)
+        if directory != directory.resolve() or not stat.S_ISDIR(directory_info.st_mode) or stat.S_IMODE(directory_info.st_mode) != 0o700:
+            raise EvalFailure("preflight", "private runner directory is not a secure real directory")
+        self._directory_fd = os.open(directory, os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW)
+        name = "codex"
+        fd = os.open(name, os.O_WRONLY | os.O_CREAT | os.O_EXCL | os.O_NOFOLLOW, 0o500, dir_fd=self._directory_fd)
+        try:
+            with os.fdopen(fd, "wb", closefd=False) as stream:
+                stream.write(source_bytes)
+                stream.flush()
+                os.fsync(stream.fileno())
+            os.fchmod(fd, 0o500)
+        finally:
+            os.close(fd)
+        self.path = directory / name
+        copied_fd = os.open(name, os.O_RDONLY | os.O_NOFOLLOW, dir_fd=self._directory_fd)
+        try:
+            copied_info = os.fstat(copied_fd)
+            with os.fdopen(copied_fd, "rb", closefd=False) as stream:
+                copied_bytes = stream.read()
+        finally:
+            os.close(copied_fd)
+        if not stat.S_ISREG(copied_info.st_mode) or stat.S_IMODE(copied_info.st_mode) != 0o500 or sha(copied_bytes) != sha(source_bytes):
+            raise EvalFailure("preflight", "private runner copy failed byte or mode verification")
+        attest_darwin_signature(self.path)
+        self._copy_identity = file_identity(copied_info)
+        self.provenance = {
+            **provenance,
+            "verified_source_sha256": sha(source_bytes),
+            "executed_copy_sha256": sha(copied_bytes),
+            "sha256": sha(copied_bytes),
+            "execution": "private_secure_immutable_copy",
+            "executed_copy_mode": "0500",
+            "private_directory_mode": "0700",
+        }
+
+    def revalidate(self) -> None:
+        if self._directory_fd is None:
+            if not self.path.is_file() or sha(self.path.read_bytes()) != self.provenance["sha256"]:
+                raise EvalFailure("preflight", "test runner changed after preflight")
+            return
+        info = os.stat("codex", dir_fd=self._directory_fd, follow_symlinks=False)
+        if not stat.S_ISREG(info.st_mode) or file_identity(info) != self._copy_identity:
+            raise EvalFailure("preflight", "private runner copy changed after verification")
+
+    def close(self) -> None:
+        if self._directory_fd is not None:
+            os.close(self._directory_fd)
+            self._directory_fd = None
+        if self._temporary is not None:
+            self._temporary.cleanup()
+            self._temporary = None
+
+
+def resolve_runner(codex_bin: str, test_runner: bool) -> PreparedRunner:
     supplied = Path(codex_bin)
     if not supplied.is_absolute():
         raise EvalFailure("preflight", "an explicit absolute Codex executable path is required")
     resolved = supplied.resolve()
     if (not test_runner and supplied != resolved) or not resolved.is_file() or not os.access(resolved, os.X_OK):
         raise EvalFailure("preflight", "runner path must be a resolved executable file")
-    runner_bytes = resolved.read_bytes()
     if test_runner:
-        return resolved, {
+        runner_bytes = resolved.read_bytes()
+        provenance = {
             "mode": "test_fake", "path": str(resolved), "sha256": sha(runner_bytes),
+            "executed_copy_sha256": sha(runner_bytes),
             "attestation": "explicit_test_only_path",
         }
-    if resolved.name not in {"codex", "codex.exe"} or not native_magic(runner_bytes):
+        return PreparedRunner(resolved, runner_bytes, provenance, test_runner=True)
+    if sys.platform != "darwin":
+        raise EvalFailure("preflight", "trusted canonical Codex OS attestation is unavailable outside Darwin")
+    probe_fd = os.open(resolved, os.O_RDONLY | os.O_NOFOLLOW)
+    try:
+        probe = os.read(probe_fd, 4)
+    finally:
+        os.close(probe_fd)
+    if resolved.name != "codex" or not native_magic(probe):
         raise EvalFailure("preflight", "canonical runner must be the native Codex executable")
     try:
         package_path = resolved.parents[3] / "package.json"
@@ -232,23 +331,26 @@ def resolve_runner(codex_bin: str, test_runner: bool) -> tuple[Path, dict[str, A
     repository = package.get("repository")
     if package.get("name") != "@openai/codex" or not isinstance(repository, dict) or repository.get("url") != "git+https://github.com/openai/codex.git":
         raise EvalFailure("preflight", "canonical runner package provenance is not OpenAI Codex")
-    attestation = "openai_package_manifest_and_native_binary"
-    if sys.platform == "darwin":
-        verified = subprocess.run(
-            ["/usr/bin/codesign", "--verify", "--strict", str(resolved)], capture_output=True, text=True, check=False,
-        )
-        details = subprocess.run(
-            ["/usr/bin/codesign", "-dv", "--verbose=4", str(resolved)], capture_output=True, text=True, check=False,
-        )
-        signature = details.stdout + details.stderr
-        if verified.returncode or "Authority=Developer ID Application: OpenAI OpCo, LLC (2DC432GLL2)" not in signature or "TeamIdentifier=2DC432GLL2" not in signature:
-            raise EvalFailure("preflight", "canonical runner lacks the OpenAI code-signing identity")
-        attestation = "openai_developer_id_signature_and_package_manifest"
-    return resolved, {
-        "mode": "canonical_native_codex", "path": str(resolved), "sha256": sha(runner_bytes),
+    before = os.stat(resolved, follow_symlinks=False)
+    attest_darwin_signature(resolved)
+    runner_fd = os.open(resolved, os.O_RDONLY | os.O_NOFOLLOW)
+    try:
+        during = os.fstat(runner_fd)
+        with os.fdopen(runner_fd, "rb", closefd=False) as stream:
+            runner_bytes = stream.read()
+    finally:
+        os.close(runner_fd)
+    attest_darwin_signature(resolved)
+    after = os.stat(resolved, follow_symlinks=False)
+    if file_identity(before) != file_identity(during) or file_identity(during) != file_identity(after) or not native_magic(runner_bytes[:4]):
+        raise EvalFailure("preflight", "canonical runner changed during signature and byte verification")
+    provenance = {
+        "mode": "canonical_native_codex", "verified_source_path": str(resolved),
         "package_manifest": str(package_path), "package_manifest_sha256": sha(package_bytes),
-        "package_version": package.get("version"), "attestation": attestation,
+        "package_version": package.get("version"),
+        "attestation": "openai_developer_id_signature_and_package_manifest",
     }
+    return PreparedRunner(resolved, runner_bytes, provenance, test_runner=False)
 
 
 def tree_snapshot(root: Path, excluded: set[str] | None = None) -> dict[str, str]:
@@ -267,15 +369,14 @@ def write_json(path: Path, value: Any) -> None:
 
 
 def copy_subject_bundle(
-    case: dict[str, Any], case_bytes: bytes, snapshots: dict[Path, bytes], repo: Path, bundle: Path,
+    case: dict[str, Any], case_bytes: bytes, snapshots: dict[str, bytes], bundle: Path,
 ) -> tuple[dict[str, bytes], list[dict[str, Any]]]:
     bundle.mkdir(parents=True)
     files: dict[str, bytes] = {}
     copied: list[dict[str, Any]] = []
     for relative in case.get("context_files", []):
-        relative = str(relative)
-        source = safe_path(repo, relative)
-        data = snapshots[source]
+        relative = str(Path(str(relative)))
+        data = snapshots[relative]
         target = bundle / str(relative)
         target.parent.mkdir(parents=True, exist_ok=True)
         target.write_bytes(data)
@@ -285,7 +386,7 @@ def copy_subject_bundle(
     target_case.write_bytes(case_bytes)
     files["case.json"] = case_bytes
     copied.append({"path": "case.json", "sha256": sha(case_bytes)})
-    expected = {str(item) for item in case.get("context_files", [])} | {"case.json"}
+    expected = {str(Path(str(item))) for item in case.get("context_files", [])} | {"case.json"}
     if set(tree_snapshot(bundle)) != expected:
         raise ValueError("subject bundle allowlist mismatch")
     return files, copied
@@ -385,10 +486,10 @@ def validate_subject_against_rubric(subject: dict[str, Any], rubric: dict[str, A
 
 def invoke(
     repo: Path, raw_dir: AnchoredDirectory, bundle: Path, phase: str, case_id: str,
-    codex_bin: str, model: str, effort: str, timeout: int, prompt: str, delivered_files: list[str],
+    runner: PreparedRunner, model: str, effort: str, timeout: int, prompt: str, delivered_files: list[str],
 ) -> tuple[dict[str, Any], dict[str, Any], dict[str, str]]:
     invocation_id = str(uuid.uuid4())
-    cmd = command(codex_bin, model, effort, bundle)
+    cmd = command(str(runner.path), model, effort, bundle)
     repo_before = tree_snapshot(repo, {".git", ".uberlearn-local"})
     bundle_before = tree_snapshot(bundle)
     started = time.time()
@@ -401,6 +502,7 @@ def invoke(
         env = {key: os.environ[key] for key in keep if key in os.environ}
         env.update(CODEX_HOME=temp_home, PYTHONDONTWRITEBYTECODE="1")
         try:
+            runner.revalidate()
             proc = subprocess.run(cmd, cwd=bundle, input=prompt, text=True, capture_output=True, timeout=timeout, env=env, check=False)
             stdout, stderr, returncode = proc.stdout.encode(), proc.stderr.encode(), proc.returncode
         except subprocess.TimeoutExpired as exc:
@@ -451,11 +553,13 @@ def run_suite(repo: Path, suite_path: Path, codex_bin: str, model: str, effort: 
     results_dir: AnchoredDirectory | None = None
     raw_dir: AnchoredDirectory | None = None
     run_raw_root: AnchoredDirectory | None = None
+    runner: PreparedRunner | None = None
     try:
         if suite_path != (repo / SUITE_RELATIVE).resolve():
             raise EvalFailure("preflight", "canonical suite path is required")
-        snapshots: dict[Path, bytes] = {}
-        suite_bytes = snapshot_once(suite_path, snapshots)
+        input_bytes_by_logical_path: dict[str, bytes] = {}
+        suite_logical = snapshot_logical(repo, repo, str(SUITE_RELATIVE), input_bytes_by_logical_path)
+        suite_bytes = input_bytes_by_logical_path[suite_logical]
         suite = json_object(suite_bytes, str(suite_path))
         suite_digest = sha(suite_bytes)
         fixed_bindings = {
@@ -478,38 +582,53 @@ def run_suite(repo: Path, suite_path: Path, codex_bin: str, model: str, effort: 
         outputs_validated = True
         if (model, effort) != (suite.get("model"), suite.get("reasoning_effort")):
             raise EvalFailure("preflight", f"model binding mismatch: requested {model}/{effort}")
-        base_path = safe_path(suite_path.parent, str(suite["base_manifest"]))
-        base_bytes = snapshot_once(base_path, snapshots)
+        base_logical = snapshot_logical(
+            repo, suite_path.parent, str(suite["base_manifest"]), input_bytes_by_logical_path,
+        )
+        base_bytes = input_bytes_by_logical_path[base_logical]
         base_digest = sha(base_bytes)
         if not test_runner and (suite_digest, base_digest) != (EXPECTED_SUITE_SHA256, EXPECTED_BASE_SHA256):
             raise EvalFailure("preflight", "suite or base manifest digest mismatch")
-        case_paths = [safe_path(suite_path.parent, str(item)) for item in suite.get("cases", [])]
-        if not case_paths or len(case_paths) > 4:
+        case_logical_paths = [
+            snapshot_logical(repo, suite_path.parent, str(item), input_bytes_by_logical_path)
+            for item in suite.get("cases", [])
+        ]
+        if not case_logical_paths or len(case_logical_paths) > 4:
             raise EvalFailure("preflight", "suite must contain one to four cases")
-        cases = {
-            path: json_object(snapshot_once(path, snapshots), str(path))
-            for path in case_paths
-        }
-        case_ids = [str(cases[path]["case_id"]) for path in case_paths]
+        case_objects_by_id: dict[str, dict[str, Any]] = {}
+        case_bytes_by_id: dict[str, bytes] = {}
+        case_ids: list[str] = []
+        for logical in case_logical_paths:
+            case_bytes = input_bytes_by_logical_path[logical]
+            case = json_object(case_bytes, logical)
+            case_id = str(case["case_id"])
+            case_ids.append(case_id)
+            case_objects_by_id[case_id] = case
+            case_bytes_by_id[case_id] = case_bytes
         if len(set(case_ids)) != len(case_ids) or any(Path(case_id).name != case_id for case_id in case_ids):
             raise EvalFailure("preflight", "case ids must be unique safe filenames")
         if not test_runner and set(case_ids) != EXPECTED_CASE_IDS:
             raise EvalFailure("preflight", "canonical suite case set mismatch")
-        manifest_paths = [base_path, suite_path, *case_paths]
-        rubric_paths = [safe_path(suite_path.parent, str(suite["rubrics"][case_id])) for case_id in case_ids]
-        manifest_paths.extend(rubric_paths)
-        rubrics = {
-            path: json_object(snapshot_once(path, snapshots), str(path))
-            for path in rubric_paths
-        }
-        for case_path in case_paths:
-            for relative in cases[case_path].get("context_files", []):
-                context_path = safe_path(repo, str(relative))
-                manifest_paths.append(context_path)
-                snapshot_once(context_path, snapshots)
-        status_path = safe_path(suite_path.parent, str(suite["current_evaluation_status"]))
-        status = json_object(snapshot_once(status_path, snapshots), str(status_path))
-        manifest_paths.append(status_path)
+        manifest_logical_paths = [base_logical, suite_logical, *case_logical_paths]
+        rubric_bytes_by_case_id: dict[str, bytes] = {}
+        rubric_objects_by_case_id: dict[str, dict[str, Any]] = {}
+        for case_id in case_ids:
+            logical = snapshot_logical(
+                repo, suite_path.parent, str(suite["rubrics"][case_id]), input_bytes_by_logical_path,
+            )
+            rubric_bytes = input_bytes_by_logical_path[logical]
+            rubric_bytes_by_case_id[case_id] = rubric_bytes
+            rubric_objects_by_case_id[case_id] = json_object(rubric_bytes, logical)
+            manifest_logical_paths.append(logical)
+        for case_id in case_ids:
+            for relative in case_objects_by_id[case_id].get("context_files", []):
+                logical = snapshot_logical(repo, repo, str(relative), input_bytes_by_logical_path)
+                manifest_logical_paths.append(logical)
+        status_logical = snapshot_logical(
+            repo, suite_path.parent, str(suite["current_evaluation_status"]), input_bytes_by_logical_path,
+        )
+        status = json_object(input_bytes_by_logical_path[status_logical], status_logical)
+        manifest_logical_paths.append(status_logical)
         if status.get("suite_id") != suite["suite_id"] or set(status.get("skills", {})) != {"uberaccept", "ubergoal", "uberplan"}:
             raise EvalFailure("preflight", "current evaluation status binding mismatch")
         if any(
@@ -517,43 +636,41 @@ def run_suite(repo: Path, suite_path: Path, codex_bin: str, model: str, effort: 
             for item in status["skills"].values()
         ):
             raise EvalFailure("preflight", "current evaluation status must remain fresh_eval_required/not_promoted")
-        input_digest = input_manifest_digest(manifest_paths, repo, snapshots)
+        input_digest = input_manifest_digest(manifest_logical_paths, input_bytes_by_logical_path)
         if not test_runner:
-            policy_inputs = {
-                str(path.relative_to(repo)) for path in manifest_paths
-                if path.is_relative_to(repo) and str(path.relative_to(repo)) in EXPECTED_POLICY_INPUT_PATHS
-            }
+            policy_inputs = set(manifest_logical_paths) & EXPECTED_POLICY_INPUT_PATHS
             if policy_inputs != EXPECTED_POLICY_INPUT_PATHS:
                 raise EvalFailure("preflight", "canonical policy input set mismatch")
             if input_digest != EXPECTED_INPUT_MANIFEST_SHA256:
                 raise EvalFailure("preflight", "case, rubric, or context manifest digest mismatch")
         harness_sha256 = sha(HARNESS_PATH.read_bytes())
-        runner_path, runner_provenance = resolve_runner(codex_bin, test_runner)
+        runner = resolve_runner(codex_bin, test_runner)
+        runner_provenance = runner.provenance
         raw_dir = AnchoredDirectory(repo, RAW_ARTIFACT_ROOT_RELATIVE, create=True)
         for stale in results_dir.names():
             if stale in {"targeted-run.json", "last-failure.json"} or stale.endswith(".receipt.json"):
                 results_dir.unlink(stale)
         run_raw_root = raw_dir.child(run_id)
-        for case_path in case_paths:
-            case = cases[case_path]
-            case_bytes = snapshots[case_path]
-            current_case = str(case["case_id"])
-            rubric_path = safe_path(suite_path.parent, str(suite["rubrics"][current_case]))
-            rubric = rubrics[rubric_path]
-            rubric_bytes = snapshots[rubric_path]
+        for current_case in case_ids:
+            case = case_objects_by_id[current_case]
+            case_bytes = case_bytes_by_id[current_case]
+            rubric = rubric_objects_by_case_id[current_case]
+            rubric_bytes = rubric_bytes_by_case_id[current_case]
             marker = str(rubric["secrecy_marker"])
             with run_raw_root.child(current_case) as case_raw:
                 with tempfile.TemporaryDirectory(prefix=f"uber-eval-{current_case}-") as temp_bundle:
                     subject_bundle = Path(temp_bundle) / "subject"
                     grader_bundle = Path(temp_bundle) / "grader"
-                    subject_files, context_bindings = copy_subject_bundle(case, case_bytes, snapshots, repo, subject_bundle)
+                    subject_files, context_bindings = copy_subject_bundle(
+                        case, case_bytes, input_bytes_by_logical_path, subject_bundle,
+                    )
                     subject_prompt, _ = inline_payload(subject_files, "subject")
                     if marker in subject_prompt or rubric_bytes.decode("utf-8") in subject_prompt:
                         raise EvalFailure("subject", "hidden rubric leaked into subject context")
                     current_phase = "subject"
                     calls["subject"] += 1
                     subject, subject_trace, subject_raw = invoke(
-                        repo, case_raw, subject_bundle, "subject", current_case, str(runner_path), model, effort,
+                        repo, case_raw, subject_bundle, "subject", current_case, runner, model, effort,
                         int(suite["timeout_seconds"]), subject_prompt, list(subject_files),
                     )
                     if subject_trace["runtime_thread_id"] in runtime_ids:
@@ -576,7 +693,7 @@ def run_suite(repo: Path, suite_path: Path, codex_bin: str, model: str, effort: 
                     current_phase = "grader"
                     calls["grader"] += 1
                     grader, grader_trace, grader_raw = invoke(
-                        repo, case_raw, grader_bundle, "grader", current_case, str(runner_path), model, effort,
+                        repo, case_raw, grader_bundle, "grader", current_case, runner, model, effort,
                         int(suite["timeout_seconds"]), grader_prompt, list(grader_files),
                     )
                     if grader_trace["runtime_thread_id"] in runtime_ids:
@@ -594,7 +711,7 @@ def run_suite(repo: Path, suite_path: Path, codex_bin: str, model: str, effort: 
                         "schema_version": 1, "run_id": run_id, "case_id": current_case,
                         "status": "passed", "binding": bindings,
                         "suite_sha256": suite_digest, "base_manifest_sha256": base_digest,
-                        "current_evaluation_status_sha256": sha(snapshots[status_path]),
+                        "current_evaluation_status_sha256": sha(input_bytes_by_logical_path[status_logical]),
                         "input_manifest_sha256": input_digest, "runner_provenance": runner_provenance,
                         "runner_mode": runner_provenance["mode"], "runner_sha256": runner_provenance["sha256"],
                         "harness_sha256": harness_sha256, "process": {"subject": subject_trace, "grader": grader_trace},
@@ -614,7 +731,7 @@ def run_suite(repo: Path, suite_path: Path, codex_bin: str, model: str, effort: 
             "call_count": calls, "case_results": {r["case_id"]: r["status"] for r in receipts},
             "receipt_hashes": {r["case_id"]: r["run_hash"] for r in receipts},
             "suite_sha256": suite_digest, "base_manifest_sha256": base_digest,
-            "current_evaluation_status_sha256": sha(snapshots[status_path]),
+            "current_evaluation_status_sha256": sha(input_bytes_by_logical_path[status_logical]),
             "input_manifest_sha256": input_digest, "runner_provenance": runner_provenance,
             "runner_mode": runner_provenance["mode"], "runner_sha256": runner_provenance["sha256"],
             "harness_sha256": harness_sha256,
@@ -648,6 +765,8 @@ def run_suite(repo: Path, suite_path: Path, codex_bin: str, model: str, effort: 
             raw_dir.close()
         if results_dir is not None:
             results_dir.close()
+        if runner is not None:
+            runner.close()
 
 
 def main() -> int:

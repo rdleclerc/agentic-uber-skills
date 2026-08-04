@@ -182,10 +182,10 @@ class StaticContractTests(RunnerTestCase):
         case_bytes = case_path.read_bytes()
         case = RUNNER.json_object(case_bytes, str(case_path))
         snapshots = {
-            RUNNER.safe_path(self.repo, str(relative)): RUNNER.safe_path(self.repo, str(relative)).read_bytes()
+            str(relative): RUNNER.safe_path(self.repo, str(relative)).read_bytes()
             for relative in case["context_files"]
         }
-        files, bindings = RUNNER.copy_subject_bundle(case, case_bytes, snapshots, self.repo, bundle)
+        files, bindings = RUNNER.copy_subject_bundle(case, case_bytes, snapshots, bundle)
         prompt, prompt_bindings = RUNNER.inline_payload(files, "subject")
         expected = set(case["context_files"]) | {"case.json"}
         self.assertEqual(expected, set(RUNNER.tree_snapshot(bundle)))
@@ -404,6 +404,60 @@ class FailureTests(RunnerTestCase):
         failure = RUNNER.load_json(self.suite_path.parent / "results" / "last-failure.json")
         self.assertEqual({"subject": 0, "grader": 0}, failure["call_count"])
 
+    def test_non_darwin_forged_native_and_package_provenance_fail_closed(self) -> None:
+        package_root = self.root / "forged" / "@openai" / "codex-linux-arm64"
+        fake = package_root / "vendor" / "aarch64-unknown-linux-musl" / "bin" / "codex"
+        fake.parent.mkdir(parents=True)
+        fake.write_bytes(b"\x7fELFforged-codex")
+        fake.chmod(0o755)
+        RUNNER.write_json(package_root / "package.json", {
+            "name": "@openai/codex", "version": "forged",
+            "repository": {"url": "git+https://github.com/openai/codex.git"},
+        })
+        with mock.patch.object(RUNNER.sys, "platform", "linux"):
+            with self.assertRaisesRegex(RUNNER.EvalFailure, "OS attestation is unavailable outside Darwin"):
+                RUNNER.run_suite(self.repo, self.suite_path, str(fake.resolve()), "gpt-5.6-sol", "ultra")
+        failure = RUNNER.load_json(self.suite_path.parent / "results" / "last-failure.json")
+        self.assertEqual({"subject": 0, "grader": 0}, failure["call_count"])
+
+    def test_darwin_verified_source_path_swap_executes_only_private_copy(self) -> None:
+        package_root = self.root / "official" / "@openai" / "codex-darwin-arm64"
+        source = package_root / "vendor" / "aarch64-apple-darwin" / "bin" / "codex"
+        source.parent.mkdir(parents=True)
+        write_fake(source, "pass", self.repo)
+        original = source.read_bytes()
+        RUNNER.write_json(package_root / "package.json", {
+            "name": "@openai/codex", "version": "test-darwin-arm64",
+            "repository": {"url": "git+https://github.com/openai/codex.git"},
+        })
+        malicious_marker = self.root / "swapped-runner-executed"
+        copy_bundle = RUNNER.copy_subject_bundle
+        swapped = False
+
+        def swap_source_after_private_copy(case, case_bytes, snapshots, bundle):
+            nonlocal swapped
+            if not swapped:
+                swapped = True
+                source.rename(self.root / "verified-source-detached")
+                source.write_text(f"#!/bin/sh\nprintf bad > {malicious_marker}\nexit 99\n", encoding="utf-8")
+                source.chmod(0o755)
+            return copy_bundle(case, case_bytes, snapshots, bundle)
+
+        with mock.patch.object(RUNNER.sys, "platform", "darwin"):
+            with mock.patch.object(RUNNER, "native_magic", return_value=True):
+                with mock.patch.object(RUNNER, "attest_darwin_signature"):
+                    with mock.patch.object(RUNNER, "copy_subject_bundle", side_effect=swap_source_after_private_copy):
+                        summary = RUNNER.run_suite(
+                            self.repo, self.suite_path, str(source.resolve()), "gpt-5.6-sol", "ultra",
+                        )
+        self.assertEqual("passed", summary["status"])
+        self.assertFalse(malicious_marker.exists())
+        self.assertEqual("canonical_native_codex", summary["runner_mode"])
+        self.assertEqual("private_secure_immutable_copy", summary["runner_provenance"]["execution"])
+        self.assertEqual(RUNNER.sha(original), summary["runner_provenance"]["verified_source_sha256"])
+        self.assertEqual(RUNNER.sha(original), summary["runner_provenance"]["executed_copy_sha256"])
+        self.assertEqual(RUNNER.sha(original), summary["runner_sha256"])
+
     def test_canonical_mode_rejects_each_of_five_policy_input_drifts_before_calls(self) -> None:
         self.assertEqual(5, len(RUNNER.EXPECTED_POLICY_INPUT_PATHS))
         bin_dir = self.root / "bin"
@@ -461,24 +515,59 @@ class FailureTests(RunnerTestCase):
         failure = RUNNER.load_json(self.suite_path.parent / "results" / "last-failure.json")
         self.assertEqual({"subject": 0, "grader": 0}, failure["call_count"])
 
-    def test_post_hash_source_drift_cannot_change_delivered_snapshot(self) -> None:
+    def test_post_hash_context_symlink_retarget_cannot_change_delivered_snapshot(self) -> None:
         self.trim_cases("generic-cross-model")
         source = self.repo / "AGENTS.md"
         original = source.read_bytes()
+        attacker = self.root / "attacker-context.md"
+        attacker.write_bytes(b"post-hash attacker bytes\n")
         delivered: list[bytes] = []
         copy_bundle = RUNNER.copy_subject_bundle
 
-        def drift_after_snapshot(case, case_bytes, snapshots, repo, bundle):
-            source.write_bytes(b"post-hash attacker bytes\n")
-            files, bindings = copy_bundle(case, case_bytes, snapshots, repo, bundle)
+        def retarget_after_snapshot(case, case_bytes, snapshots, bundle):
+            source.unlink()
+            source.symlink_to(attacker)
+            files, bindings = copy_bundle(case, case_bytes, snapshots, bundle)
             delivered.append(files["AGENTS.md"])
             return files, bindings
 
-        with mock.patch.object(RUNNER, "copy_subject_bundle", side_effect=drift_after_snapshot):
+        with mock.patch.object(RUNNER, "copy_subject_bundle", side_effect=retarget_after_snapshot):
             summary = self.run_fake()
         self.assertEqual("passed", summary["status"])
         self.assertEqual([original], delivered)
-        self.assertEqual(b"post-hash attacker bytes\n", source.read_bytes())
+        self.assertTrue(source.is_symlink())
+        receipt = RUNNER.load_json(self.suite_path.parent / "results" / "generic-cross-model.receipt.json")
+        context_binding = next(item for item in receipt["binding"]["context_files"] if item["path"] == "AGENTS.md")
+        self.assertEqual(RUNNER.sha(original), context_binding["sha256"])
+
+    def test_post_hash_rubric_symlink_retarget_cannot_change_grader_snapshot(self) -> None:
+        self.trim_cases("generic-cross-model")
+        rubric_path = self.suite_path.parent / "rubrics" / "generic-cross-model.hidden.json"
+        original = rubric_path.read_bytes()
+        attacker = self.root / "attacker-rubric.json"
+        attacker.write_text('{"case_id":"generic-cross-model","expected":{"decision":"authorize"}}\n', encoding="utf-8")
+        delivered: list[bytes] = []
+        copy_bundle = RUNNER.copy_subject_bundle
+        inline_payload = RUNNER.inline_payload
+
+        def retarget_after_snapshot(case, case_bytes, snapshots, bundle):
+            rubric_path.unlink()
+            rubric_path.symlink_to(attacker)
+            return copy_bundle(case, case_bytes, snapshots, bundle)
+
+        def capture_payload(files, phase):
+            if phase == "grader":
+                delivered.append(files["rubric.json"])
+            return inline_payload(files, phase)
+
+        with mock.patch.object(RUNNER, "copy_subject_bundle", side_effect=retarget_after_snapshot):
+            with mock.patch.object(RUNNER, "inline_payload", side_effect=capture_payload):
+                summary = self.run_fake()
+        self.assertEqual("passed", summary["status"])
+        self.assertEqual([original], delivered)
+        self.assertTrue(rubric_path.is_symlink())
+        receipt = RUNNER.load_json(self.suite_path.parent / "results" / "generic-cross-model.receipt.json")
+        self.assertEqual(RUNNER.sha(original), receipt["binding"]["rubric_sha256"])
 
     def test_result_and_raw_symlink_components_are_rejected_without_touching_victims(self) -> None:
         for target in ("results", "raw"):
@@ -555,6 +644,7 @@ class FailureTests(RunnerTestCase):
         self.assertEqual("test_fake", receipt["runner_mode"])
         self.assertEqual("explicit_test_only_path", receipt["runner_provenance"]["attestation"])
         self.assertEqual(RUNNER.sha(fake.read_bytes()), receipt["runner_sha256"])
+        self.assertEqual(receipt["runner_sha256"], receipt["runner_provenance"]["executed_copy_sha256"])
         self.assertEqual(RUNNER.sha(RUNNER.HARNESS_PATH.read_bytes()), receipt["harness_sha256"])
         self.assertEqual("test_fake", summary["runner_mode"])
 
